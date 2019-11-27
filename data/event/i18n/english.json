@@ -1,0 +1,69 @@
+{
+	"Fonts" : [
+		"system", "legal", "clock", "evangelion"
+	],
+
+	"Main" : [
+		"English", "Yes", "No", "Error"
+	],
+
+	"Options" : [
+		"Leviathan Racket:\n\n", 
+		"\t Return\n",
+		"\t Video\n",
+		"\t Audio\n",
+		"\t Language\n",
+		"\t Reboot\n",
+		"\t Exit"
+	],
+
+	"Video" : [
+		"Video Settings:\n\n",
+		"\t Fullscreen - ",
+		"\t Scale Factor - ",
+		"\t Vertical Sync - "
+	],
+
+	"Audio" : [
+		"Audio Settings:\n\n",
+		"\t Sound Volume - ",
+		"\t Pxtone Volume - "
+	],
+
+	"Language" : [
+		"Language Settings:\n\n"
+	],
+
+	"FileSys" : [
+		"Save File:\n\n", 
+		"Load File:\n\n", 
+		"\t File 1\n", 
+		"\t File 2\n", 
+		"\t File 3"
+	],
+
+	"Inven" : [
+		"Empty", "Kannon", "Frontier", "Wolf Vulcan", "Nail Ray", "Austere", "Mitorashi", 
+		"Arc Wielder", "Lieteraum", "Shoshi's Message", "Life Pot", "Oxygen Tank", "Tow Rope", 
+		"Small Key", "Storage Key", "Pretty Necklace", "Angelic Hammer"
+	],
+
+	"IsEmpty" : [
+		"It's empty."
+	],
+
+	"UseBed" : [
+		"Save Progress", "Rest in Bed", "Do Nothing",
+		"......", "Barrier restored!"
+	],
+
+	"Death" : [
+		"You have been killed.",
+		"You were instantly killed.",
+		"You were never seen again.",
+		"You have drowned.",
+		"You collapsed due to poisoning.",
+		"You died for a weird reason.",
+		"Would you like to retry?"
+	]
+}

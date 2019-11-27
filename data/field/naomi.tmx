@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="21" height="12" tilewidth="16" tileheight="16" nextobjectid="47">
+ <tileset firstgid="1" name="prtghou" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <image source="../image/prtghou.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Back" width="21" height="12">
+  <data encoding="base64" compression="zlib">
+   eJztzzkOgzAQhWEURELFkigRBes9SJHlAiFcgOUCLPcXf8FIlmWkVKkY6dMUHj97LGuvf5aDo9IfeOKFNw6wERjuypner7gp/YMKX9Q444LckClnej/BVf7ZoEWHXnk7MmR68BGue8isZJW4Y8CICTNiJBuZKTIU6x4yK1l7/VYLijgJbA==
+  </data>
+ </layer>
+ <layer name="Main" width="21" height="12">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgF2IApEBshYWL4xOh1BWI3It1gjMQ2JNMfw91MPSDWB2JPIPZigIS1CRQjs2F8GMClDp093AAAj0EKtQ==
+  </data>
+ </layer>
+ <objectgroup draworder="index" name="Actor">
+  <object id="1" name="door" type="actor" x="64" y="128" width="16" height="16">
+   <properties>
+    <property name="dir" type="int" value="0"/>
+    <property name="eve" value="door_to_hallway"/>
+    <property name="flags" value="0x4"/>
+    <property name="id" value="100"/>
+    <property name="spawn" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="2" name="cmptr" type="actor" x="160" y="112" width="16" height="16">
+   <properties>
+    <property name="dir" type="int" value="0"/>
+    <property name="eve" value="use_cmptr"/>
+    <property name="flags" value="0x4"/>
+    <property name="id" value="200"/>
+    <property name="spawn" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="3" name="bed" type="actor" x="224" y="112" width="16" height="16">
+   <properties>
+    <property name="dir" type="int" value="1"/>
+    <property name="eve" value="use_bed"/>
+    <property name="flags" value="0x4"/>
+    <property name="id" value="300"/>
+    <property name="spawn" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="4" name="bed" type="actor" x="272" y="112" width="16" height="16">
+   <properties>
+    <property name="dir" type="int" value="0"/>
+    <property name="eve" value="shoshi_bed"/>
+    <property name="flags" value="0x4"/>
+    <property name="id" type="int" value="400"/>
+    <property name="spawn" type="int" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

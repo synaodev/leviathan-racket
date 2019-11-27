@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="12" tilewidth="16" tileheight="16" nextobjectid="25">
+ <tileset firstgid="1" name="prtsilver" tilewidth="16" tileheight="16" tilecount="256" columns="16">
+  <properties>
+   <property name="indexed" type="bool" value="true"/>
+  </properties>
+  <image source="../image/prtsilver.png" width="256" height="256"/>
+ </tileset>
+ <layer name="Main" width="40" height="12">
+  <properties>
+   <property name="collide" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYmBgYAZiDiDmHEQ0E9RdQkAszDD4AMxdMHcONjAafpSB0fCjDIyGH2WAVuFXTyVz0MOvBoirgLh6kLDRw08PiPUHEQ1zFwDJZhuA
+  </data>
+ </layer>
+ <objectgroup draworder="index" name="Actor">
+  <object id="13" name="door" type="actor" x="48" y="144" width="16" height="16">
+   <properties>
+    <property name="dir" type="int" value="0"/>
+    <property name="eve" value="door_to_practice"/>
+    <property name="flags" value="0x4"/>
+    <property name="id" type="int" value="100"/>
+    <property name="spawn" type="int" value="0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,0 +1,67 @@
+#ifndef SYNAO_OVERLAY_DRAW_HEADSUP_HPP
+#define SYNAO_OVERLAY_DRAW_HEADSUP_HPP
+
+#include <entt/signal/delegate.hpp>
+
+#include "./draw_count.hpp"
+#include "./draw_units.hpp"
+#include "./draw_scheme.hpp"
+#include "./draw_fade.hpp"
+#include "./draw_item_view.hpp"
+#include "./draw_framerate.hpp"
+
+struct input_t;
+struct audio_t;
+struct kernel_t;
+struct receiver_t;
+
+struct headsup_params_t {
+public:
+	sint_t current_barrier, maximum_barrier, current_leviathan;
+	arch_t main_state;
+	direction_t main_direction;
+	sint_t current_oxygen, maximum_oxygen;
+public:
+	headsup_params_t() :
+		current_barrier(0), 
+		maximum_barrier(0),
+		current_leviathan(0),
+		main_state(0),
+		main_direction(direction_t::Right),
+		current_oxygen(0),
+		maximum_oxygen(0) {}
+	headsup_params_t(const headsup_params_t&) = default;
+	headsup_params_t(headsup_params_t&&) = default;
+	headsup_params_t& operator=(const headsup_params_t&) = default;
+	headsup_params_t& operator=(headsup_params_t&&) = default;
+	~headsup_params_t() = default;
+};
+
+struct draw_headsup_t : public not_copyable_t, public not_moveable_t {
+public:
+	draw_headsup_t();
+	~draw_headsup_t() = default;
+public:
+	bool init(receiver_t& receiver);
+	void reset();
+	void handle(const kernel_t& kernel);
+	void update(real64_t delta);
+	void render(renderer_t& renderer, const kernel_t& kernel) const;
+	void set_parameters(headsup_params_t params);
+	void fade_in();
+	void fade_out();
+	bool is_fade_done() const;
+	bool is_fade_moving() const;
+	arch_t get_main_state() const;
+private:
+	draw_scheme_t main_scheme;
+	draw_count_t leviathan_count;
+	draw_units_t barrier_units;
+	draw_count_t oxygen_count;
+	draw_item_view_t item_view;
+	draw_fade_t fade;
+	draw_framerate_t framerate;
+	entt::delegate<void(void)> suspender;
+};
+
+#endif // SYNAO_OVERLAY_DRAW_HEADSUP_HPP

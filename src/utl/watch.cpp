@@ -1,0 +1,13 @@
+#include "./watch.hpp"
+
+real64_t watch_t::elapsed() const {
+	auto now = std::chrono::high_resolution_clock::now();
+	return std::chrono::duration_cast<std::chrono::duration<real64_t> >(now - point).count();
+}
+
+real64_t watch_t::restart() {
+	auto now = std::chrono::high_resolution_clock::now();
+	auto delta = now - point;
+	point = now;
+	return std::chrono::duration_cast<std::chrono::duration<real64_t> >(delta).count();
+}
