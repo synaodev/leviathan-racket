@@ -1,18 +1,18 @@
 #include "./naomi.hpp"
-#include "./kontext.hpp"
-#include "./liquid.hpp"
+#include "./particles.hpp"
+#include "./shoshi.hpp"
 
 #include <entt/entity/registry.hpp>
 
-#include "../sys/kernel.hpp"
-#include "../sys/camera.hpp"
-
+#include "../cnt/kontext.hpp"
 #include "../cnt/location.hpp"
 #include "../cnt/kinematics.hpp"
 #include "../cnt/sprite.hpp"
 #include "../cnt/health.hpp"
 #include "../cnt/blinker.hpp"
-
+#include "../cnt/liquid.hpp"
+#include "../sys/kernel.hpp"
+#include "../sys/camera.hpp"
 #include "../utl/logger.hpp" 
 
 #include "../res_id.hpp"
@@ -59,7 +59,7 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	backend->assign<sprite_t>(actor, res::anim::Naomi);
 	backend->assign<health_t>(actor);
 	backend->assign<blinker_t>(actor);
-	// backend->assign<liquid_listener_t>(actor, Ai::Splash::Type, res::sfx::Splash);
+	backend->assign<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
 
 	auto& location = kontext.get<location_t>(actor);
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
@@ -166,9 +166,9 @@ void naomi_state_t::setup(audio_t& audio, const kernel_t& kernel, camera_t& came
 	camera.set_focus(location.center());
 	// Set Shoshi
 	if (equips[naomi_equips_t::ShoshiCarry]) {
-		// kontext.spawn(Ai::Shoshi::Carry::Type, location.position)
+		kontext.spawn(ai::shoshi_carry::type, location.position);
 	} else if (equips[naomi_equips_t::ShoshiFollow]) {
-		// kontext.spawn(Ai::Shoshi::Follow::Type, location.position)
+		kontext.spawn(ai::shoshi_follow::type, location.position);
 	}
 	// Check for Liquid
 	liquid::handle(audio, kontext, location, listener);

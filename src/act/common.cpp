@@ -90,8 +90,7 @@ void ai::ammo_station::ctor(entt::entity s, kontext_t& ktx) {
 	sprite.position = ktx.get<location_t>(s).position;
 }
 
-void ai::computer::ctor(entt::entity s, kontext_t& ktx)
-{
+void ai::computer::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.position -= glm::vec2(2.0f, 0.0f);
 	location.bounding = rect_t(5.0f, 0.0f, 16.0f, 16.0f);
