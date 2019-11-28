@@ -15,6 +15,7 @@
 #include "../utl/vfs.hpp"
 
 #include "../oly/draw_headsup.hpp"
+#include "../oly/draw_title_view.hpp"
 
 #include "../mnu/stack_gui.hpp"
 #include "../mnu/dialogue_gui.hpp"
@@ -608,6 +609,12 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Random Float
 	r = engine->RegisterGlobalFunction("real32_t getRand(real32_t lowest, real32_t highest)", asFUNCTIONPR(rng::next, (real_t, real_t), real_t), asCALL_CDECL);
 	assert(r >= 0);
+	// Get Input Press
+	r = engine->RegisterGlobalFunction("bool getKeyPress(arch_t action)", asMETHOD(input_t, get_button_pressed), asCALL_THISCALL_ASGLOBAL, &input);
+	assert(r >= 0);
+	// Get Input Held
+	r = engine->RegisterGlobalFunction("bool getKeyHeld(arch_t action)", asMETHOD(input_t, get_button_held), asCALL_THISCALL_ASGLOBAL, &input);
+	assert(r >= 0);
 	// Get Locale String
 	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", asFUNCTIONPR(vfs::i18n_find, (const std::string&, arch_t), std::string), asCALL_CDECL);
 	assert(r >= 0);
@@ -622,6 +629,58 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	assert(r >= 0);
 	// Pop Menu
 	r = engine->RegisterGlobalFunction("void popWidget()", asMETHOD(stack_gui_t, pop), asCALL_THISCALL_ASGLOBAL, &stack_gui);
+	assert(r >= 0);
+	
+	// Set Namespace
+	r = engine->SetDefaultNamespace("msg");
+	assert(r >= 0);
+	// Fade In
+	r = engine->RegisterGlobalFunction("void fadeIn()", asMETHOD(draw_headsup_t, fade_in), asCALL_THISCALL_ASGLOBAL, &headsup);
+	assert(r >= 0);
+	// Fade Out
+	r = engine->RegisterGlobalFunction("void fadeOut()", asMETHOD(draw_headsup_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup);
+	assert(r >= 0);
+	// Set Room Text
+	r = engine->RegisterGlobalFunction("void setFieldText(const std::string &in text)", asMETHODPR(draw_title_view_t, set_head, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	assert(r >= 0);
+	// Set Room Text
+	r = engine->RegisterGlobalFunction("void setFieldText()", asMETHODPR(draw_title_view_t, set_head, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	assert(r >= 0);
+	// Set Facebox
+	r = engine->RegisterGlobalFunction("void setFace(arch_t index, arch_t type)", asMETHODPR(dialogue_gui_t, set_face, (arch_t, direction_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Set No Facebox
+	r = engine->RegisterGlobalFunction("void setFace()", asMETHODPR(dialogue_gui_t, set_face, (void), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Set Delay Textbox
+	// r = engine->RegisterGlobalFunction("void setDelay(real32 msec)", asMETHOD(dialogue_gui_t, mssgDelay), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	// assert(r >= 0);
+	// Add Titlecard
+	r = engine->RegisterGlobalFunction("void setCard(const std::string &in text, arch_t font, bool cenx, bool ceny, real32_t posx, real32_t posy)", asMETHODPR(draw_title_view_t, set_card, (const std::string&, arch_t, bool, bool, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	assert(r >= 0);
+	// End Titlecard
+	r = engine->RegisterGlobalFunction("void setCard()", asMETHODPR(draw_title_view_t, set_card, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	assert(r >= 0);
+	// Open Textbox Top
+	r = engine->RegisterGlobalFunction("void topBox()", asMETHOD(dialogue_gui_t, open_textbox_high), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Open Textbox Bottom
+	r = engine->RegisterGlobalFunction("void lowBox()", asMETHOD(dialogue_gui_t, open_textbox_low), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Set Textbox Text
+	r = engine->RegisterGlobalFunction("void say(const std::string &in words)", asMETHOD(dialogue_gui_t, write_textbox), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Clear Textbox
+	r = engine->RegisterGlobalFunction("void clear()", asMETHOD(dialogue_gui_t, clear_textbox), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Close Textbox
+	r = engine->RegisterGlobalFunction("void close()", asMETHOD(dialogue_gui_t, close_textbox), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Ask Question
+	r = engine->RegisterGlobalFunction("void ask(const std::array<std::string> &in question)", asMETHODPR(dialogue_gui_t, ask_question, (const CScriptArray*), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
+	// Get Answer
+	r = engine->RegisterGlobalFunction("arch_t getAnswer()", asMETHOD(dialogue_gui_t, get_answer), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 
 	// Set Namespace
@@ -647,13 +706,16 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	assert(r >= 0);
 
 	// Set Namespace
-	r = engine->SetDefaultNamespace("mus");
+	r = engine->SetDefaultNamespace("pxt");
 	assert(r >= 0);
 	// Pxtone Load Tune
 	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune)", asMETHODPR(music_t, load, (const std::string&), bool), asCALL_THISCALL_ASGLOBAL, &music);
 	assert(r >= 0);
+	// Pxtone Load Tune
+	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune, real32_t start, real32_t fade)", asMETHODPR(music_t, load, (const std::string&, real_t, real_t), bool), asCALL_THISCALL_ASGLOBAL, &music);
+	assert(r >= 0);
 	// Pxtone Exit Tune
-	r = engine->RegisterGlobalFunction("void clear()", asMETHOD(music_t, clear), asCALL_THISCALL_ASGLOBAL, &music);
+	r = engine->RegisterGlobalFunction("void exit()", asMETHOD(music_t, clear), asCALL_THISCALL_ASGLOBAL, &music);
 	assert(r >= 0);
 	// Pxtone Play Tune
 	r = engine->RegisterGlobalFunction("void play(real32_t start, real32_t fade)", asMETHOD(music_t, play), asCALL_THISCALL_ASGLOBAL, &music);

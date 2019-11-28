@@ -39,7 +39,7 @@ public:
 	void append(glm::vec2 axnpnt);
 	void append(glm::vec2 invert, glm::vec2 start, glm::vec4 points);
 	void update(real64_t delta, bool_t& write, real64_t& timer, arch_t& frame) const;
-	sequence_frame_t get_frame(arch_t frame, direction_t direction) const;
+	const sequence_frame_t& get_frame(arch_t frame, direction_t direction) const;
 	rect_t get_quad(glm::vec2 invert, arch_t frame, direction_t direction) const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_origin(arch_t frame, direction_t direction) const;

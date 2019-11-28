@@ -31,8 +31,8 @@ struct health_t {
 public:
 	health_t() : 
 		flags(0),
-		current(1),
-		maximum(1),
+		current(2),
+		maximum(2),
 		leviathan(0),
 		damage(0) {}
 	health_t(const health_t&) = default;

@@ -16,16 +16,16 @@ public:
 	static bool release_indexer();
 	template<typename V>
 	inline void setup(buffer_usage_t usage) {
-		static_assert(std::is_base_of<vtx_minor_t, V>::value);
+		static_assert(std::is_base_of<vertex_t, V>::value);
 		vertex_spec_t specify = vertex_spec_t::from(typeid(V));
 		this->setup(usage, specify);
 	}
 	void setup(buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t length);
 	void destroy();
-	bool update(const vtx_minor_t* vertices, arch_t count, arch_t offset);
-	bool update(const vtx_minor_t* vertices, arch_t count);
-	bool update(const vtx_minor_t* vertices);
+	bool update(const vertex_t* vertices, arch_t count, arch_t offset);
+	bool update(const vertex_t* vertices, arch_t count);
+	bool update(const vertex_t* vertices);
 	void draw(arch_t count) const;
 	void draw() const;
 	buffer_usage_t get_usage() const;

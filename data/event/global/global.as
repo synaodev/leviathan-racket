@@ -12,7 +12,7 @@ void boot()
 {
 	pxt::exit();
 	msg::setCard("Leviathan Racket", Font::One, true, false, 160.0f, 48.0f);
-	sys::wait(1.5f);
+	sys::wait(1.5);
 	msg::setCard();
 	msg::fadeIn();
 }
@@ -59,16 +59,16 @@ void use_bed() // Bed
 			msg::close();
 			pxt::fade(2.0f);
 			msg::fadeOut();
-			sys::wait(1.0f);
+			sys::wait(1.0);
 			msg::topBox();
 			msg::say(sys::locale("UseBed", 3));
 			sys::wait();
 			msg::close();
 			nao::lifeUp(20);
-			sys::wait(1.0f);
+			sys::wait(1.0);
 			msg::fadeIn();
 			pxt::redo(1.0f);
-			sys::wait(0.5f);
+			sys::wait(0.5);
 			msg::topBox();
 			msg::say(sys::locale("UseBed", 4));
 			sys::wait();
@@ -132,7 +132,7 @@ void death(arch_t type) // Naomi Dies
 
 	sys::lock();
 	pxt::exit();
-	sys::wait(1.5f);
+	sys::wait(1.5);
 
 	pxt::load("game_over", 0.0f, 0.0f);
 
@@ -158,7 +158,7 @@ void death(arch_t type) // Naomi Dies
 		{
 			msg::close();
 			msg::fadeOut();
-			sys::wait(0.5f);
+			sys::wait(0.5);
 			pxt::exit();
 			sys::loadProg();
 		}
@@ -168,7 +168,7 @@ void death(arch_t type) // Naomi Dies
 			msg::close();
 			msg::fadeOut();
 			pxt::fade(2.0f);
-			sys::wait(2.0f);
+			sys::wait(2.0);
 			pxt::exit();
 			sys::reset();
 		}
@@ -179,7 +179,7 @@ void death(arch_t type) // Naomi Dies
 		msg::close();
 		msg::fadeOut();
 		pxt::fade(2.0f);
-		sys::wait(2.0f);
+		sys::wait(2.0);
 		pxt::exit();
 		sys::reset();
 	}

@@ -8,7 +8,7 @@ sprite_t::sprite_t(const std::string& name) :
 	file(nullptr),
 	write(false),
 	timer(0.0),
-	alpha(0.0f),
+	alpha(1.0f),
 	table(0.0f),
 	state(0),
 	direction(direction_t::Right),
@@ -28,7 +28,7 @@ sprite_t::sprite_t() :
 	file(nullptr),
 	write(false),
 	timer(0.0),
-	alpha(0.0f),
+	alpha(1.0f),
 	table(0.0f),
 	state(0),
 	direction(direction_t::Right),
@@ -47,7 +47,7 @@ sprite_t::sprite_t() :
 void sprite_t::reset() {
 	write = true;
 	timer = 0.0;
-	alpha = 0.0f;
+	alpha = 1.0f;
 	table = 0.0f;
 	state = 0;
 	direction = direction_t::Right;
@@ -74,7 +74,7 @@ void sprite_t::new_state(arch_t state) {
 
 glm::vec2 sprite_t::action_point(arch_t state, direction_t direction, glm::vec2 position) const {
 	if (file != nullptr) {
-		return file->get_action_point(state, direction);
+		return position + file->get_action_point(state, direction);
 	}
 	return glm::zero<glm::vec2>();
 }
@@ -87,7 +87,7 @@ bool sprite_t::finished() const {
 }
 
 void sprite_t::update(kontext_t& kontext, real64_t delta) {
-	kontext.slice<sprite_t, location_t>().each([delta](entt::entity actor, sprite_t& sprite, const location_t& location) {
+	kontext.slice<sprite_t, location_t>().each([delta](entt::entity, sprite_t& sprite, const location_t& location) {
 		if (sprite.file != nullptr) {
 			sprite.file->update(
 				delta,
@@ -114,7 +114,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 	arch_t current = 0;
 	const entt::view<sprite_t> view = kontext.slice<sprite_t>();
 	if (!panic) {
-		view.each([&viewport, &current](entt::entity actor, const sprite_t& sprite) {
+		view.each([&viewport, &current](entt::entity, const sprite_t& sprite) {
 			if (sprite.file != nullptr) {
 				if (sprite.file->visible(
 					viewport,
@@ -132,7 +132,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 		panic = previous != current;
 		previous = current;
 	}
-	view.each([&renderer, &viewport, panic](entt::entity actor, const sprite_t& sprite) {
+	view.each([&renderer, &viewport, panic](entt::entity, const sprite_t& sprite) {
 		if (sprite.file != nullptr and sprite.layer != layer_value::Invisible) {
 			if ((sprite.angle + sprite.shake) != 0.0f) {
 				sprite.file->render(
@@ -148,7 +148,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					sprite.table,
 					glm::round(sprite.position),
 					sprite.scale,
-					sprite.angle + sprite.power,
+					sprite.angle + sprite.shake,
 					sprite.pivot
 				);
 			} else {

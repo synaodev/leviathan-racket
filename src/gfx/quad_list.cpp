@@ -117,7 +117,7 @@ void quad_list_t::destroy() {
 	length = 0;
 }
 
-bool quad_list_t::update(const vtx_minor_t* vertices, arch_t count, arch_t offset) {
+bool quad_list_t::update(const vertex_t* vertices, arch_t count, arch_t offset) {
 	if (!quad_list_t::elemts or !arrays) {
 		return false;
 	} else if (!vertices) {
@@ -133,11 +133,11 @@ bool quad_list_t::update(const vtx_minor_t* vertices, arch_t count, arch_t offse
 	return true;
 }
 
-bool quad_list_t::update(const vtx_minor_t* vertices, arch_t count) {
+bool quad_list_t::update(const vertex_t* vertices, arch_t count) {
 	return this->update(vertices, count, 0);
 }
 
-bool quad_list_t::update(const vtx_minor_t* vertices) {
+bool quad_list_t::update(const vertex_t* vertices) {
 	return this->update(vertices, length, 0);
 }
 

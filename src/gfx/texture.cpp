@@ -146,10 +146,12 @@ uint_t texture_t::get_layers() const {
 }
 
 glm::vec2 texture_t::get_dimensions() const {
+	this->assure();
 	return glm::vec2(dimensions);
 }
 
 glm::vec2 texture_t::get_inverse_dimensions() const {
+	this->assure();
 	if (dimensions.x != 0.0f and dimensions.y != 0.0f) {
 		return 1.0f / this->get_dimensions();
 	}

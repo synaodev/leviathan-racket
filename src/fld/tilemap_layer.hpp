@@ -15,8 +15,8 @@ struct tilemap_layer_t : public not_copyable_t {
 public:
 	tilemap_layer_t(glm::ivec2 map_size);
 	tilemap_layer_t();
-	tilemap_layer_t(tilemap_layer_t&&) = default;
-	tilemap_layer_t& operator=(tilemap_layer_t&&) = default;
+	tilemap_layer_t(tilemap_layer_t&&) /*= default */;
+	tilemap_layer_t& operator=(tilemap_layer_t&&) /*= default */;
 	~tilemap_layer_t() = default;
 public:
 	void init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<sint_t>& attributes, const std::vector<sint_t>& attribute_key);

@@ -22,8 +22,8 @@ namespace vfs {
 	static __vfs_t* device = nullptr;
 	struct __vfs_t : public not_copyable_t, public not_moveable_t {
 	public:
-		__vfs_t(arch_t thread_count) : 
-			thread_pool(thread_count),
+		__vfs_t() : 
+			thread_pool(),
 			storage_mutex(),
 			language(),
 			i18n(),
@@ -33,9 +33,6 @@ namespace vfs {
 			shaders(),
 			fonts(),
 			animations() {}
-		__vfs_t() : __vfs_t(kTotalThreads) {
-			
-		}
 		~__vfs_t() {
 			if (this == vfs::device) {
 				vfs::device = nullptr;
@@ -48,7 +45,7 @@ namespace vfs {
 		}
 	public:
 		static constexpr arch_t kTotalThreads = 4;
-		thread_pool_t thread_pool;
+		std::unique_ptr<thread_pool_t> thread_pool;
 		std::mutex storage_mutex;
 		std::string language;
 		std::unordered_map<std::string, std::vector<std::string> > i18n;

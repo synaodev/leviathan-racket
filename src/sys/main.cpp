@@ -11,9 +11,8 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 
-static constexpr uint32_t kHighDelay	= 40;
-static constexpr uint32_t kLowDelay		= 10;
-static const byte_t kBootPath[]			= "data/boot.cfg";
+static constexpr uint_t kHighDelay = 40;
+static constexpr uint_t kLowDelay  = 10;
 
 static void synchonize(watch_t& watch, const video_t& video) {
 	const screen_params_t params = video.get_parameters();
@@ -24,19 +23,18 @@ static void synchonize(watch_t& watch, const video_t& video) {
 			SDL_Delay(ticks);
 		}
 		watch.restart();
-	}
-	else {
+	} else {
 		SDL_Delay(kLowDelay);
 	}
 }
 
 static bool run(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
-	watch_t sync_watch, head_watch;
 	runtime_t runtime;
 	if (!runtime.init(config, input, audio, music, renderer)) {
 		return false;
 	}
+	watch_t sync_watch, head_watch;
 	while (1) {
 		input.poll(policy);
 		switch (policy) {
@@ -63,6 +61,8 @@ static bool run(setup_file_t& config, input_t& input, video_t& video, audio_t& a
 clean_quit:
 	return config.save();
 }
+
+static const byte_t kBootPath[]	= "data/boot.cfg";
 
 int main(int, char**) {
 	if (std::atexit(SDL_Quit) != 0) {

@@ -25,7 +25,7 @@ wgt_file_t::wgt_file_t(arch_t flags) :
 
 }
 
-void wgt_file_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_file_t::init(video_t&, audio_t&, music_t&, kernel_t& kernel) {
 	ready = true;
 	cursor = kernel.get_file_index();
 	kernel.freeze();
@@ -50,7 +50,7 @@ void wgt_file_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& 
 	);
 }
 
-void wgt_file_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t&, draw_headsup_t& headsup) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;

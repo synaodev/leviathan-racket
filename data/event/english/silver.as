@@ -7,8 +7,8 @@ void main()
 
 void door_to_practice()
 {
-	const sint32 kThisDoorID = 100;
-	const sint32 kThatDoorID = 300;
+	const sint32_t kThisDoorID = 100;
+	const sint32_t kThatDoorID = 300;
 
 	sys::lock();
 	ctx::animate(kThisDoorID, 0, Dir::Left);

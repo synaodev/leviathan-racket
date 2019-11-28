@@ -28,7 +28,7 @@ wgt_language_t::wgt_language_t(arch_t flags) :
 
 }
 
-void wgt_language_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_language_t::init(video_t&, audio_t&, music_t&, kernel_t&) {
 	ready = true;
 	languages = vfs::file_list("./data/event/i18n/");
 	text.set_font(vfs::font(0));
@@ -43,7 +43,7 @@ void wgt_language_t::init(video_t& video, audio_t& audio, music_t& music, kernel
 	this->setup_text();
 }
 
-void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
 	bool selection = false;
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {

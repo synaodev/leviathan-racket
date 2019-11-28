@@ -28,7 +28,7 @@ wgt_field_t::wgt_field_t(arch_t flags) :
 
 }
 
-void wgt_field_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_field_t::init(video_t&, audio_t&, music_t&, kernel_t& kernel) {
 	ready = true;
 	fields = vfs::file_list("./data/field/");
 	kernel.freeze();
@@ -47,7 +47,7 @@ void wgt_field_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t&
 	this->setup_identity();
 }
 
-void wgt_field_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_field_t::handle(setup_file_t&, input_t& input, video_t&, audio_t&, music_t&, kernel_t& kernel, stack_gui_t&, draw_headsup_t& headsup) {
 	bool selection = false;
 	if (input.pressed[btn_t::Right] or input.pressed[btn_t::Left]) {
 		scrolling = !scrolling;

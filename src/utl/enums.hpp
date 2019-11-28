@@ -35,27 +35,27 @@ namespace __enum_direction {
 
 using direction_t = __enum_direction::type;
 
-direction_t operator~(direction_t lhv) {
+inline direction_t operator~(direction_t lhv) {
 	return static_cast<direction_t>(
 		~static_cast<std::underlying_type<direction_t>::type>(lhv)
 	);
 }
 
-direction_t operator&(direction_t lhv, direction_t rhv) {
+inline direction_t operator&(direction_t lhv, direction_t rhv) {
 	return static_cast<direction_t>(
 		static_cast<std::underlying_type<direction_t>::type>(lhv) &
 		static_cast<std::underlying_type<direction_t>::type>(rhv)
 	);
 }
 
-direction_t operator|(direction_t lhv, direction_t rhv) {
+inline direction_t operator|(direction_t lhv, direction_t rhv) {
 	return static_cast<direction_t>(
 		static_cast<std::underlying_type<direction_t>::type>(lhv) |
 		static_cast<std::underlying_type<direction_t>::type>(rhv)
 	);
 }
 
-direction_t& operator|=(direction_t& lhv, const direction_t& rhv) {
+inline direction_t& operator|=(direction_t& lhv, const direction_t& rhv) {
 	lhv = static_cast<direction_t>(
 		static_cast<std::underlying_type<direction_t>::type>(lhv) |
 		static_cast<std::underlying_type<direction_t>::type>(rhv)
@@ -63,7 +63,7 @@ direction_t& operator|=(direction_t& lhv, const direction_t& rhv) {
 	return lhv;
 }
 
-direction_t& operator&=(direction_t& lhv, const direction_t& rhv) {
+inline direction_t& operator&=(direction_t& lhv, const direction_t& rhv) {
 	lhv = static_cast<direction_t>(
 		static_cast<std::underlying_type<direction_t>::type>(lhv) &
 		static_cast<std::underlying_type<direction_t>::type>(rhv)

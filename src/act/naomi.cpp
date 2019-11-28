@@ -490,7 +490,7 @@ naomi_death_t naomi_state_t::get_death_type(const kinematics_t& kinematics, cons
 	return naomi_death_t::Error;
 }
 
-sint_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
+arch_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
 	if (headsup.get_main_state() != kNao::BoxHeal) {
 		if (flags[naomi_flags_t::HealthIncrement]) {
 			return kNao::BoxHeal;
@@ -581,7 +581,7 @@ void naomi_state_t::do_strafe(const input_t& input, audio_t& audio) {
 	}
 }
 
-void naomi_state_t::do_grapple(const input_t& input, audio_t& audio, kontext_t& kontext, const tilemap_t& tilemap, const location_t& location, kinematics_t& kinematics) {
+void naomi_state_t::do_grapple(const input_t&, audio_t&, kontext_t&, const tilemap_t&, const location_t&, kinematics_t&) {
 	if (equips[naomi_equips_t::Grapple]) {
 		// TODO
 	}
@@ -1109,8 +1109,8 @@ void naomi_state_t::do_headsup(draw_headsup_t& headsup, const health_t& health) 
 		direction_t::Left : 
 		direction_t::Right;
 	params.current_oxygen = equips[naomi_equips_t::Oxygen] ? 
-		kNao::Oxygens / 15 :
-		chroniker[naomi_timer_t::Oxygen] / 15;
-	params.maximum_oxygen = kNao::Oxygens / 15;
+		static_cast<sint_t>(kNao::Oxygens / 15) :
+		static_cast<sint_t>(chroniker[naomi_timer_t::Oxygen] / 15);
+	params.maximum_oxygen = static_cast<sint_t>(kNao::Oxygens / 15);
 	headsup.set_parameters(params);
 }

@@ -57,7 +57,7 @@ void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
 			if (flags[dialogue_flag_t::Sound]) {
 				flags[dialogue_flag_t::Sound] = false;
 				flags[dialogue_flag_t::Writing] = true;
-				text.update();
+				text.increment();
 				audio.play(res::sfx::Text, 7);
 			}
 		} else if (flags[dialogue_flag_t::Question]) {
@@ -167,7 +167,7 @@ void dialogue_gui_t::open_textbox_low() {
 }
 
 void dialogue_gui_t::write_textbox(const std::string& string) {
-	text.append_string(string);
+	text.append_string(string, false);
 }
 
 void dialogue_gui_t::clear_textbox() {

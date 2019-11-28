@@ -39,7 +39,7 @@ entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& ktx) {
 		}
 	});
 	if (!closelist.empty()) {
-		std::sort(closelist.cbegin(), closelist.cend(), [](const auto& a, const auto& b) {
+		std::sort(closelist.begin(), closelist.end(), [](const auto& a, const auto& b) {
 			return std::get<real_t>(a) < std::get<real_t>(b);
 		});
 		return std::get<entt::entity>(closelist.front());
@@ -402,7 +402,7 @@ void ai::holy_tether::ctor(entt::entity s, kontext_t& ktx) {
 void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.ktx.get<location_t>(s);
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	entt::entity lance = rtp.ktx.search_id(ai::holy_lance::type);
+	entt::entity lance = rtp.ktx.search_type(ai::holy_lance::type);
 	if (lance != entt::null) {
 		glm::vec2 naomi_center = rtp.ktx.get<location_t>(rtp.nao.actor).center();
 		glm::vec2 actor_center = location.center();

@@ -55,15 +55,16 @@ void animation_sequence_t::append(glm::vec2 invert, glm::vec2 start, glm::vec4 p
 	frames.emplace_back(position, origin);
 }
 
-sequence_frame_t animation_sequence_t::get_frame(arch_t frame, direction_t direction) const {
+const sequence_frame_t& animation_sequence_t::get_frame(arch_t frame, direction_t direction) const {
+	static const sequence_frame_t kFrameZero = sequence_frame_t(
+		glm::zero<glm::vec2>(),
+		glm::one<glm::vec2>()
+	);
 	arch_t index = frame + (direction * total);
 	if (index < frames.size()) {
 		return frames[index];
 	}
-	return sequence_frame_t(
-		glm::zero<glm::vec2>(),
-		glm::one<glm::vec2>()
-	);
+	return kFrameZero;
 }
 
 rect_t animation_sequence_t::get_quad(glm::vec2 invert, arch_t frame, direction_t direction) const {

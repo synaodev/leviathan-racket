@@ -34,16 +34,16 @@ public:
 public:
 	template<typename V>
 	inline void setup(primitive_t primitive, buffer_usage_t usage) {
-		static_assert(std::is_base_of<vtx_minor_t, V>::value);
+		static_assert(std::is_base_of<vertex_t, V>::value);
 		desc_vtx_t specify = desc_vtx_t::from(typeid(V));
 		this->setup(primitive, usage, specify);
 	}
 	void setup(primitive_t primitive, buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t vtx_count, arch_t idx_count);
 	void destroy();
-	bool update(const vtx_minor_t* vertices, arch_t count, arch_t offset);
-	bool update(const vtx_minor_t* vertices, arch_t count);
-	bool update(const vtx_minor_t* vertices);
+	bool update(const vertex_t* vertices, arch_t count, arch_t offset);
+	bool update(const vertex_t* vertices, arch_t count);
+	bool update(const vertex_t* vertices);
 	bool update(const uint16_t* indices, arch_t count, arch_t offset);
 	bool update(const uint16_t* indices, arch_t count);
 	bool update(const uint16_t* indices);

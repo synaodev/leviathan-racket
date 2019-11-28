@@ -31,9 +31,9 @@ rect_t collision::info_t::hitbox() const {
 	);
 }
 
-static bool is_slope_tall(const collision::info_t& info) {
+/*static bool is_slope_tall(const collision::info_t& info) {
 	return info.attribute & tile_flag_t::Tall;
-}
+}*/
 
 static bool is_slope_opposing_side(const collision::info_t& info, side_t side) {
 	if (info.attribute & tile_flag_t::Floor) {
@@ -103,14 +103,14 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 			case side_t::Right: {
 				if (!(info.attribute & tile_flag_t::FallThrough)) {
 					result.valid = true;
-					result.coordinate = hitbox.x;
+					result.coordinate = hitbox.right();
 				}
 				break;
 			}
 			case side_t::Left: {
 				if (!(info.attribute & tile_flag_t::FallThrough)) {
 					result.valid = true;
-					result.coordinate = hitbox.right();
+					result.coordinate = hitbox.x;
 				}
 				break;
 			}

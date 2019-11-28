@@ -20,6 +20,7 @@ public:
 public:
 	bool init(const setup_file_t& config);
 	bool load(const std::string& title);
+	bool load(const std::string& title, real_t start_point, real_t fade_length);
 	bool play(real_t start_point, real_t fade_length);
 	void pause();
 	bool resume(real_t fade_length);

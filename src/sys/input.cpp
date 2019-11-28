@@ -200,6 +200,14 @@ void input_t::poll(policy_t& policy) {
 	}
 }
 
+bool input_t::get_button_pressed(btn_t btn) const {
+	return pressed[btn];
+}
+
+bool input_t::get_button_held(btn_t btn) const {
+	return holding[btn];
+}
+
 void input_t::all_key_bindings(const setup_file_t& config) {
 	sint_t jump		= SDL_SCANCODE_Z;
 	sint_t hammer	= SDL_SCANCODE_X;

@@ -13,7 +13,7 @@ draw_item_view_t::draw_item_view_t() :
 void draw_item_view_t::init(const texture_t* texture, const animation_t* animation) {
 	rect.set_file(animation);
 	rect.set_state(5);
-	rect.set_position(280.0f, 2.0);
+	rect.set_position(280.0f, 2.0f);
 	scheme.set_file(animation);
 	scheme.set_state(7);
 	scheme.set_position(283.0f, 5.0f);
@@ -34,7 +34,7 @@ void draw_item_view_t::handle(const kernel_t& kernel) {
 			ammo.set_value(item_ptr->y);
 			ammo.set_visible(true);
 		} else {
-			ammo.set_visible(true);
+			ammo.set_visible(false);
 		}
 	} else {
 		scheme.set_direction(direction_t::Invalid);
@@ -42,7 +42,7 @@ void draw_item_view_t::handle(const kernel_t& kernel) {
 }
 
 void draw_item_view_t::render(renderer_t& renderer) const {
-	if (scheme.get_direction() >= direction_t::Invalid) {
+	if (scheme.get_direction() != direction_t::Invalid) {
 		rect.render(renderer);
 		scheme.render(renderer);
 		ammo.render(renderer);

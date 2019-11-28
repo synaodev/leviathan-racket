@@ -50,6 +50,18 @@ void ai::smoke::ctor(entt::entity s, kontext_t& ktx) {
 	ktx.assign_if<routine_t>(s, tick);
 }
 
+void ai::smoke::tick(entt::entity s, routine_tuple_t& rtp) {
+	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
+	auto& timer = rtp.ktx.get<actor_timer_t>(s);
+	if (timer[0]-- <= 0) {
+		rtp.ktx.dispose(s);
+	} else if (kinematics.hori_sides()) {
+		kinematics.decel_y(0.05f);
+	} else if (kinematics.vert_sides()) {
+		kinematics.decel_x(0.05f);
+	}
+}
+
 void ai::shrapnel::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.position += glm::vec2(
@@ -220,6 +232,21 @@ void ai::dash_flash::ctor(entt::entity s, kontext_t& ktx) {
 	timer[0] = 6;
 
 	ktx.assign_if<routine_t>(s, particles::tick);
+}
+
+void ai::barrier::ctor(entt::entity s, kontext_t& ktx) {
+	auto& location = ktx.get<location_t>(s);
+	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Barrier);
+
+	sprite.direction = location.direction;
+	sprite.layer = 0.6f;
+	sprite.scale = glm::vec2(2.0f);
+	sprite.position = location.position;
+
+	auto& timer = ktx.assign_if<actor_timer_t>(s);
+	timer[0] = 12;
+
+	ktx.assign_if<routine_t>(s, tick);
 }
 
 void ai::barrier::tick(entt::entity s, routine_tuple_t& rtp) {

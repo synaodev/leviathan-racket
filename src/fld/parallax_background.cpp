@@ -24,6 +24,31 @@ parallax_background_t::parallax_background_t() :
 	
 }
 
+parallax_background_t::parallax_background_t(parallax_background_t&& that) : parallax_background_t() {
+	if (this != &that) {
+		std::swap(indices, that.indices);
+		std::swap(position, that.position);
+		std::swap(scrolling, that.scrolling);
+		std::swap(offsets, that.offsets);
+		std::swap(speed, that.speed);
+		std::swap(dimensions, that.dimensions);
+		std::swap(bounding, that.bounding);
+	}
+}
+
+parallax_background_t& parallax_background_t::operator=(parallax_background_t&& that) {
+	if (this != &that) {
+		std::swap(indices, that.indices);
+		std::swap(position, that.position);
+		std::swap(scrolling, that.scrolling);
+		std::swap(offsets, that.offsets);
+		std::swap(speed, that.speed);
+		std::swap(dimensions, that.dimensions);
+		std::swap(bounding, that.bounding);
+	}
+	return *this;
+}
+
 void parallax_background_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 dimensions) {
 	if (dimensions.x == 0.0f or dimensions.y == 0.0f) {
 		dimensions = glm::one<glm::vec2>();

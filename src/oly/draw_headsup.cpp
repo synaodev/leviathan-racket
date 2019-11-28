@@ -108,7 +108,7 @@ void draw_headsup_t::set_parameters(headsup_params_t params) {
 	main_scheme.set_direction(params.main_direction);
 	leviathan_count.set_value(params.current_leviathan);
 	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
-	oxygen_count.set_visible(params.current_barrier != params.maximum_oxygen);
+	oxygen_count.set_visible(params.current_oxygen != params.maximum_oxygen);
 	oxygen_count.set_value(params.current_oxygen);
 }
 

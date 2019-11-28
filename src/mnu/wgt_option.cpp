@@ -23,7 +23,7 @@ wgt_option_t::wgt_option_t(arch_t flags) :
 
 }
 
-void wgt_option_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_option_t::init(video_t&, audio_t& audio, music_t&, kernel_t& kernel) {
 	ready = true;
 	audio.play(res::sfx::Inven);
 	kernel.freeze();
@@ -39,7 +39,7 @@ void wgt_option_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t
 	);
 }
 
-void wgt_option_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
 	bool reboot = false;
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {

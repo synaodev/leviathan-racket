@@ -3,6 +3,7 @@
 #include "../gfx/texture.hpp"
 #include "../sys/renderer.hpp"
 
+static constexpr sint_t kFirst = -4735916;
 static constexpr sint_t kRadix = 10;
 static constexpr sint_t kMinus = 10;
 static constexpr sint_t kPoint = 12;
@@ -14,7 +15,7 @@ draw_count_t::draw_count_t() :
 	visible(false),
 	position(0.0f),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f),
-	value(0),
+	value(kFirst),
 	minimum_zeroes(0),
 	texture(nullptr),
 	quads()

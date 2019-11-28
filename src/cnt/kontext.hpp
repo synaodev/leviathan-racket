@@ -10,6 +10,7 @@
 
 #include "./common.hpp"
 #include "./routine.hpp"
+#include "./sprite.hpp"
 
 #include "../utl/rect.hpp"
 
@@ -22,8 +23,6 @@ struct receiver_t;
 struct camera_t;
 struct naomi_state_t;
 struct tilemap_t;
-
-struct sprite_t;
 
 struct kontext_t : public not_copyable_t, public not_moveable_t {
 public:
@@ -80,7 +79,8 @@ public:
 	template<typename Component, typename Compare, typename... Args>
 	void sort(Compare compare, Args&& ...args);
 private:
-	bool_t panic_draw, liquid_flag;
+	mutable bool_t panic_draw;
+	bool_t liquid_flag;
 	entt::registry registry;
 	std::vector<actor_spawn_t> spawn_commands;
 	std::unordered_map<arch_t, routine_ctor_fn> ctor_table;
@@ -94,7 +94,7 @@ inline void kontext_t::run(const actor_trigger_t& trigger) const {
 
 template<typename... Args>
 inline bool kontext_t::spawn(arch_t type, Args&& ...args) {
-	spawns.emplace_back(type, std::forward<Args>(args)...);
+	spawn_commands.emplace_back(type, std::forward<Args>(args)...);
 	return true;
 }
 

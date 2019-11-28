@@ -1,5 +1,6 @@
 .vs/
 .vscode/
+AS_DEBUG/
 build/
 out/
 data/save/file_0/cpntflag.bin

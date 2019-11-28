@@ -21,7 +21,7 @@ wgt_video_t::wgt_video_t(arch_t flags) :
 
 }
 
-void wgt_video_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_video_t::init(video_t& video, audio_t&, music_t&, kernel_t&) {
 	ready = true;
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);
@@ -35,7 +35,7 @@ void wgt_video_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t&
 	);
 }
 
-void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, draw_headsup_t&) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;

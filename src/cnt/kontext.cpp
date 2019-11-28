@@ -34,13 +34,13 @@ kontext_t::kontext_t() :
 bool kontext_t::init(receiver_t& receiver) {
 	run_event.connect<&receiver_t::run_event>(&receiver);
 	push_event.connect<&receiver_t::push_from_function>(&receiver);
-	return true;
+	return routine_generator_t::init(ctor_table);
 }
 
 void kontext_t::reset() {
-	panic_draw = false;
+	panic_draw = true;
 	liquid_flag = false;
-	auto view = registry.view<actor_header_t>();
+	entt::view<actor_header_t> view = registry.view<actor_header_t>();
 	for (auto&& actor : view) {
 		registry.destroy(actor);
 	}
@@ -63,7 +63,6 @@ void kontext_t::handle(audio_t& audio, receiver_t& receiver, camera_t& camera, n
 }
 
 void kontext_t::update(real64_t delta) {
-	panic_draw = false;
 	sprite_t::update(*this, delta);
 	blinker_t::update(*this, delta);
 }
@@ -76,10 +75,11 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 	if constexpr (misc::kHitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
+	panic_draw = false;
 }
 
 entt::entity kontext_t::search_type(arch_t type) const {
-	entt::view<actor_header_t> view = registry.view<actor_header_t>();
+	const entt::view<actor_header_t> view = const_cast<entt::registry&>(registry).view<actor_header_t>();
 	for (auto&& actor : view) {
 		auto& header = registry.get<actor_header_t>(actor);
 		if (header.type == type) {
@@ -91,7 +91,7 @@ entt::entity kontext_t::search_type(arch_t type) const {
 
 entt::entity kontext_t::search_id(sint_t identity) const {
 	if (identity > 0) {
-		entt::view<actor_trigger_t> view = registry.view<actor_trigger_t>();
+		const entt::view<actor_trigger_t> view = const_cast<entt::registry&>(registry).view<actor_trigger_t>();
 		for (auto&& actor : view) {
 			auto& trigger = registry.get<actor_trigger_t>(actor);
 			if (trigger.identity == identity) {
@@ -145,9 +145,11 @@ bool kontext_t::create(const std::string& name, real_t x, real_t y, direction_t 
 	if (iter != ctor_table.end()) {
 		spawn_commands.emplace_back(type, glm::vec2(x, y), direction, identity, flags);
 		std::invoke(push_event, identity, function);
+		return true;
 	} else if (function != nullptr) {
 		function->Release();
 	}
+	return false;
 }
 
 bool kontext_t::create(const actor_spawn_t& spawn) {
@@ -165,14 +167,17 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		iter->second(actor, *this);
 		return true;
 	}
-	SYNAO_LOG(
 #ifdef SYNAO_MACHINE_x64
-	"Couldn't spawn actor %" PRIu64 "!\n",
-#else // SYNAO_MACHINE_x64
-	"Couldn't spawn actor %u!\n",
-#endif // SYNAO_MACHINE_x64
+	SYNAO_LOG(
+		"Couldn't spawn actor %" PRIu64 "!\n",
 		spawn.type
 	);
+#else // SYNAO_MACHINE_x64
+	SYNAO_LOG(
+		"Couldn't spawn actor %d!\n",
+		spawn.type
+	);
+#endif // SYNAO_MACHINE_x64
 	return false;
 }
 

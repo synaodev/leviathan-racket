@@ -25,7 +25,7 @@ void health_t::attack(health_t& victim) const {
 
 void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi_state, kontext_t& kontext) {
 	const auto& naomi_location = kontext.get<location_t>(naomi_state.actor);
-	kontext.slice<actor_header_t>().each([&audio, &receiver, &naomi_state, &kontext, &naomi_location](entt::entity actor, const actor_header_t&, health_t& health, const location_t& location) {
+	kontext.slice<actor_header_t, health_t, location_t>().each([&audio, &receiver, &naomi_state, &kontext, &naomi_location](entt::entity actor, const actor_header_t&, health_t& health, const location_t& location) {
 		if (health.flags[health_flags_t::Attack] and health.damage > 0) {
 			if (location.overlap(naomi_location)) {
 				naomi_state.damage(actor, audio, kontext);

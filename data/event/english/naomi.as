@@ -9,8 +9,8 @@ void main()
 
 void door_to_hallway()
 {
-	const sint32 kThisDoorID = 100;
-	const sint32 kThatDoorID = 100;
+	const sint32_t kThisDoorID = 100;
+	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
 	ctx::animate(kThisDoorID, 0, Dir::Left);
@@ -22,7 +22,7 @@ void door_to_hallway()
 void use_cmptr()
 {
 	const arch_t kFileGUI = 1;
-	const sint32 kCmptrID = 200;
+	const sint32_t kCmptrID = 200;
 
 	sys::freeze();
 	ctx::animate(kCmptrID, 1, Dir::Right);

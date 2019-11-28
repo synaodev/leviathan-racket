@@ -216,8 +216,10 @@ void runtime_t::setup_load() {
 		naomi_state.reset(
 			kontext, position * 16.0f,
 			static_cast<direction_t>(direction),
-			current, maximum,
-			leviathan, std::stoi(equips, nullptr, 0)
+			static_cast<sint_t>(current),
+			static_cast<sint_t>(maximum),
+			static_cast<sint_t>(leviathan), 
+			static_cast<arch_t>(std::stoi(equips, nullptr, 0))
 		);
 		kernel.read_data(file);
 		kernel.read_stream(kSavesPath);
@@ -237,7 +239,7 @@ void runtime_t::setup_save() {
 	file.set("Status", "CurAp", health.leviathan);
 	file.set("Status", "Field", kernel.get_field());
 	file.set("Status", "Position", location.position / 16.0f);
-	file.set("Status", "Direction", location.direction);
+	file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
 	file.set("Status", "Equips", naomi_state.hexadecimal_equips());
 	kernel.write_data(file);
 	kernel.write_stream(kSavesPath);

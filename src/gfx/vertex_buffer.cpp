@@ -108,7 +108,7 @@ void vertex_buffer_t::destroy() {
 	idx_count = 0;
 }
 
-bool vertex_buffer_t::update(const vtx_minor_t* vertices, arch_t count, arch_t offset) {
+bool vertex_buffer_t::update(const vertex_t* vertices, arch_t count, arch_t offset) {
 	if (!arrays) {
 		return false;
 	} else if (!vertices) {
@@ -124,11 +124,11 @@ bool vertex_buffer_t::update(const vtx_minor_t* vertices, arch_t count, arch_t o
 	return true;
 }
 
-bool vertex_buffer_t::update(const vtx_minor_t* vertices, arch_t count) {
+bool vertex_buffer_t::update(const vertex_t* vertices, arch_t count) {
 	return this->update(vertices, count, 0);
 }
 
-bool vertex_buffer_t::update(const vtx_minor_t* vertices) {
+bool vertex_buffer_t::update(const vertex_t* vertices) {
 	return this->update(vertices, vtx_count, 0);
 }
 

@@ -16,10 +16,10 @@ file(GLOB OVERLAY_SOURCES		"./oly/[a-zA-Z]*.cpp")
 file(GLOB OVERLAY_HEADERS		"./oly/[a-zA-Z]*.hpp")
 file(GLOB PXTONE_SOURCES		"./pxt/[a-zA-Z]*.cpp")
 file(GLOB PXTONE_HEADERS		"./pxt/[a-zA-Z]*.h")
-file(GLOB SYSTEM_SOURCES 		"./sys/[a-zA-Z]*.cpp")
-file(GLOB SYSTEM_HEADERS 		"./sys/[a-zA-Z]*.hpp")
 file(GLOB SOUND_SOURCES 		"./sfx/[a-zA-Z]*.cpp")
 file(GLOB SOUND_HEADERS 		"./sfx/[a-zA-Z]*.hpp")
+file(GLOB SYSTEM_SOURCES 		"./sys/[a-zA-Z]*.cpp")
+file(GLOB SYSTEM_HEADERS 		"./sys/[a-zA-Z]*.hpp")
 file(GLOB UTILITY_SOURCES 		"./utl/[a-zA-Z]*.cpp")
 file(GLOB UTILITY_HEADERS 		"./utl/[a-zA-Z]*.hpp")
 file(GLOB BASIC_SOURCES			"./[a-zA-Z]*.cpp")
@@ -42,10 +42,10 @@ add_executable(leviathan
 	"${OVERLAY_HEADERS}"
 	"${PXTONE_SOURCES}"
 	"${PXTONE_HEADERS}"
-	"${SYSTEM_SOURCES}"
-	"${SYSTEM_HEADERS}"
 	"${SOUND_SOURCES}"
 	"${SOUND_HEADERS}"
+	"${SYSTEM_SOURCES}"
+	"${SYSTEM_HEADERS}"
 	"${UTILITY_SOURCES}"
 	"${UTILITY_HEADERS}"
 	"${BASIC_SOURCES}"

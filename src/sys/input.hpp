@@ -39,6 +39,8 @@ public:
 public:
 	bool init(const setup_file_t& config);
 	void poll(policy_t& policy);
+	bool get_button_pressed(btn_t btn) const;
+	bool get_button_held(btn_t btn) const;
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 private:

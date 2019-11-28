@@ -4,7 +4,7 @@
 #include "../sys/renderer.hpp"
 
 draw_scheme_t::draw_scheme_t() :
-	write(false),
+	write(true),
 	file(nullptr),
 	visible(true),
 	timer(0.0),
@@ -107,6 +107,7 @@ bool draw_scheme_t::is_finished() const {
 	if (file != nullptr) {
 		return file->is_finished(state, frame, timer);
 	}
+	return true;
 }
 
 real64_t draw_scheme_t::get_timer() const {

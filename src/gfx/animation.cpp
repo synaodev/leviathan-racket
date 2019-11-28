@@ -151,7 +151,7 @@ bool animation_t::load(const std::string& full_path) {
 		for (arch_t chunk = 1; chunk < setup.size(); ++chunk) {
 			glm::vec2 starts = glm::zero<glm::vec2>();
 			glm::vec2 vksize = glm::zero<glm::vec2>();
-			real64_t tdelay  = 0.0f;
+			real64_t tdelay  = 0.0;
 			arch_t hvtype 	 = 0;
 			arch_t frames 	 = 0;
 			bool_t repeat 	 = true;

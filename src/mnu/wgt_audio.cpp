@@ -21,7 +21,7 @@ wgt_audio_t::wgt_audio_t(arch_t flags) :
 
 }
 
-void wgt_audio_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) {
+void wgt_audio_t::init(video_t&, audio_t& audio, music_t& music, kernel_t&) {
 	ready = true;
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);
@@ -35,7 +35,7 @@ void wgt_audio_t::init(video_t& video, audio_t& audio, music_t& music, kernel_t&
 	);
 }
 
-void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t& music, kernel_t&, stack_gui_t&, draw_headsup_t&) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
@@ -58,7 +58,7 @@ void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 					volume = glm::clamp(volume - 0.01f, 0.0f, 1.0f);
 				}
 				audio.set_volume(volume);
-				config.set("Audio", "SfxVolume", volume);
+				config.set("Audio", "Volume", volume);
 				this->setup_text(audio, music);
 				break;
 			}
@@ -70,7 +70,7 @@ void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 					volume = glm::clamp(volume - 0.01f, 0.0f, 1.0f);
 				}
 				music.set_volume(volume);
-				config.set("Audio", "PxtVolume", volume);
+				config.set("Music", "Volume", volume);
 				this->setup_text(audio, music);
 				break;
 			}

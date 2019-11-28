@@ -326,7 +326,7 @@ inline std::string setup_file_t::convert_to<std::string>(const std::string& inpu
 // BASIC STRING CONVERSIONS
 
 template<typename T> 
-inline std::string setup_file_t::make_string(T value) const {	
+inline std::string setup_file_t::make_string(T) const {	
 	return "[[PARSING-ERROR]]";
 }
 

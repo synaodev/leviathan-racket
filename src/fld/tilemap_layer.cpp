@@ -12,10 +12,9 @@ static constexpr sint_t kInvalidTiles = -1;
 static const byte_t kCollideLayer[] = "collide";
 static const byte_t kPriorityType[] = "priority";
 
-tilemap_layer_t::tilemap_layer_t(glm::ivec2 map_size) : tilemap_layer_t()
-{
+tilemap_layer_t::tilemap_layer_t(glm::ivec2 map_size) : tilemap_layer_t() {
 	tiles.resize(
-		static_cast<arch_t>(map_size.x) + 
+		static_cast<arch_t>(map_size.x) * 
 		static_cast<arch_t>(map_size.y)
 	);
 	quads.setup<vtx_major_t>();
@@ -29,7 +28,28 @@ tilemap_layer_t::tilemap_layer_t() :
 	tiles(),
 	quads()
 {
+	quads.setup<vtx_major_t>();
+}
 
+tilemap_layer_t::tilemap_layer_t(tilemap_layer_t&& that) : tilemap_layer_t() {
+	if (this != &that) {
+		std::swap(priority, that.priority);
+		std::swap(indices, that.indices);
+		std::swap(inverse_dimensions, that.inverse_dimensions);
+		std::swap(tiles, that.tiles);
+		std::swap(quads, that.quads);
+	}
+}
+
+tilemap_layer_t& tilemap_layer_t::operator=(tilemap_layer_t&& that) {
+	if (this != &that) {
+		std::swap(priority, that.priority);
+		std::swap(indices, that.indices);
+		std::swap(inverse_dimensions, that.inverse_dimensions);
+		std::swap(tiles, that.tiles);
+		std::swap(quads, that.quads);
+	}
+	return *this;
 }
 
 void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<sint_t>& attributes, const std::vector<sint_t>& attribute_key) {
@@ -53,18 +73,10 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 	for (arch_t it = 0; it < array.size(); ++it) {
 		sint_t type = static_cast<sint_t>(array[it].ID) - 1;
 		tiles[it] = type >= 0 ? 
-			glm::ivec2(type % kSintTileSize, type % kSintTileSize) : 
+			glm::ivec2(type % kSintTileSize, type / kSintTileSize) : 
 			glm::ivec2(kInvalidTiles);
-		if (type >= 0) {
-			tiles[it] = glm::ivec2(
-				type % kSintTileSize, 
-				type % kSintTileSize
-			);
-			if (colliding) {
-				attributes[it] = attribute_key[type];
-			}
-		} else {
-			tiles[it] = glm::ivec2(kInvalidTiles);
+		if (colliding and type >= 0) {
+			attributes[it] = attribute_key[type];
 		}
 	}
 }
@@ -80,7 +92,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 		for (sint_t x = first.x; x < last.x; ++x) {
 			arch_t index = static_cast<arch_t>(x) + static_cast<arch_t>(y) * static_cast<arch_t>(map_size.x);
 			glm::ivec2 tile = tiles[index];
-			if (tile.x != kInvalidTiles and tile.y != kInvalidTiles) {
+			if (tile.x >= 0 and tile.y >= 0) {
 				uvs = glm::vec2(tile * kSintTileSize);
 				vtx_major_t* quad = quads.at<vtx_major_t>(indices * quad_batch_t::SingleQuad);
 				quad[0].position = pos;

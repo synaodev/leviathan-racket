@@ -87,7 +87,7 @@ void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
 static const byte_t kPaletteProperty[] = "indexed";
 
 void tilemap_t::push_properties(const tmx::Map& tmxmap) {
-	auto& bounds = tmxmap.getBounds();
+	const tmx::FloatRect bounds = tmxmap.getBounds();
 	dimensions = glm::ivec2(
 		glm::max(static_cast<sint_t>(bounds.width) / kSintTileSize, kScreenWidth),
 		glm::max(static_cast<sint_t>(bounds.height) / kSintTileSize, kScreenHeight)

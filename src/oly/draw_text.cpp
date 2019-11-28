@@ -19,6 +19,33 @@ draw_text_t::draw_text_t() :
 	quads.setup<vtx_major_t>();
 }
 
+draw_text_t::draw_text_t(draw_text_t&& that) : draw_text_t() {
+	if (this != &that) {
+		std::swap(write, that.write);
+		std::swap(font, that.font);
+		std::swap(position, that.position);
+		std::swap(origin, that.origin);
+		std::swap(params, that.params);
+		std::swap(current, that.current);
+		std::swap(buffer, that.buffer);
+		std::swap(quads, that.quads);
+	}
+}
+
+draw_text_t& draw_text_t::operator=(draw_text_t&& that) {
+	if (this != &that) {
+		std::swap(write, that.write);
+		std::swap(font, that.font);
+		std::swap(position, that.position);
+		std::swap(origin, that.origin);
+		std::swap(params, that.params);
+		std::swap(current, that.current);
+		std::swap(buffer, that.buffer);
+		std::swap(quads, that.quads);
+	}
+	return *this;
+}
+
 void draw_text_t::force() const {
 	write = true;
 }
@@ -30,7 +57,7 @@ void draw_text_t::clear() {
 	quads.clear();
 }
 
-void draw_text_t::update() {
+void draw_text_t::increment() {
 	++current;
 	this->generate();
 }
@@ -63,8 +90,8 @@ void draw_text_t::set_font(const font_t* font) {
 void draw_text_t::set_string(std::string words, bool immediate) {
 	buffer.clear();
 	vfs::to_utf32(
-		begin(words),
-		end(words),
+		words.begin(),
+		words.end(),
 		std::back_inserter(buffer)
 	);
 	if (immediate or current > buffer.size()) {
@@ -75,8 +102,8 @@ void draw_text_t::set_string(std::string words, bool immediate) {
 
 void draw_text_t::append_string(std::string words, bool immediate) {
 	vfs::to_utf32(
-		begin(words),
-		end(words),
+		words.begin(),
+		words.end(),
 		std::back_inserter(buffer)
 	);
 	if (immediate or current > buffer.size()) {
@@ -179,11 +206,10 @@ void draw_text_t::generate() {
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
-			char32_t c = buffer[it];
-			switch (c)
-			{
+			char32_t& c = buffer[it];
+			switch (c) {
 			case U'\t': {
-				const auto& glyph = font->glyph(U' ');
+				const font_glyph_t& glyph = font->glyph(U' ');
 				start_pos.x += glyph.w * 4.0f;
 				--qindex;
 				break;

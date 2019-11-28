@@ -177,7 +177,7 @@ public:
 	glm::vec2 camera_placement() const;
 	std::string hexadecimal_equips() const;
 	naomi_death_t get_death_type(const kinematics_t& kinematics, const health_t& health) const;
-	static sint_t get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params);
+	static arch_t get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params);
 private:
 	void do_begin(audio_t& audio, kinematics_t& kinematics);
 	void do_killed(location_t& location, kinematics_t& kinematics);

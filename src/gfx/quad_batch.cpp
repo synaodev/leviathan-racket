@@ -124,12 +124,12 @@ quad_batch_t& quad_batch_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_co
 }
 
 quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale, glm::vec2 axis, real_t rotation) {
-	auto vtx = quad_pool.at(current);
+	auto vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current]);
 	glm::vec2 left_top = position + (scale * vtx->position);
 	real_t cos = rotation != 0.0f ? glm::cos(rotation) : 1.0f;
 	real_t sin = rotation != 0.0f ? glm::sin(rotation) : 0.0f;
 	for (arch_t it = 0; it < account; ++it) {
-		vtx = quad_pool.at(current + it);
+		vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current + it]);
 		glm::vec2 beg_pos = (position + (scale * vtx->position)) - left_top - axis;
 		glm::vec2 end_pos  = glm::vec2(
 			beg_pos.x * cos - beg_pos.y * sin,
@@ -146,9 +146,9 @@ quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 ax
 }
 
 quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale) {
-	vtx_minor_t* vtx = nullptr;
+	vtx_minor_t* vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current]);
 	for (arch_t it = 0; it < account; ++it) {
-		vtx = quad_pool.at(current + it);
+		vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current + it]);
 		vtx->position *= scale;
 		vtx->position += position;
 	}
@@ -177,7 +177,8 @@ void quad_batch_t::skip(arch_t count) {
 }
 
 void quad_batch_t::skip() {
-	this->skip(account);
+	current += account;
+	account = 0;
 }
 
 void quad_batch_t::flush(gfx_t* gfx) {
@@ -191,7 +192,7 @@ void quad_batch_t::flush(gfx_t* gfx) {
 			if (current > quad_list.get_length()) {
 				quad_list.create(current);
 			}
-			quad_list.update(quad_pool.at(0), current);
+			quad_list.update(quad_pool[0], current);
 		}
 		gfx->set_blend_mode(blend_mode);
 		gfx->set_program(program);

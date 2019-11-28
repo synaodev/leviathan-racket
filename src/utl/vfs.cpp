@@ -1,6 +1,7 @@
 #include "./vfs.hpp"
 #include "./logger.hpp"
 #include "./setup_file.hpp"
+#include "./thread_pool.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -42,6 +43,11 @@ std::unique_ptr<vfs::__vfs_t> vfs::mount(const setup_file_t& config) {
 			result->language.c_str()
 		);
 		result.reset();
+		return nullptr;
+	}
+	result->thread_pool = std::make_unique<thread_pool_t>(__vfs_t::kTotalThreads);
+	if (!result->thread_pool) {
+		SYNAO_LOG("Error! Couldn't create thread pool!\n");
 		return nullptr;
 	}
 	return result;
@@ -209,10 +215,10 @@ std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last
 		return std::string();
 	}
 	std::string result;
-	if (first < it->second.size() and last <= first) {
+	if (first < it->second.size() and last < it->second.size()) {
 		for (arch_t index = first; index <= last; ++index) {
 			result += it->second[index];
-		}	
+		}
 	}
 	return result;
 }
@@ -234,7 +240,7 @@ bool vfs::try_language(const std::string& language) {
 	}
 	const std::string full_path = kLangsPaths + language + ".json";
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
-	std::ifstream ifs(full_path);
+	std::ifstream ifs(full_path, std::ios::binary);
 	if (ifs.is_open()) {
 		nlohmann::json file = nlohmann::json::parse(ifs);
 		for (auto it = file.begin(); it != file.end(); ++it) {
@@ -277,7 +283,7 @@ const noise_t* vfs::noise(const std::string& name) {
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->allocate_safely(name, vfs::device->noises);
 		const std::string full_path = kNoisePath + name + ".wav";
-		if (!ref.load(full_path, vfs::device->thread_pool)) {
+		if (!ref.load(full_path, *vfs::device->thread_pool)) {
 			SYNAO_LOG("Failed to load noise from %s!\n", full_path.c_str());
 		}
 		return &ref;
@@ -302,7 +308,7 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 			return names;
 		};
 		std::vector<std::string> full_paths = generate_full_paths(names);
-		if (!ref.load(full_paths, pixel_format_t::R8G8B8A8, vfs::device->thread_pool)) {
+		if (!ref.load(full_paths, pixel_format_t::R8G8B8A8, *vfs::device->thread_pool)) {
 #ifdef SYNAO_DEBUG_BUILD
 			std::for_each(full_paths.begin(), full_paths.end(), [](const std::string& full_path) {
 				SYNAO_LOG("Failed to load texture from %s!\n", full_path.c_str());
@@ -331,7 +337,7 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->allocate_safely(name, vfs::device->palettes);
 		const std::string full_path = directory + name + ".png";
-		if (!ref.load(full_path, pixel_format_t::R2G2B2A2, vfs::device->thread_pool)) {
+		if (!ref.load(full_path, pixel_format_t::R2G2B2A2, *vfs::device->thread_pool)) {
 			SYNAO_LOG(
 				"Failed to load palette from %s!\n", 
 				full_path.c_str()
@@ -409,7 +415,7 @@ const animation_t* vfs::animation(const std::string& name) {
 	if (it == vfs::device->animations.end()) {
 		const std::string full_path = kSpritePath + name + ".cfg";
 		animation_t& ref = vfs::device->allocate_safely(name, vfs::device->animations);
-		if (!ref.load(full_path, vfs::device->thread_pool)) {
+		if (!ref.load(full_path, *vfs::device->thread_pool)) {
 			SYNAO_LOG(
 				"Failed to load animation from %s!\n", 
 				full_path.c_str()

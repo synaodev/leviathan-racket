@@ -1,5 +1,27 @@
 #include "./vertex_pool.hpp"
 
+vertex_pool_t::vertex_pool_t() :
+	specify(),
+	memory()
+{
+
+}
+
+vertex_pool_t::vertex_pool_t(vertex_pool_t&& that) noexcept : vertex_pool_t() {
+	if (this != &that) {
+		std::swap(specify, that.specify);
+		std::swap(memory, that.memory);
+	}
+}
+
+vertex_pool_t& vertex_pool_t::operator=(vertex_pool_t&& that) noexcept {
+	if (this != &that) {
+		std::swap(specify, that.specify);
+		std::swap(memory, that.memory);
+	}
+	return *this;
+}
+
 void vertex_pool_t::setup(vertex_spec_t specify) {
 	this->specify = specify;
 	this->clear();
@@ -34,6 +56,14 @@ void vertex_pool_t::copy(arch_t from, arch_t count, const vertex_pool_t* that) {
 	}
 }
 
-vertex_spec_t vertex_pool_t::get_specify() const {
+vertex_t* vertex_pool_t::operator[](size_t index) {
+	return reinterpret_cast<vertex_t*>(&memory[index * specify.length]);
+}
+
+const vertex_t* vertex_pool_t::operator[](size_t index) const {
+	return reinterpret_cast<const vertex_t*>(&memory[index * specify.length]);
+}
+
+const vertex_spec_t& vertex_pool_t::get_specify() const {
 	return specify;
 }

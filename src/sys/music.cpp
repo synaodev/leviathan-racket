@@ -111,6 +111,13 @@ bool music_t::load(const std::string& title) {
 	return true;
 }
 
+bool music_t::load(const std::string& title, real_t start_point, real_t fade_length) {
+	if (this->load(title)) {
+		return this->play(start_point, fade_length);
+	}
+	return false;
+}
+
 bool music_t::play(real_t start_point, real_t fade_length) {
 	if (service == nullptr) {
 		return false;

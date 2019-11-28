@@ -118,27 +118,16 @@ rect_t camera_t::get_viewport() const {
 
 arch_t camera_t::get_tile_range(glm::ivec2 first, glm::ivec2 last) const {
 	glm::ivec2 result = last - first;
-	return static_cast<arch_t>(result.x) + static_cast<arch_t>(result.y) * quad_batch_t::SingleQuad;
+	return static_cast<arch_t>(result.x) * static_cast<arch_t>(result.y) * quad_batch_t::SingleQuad;
 }
 
 glm::mat4 camera_t::get_matrix() const {
-	glm::mat4 matrix = glm::scale(
-		glm::mat4(1.0f), 
-		glm::vec3(
-			2.0f / dimensions.x, 
-			2.0f / -dimensions.y, 0.0f
-		)
-	);
-	if (view_angle != 0.0f) {
-		matrix = glm::rotate(
-			matrix, 
-			view_angle, 
-			glm::vec3(0.0f, 0.0f, 1.0f)
-		);
-	}
 	glm::vec2 result = glm::round(position + offsets);
-	return glm::translate(
-		matrix,
-		-glm::vec3(result, 0.0f)
-	);
+	glm::mat4 matrix = glm::mat4(1.0f);
+	matrix = glm::scale(matrix, glm::vec3(2.0f / dimensions.x, 2.0f / -dimensions.y, 0.0f));
+	if (view_angle != 0.0f) {
+		matrix = glm::rotate(matrix, view_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+	}
+	matrix = glm::translate(matrix, -glm::vec3(result, 0.0f));
+	return matrix;
 }

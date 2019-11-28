@@ -47,7 +47,7 @@ public:
 	bool create(const shader_t* vert, const shader_t* frag);
 	void destroy();
 	// void set_buffer(const const_buffer_t* buffer, arch_t index);
-	vertex_spec_t get_specify() const;
+	const vertex_spec_t& get_specify() const;
 	static bool is_version_420();
 private:
 	friend struct gfx_t;

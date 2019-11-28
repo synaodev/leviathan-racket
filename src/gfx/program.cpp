@@ -230,7 +230,7 @@ void program_t::destroy() {
 	}
 }
 
-vertex_spec_t program_t::get_specify() const {
+const vertex_spec_t& program_t::get_specify() const {
 	return specify;
 }
 
