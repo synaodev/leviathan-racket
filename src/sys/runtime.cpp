@@ -2,17 +2,15 @@
 
 #include <tmxlite/Map.hpp>
 
+#include "../cnt/location.hpp"
+#include "../cnt/health.hpp"
+#include "../sys/input.hpp"
+#include "../sys/audio.hpp"
+#include "../sys/renderer.hpp"
 #include "../utl/misc.hpp"
 #include "../utl/logger.hpp"
 #include "../utl/tmx_convert.hpp"
 #include "../utl/setup_file.hpp"
-
-#include "../cnt/location.hpp"
-#include "../cnt/health.hpp"
-
-#include "../sys/input.hpp"
-#include "../sys/audio.hpp"
-#include "../sys/renderer.hpp"
 
 static const byte_t kFieldPath[] 	= "data/field/";
 static const byte_t kSavesPath[] 	= "data/save/file_";

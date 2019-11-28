@@ -23,8 +23,11 @@ public:
 	void accel_angle(real_t angle, real_t speed);
 	void accel_x(real_t speed, real_t limit);
 	void accel_y(real_t speed, real_t limit);
-	void decel_x(real_t speed, real_t limit);
-	void decel_y(real_t speed, real_t limit);
+	void decel_x(real_t speed);
+	void decel_y(real_t speed);
+	bool hori_sides() const;
+	bool vert_sides() const;
+	bool any_side() const;
 public:
 	static void handle(kontext_t& kontext, const tilemap_t& tilemap);
 	static void handle(location_t& location, kinematics_t& kinematics, const tilemap_t& tilemap, glm::vec2 inertia);

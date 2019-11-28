@@ -1,14 +1,13 @@
 #include "./shoshi.hpp"
 #include "./particles.hpp"
 #include "./naomi.hpp"
-#include "./kontext.hpp"
-#include "./liquid.hpp"
 
+#include "../cnt/kontext.hpp"
 #include "../cnt/location.hpp"
 #include "../cnt/kinematics.hpp"
 #include "../cnt/sprite.hpp"
 #include "../cnt/blinker.hpp"
-
+#include "../cnt/liquid.hpp"
 #include "../sys/audio.hpp"
 
 #include "../res_id.hpp"

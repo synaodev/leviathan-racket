@@ -51,16 +51,28 @@ void kinematics_t::accel_y(real_t amount, real_t limit) {
 		glm::max(velocity.y + amount, -limit);
 }
 
-void kinematics_t::decel_x(real_t amount, real_t limit) {
+void kinematics_t::decel_x(real_t amount) {
 	velocity.x = velocity.x > 0.0f ? 
 		glm::max(0.0f, velocity.x - amount) :
 		glm::min(0.0f, velocity.x + amount);
 }
 
-void kinematics_t::decel_y(real_t amount, real_t limit) {
+void kinematics_t::decel_y(real_t amount) {
 	velocity.y = velocity.y > 0.0f ? 
 		glm::max(0.0f, velocity.y - amount) :
 		glm::min(0.0f, velocity.y + amount);
+}
+
+bool kinematics_t::hori_sides() const {
+	return flags[phy_t::Right] or flags[phy_t::Left];
+}
+
+bool kinematics_t::vert_sides() const {
+	return flags[phy_t::Top] or flags[phy_t::Bottom];
+}
+
+bool kinematics_t::any_side() const {
+	return this->hori_sides() or this->vert_sides();
 }
 
 void kinematics_t::handle(kontext_t& kontext, const tilemap_t& tilemap) {

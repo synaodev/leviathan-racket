@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_WEAPON_HPP
-#define SYNAO_ACTOR_WEAPON_HPP
+#ifndef SYNAO_ACTOR_WEAPONS_HPP
+#define SYNAO_ACTOR_WEAPONS_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -9,7 +9,7 @@ struct routine_tuple_t;
 struct kontext_t;
 
 namespace ai {
-	namespace weapon {
+	namespace weapons {
 		entt::entity find_closest(entt::entity s, kontext_t& ktx);
 		entt::entity find_hooked(entt::entity s, kontext_t& ktx);
 		bool damage_check(entt::entity s, kontext_t& ktx);
@@ -68,4 +68,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_WEAPON_HPP
+#endif // SYNAO_ACTOR_WEAPONS_HPP

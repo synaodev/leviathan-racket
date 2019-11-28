@@ -11,6 +11,7 @@
 #include <angelscript.h>
 #include <tmxlite/ObjectGroup.hpp>
 
+#include "../act/particles.hpp"
 #include "../sys/kernel.hpp"
 #include "../eve/receiver.hpp"
 #include "../utl/misc.hpp"
@@ -212,7 +213,7 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 
 void kontext_t::smoke(glm::vec2 position, arch_t count) {
 	while (count > 0) {
-		// this->spawn(ai::smoke::type, position);
+		this->spawn(ai::smoke::type, position);
 		--count;
 	}
 }
@@ -223,7 +224,7 @@ void kontext_t::smoke(real_t x, real_t y, arch_t count) {
 
 void kontext_t::shrapnel(glm::vec2 position, arch_t count) {
 	while (count > 0) {
-		// this->spawn(ai::shrapnel::type, position);
+		this->spawn(ai::shrapnel::type, position);
 		--count;
 	}
 }

@@ -173,15 +173,16 @@ public:
 	void boost_maximum_barrer(sint_t amount);
 	void mut_leviathan_power(sint_t amount);
 	bool interacting() const;
+	glm::vec2 get_reticule() const;
 	glm::vec2 camera_placement() const;
 	std::string hexadecimal_equips() const;
-	naomi_death_t get_death_type(kinematics_t& kinematics, const health_t& health) const;
+	naomi_death_t get_death_type(const kinematics_t& kinematics, const health_t& health) const;
 	static sint_t get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params);
 private:
 	void do_begin(audio_t& audio, kinematics_t& kinematics);
 	void do_killed(location_t& location, kinematics_t& kinematics);
 	void do_recovery(kinematics_t& kinematics);
-	void do_leviathan(health_t& health);
+	void do_meter_leviathan(health_t& health);
 	void do_invincible(sprite_t& sprite);
 	void do_barrier(kontext_t& kontext, const location_t& location, health_t& health);
 	void do_strafe(const input_t& input, audio_t& audio);
@@ -207,7 +208,7 @@ private:
 	std::bitset<naomi_flags_t::Total> flags;
 	std::bitset<naomi_equips_t::Total> equips;
 	std::vector<sint64_t> chroniker;
-	glm::vec2 riding, viewpoint, reticule;
+	glm::vec2 riding, view_point, reticule;
 	entt::registry* backend;
 	real_t max_hspeed, max_hsling, max_vspeed;
 	real_t move_accel, move_decel;
