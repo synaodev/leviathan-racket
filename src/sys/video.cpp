@@ -107,11 +107,6 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	if (SDL_GL_SetSwapInterval(params.vsync ? 1 : 0) < 0) {
-		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
-
 	sint_t opengl_major = 0;
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &opengl_major) < 0) {
 		SYNAO_LOG("Getting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
@@ -141,6 +136,11 @@ bool video_t::init(const setup_file_t& config) {
 
 	SDL_GL_SwapWindow(window);
 
+	if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
+		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+
 	return true;
 }
 
@@ -148,8 +148,6 @@ void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
 	if (frame_buffer != nullptr) {
 		const glm::ivec2 source_dimensions = frame_buffer->get_integral_dimensions();
 		const glm::ivec2 destination_dimensions = this->get_integral_dimensions();
-		//frame_buffer_t::write(nullptr, 0);
-		//frame_buffer_t::read(frame_buffer, index);
 		frame_buffer_t::bind(nullptr, frame_buffer_binding_t::Write, 0);
 		frame_buffer_t::bind(frame_buffer, frame_buffer_binding_t::Read, index);
 		frame_buffer_t::blit(source_dimensions, destination_dimensions);
@@ -164,20 +162,14 @@ void video_t::flip() const {
 void video_t::set_parameters(screen_params_t params) {
 	if (this->params.vsync != params.vsync) {
 		this->params.vsync = params.vsync;
-		if (SDL_GL_SetSwapInterval(params.vsync ? 1 : 0) < 0) {
-			SYNAO_LOG(
-				"Vertical sync change failed! SDL Error: %s\n", 
-				SDL_GetError()
-			);
+		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
+			SYNAO_LOG("Vertical sync change failed! SDL Error: %s\n", SDL_GetError());
 		}
 	}
 	if (this->params.full != params.full) {
 		this->params.full = params.full;
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
-			SYNAO_LOG(
-				"Window mode change failed! SDL Error: %s\n", 
-				SDL_GetError()
-			);
+			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
 		}
 	}
 	if (this->params.scaling != params.scaling) {

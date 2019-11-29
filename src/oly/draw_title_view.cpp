@@ -1,6 +1,7 @@
 #include "./draw_title_view.hpp"
 
 #include "../utl/vfs.hpp"
+#include "../utl/misc.hpp"
 
 static constexpr real64_t kFadeTime = 0.048;
 
@@ -23,9 +24,9 @@ bool draw_title_view_t::init() {
 	return font != nullptr;
 }
 
-void draw_title_view_t::update(real64_t delta) {
+void draw_title_view_t::handle() {
 	if (!head.empty()) {
-		timer -= delta;
+		timer -= misc::kIntervalMin;
 		if (timer <= 0.0) {
 			this->set_head();
 		}

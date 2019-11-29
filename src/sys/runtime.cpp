@@ -6,6 +6,7 @@
 #include "../cnt/health.hpp"
 #include "../sys/input.hpp"
 #include "../sys/audio.hpp"
+#include "../sys/video.hpp"
 #include "../sys/renderer.hpp"
 #include "../utl/misc.hpp"
 #include "../utl/logger.hpp"
@@ -60,7 +61,28 @@ bool runtime_t::init(const setup_file_t& config, input_t& input, audio_t& audio,
 	return true;
 }
 
-void runtime_t::inform(const setup_file_t& config, policy_t& policy, input_t& input, audio_t& audio, renderer_t& renderer) {
+void runtime_t::handle(setup_file_t& config, policy_t& policy, input_t& input, video_t& video, audio_t& audio, music_t& music) {
+	while (this->viable()) {
+		accum = glm::max(accum - misc::kIntervalMin, 0.0);
+		kernel.handle(policy);
+		receiver.handle(policy, input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
+		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
+		dialogue_gui.handle(input, audio);
+		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
+		title_view.handle();
+		headsup.handle(kernel);
+		if (!kernel.has(kernel_state_t::Freeze)) {
+			camera.handle(naomi_state);
+			naomi_state.handle(input, audio, kernel, receiver, headsup, kontext, tilemap);
+			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
+			tilemap.handle(camera);
+		}
+		input.pressed.reset();
+		audio.flush();
+	}
+}
+
+void runtime_t::update(real64_t delta, const setup_file_t& config, policy_t& policy, input_t& input, audio_t& audio, renderer_t& renderer) {
 	if (headsup.is_fade_done()) {
 		if (kernel.has(kernel_state_t::Boot)) {
 			this->setup_boot(config, renderer);
@@ -77,42 +99,18 @@ void runtime_t::inform(const setup_file_t& config, policy_t& policy, input_t& in
 	if (kernel.has(kernel_state_t::Save)) {
 		this->setup_save();
 	}
-#ifdef SYNAO_DEBUG_BUILD
-	this->setup_debug(input, renderer);
-#endif // SYNAO_DEBUG_BUILD
-}
-
-void runtime_t::handle(setup_file_t& config, policy_t& policy, input_t& input, video_t& video, audio_t& audio, music_t& music) {
-	while (this->viable()) {
-		accum = glm::max(accum - misc::kIntervalMin, 0.0);
-		kernel.handle(policy);
-		receiver.handle(policy, input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
-		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
-		dialogue_gui.handle(input, audio);
-		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
-		headsup.handle(kernel);
-		if (!kernel.has(kernel_state_t::Freeze)) {
-			camera.handle(naomi_state);
-			naomi_state.handle(input, audio, kernel, receiver, headsup, kontext, tilemap);
-			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
-			tilemap.handle(camera);
-		}
-		input.pressed.reset();
-		audio.flush();
-	}
-}
-
-void runtime_t::update(real64_t delta) {
 	accum += delta;
 	stack_gui.update(delta);
 	dialogue_gui.update(delta);
 	inventory_gui.update(delta);
-	title_view.update(delta);
 	headsup.update(delta);
 	if (!kernel.has(kernel_state_t::Freeze)) {
 		camera.update(delta);
 		kontext.update(delta);
 	}
+#ifdef SYNAO_DEBUG_BUILD
+	this->setup_debug(input, renderer);
+#endif // SYNAO_DEBUG_BUILD
 }
 
 void runtime_t::render(const video_t& video, renderer_t& renderer) const {
@@ -127,6 +125,7 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 		tilemap.render(renderer, viewport);
 	}
 	renderer.flush(video, camera.get_matrix());
+	video.flip();
 }
 
 bool runtime_t::viable() const {

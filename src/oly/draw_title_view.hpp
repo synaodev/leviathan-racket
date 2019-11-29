@@ -9,7 +9,7 @@ public:
 	~draw_title_view_t() = default;
 public:
 	bool init();
-	void update(real64_t delta);
+	void handle();
 	void render(renderer_t& renderer) const;
 	void set_card(const std::string& string, arch_t font, bool center_x, bool center_y, glm::vec2 position);
 	void set_card(const std::string& string, arch_t font, bool center_x, bool center_y, real_t x, real_t y);

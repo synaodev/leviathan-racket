@@ -7,7 +7,7 @@
 
 struct watch_t {
 public:
-	watch_t() = default;
+	watch_t();
 	watch_t(const watch_t&) = default;
 	watch_t(watch_t&&) = default;
 	watch_t& operator=(const watch_t&) = default;

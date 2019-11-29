@@ -28,9 +28,8 @@ public:
 	~runtime_t() = default;
 public:
 	bool init(const setup_file_t& config, input_t& input, audio_t& audio, music_t& music, renderer_t& renderer);
-	void inform(const setup_file_t& config, policy_t& policy, input_t& input, audio_t& audio, renderer_t& renderer);
 	void handle(setup_file_t& config, policy_t& policy, input_t& input, video_t& video, audio_t& audio, music_t& music);
-	void update(real64_t delta);
+	void update(real64_t delta, const setup_file_t& config, policy_t& policy, input_t& input, audio_t& audio, renderer_t& renderer);
 	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 private:
