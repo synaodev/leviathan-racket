@@ -14,8 +14,4 @@ namespace priv {
 #define glCheck(expr) (expr)
 #endif // SYNAO_DEBUG_BUILD
 
-#ifdef glTexStorage3D
-#define SYNAO_IS_GL_420 glTexStorage3D
-#endif // glTexStorage3D
-
 #endif // SYNAO_GRAPHICS_GLCHECK_HPP

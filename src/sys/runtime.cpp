@@ -31,7 +31,7 @@ runtime_t::runtime_t() :
 	kontext(),
 	tilemap()
 {
-
+	
 }
 
 bool runtime_t::init(const setup_file_t& config, input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {

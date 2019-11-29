@@ -84,9 +84,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	else()
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/W4")
 	endif()
+	target_compile_options(leviathan PRIVATE "/Zi")
 	set_target_properties(leviathan PROPERTIES
 		CXX_STANDARD 17
 		COMPILE_FLAGS "/MP /wd4201 /wd4458 /wd4706 /wd26812"
+		LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
+		COMPILE_PDB_NAME leviathan
+		COMPILE_PDB_OUTPUT_DIR "${CMAKE_BINARY_DIR}"
 	)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	set_target_properties(leviathan PROPERTIES

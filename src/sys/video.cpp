@@ -9,8 +9,6 @@
 
 static constexpr sint_t kVideoWidths = 320;
 static constexpr sint_t kVideoHeight = 180;
-static constexpr sint_t kOpenGLVer4[] = { 4, 2 };
-static constexpr sint_t kOpenGLVer3[] = { 3, 3 };
 
 static const byte_t kWindowName[] = "Leviathan Racket";
 
@@ -56,52 +54,31 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0) < 0) {
-		SYNAO_LOG(
-			"Setting context flags failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Setting context flags failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
-		SYNAO_LOG(
-			"Setting context profile mask failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Setting context profile mask failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) < 0) {
-		SYNAO_LOG(
-			"Setting depth buffer size failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Setting depth buffer size failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0) < 0) {
-		SYNAO_LOG(
-			"Setting stencil buffer size failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Setting stencil buffer size failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0) {
-		SYNAO_LOG(
-			"Setting double-buffering failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Setting double-buffering failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, kOpenGLVer4[0]) < 0) {
-		SYNAO_LOG(
-			"Setting OpenGL major version failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+		SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, kOpenGLVer4[1]) < 0) {
-		SYNAO_LOG(
-			"Setting OpenGL minor version failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2) < 0) {
+		SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -115,46 +92,55 @@ bool video_t::init(const setup_file_t& config) {
 	);
 
 	if (window == nullptr) {
-		SYNAO_LOG(
-			"Window creation failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
-		SYNAO_LOG(
-			"Fullscreen after window creation failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Fullscreen after window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-
+	
 	context = SDL_GL_CreateContext(window);
 
 	if (context == nullptr) {
-		SYNAO_LOG(
-			"OpenGL context creation failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+
 	if (SDL_GL_SetSwapInterval(params.vsync ? 1 : 0) < 0) {
-		SYNAO_LOG(
-			"Vertical sync after OpenGL context creation failed! SDL Error: %s\n", 
-			SDL_GetError()
-		);
+		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+
+	sint_t opengl_major = 0;
+	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &opengl_major) < 0) {
+		SYNAO_LOG("Getting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+	sint_t opengl_minor = 0;
+	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &opengl_minor) < 0) {
+		SYNAO_LOG("Getting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+	if ((opengl_major < 3) or (opengl_major == 3 and opengl_minor < 3)) {
+		SYNAO_LOG("OpenGL Version %d.%d is unsupported! At least 3.3 is required!", opengl_major, opengl_minor);
+		return false;
+	} else {
+		SYNAO_LOG("OpenGL Version is %d.%d!\n", opengl_major, opengl_minor);
+	}
+	
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		SYNAO_LOG("OpenGL Extension loading failed!\n");
 		return false;
 	}
 
-	const glm::ivec2 dimensions = this->get_integral_dimensions();
-	const glm::vec4 clear_color = glm::vec4(0.0f, 0.0f, 0.125f, 1.0f);
+	frame_buffer_t::clear(
+		glm::ivec2(kVideoWidths, kVideoHeight) * params.scaling,
+		glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
+	);
 
-	frame_buffer_t::clear(dimensions, clear_color);
 	SDL_GL_SwapWindow(window);
+
 	return true;
 }
 
@@ -162,8 +148,10 @@ void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
 	if (frame_buffer != nullptr) {
 		const glm::ivec2 source_dimensions = frame_buffer->get_integral_dimensions();
 		const glm::ivec2 destination_dimensions = this->get_integral_dimensions();
-		frame_buffer_t::write(nullptr, 0);
-		frame_buffer_t::read(frame_buffer, index);
+		//frame_buffer_t::write(nullptr, 0);
+		//frame_buffer_t::read(frame_buffer, index);
+		frame_buffer_t::bind(nullptr, frame_buffer_binding_t::Write, 0);
+		frame_buffer_t::bind(frame_buffer, frame_buffer_binding_t::Read, index);
 		frame_buffer_t::blit(source_dimensions, destination_dimensions);
 	}
 }

@@ -87,39 +87,66 @@ void frame_buffer_t::destroy() {
 		color_buffer.destroy();
 	}
 	if (handle != 0) {
-		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		frame_buffer_t::bind(nullptr);
 		glCheck(glDeleteFramebuffers(1, &handle));
 		handle = 0;
 	}
 	ready = false;
 }
 
+void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_binding_t binding, arch_t index) {
+	static const frame_buffer_t* main = nullptr;
+	static const frame_buffer_t* read = nullptr;
+	static const frame_buffer_t* write = nullptr;
+	switch (binding) {
+	case frame_buffer_binding_t::Main: {
+		if (main != frame_buffer) {
+			main = frame_buffer;
+			if (frame_buffer != nullptr and frame_buffer->ready) {
+				uint_t layers = frame_buffer->color_buffer.get_layers();
+				glCheck(glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->handle));
+				glCheck(glDrawBuffers(layers, kDrawAttach));
+			}
+			else {
+				glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+			}
+		}
+		break;
+	}
+	case frame_buffer_binding_t::Read: {
+		if (read != frame_buffer) {
+			read = frame_buffer;
+			if (frame_buffer != nullptr and frame_buffer->ready) {
+				glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, frame_buffer->handle));
+				glCheck(glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
+			}
+			else {
+				glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, 0));
+			}
+		}
+		break;
+	}
+	case frame_buffer_binding_t::Write: {
+		if (write != frame_buffer) {
+			write = frame_buffer;
+			if (frame_buffer != nullptr and frame_buffer->ready) {
+				glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame_buffer->handle));
+				glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
+			}
+			else {
+				glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
+			}
+		}
+		break;
+	}
+	default: {
+		break;
+	}
+	}
+}
+
 void frame_buffer_t::bind(const frame_buffer_t* frame_buffer) {
-	if (frame_buffer != nullptr and frame_buffer->ready) {
-		uint_t layers = frame_buffer->color_buffer.get_layers();
-		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->handle));
-		glCheck(glDrawBuffers(layers, kDrawAttach));
-	} else {
-		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-	}
-}
-
-void frame_buffer_t::read(const frame_buffer_t* frame_buffer, arch_t index) {
-	if (frame_buffer != nullptr and frame_buffer->ready) {
-		glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, frame_buffer->handle));
-		glCheck(glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
-	} else {
-		glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, 0));
-	}
-}
-
-void frame_buffer_t::write(const frame_buffer_t* frame_buffer, arch_t index) {
-	if (frame_buffer != nullptr and frame_buffer->ready) {
-		glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame_buffer->handle));
-		glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
-	} else {
-		glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));
-	}
+	frame_buffer_t::bind(frame_buffer, frame_buffer_binding_t::Main, 0);
 }
 
 void frame_buffer_t::blit(glm::ivec2 source_position, glm::ivec2 source_dimensions, glm::ivec2 destination_position, glm::ivec2 destination_dimensions) {
@@ -143,8 +170,8 @@ void frame_buffer_t::blit(glm::ivec2 source_dimensions, glm::ivec2 destination_d
 
 void frame_buffer_t::clear(glm::ivec2 dimensions, glm::vec4 color) {
 	frame_buffer_t::bind(nullptr);
-	glCheck(glViewport(0, 0, dimensions.x, dimensions.y));
-	glCheck(glClearColor(color.x, color.y, color.z, color.w));
+	frame_buffer_t::viewport(dimensions);
+	frame_buffer_t::bucket(color);
 	glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
@@ -155,27 +182,37 @@ void frame_buffer_t::clear(glm::ivec2 dimensions) {
 void frame_buffer_t::clear(const frame_buffer_t* frame_buffer, glm::vec4 color) {
 	if (frame_buffer != nullptr and frame_buffer->ready) {
 		frame_buffer_t::bind(frame_buffer);
-		const glm::ivec2 dimensions = frame_buffer->color_buffer.get_integral_dimensions();
-		glCheck(glViewport(0, 0, dimensions.x, dimensions.y));
-		glCheck(glClearColor(color.x, color.y, color.z, color.w));
+		frame_buffer_t::viewport(frame_buffer);
+		frame_buffer_t::bucket(color);
 		glCheck(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-	}
-}
-
-void frame_buffer_t::viewport(glm::ivec2 dimensions) {
-	glCheck(glViewport(0, 0, dimensions.x, dimensions.y));
-}
-
-void frame_buffer_t::viewport(const frame_buffer_t* frame_buffer) {
-	if (frame_buffer != nullptr) {
-		frame_buffer_t::viewport(
-			frame_buffer->color_buffer.get_integral_dimensions()
-		);
 	}
 }
 
 void frame_buffer_t::clear(const frame_buffer_t* frame_buffer) {
 	frame_buffer_t::clear(frame_buffer, glm::zero<glm::vec4>());
+}
+
+void frame_buffer_t::viewport(glm::ivec2 dimensions) {
+	static glm::ivec2 current = glm::zero<glm::ivec2>();
+	if (current != dimensions) {
+		current = dimensions;
+		glCheck(glViewport(0, 0, dimensions.x, dimensions.y));
+	}
+}
+
+void frame_buffer_t::viewport(const frame_buffer_t* frame_buffer) {
+	if (frame_buffer != nullptr) {
+		glm::ivec2 dimensions = frame_buffer->color_buffer.get_integral_dimensions();
+		frame_buffer_t::viewport(dimensions);
+	}
+}
+
+void frame_buffer_t::bucket(glm::vec4 color) {
+	static glm::vec4 current = glm::zero<glm::vec4>();
+	if (current != color) {
+		current = color;
+		glCheck(glClearColor(color.x, color.y, color.z, color.w));
+	}
 }
 
 bool frame_buffer_t::valid() const {

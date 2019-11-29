@@ -39,7 +39,7 @@ receiver_t::receiver_t() :
 	boot(nullptr),
 	events()
 {
-
+	ANGELSCRIPT_VERSION_STRING;
 }
 
 receiver_t::~receiver_t() {

@@ -1,4 +1,5 @@
 #include "./texture.hpp"
+#include "./program.hpp"
 #include "./glcheck.hpp"
 
 #include "../utl/thread_pool.hpp"
@@ -65,7 +66,7 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		this->format = format;
 		glCheck(glGenTextures(1, &handle));
 		glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-		if (SYNAO_IS_GL_420) {
+		if (program_t::is_version_420()) {
 			glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
 		} else {
 			glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));

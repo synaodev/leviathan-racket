@@ -31,12 +31,11 @@ void stack_gui_t::reset() {
 
 void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, draw_title_view_t& title_view, draw_headsup_t& headsup) {
 	if (!widgets.empty()) {
-		auto& widget = widgets.back();
-		if (!widget->is_ready()) {
-			widget->init(video, audio, music, kernel);
+		if (!widgets.back()->is_ready()) {
+			widgets.back()->init(video, audio, music, kernel);
 			title_view.set_head();
 		}
-		widget->handle(
+		widgets.back()->handle(
 			config, input, 
 			video, audio,
 			music, kernel,
@@ -45,11 +44,10 @@ void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 		if (release) {
 			release = false;
 			widgets.clear();
-		} else if (!widget->is_active()) {
+		} else if (!widgets.back()->is_active()) {
 			widgets.pop_back();
 			if (!widgets.empty()) {
-				auto& current = widgets.back();
-				current->force();
+				widgets.back()->force();
 			}
 		}
 	} else if (!kernel.has(kernel_state_t::Lock)) {
@@ -61,15 +59,13 @@ void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 
 void stack_gui_t::update(real64_t delta) {
 	if (!widgets.empty()) {
-		auto& widget = widgets.back();
-		widget->update(delta);
+		widgets.back()->update(delta);
 	}
 }
 
 void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_gui) const {
 	if (!widgets.empty()) {
-		auto& widget = widgets.back();
-		widget->render(renderer);
+		widgets.back()->render(renderer);
 	}
 	if (!widgets.empty() or inventory_gui.open()) {
 		auto& batch = renderer.get_overlay_quads(

@@ -20,7 +20,7 @@ wgt_field_t::wgt_field_t(arch_t flags) :
 	identity(0),
 	cursor(0),
 	first(0),
-	last(0),
+	last(kTotalVisible),
 	text_listing(),
 	text_identity(),
 	arrow()
@@ -30,7 +30,7 @@ wgt_field_t::wgt_field_t(arch_t flags) :
 
 void wgt_field_t::init(video_t&, audio_t&, music_t&, kernel_t& kernel) {
 	ready = true;
-	fields = vfs::file_list("./data/field/");
+	fields = vfs::file_list("data/field/");
 	kernel.freeze();
 	text_listing.set_font(vfs::font(0));
 	text_listing.set_position(kDefaultPosition);

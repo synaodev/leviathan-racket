@@ -70,7 +70,7 @@ void gfx_t::set_program(const program_t* program) {
 	if (this->program != program) {
 		this->program = program;
 		if (program != nullptr) {
-			if (SYNAO_IS_GL_420) {
+			if (program_t::is_version_420()) {
 				glCheck(glBindProgramPipeline(program->handle));
 			} else {
 				glCheck(glUseProgram(program->handle));

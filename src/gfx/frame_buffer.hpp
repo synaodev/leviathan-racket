@@ -4,6 +4,16 @@
 #include "./texture.hpp"
 #include "./depth_buffer.hpp"
 
+namespace __enum_frame_buffer_binding {
+	enum type : arch_t {
+		Main,
+		Read,
+		Write
+	};
+}
+
+using frame_buffer_binding_t = __enum_frame_buffer_binding::type;
+
 struct frame_buffer_t : public not_copyable_t {
 public:
 	frame_buffer_t();
@@ -15,9 +25,8 @@ public:
 	void depth(glm::ivec2 dimensions, bool_t compress);
 	bool create();
 	void destroy();
+	static void bind(const frame_buffer_t* frame_buffer, frame_buffer_binding_t binding, arch_t index);
 	static void bind(const frame_buffer_t* frame_buffer);
-	static void read(const frame_buffer_t* frame_buffer, arch_t index);
-	static void write(const frame_buffer_t* frame_buffer, arch_t index);
 	static void blit(glm::ivec2 source_position, glm::ivec2 source_dimensions, glm::ivec2 destination_position, glm::ivec2 destination_dimensions);
 	static void blit(glm::ivec2 source_dimensions, glm::ivec2 destination_dimensions);
 	static void clear(glm::ivec2 dimensions, glm::vec4 color);
@@ -26,6 +35,7 @@ public:
 	static void clear(const frame_buffer_t* frame_buffer);
 	static void viewport(glm::ivec2 dimensions);
 	static void viewport(const frame_buffer_t* frame_buffer);
+	static void bucket(glm::vec4 color);
 	bool valid() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;

@@ -21,7 +21,7 @@ wgt_language_t::wgt_language_t(arch_t flags) :
 	languages(),
 	cursor(0),
 	first(0),
-	last(0),
+	last(kTotalVisible),
 	text(),
 	arrow()
 {
@@ -30,7 +30,7 @@ wgt_language_t::wgt_language_t(arch_t flags) :
 
 void wgt_language_t::init(video_t&, audio_t&, music_t&, kernel_t&) {
 	ready = true;
-	languages = vfs::file_list("./data/event/i18n/");
+	languages = vfs::file_list("data/event/i18n/");
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);
 	arrow.set_file(vfs::animation(res::anim::Heads));

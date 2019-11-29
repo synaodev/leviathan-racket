@@ -35,10 +35,9 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 		this->stage = stage;
 		const std::string source = vfs::string_buffer(full_path);
 		const byte_t* source_pointer = source.c_str();
-		if (SYNAO_IS_GL_420) {
+		if (program_t::is_version_420()) {
 			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
-
 			sint_t length = 0;
 			glCheck(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
 			if (length > 0) {
@@ -69,13 +68,12 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 
 void shader_t::destroy() {
 	if (handle != 0) {
-		if (SYNAO_IS_GL_420) {
+		if (program_t::is_version_420()) {
 			glCheck(glUseProgram(0));
 			glCheck(glDeleteProgram(handle));
 		} else {
 			glCheck(glDeleteShader(handle));
 		}
-		
 		handle = 0;
 		stage = shader_stage_t::Vertex;
 	}
@@ -86,15 +84,26 @@ bool shader_t::matches(shader_stage_t stage) const {
 }
 
 const byte_t* shader_t::extension(shader_stage_t stage) {
+	if (program_t::is_version_420()) {
+		switch (stage) {
+		case shader_stage_t::Vertex:
+			return "_420.vert";
+		case shader_stage_t::Fragment:
+			return "_420.frag";
+		case shader_stage_t::Geometry:
+			return "_420.geom";
+		}
+		return "_420.glsl";
+	}
 	switch (stage) {
 	case shader_stage_t::Vertex:
-		return ".vert";
+		return "_330.vert";
 	case shader_stage_t::Fragment:
-		return ".frag";
+		return "_330.frag";
 	case shader_stage_t::Geometry:
-		return ".geom";
+		return "_330.geom";
 	}
-	return ".glsl";
+	return "_330.glsl";
 }
 
 vertex_spec_t shader_t::attributes(uint_t program_handle) {
@@ -152,7 +161,7 @@ program_t::~program_t() {
 
 bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
 	if (!handle) {
-		if (SYNAO_IS_GL_420) {
+		if (program_t::is_version_420()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
 			glCheck(glBindProgramPipeline(handle));
@@ -218,7 +227,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag) {
 
 void program_t::destroy() {
 	if (handle != 0) {
-		if (SYNAO_IS_GL_420) {
+		if (program_t::is_version_420()) {
 			glCheck(glBindProgramPipeline(0));
 			glCheck(glDeleteProgramPipelines(1, &handle));
 		} else {
@@ -230,10 +239,35 @@ void program_t::destroy() {
 	}
 }
 
+void program_t::set_block(arch_t index, arch_t binding) const {
+	if (program_t::is_version_420()) {
+		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set constant buffer bindings!\n");
+	} else if (handle != 0) {
+		glCheck(glUniformBlockBinding(
+			handle,
+			static_cast<uint_t>(index),
+			static_cast<uint_t>(binding)
+		));
+	}
+}
+
+void program_t::set_sampler(arch_t index, arch_t sampler) const {
+	if (program_t::is_version_420()) {
+		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set sampler bindings!\n");
+	} else if (handle != 0) {
+		glCheck(glUseProgram(handle));
+		glCheck(glUniform1i(
+			static_cast<sint_t>(index),
+			static_cast<sint_t>(sampler)
+		));
+		glCheck(glUseProgram(0));
+	}
+}
+
 const vertex_spec_t& program_t::get_specify() const {
 	return specify;
 }
 
 bool program_t::is_version_420() {
-	return SYNAO_IS_GL_420 != nullptr;
+	return glTexStorage3D != nullptr;
 }

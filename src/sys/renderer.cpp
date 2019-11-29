@@ -143,7 +143,12 @@ bool renderer_t::init(const setup_file_t&) {
 		return false;
 	}
 	if (!program_t::is_version_420()) {
-		// TODO(tyler): Add manual uniform binding for const_buffer_t and sampler_t
+		programs[render_pass_t::VtxBlankColors].set_block(0, 0);
+		programs[render_pass_t::VtxMajorSprites].set_block(0, 0);
+		programs[render_pass_t::VtxMajorSprites].set_sampler(0, 0);
+		programs[render_pass_t::VtxMajorIndexed].set_block(0, 0);
+		programs[render_pass_t::VtxMajorIndexed].set_sampler(0, 0);
+		programs[render_pass_t::VtxMajorIndexed].set_sampler(1, 1);
 	}
 	return true;
 }

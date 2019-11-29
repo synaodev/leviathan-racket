@@ -1,4 +1,5 @@
 #include "./palette.hpp"
+#include "./program.hpp"
 #include "./glcheck.hpp"
 
 #include "../utl/thread_pool.hpp"
@@ -63,7 +64,7 @@ void palette_t::assure() {
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, handle));
 
-			if (SYNAO_IS_GL_420) {
+			if (program_t::is_version_420()) {
 				glCheck(glTexStorage2D(GL_TEXTURE_1D_ARRAY, 1, format, dimensions.x, dimensions.y));
 			} else {
 				glCheck(glTexImage2D(GL_TEXTURE_1D_ARRAY, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
