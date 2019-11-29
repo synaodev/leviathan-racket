@@ -9,9 +9,11 @@
 struct draw_title_view_t;
 struct draw_headsup_t;
 
-struct stack_gui_t : public not_copyable_t, public not_moveable_t {
+struct stack_gui_t : public not_copyable_t {
 public:
 	stack_gui_t();
+	stack_gui_t(stack_gui_t&&) = default;
+	stack_gui_t& operator=(stack_gui_t&&) = default;
 	~stack_gui_t() = default;
 public:
 	void reset();

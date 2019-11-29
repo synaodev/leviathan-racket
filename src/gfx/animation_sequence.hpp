@@ -11,8 +11,7 @@
 #include "../utl/enums.hpp"
 #include "../utl/rect.hpp"
 
-struct sequence_frame_t
-{
+struct sequence_frame_t {
 public:
 	glm::vec2 position, origin;
 public:
@@ -27,8 +26,7 @@ public:
 	~sequence_frame_t() = default;
 };
 
-struct animation_sequence_t : public not_copyable_t
-{
+struct animation_sequence_t : public not_copyable_t {
 public:
 	animation_sequence_t();
 	animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat);

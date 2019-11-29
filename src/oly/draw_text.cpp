@@ -19,7 +19,7 @@ draw_text_t::draw_text_t() :
 	quads.setup<vtx_major_t>();
 }
 
-draw_text_t::draw_text_t(draw_text_t&& that) : draw_text_t() {
+/*draw_text_t::draw_text_t(draw_text_t&& that) : draw_text_t() {
 	if (this != &that) {
 		std::swap(write, that.write);
 		std::swap(font, that.font);
@@ -44,7 +44,7 @@ draw_text_t& draw_text_t::operator=(draw_text_t&& that) {
 		std::swap(quads, that.quads);
 	}
 	return *this;
-}
+}*/
 
 void draw_text_t::force() const {
 	write = true;

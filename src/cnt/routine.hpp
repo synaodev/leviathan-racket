@@ -19,7 +19,7 @@ struct routine_tuple_t;
 using routine_ctor_fn = void(*)(entt::entity, kontext_t&);
 using routine_tick_fn = void(*)(entt::entity, routine_tuple_t&);
 
-struct routine_tuple_t : public not_copyable_t, public not_moveable_t {
+struct routine_tuple_t : public not_copyable_t {
 public:
 	routine_tuple_t(audio_t& aud, camera_t& cam, naomi_state_t& nao, kontext_t& ktx, tilemap_t& map) :
 		aud(aud),
@@ -27,6 +27,8 @@ public:
 		nao(nao),
 		ktx(ktx),
 		map(map) {}
+	routine_tuple_t(routine_tuple_t&&) = delete;
+	routine_tuple_t& operator=(routine_tuple_t&&) = delete;
 	~routine_tuple_t() = default;
 public:
 	audio_t& aud;
@@ -36,9 +38,13 @@ public:
 	tilemap_t& map;
 };
 
-struct routine_generator_t : public not_copyable_t, public not_moveable_t {
+struct routine_generator_t {
 public:
 	routine_generator_t(void(*callback)(std::unordered_map<arch_t, routine_ctor_fn>&));
+	routine_generator_t(const routine_generator_t&) = delete;
+	routine_generator_t& operator=(const routine_generator_t&) = delete;
+	routine_generator_t(routine_generator_t&&) = delete;
+	routine_generator_t& operator=(routine_generator_t&&) = delete;
 	~routine_generator_t() = default;
 public:
 	static bool init(std::unordered_map<arch_t, routine_ctor_fn>& ctor_table);

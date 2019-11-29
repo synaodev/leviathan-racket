@@ -32,9 +32,11 @@ namespace __enum_btn {
 
 using btn_t = __enum_btn::type;
 
-struct input_t : public not_copyable_t, public not_moveable_t {
+struct input_t : public not_copyable_t {
 public:
 	input_t();
+	input_t(input_t&&) = default;
+	input_t& operator=(input_t&&) = default;
 	~input_t();
 public:
 	bool init(const setup_file_t& config);

@@ -8,9 +8,11 @@
 
 struct setup_file_t;
 
-struct audio_t : public not_copyable_t, public not_moveable_t {
+struct audio_t : public not_copyable_t {
 public:
 	audio_t();
+	audio_t(audio_t&&) = default;
+	audio_t& operator=(audio_t&&) = default;
 	~audio_t();
 public:
 	bool init(const setup_file_t& config);

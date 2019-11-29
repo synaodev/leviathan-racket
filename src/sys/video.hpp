@@ -34,9 +34,11 @@ public:
 	~screen_params_t() = default;
 };
 
-struct video_t : public not_copyable_t, public not_moveable_t {
+struct video_t : public not_copyable_t {
 public:
 	video_t();
+	video_t(video_t&&) = default;
+	video_t& operator=(video_t&&) = default;
 	~video_t();
 public:
 	bool init(const setup_file_t& config);

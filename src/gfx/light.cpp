@@ -50,7 +50,7 @@ bool light_t::query(arch_t* count) {
 			write = false;
 			return true;
 		}
-		*count++;
+		(*count)++;
 	}
 	return false;
 }

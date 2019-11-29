@@ -10,13 +10,9 @@
 static const byte_t kFlagProgsName[] = "/progsflag.bin";
 static const byte_t kFlagCheckName[] = "/checkflag.bin";
 
-static constexpr sint_t kMaxCursorsX = 5;
-static constexpr sint_t kMaxCursorsY = 4;
 static constexpr arch_t kMaxItemList = 30;
 static constexpr arch_t kMaxFlagList = 128;
 static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
-static constexpr real_t kIntervalMin = 1.0f / 60.0f;
-static constexpr real_t kIntervalMax = 1.0f / 62.0f;
 
 kernel_t::kernel_t() :
 	bitmask(0),

@@ -13,9 +13,11 @@ struct setup_file_t;
 
 class pxtnService;
 
-struct music_t : public not_copyable_t, public not_moveable_t {
+struct music_t : public not_copyable_t {
 public:
 	music_t();
+	music_t(music_t&&) = delete;
+	music_t& operator=(music_t&&) = delete;
 	~music_t();
 public:
 	bool init(const setup_file_t& config);

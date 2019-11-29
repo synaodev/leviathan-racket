@@ -1,5 +1,7 @@
 #include "./rect.hpp"
 
+#include <utility>
+
 rect_t::rect_t(glm::vec2 pos, glm::vec2 dim) : 
 	x(pos.x), y(pos.y), 
 	w(dim.x), h(dim.y) 

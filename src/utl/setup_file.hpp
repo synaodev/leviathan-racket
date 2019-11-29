@@ -32,7 +32,7 @@ private:
 	std::vector<std::pair<std::string, std::string> > data;
 };
 
-struct setup_file_t : public not_copyable_t, public not_moveable_t {
+struct setup_file_t : public not_copyable_t {
 public:
 	setup_file_t();
 	~setup_file_t() = default;

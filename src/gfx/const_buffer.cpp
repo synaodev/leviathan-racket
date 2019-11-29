@@ -1,6 +1,8 @@
 #include "./const_buffer.hpp"
 #include "./glcheck.hpp"
 
+#include <utility>
+
 const_buffer_t::const_buffer_t() :
 	usage(buffer_usage_t::Static),
 	handle(0),

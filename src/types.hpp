@@ -12,20 +12,13 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
-struct not_copyable_t
-{
+struct not_copyable_t {
 public:
 	not_copyable_t() = default;
+	not_copyable_t(not_copyable_t&&) = default;
+	not_copyable_t& operator=(not_copyable_t&&) = default;
 	not_copyable_t(const not_copyable_t&) = delete;
 	not_copyable_t& operator=(const not_copyable_t&) = delete;
-};
-
-struct not_moveable_t
-{
-public:
-	not_moveable_t() = default;
-	not_moveable_t(not_moveable_t&&) = delete;
-	not_moveable_t& operator=(not_moveable_t&&) = delete;
 };
 
 using sint8_t  = signed char;

@@ -16,9 +16,11 @@ namespace __enum_fade_state {
 
 using fade_state_t = __enum_fade_state::type;
 
-struct draw_fade_t : public not_copyable_t, public not_moveable_t {
+struct draw_fade_t : public not_copyable_t {
 public:
 	draw_fade_t();
+	draw_fade_t(draw_fade_t&&) = default;
+	draw_fade_t& operator=(draw_fade_t&&) = default;
 	~draw_fade_t() = default;
 public:
 	void init();

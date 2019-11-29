@@ -49,9 +49,11 @@ struct camera_t;
 struct naomi_state_t;
 struct kontext_t;
 
-struct receiver_t : public not_copyable_t, public not_moveable_t {
+struct receiver_t : public not_copyable_t {
 public:
 	receiver_t();
+	receiver_t(receiver_t&&) = default;
+	receiver_t& operator=(receiver_t&&) = default;
 	~receiver_t();
 public:
 	bool init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);

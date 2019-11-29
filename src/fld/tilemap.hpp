@@ -6,9 +6,11 @@
 
 struct camera_t;
 
-struct tilemap_t : public not_copyable_t, public not_moveable_t {
+struct tilemap_t : public not_copyable_t {
 public:
 	tilemap_t();
+	tilemap_t(tilemap_t&&) = default;
+	tilemap_t& operator=(tilemap_t&&) = default;
 	~tilemap_t() = default;
 public:
 	void reset();

@@ -20,7 +20,7 @@ struct setup_file_t;
 namespace vfs {
 	struct __vfs_t;
 	static __vfs_t* device = nullptr;
-	struct __vfs_t : public not_copyable_t, public not_moveable_t {
+	struct __vfs_t : public not_copyable_t {
 	public:
 		__vfs_t() : 
 			thread_pool(),

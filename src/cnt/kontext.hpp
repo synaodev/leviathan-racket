@@ -24,9 +24,11 @@ struct camera_t;
 struct naomi_state_t;
 struct tilemap_t;
 
-struct kontext_t : public not_copyable_t, public not_moveable_t {
+struct kontext_t : public not_copyable_t {
 public:
 	kontext_t();
+	kontext_t(kontext_t&&) = default;
+	kontext_t& operator=(kontext_t&&) = default;
 	~kontext_t() = default;
 public:
 	bool init(receiver_t& receiver);

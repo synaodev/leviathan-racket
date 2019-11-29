@@ -26,9 +26,11 @@ namespace __enum_dialogue_flag {
 
 using dialogue_flag_t = __enum_dialogue_flag::type;
 
-struct dialogue_gui_t : public not_copyable_t, public not_moveable_t {
+struct dialogue_gui_t : public not_copyable_t {
 public:
 	dialogue_gui_t();
+	dialogue_gui_t(dialogue_gui_t&&) = default;
+	dialogue_gui_t& operator=(dialogue_gui_t&&) = default;
 	~dialogue_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);

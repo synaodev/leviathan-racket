@@ -24,9 +24,11 @@ using render_pass_t = __enum_render_pass::type;
 struct setup_file_t;
 struct video_t;
 
-struct renderer_t : public not_copyable_t, public not_moveable_t {
+struct renderer_t : public not_copyable_t {
 public:
 	renderer_t();
+	renderer_t(renderer_t&&) = default;
+	renderer_t& operator=(renderer_t&&) = default;
 	~renderer_t();
 public:
 	bool init(const setup_file_t& config);

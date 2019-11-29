@@ -13,8 +13,8 @@ struct renderer_t;
 struct draw_text_t : public not_copyable_t {
 public:
 	draw_text_t();
-	draw_text_t(draw_text_t&&) /*= default */;
-	draw_text_t& operator=(draw_text_t&&) /*= default */;
+	draw_text_t(draw_text_t&&) = default;
+	draw_text_t& operator=(draw_text_t&&) = default;
 	~draw_text_t() = default;
 public:
 	void force() const;

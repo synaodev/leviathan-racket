@@ -9,7 +9,6 @@
 
 static const byte_t kAttributeKeyPath[]	= "data/key/";
 
-static constexpr arch_t kTotalAttrKey = 256;
 static constexpr sint_t kScreenWidth  = 21;
 static constexpr sint_t kScreenHeight = 12;
 static constexpr sint_t kSintTileSize = 16;

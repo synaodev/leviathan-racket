@@ -150,8 +150,8 @@ public:
 	}
 	~actor_trigger_t() = default;
 public:
-	std::bitset<trigger_bits_t::Total> bitmask;
 	sint_t identity;
+	std::bitset<trigger_bits_t::Total> bitmask;
 };
 
 struct actor_timer_t {

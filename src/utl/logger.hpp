@@ -8,14 +8,7 @@
 #include <cstdio>
 #include <string>
 
-namespace priv {
-	template<typename ...Args>
-	inline void logger(Args&& ...args) {
-		sint_t r = std::printf(std::forward<Args>(args)...);
-		assert(r >= 0);
-	}
-}
-#define SYNAO_LOG(...) priv::logger(__VA_ARGS__)
+#define SYNAO_LOG(...) do { sint_t r = std::printf(__VA_ARGS__); assert(r >= 0); } while(false)
 #else // SYNAO_DEBUG_BUILD
 #define SYNAO_LOG(...) 
 #endif // SYNAO_DEBUG_BUILD

@@ -151,9 +151,11 @@ namespace __enum_naomi_death {
 
 using naomi_death_t = __enum_naomi_death::type;
 
-struct naomi_state_t : public not_copyable_t, public not_moveable_t {
+struct naomi_state_t : public not_copyable_t {
 public:
 	naomi_state_t();
+	naomi_state_t(naomi_state_t&&) = default;
+	naomi_state_t& operator=(naomi_state_t&&) = default;
 	~naomi_state_t() = default;
 public:
 	bool init(kontext_t& kontext);

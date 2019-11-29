@@ -29,9 +29,11 @@ private:
 	draw_count_t count;
 };
 
-struct inventory_gui_t : public not_copyable_t, public not_moveable_t {
+struct inventory_gui_t : public not_copyable_t {
 public:
 	inventory_gui_t();
+	inventory_gui_t(inventory_gui_t&&) = default;
+	inventory_gui_t& operator=(inventory_gui_t&&) = default;
 	~inventory_gui_t() = default;
 public:
 	bool init();

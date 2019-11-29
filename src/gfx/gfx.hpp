@@ -39,9 +39,11 @@ struct depth_buffer_t;
 struct program_t;
 struct const_buffer_t;
 
-struct gfx_t : public not_copyable_t, public not_moveable_t {
+struct gfx_t : public not_copyable_t {
 public:
 	gfx_t();
+	gfx_t(gfx_t&&) = default;
+	gfx_t& operator=(gfx_t&&) = default; 
 	~gfx_t() = default;
 public:
 	void set_depth_func(gfx_cmp_func_t depth_func);

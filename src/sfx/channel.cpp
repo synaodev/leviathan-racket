@@ -4,8 +4,8 @@
 
 channel_t::channel_t() : 
 	ready(false),
-	current(nullptr), 
-	handle(0)
+	handle(0),
+	current(nullptr) 
 {
 	
 }

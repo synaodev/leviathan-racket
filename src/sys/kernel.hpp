@@ -31,9 +31,11 @@ struct input_t;
 struct audio_t;
 struct music_t;
 
-struct kernel_t : public not_moveable_t, public not_copyable_t {
+struct kernel_t : public not_copyable_t {
 public:
 	kernel_t();
+	kernel_t(kernel_t&&) = default;
+	kernel_t& operator=(kernel_t&&) = default;
 	~kernel_t();
 public:
 	void reset(const setup_file_t& config);

@@ -147,10 +147,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	std::string full_path = kFieldPath + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
-		SYNAO_LOG(
-			"Map file loading failed! Map Path: %s\n",
-			full_path.c_str()
-		);
+		SYNAO_LOG("Map file loading failed! Map Path: %s\n", full_path.c_str());
 		return false;
 	}
 	camera.set_view_limits(
@@ -248,6 +245,7 @@ void runtime_t::setup_save() {
 	kernel.finish_file_operation();
 }
 
+#ifdef SYNAO_DEBUG_BUILD
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 	if (input.pressed[btn_t::Editor]) {
 		input.pressed.reset(btn_t::Editor);
@@ -265,3 +263,4 @@ void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 		}
 	}
 }
+#endif // SYNAO_DEBUG_BUILD

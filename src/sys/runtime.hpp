@@ -22,9 +22,11 @@ struct audio_t;
 struct music_t;
 struct renderer_t;
 
-struct runtime_t : public not_copyable_t, public not_moveable_t {
+struct runtime_t : public not_copyable_t {
 public:
 	runtime_t();
+	runtime_t(runtime_t&&) = default;
+	runtime_t& operator=(runtime_t&&) = default;
 	~runtime_t() = default;
 public:
 	bool init(const setup_file_t& config, input_t& input, audio_t& audio, music_t& music, renderer_t& renderer);
@@ -37,7 +39,9 @@ private:
 	void setup_boot(const setup_file_t& config, renderer_t& renderer);
 	void setup_load();
 	void setup_save();
+#ifdef SYNAO_DEBUG_BUILD
 	void setup_debug(input_t& input, const renderer_t& renderer);
+#endif // SYNAO_DEBUG_BUILD
 private:
 	real64_t accum;
 	kernel_t kernel;

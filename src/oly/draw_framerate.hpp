@@ -3,9 +3,11 @@
 
 #include "./draw_count.hpp"
 
-struct draw_framerate_t : public not_copyable_t, public not_moveable_t {
+struct draw_framerate_t : public not_copyable_t {
 public:
 	draw_framerate_t();
+	draw_framerate_t(draw_framerate_t&&) = default;
+	draw_framerate_t& operator=(draw_framerate_t&&) = default;
 	~draw_framerate_t() = default;
 public:
 	void init(const texture_t* texture);

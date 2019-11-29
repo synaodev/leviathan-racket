@@ -7,9 +7,11 @@
 
 struct naomi_state_t;
 
-struct camera_t : public not_copyable_t, public not_moveable_t {
+struct camera_t : public not_copyable_t {
 public:
 	camera_t();
+	camera_t(camera_t&&) = default;
+	camera_t& operator=(camera_t&&) = default;
 	~camera_t() = default;
 public:
 	void reset();

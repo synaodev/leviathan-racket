@@ -3,9 +3,11 @@
 
 #include "./draw_text.hpp"
 
-struct draw_title_view_t : public not_copyable_t, public not_moveable_t {
+struct draw_title_view_t : public not_copyable_t {
 public:
 	draw_title_view_t();
+	draw_title_view_t(draw_title_view_t&&) = default;
+	draw_title_view_t& operator=(draw_title_view_t&&) = default;
 	~draw_title_view_t() = default;
 public:
 	bool init();
