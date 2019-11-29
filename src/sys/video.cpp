@@ -32,10 +32,12 @@ video_t::~video_t() {
 }
 
 bool video_t::init(const setup_file_t& config) {
+	bool_t use_opengl_4 = true;
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
+	config.get("Video", "UseOpenGL4", use_opengl_4);
 	params.scaling = glm::clamp(
 		params.scaling, 
 		screen_params_t::kDefaultScaling, 
@@ -73,11 +75,13 @@ bool video_t::init(const setup_file_t& config) {
 		SYNAO_LOG("Setting double-buffering failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4) < 0) {
+	sint_t opengl_major = use_opengl_4 ? 4 : 3;
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, opengl_major) < 0) {
 		SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2) < 0) {
+	sint_t opengl_minor = use_opengl_4 ? 2 : 3;
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, opengl_minor) < 0) {
 		SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
@@ -107,18 +111,17 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	sint_t opengl_major = 0;
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &opengl_major) < 0) {
 		SYNAO_LOG("Getting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	sint_t opengl_minor = 0;
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &opengl_minor) < 0) {
 		SYNAO_LOG("Getting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+
 	if ((opengl_major < 3) or (opengl_major == 3 and opengl_minor < 3)) {
-		SYNAO_LOG("OpenGL Version %d.%d is unsupported! At least 3.3 is required!", opengl_major, opengl_minor);
+		SYNAO_LOG("OpenGL Version %d.%d is unsupported! At least 3.3 is required!\n", opengl_major, opengl_minor);
 		return false;
 	} else {
 		SYNAO_LOG("OpenGL Version is %d.%d!\n", opengl_major, opengl_minor);

@@ -2,6 +2,7 @@
 .vscode/
 AS_DEBUG/
 build/
+test/
 out/
 data/save/file_0/cpntflag.bin
 data/save/file_0/cpntstat.cfg
