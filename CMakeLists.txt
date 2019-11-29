@@ -62,8 +62,17 @@ if(WIN32) # Windows 32/64
 			set(TMXLITE_LIBRARY 	"libtmxlite.lib")
 		endif()
 	endif()
-elseif(UNIX) # Linux and BSD
-	message(FATAL_ERROR "Platform not supported!")
+elseif(UNIX) # Linux
+	set(USERS_INCLUDE 		"/usr/include")
+	set(LOCAL_INCLUDE 		"/usr/local/include")
+	set(USERS_LINKDIR		"/usr/lib/x86_64-linux-gnu")
+	set(LOCAL_LINKDIR		"/usr/local/lib")
+	set(ANGELSCRIPT_LIBRARY "libangelscript.a")
+	set(OPENAL_LIBRARY 		"libopenal.so")
+	set(OPENGL_LIBRARY		"libGL.so")
+	set(SDL2_LIBRARY 		"libSDL2.so")
+	set(SDL2MAIN_LIBRARY	"libSDL2main.a")
+	set(TMXLITE_LIBRARY 	"libtmxlite.so")
 elseif(APPLE) # MacOS
 	message(FATAL_ERROR "Platform not supported!")
 else()

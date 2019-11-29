@@ -52,23 +52,34 @@ add_executable(leviathan
 	"${BASIC_HEADERS}"
 )
 
-target_include_directories(leviathan PUBLIC
-	"${ANGELSCRIPT_INCLUDE}"
-	"${ENTT_INCLUDE}"
-	"${GLM_INCLUDE}"
-	"${NLOHMANN_INCLUDE}"
-	"${OPENAL_INCLUDE}"
-	"${SDL2_INCLUDE}"
-	"${STB_INCLUDE}"
-	"${TMXLITE_INCLUDE}"
-)
+if(WIN32)
+	target_include_directories(leviathan PUBLIC
+		"${ANGELSCRIPT_INCLUDE}"
+		"${ENTT_INCLUDE}"
+		"${GLM_INCLUDE}"
+		"${NLOHMANN_INCLUDE}"
+		"${OPENAL_INCLUDE}"
+		"${SDL2_INCLUDE}"
+		"${STB_INCLUDE}"
+		"${TMXLITE_INCLUDE}"
+	)
+	target_link_directories(leviathan PUBLIC
+		"${ANGELSCRIPT_LINKDIR}"
+		"${OPENAL_LINKDIR}"
+		"${SDL2_LINKDIR}"
+		"${TMXLITE_LINKDIR}"
+	)
+elseif(UNIX)
+	target_include_directories(leviathan PUBLIC
+		"${USERS_INCLUDE}"
+		"${LOCAL_INCLUDE}"
+	)
+	target_link_directories(leviathan PUBLIC
+		"${USERS_LINKDIR}"
+		"${LOCAL_LINKDIR}"
+	)
+endif()
 
-target_link_directories(leviathan PUBLIC
-	"${ANGELSCRIPT_LINKDIR}"
-	"${OPENAL_LINKDIR}"
-	"${SDL2_LINKDIR}"
-	"${TMXLITE_LINKDIR}"
-)
 target_link_libraries(leviathan PUBLIC
 	"${ANGELSCRIPT_LIBRARY}"
 	"${OPENAL_LIBRARY}"
@@ -93,15 +104,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 		COMPILE_PDB_OUTPUT_DIR "${CMAKE_BINARY_DIR}"
 	)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	set_target_properties(leviathan PROPERTIES
-		CXX_STANDARD 17
-		COMPILE_FLAGS "-MD"
-	)
+	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
-	set_target_properties(leviathan PROPERTIES
-		CXX_STANDARD 17
-		COMPILE_FLAGS "-Wno-pragma-pack -Wno-format-security"
-	)
+	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 else()
 	message(FATAL_ERROR "Compiler not supported!")
 endif()
