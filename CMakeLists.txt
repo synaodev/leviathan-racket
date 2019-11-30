@@ -4,10 +4,8 @@ cmake_minimum_required(VERSION 3.13)
 # ANGELSCRIPT_INCLUDE
 # ENTT_INCLUDE
 # GLM_INCLUDE
-# NLOHMANN_INCLUDE
 # OPENAL_INCLUDE
 # SDL2_INCLUDE
-# STB_INCLUDE
 # TMXLITE_INCLUDE
 # ------------------------------
 # ANGELSCRIPT_LINKDIR
@@ -19,7 +17,7 @@ cmake_minimum_required(VERSION 3.13)
 # OPENAL_LIBRARY
 # OPENGL_LIBRARY
 # SDL2_LIBRARY
-# SDL2MAIN_LIBRARY
+# SDL2_MAIN_LIBRARY
 # TMXLITE_LIBRARY
 # ------------------------------
 
@@ -32,10 +30,8 @@ if(WIN32)
 		"C:/Libs/angelscript/angelscript/include"
 		"C:/Libs/entt/src"
 		"C:/Libs/glm"
-		"C:/Libs/nlohmann"
 		"C:/Libs/openal/include"
 		"C:/Libs/sdl2/include"
-		"C:/Libs/stb"
 		"C:/Libs/tmxlite/tmxlite/include"
 	)
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")

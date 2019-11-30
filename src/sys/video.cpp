@@ -80,7 +80,7 @@ bool video_t::init(const setup_file_t& config) {
 		SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	sint_t opengl_minor = use_opengl_4 ? 2 : 3;
+	sint_t opengl_minor = 3;
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, opengl_minor) < 0) {
 		SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;

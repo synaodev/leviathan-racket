@@ -93,3 +93,7 @@ buffer_usage_t const_buffer_t::get_usage() const {
 arch_t const_buffer_t::get_length() const {
 	return length;
 }
+
+bool const_buffer_t::has_immutable_storage() {
+	return glBufferStorage != nullptr;
+}

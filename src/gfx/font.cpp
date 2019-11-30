@@ -3,9 +3,9 @@
 #include "./palette.hpp"
 
 #include "../utl/vfs.hpp"
+#include "../utl/json.hpp"
 
 #include <fstream>
-#include <nlohmann/json.hpp>
 
 font_t::font_t() :
 	glyphs(),

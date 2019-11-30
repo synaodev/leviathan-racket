@@ -1,5 +1,4 @@
 #include "./depth_buffer.hpp"
-#include "./program.hpp"
 #include "./glcheck.hpp"
 
 depth_buffer_t::depth_buffer_t() :
@@ -58,7 +57,7 @@ bool depth_buffer_t::create(glm::ivec2 dimensions, bool_t compress) {
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
 
-			if (program_t::is_version_420()) {
+			if (sampler_t::has_immutable_storage()) {
 				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y));
 			} else {
 				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_BYTE, nullptr));

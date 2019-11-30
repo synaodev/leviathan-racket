@@ -47,7 +47,7 @@ public:
 	void set_block(arch_t index, arch_t binding) const;
 	void set_sampler(arch_t index, arch_t sampler) const;
 	const vertex_spec_t& get_specify() const;
-	static bool is_version_420();
+	static bool has_pipelines();
 private:
 	friend struct gfx_t;
 	uint_t handle;

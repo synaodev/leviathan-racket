@@ -1,8 +1,11 @@
 #include "./texture.hpp"
-#include "./program.hpp"
 #include "./glcheck.hpp"
 
 #include "../utl/thread_pool.hpp"
+
+bool sampler_t::has_immutable_storage() {
+	return glTexStorage2D != nullptr;
+}
 
 texture_t::texture_t() :
 	ready(false),
@@ -66,11 +69,13 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		this->format = format;
 		glCheck(glGenTextures(1, &handle));
 		glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-		if (program_t::is_version_420()) {
+
+		if (sampler_t::has_immutable_storage()) {
 			glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
 		} else {
 			glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 		}
+
 		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
 		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
 		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_REPEAT));

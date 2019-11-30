@@ -29,6 +29,7 @@ public:
 	bool valid() const;
 	buffer_usage_t get_usage() const;
 	arch_t get_length() const;
+	static bool has_immutable_storage();
 private:
 	friend struct gfx_t;
 	buffer_usage_t usage;

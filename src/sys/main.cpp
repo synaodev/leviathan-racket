@@ -35,7 +35,7 @@ static bool run(setup_file_t& config, input_t& input, video_t& video, audio_t& a
 				runtime.render(video, renderer);
 				const screen_params_t params = video.get_parameters();
 				if (params.vsync != 0) {
-					SDL_Delay(program_t::is_version_420() ?
+					SDL_Delay(program_t::has_pipelines() ?
 						kGL42Delay : kGL33Delay
 					);
 				} else {

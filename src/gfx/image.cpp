@@ -1,7 +1,8 @@
 #include "./image.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include "../utl/stb_image.hpp"
+
 #include <cstring>
 
 image_t::image_t() :

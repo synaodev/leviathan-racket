@@ -11,12 +11,20 @@ bool quad_list_t::allocate_indexer(arch_t length, primitive_t primitive) {
 		auto indices = quad_list_t::generate(length, 0, primitive);
 		glCheck(glGenBuffers(1, &quad_list_t::elemts));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_list_t::elemts));
-		glCheck(glBufferData(
-			GL_ELEMENT_ARRAY_BUFFER,
-			sizeof(decltype(indices)::value_type) * indices.size(),
-			indices.data(),
-			buffer_usage_t::Static
-		));
+		if (const_buffer_t::has_immutable_storage()) {
+			glCheck(glBufferStorage(
+				GL_ELEMENT_ARRAY_BUFFER,
+				sizeof(decltype(indices)::value_type) * indices.size(),
+				indices.data(), 0
+			));
+		} else {
+			glCheck(glBufferData(
+				GL_ELEMENT_ARRAY_BUFFER,
+				sizeof(decltype(indices)::value_type) * indices.size(),
+				indices.data(),
+				buffer_usage_t::Static
+			));
+		}
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 		return true;
 	}

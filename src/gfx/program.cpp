@@ -35,7 +35,7 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 		this->stage = stage;
 		const std::string source = vfs::string_buffer(full_path);
 		const byte_t* source_pointer = source.c_str();
-		if (program_t::is_version_420()) {
+		if (program_t::has_pipelines()) {
 			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
 			sint_t length = 0;
@@ -68,7 +68,7 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 
 void shader_t::destroy() {
 	if (handle != 0) {
-		if (program_t::is_version_420()) {
+		if (program_t::has_pipelines()) {
 			glCheck(glUseProgram(0));
 			glCheck(glDeleteProgram(handle));
 		} else {
@@ -84,7 +84,7 @@ bool shader_t::matches(shader_stage_t stage) const {
 }
 
 const byte_t* shader_t::extension(shader_stage_t stage) {
-	if (program_t::is_version_420()) {
+	if (program_t::has_pipelines()) {
 		switch (stage) {
 		case shader_stage_t::Vertex:
 			return "_420.vert";
@@ -161,7 +161,7 @@ program_t::~program_t() {
 
 bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
 	if (!handle) {
-		if (program_t::is_version_420()) {
+		if (program_t::has_pipelines()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
 			glCheck(glBindProgramPipeline(handle));
@@ -227,7 +227,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag) {
 
 void program_t::destroy() {
 	if (handle != 0) {
-		if (program_t::is_version_420()) {
+		if (program_t::has_pipelines()) {
 			glCheck(glBindProgramPipeline(0));
 			glCheck(glDeleteProgramPipelines(1, &handle));
 		} else {
@@ -240,7 +240,7 @@ void program_t::destroy() {
 }
 
 void program_t::set_block(arch_t index, arch_t binding) const {
-	if (program_t::is_version_420()) {
+	if (program_t::has_pipelines()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
 		glCheck(glUniformBlockBinding(
@@ -252,7 +252,7 @@ void program_t::set_block(arch_t index, arch_t binding) const {
 }
 
 void program_t::set_sampler(arch_t index, arch_t sampler) const {
-	if (program_t::is_version_420()) {
+	if (program_t::has_pipelines()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set sampler bindings!\n");
 	} else if (handle != 0) {
 		glCheck(glUseProgram(handle));
@@ -268,6 +268,6 @@ const vertex_spec_t& program_t::get_specify() const {
 	return specify;
 }
 
-bool program_t::is_version_420() {
-	return glTexStorage3D != nullptr;
+bool program_t::has_pipelines() {
+	return glBindProgramPipeline != nullptr;
 }

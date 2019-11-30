@@ -2,11 +2,11 @@
 #include "./logger.hpp"
 #include "./setup_file.hpp"
 #include "./thread_pool.hpp"
+#include "./json.hpp"
 
 #include <fstream>
 #include <sstream>
 #include <streambuf>
-#include <nlohmann/json.hpp>
 
 #if !defined(__APPLE__) && !defined(__GNUC__)
 #include <filesystem>
