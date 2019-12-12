@@ -22,7 +22,7 @@
 #include "../sys/camera.hpp"
 #include "../utl/logger.hpp" 
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 namespace kNao {
 	static constexpr arch_t BoxGood = 0;

@@ -62,7 +62,8 @@ void setup_chunk_t::write_to(std::string& buffer) const {
 setup_file_t::setup_file_t() :
 	origin(),
 	data(),
-	locale() {
+	locale() 
+{
 	
 }
 
@@ -86,6 +87,15 @@ bool setup_file_t::save(const std::string& full_path) {
 		return this->write(file);
 	}
 	return false;
+}
+
+void setup_file_t::clear(const std::string& full_path) {
+	origin = full_path;
+	data.clear();
+}
+
+void setup_file_t::clear() {
+	this->clear("");
 }
 
 bool setup_file_t::exists(const std::string& title) const {

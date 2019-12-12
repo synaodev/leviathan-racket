@@ -12,9 +12,39 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 
-static constexpr uint_t kStopDelay = 40;
-static constexpr uint_t kGL42Delay = 10;
-static constexpr uint_t kGL33Delay = 16;
+static constexpr byte_t kBootPath[]	= "./data/boot.cfg";
+static constexpr uint_t kStopDelay  = 40;
+static constexpr uint_t kGL42Delay  = 10;
+static constexpr uint_t kGL33Delay  = 16;
+
+static void generate_default_config(setup_file_t& config) {
+	config.clear(kBootPath);
+	config.set("Setup", "Language", std::string("english"));
+	config.set("Setup", "Field", std::string("naomi"));
+	config.set("Setup", "Actor", 200);
+	config.set("Video", "VerticalSync", 0);
+	config.set("Video", "Fullscreen", 0);
+	config.set("Video", "ScaleFactor", 3);
+	config.set("Video", "FrameLimiter", 60);
+	config.set("Video", "UseOpenGL4", 1);
+	config.set("Audio", "Volume", 1.0f);
+	config.set("Music", "Volume", 0.3f);
+	config.set("Music", "Channels", 2);
+	config.set("Music", "SamplingRate", 44100);
+	config.set("Music", "kBufferedTime", 0.1f);
+	config.set("Input", "KeyJump", 29);
+	config.set("Input", "KeyHammer", 27);
+	config.set("Input", "KeyItem", 225);
+	config.set("Input", "KeyLiteDash", 22);
+	config.set("Input", "KeyContext", 44);
+	config.set("Input", "KeyStrafe", 224);
+	config.set("Input", "KeyInventory", 43);
+	config.set("Input", "KeyOptions", 41);
+	config.set("Input", "KeyUp", 82);
+	config.set("Input", "KeyDown", 81);
+	config.set("Input", "KeyLeft", 80);
+	config.set("Input", "KeyRight", 79);
+}
 
 static bool run(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
@@ -52,8 +82,6 @@ static bool run(setup_file_t& config, input_t& input, video_t& video, audio_t& a
 	return config.save();
 }
 
-static const byte_t kBootPath[]	= "./data/boot.cfg";
-
 int main(int, char**) {
 	// Basics
 	if (std::atexit(SDL_Quit) != 0) {
@@ -66,9 +94,8 @@ int main(int, char**) {
 	}
 	setup_file_t config;
 	if (!config.load(kBootPath)) {
-		SYNAO_LOG("Couldn't find main configuration file!\n");
-		SYNAO_LOG("Main configuration file must exist at \"./data/boot.cfg\" relative to the executable!\n");
-		return EXIT_FAILURE;
+		SYNAO_LOG("Couldn't find main configuration file! Generating new config file...\n");
+		generate_default_config(config);
 	}
 	// Global input/video/audio devices are generated here...
 	input_t input;

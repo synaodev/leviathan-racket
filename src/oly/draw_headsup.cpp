@@ -2,13 +2,11 @@
 
 #include "../utl/misc.hpp"
 #include "../utl/vfs.hpp"
-
 #include "../eve/receiver.hpp"
 #include "../eve/array.hpp"
-
 #include "../sys/kernel.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 draw_headsup_t::draw_headsup_t() :
 	main_scheme(),

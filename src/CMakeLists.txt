@@ -51,3 +51,7 @@ add_executable(leviathan
 	"${BASIC_SOURCES}"
 	"${BASIC_HEADERS}"
 )
+
+if(WIN32)
+	target_sources(leviathan PUBLIC "./icon.rc")
+endif()

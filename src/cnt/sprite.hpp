@@ -6,7 +6,7 @@
 #include "../utl/rect.hpp"
 #include "../utl/enums.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 struct animation_t;
 struct renderer_t;

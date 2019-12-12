@@ -5,7 +5,7 @@
 #include "../gfx/glad.hpp"
 #include "../gfx/frame_buffer.hpp"
 
-#include <SDL2/SDL_timer.h>
+#include "../res.hpp"
 
 static constexpr sint_t kVideoWidths = 320;
 static constexpr sint_t kVideoHeight = 180;
@@ -142,6 +142,22 @@ bool video_t::init(const setup_file_t& config) {
 	if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
 		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
+	}
+
+	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
+		res::icon::pixels(),
+		res::icon::width(),
+		res::icon::height(),
+		res::icon::depth(),
+		res::icon::pitch(),
+		SDL_PIXELFORMAT_RGBA32
+	);
+	if (surface != nullptr) {
+		SDL_SetWindowIcon(window, surface);
+		SDL_FreeSurface(surface);
+		surface = nullptr;
+	} else {
+		SYNAO_LOG("Icon surface creation failed! SDL Error: %s\n", SDL_GetError());
 	}
 
 	return true;

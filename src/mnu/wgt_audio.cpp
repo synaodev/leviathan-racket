@@ -2,12 +2,11 @@
 
 #include "../utl/vfs.hpp"
 #include "../utl/setup_file.hpp"
-
 #include "../sys/input.hpp"
 #include "../sys/audio.hpp"
 #include "../sys/music.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 static constexpr arch_t kTotalOptions = 2;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);

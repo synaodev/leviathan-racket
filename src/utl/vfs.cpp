@@ -24,6 +24,24 @@ static const byte_t kEventPaths[]	= "data/event/";
 static const byte_t kLangsPaths[]	= "data/event/i18n/";
 static const byte_t kGlobalPaths[]	= "data/event/global/";
 
+static constexpr byte_t kDefaultLang[] = "english";
+static constexpr arch_t kTotalThreads  = 4;
+
+vfs_t::vfs_t() : 
+	thread_pool(),
+	storage_mutex(),
+	language(kDefaultLang),
+	i18n(),
+	noises(),
+	textures(),
+	palettes(),
+	shaders(),
+	fonts(),
+	animations() 
+{
+
+}
+
 vfs_t::~vfs_t() {
 	if (vfs::device != nullptr) {
 		if (vfs::device == this) {
@@ -48,7 +66,7 @@ bool vfs_t::mount(const setup_file_t& config) {
 		SYNAO_LOG("Error! Could not load first language: %s\n", language.c_str());
 		return false;
 	}
-	vfs::device->thread_pool = std::make_unique<thread_pool_t>(vfs::kTotalThreads);
+	vfs::device->thread_pool = std::make_unique<thread_pool_t>(kTotalThreads);
 	if (vfs::device->thread_pool == nullptr) {
 		SYNAO_LOG("Error! Couldn't create thread pool!\n");
 		return false;

@@ -14,7 +14,7 @@ cmake_minimum_required(VERSION 3.13)
 # TMXLITE_LINKDIR
 # ------------------------------
 # ANGELSCRIPT_LIBRARY
-# OPENAL_LIBRARY
+# OPENAL_LIBRARY"
 # OPENGL_LIBRARY
 # SDL2_LIBRARY
 # SDL2_MAIN_LIBRARY
@@ -57,14 +57,12 @@ if(WIN32)
 	set(OPENGL_LIBRARY 		"opengl32.lib")
 	set(SDL2_LIBRARY 		"SDL2.lib")
 	set(SDL2_MAIN_LIBRARY 	"SDL2main.lib")
-
 # ------------------------------ MacOS
 elseif(APPLE)
 	message(FATAL_ERROR "Platform not supported!")
-
 # ------------------------------ Linux
 elseif(UNIX)
-	
+	message(FATAL_ERROR "Platform not supported!")
 else()
 	message(FATAL_ERROR "Platform not supported!")
 endif()
@@ -87,11 +85,19 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	target_compile_options(leviathan PRIVATE "/Zi")
 	set_target_properties(leviathan PROPERTIES
 		CXX_STANDARD 17
-		COMPILE_FLAGS "/MP /wd4201 /wd4458 /wd4706 /wd26812"
-		LINK_FLAGS "/INCREMENTAL:NO /DEBUG /OPT:REF /OPT:ICF"
-		COMPILE_PDB_NAME leviathan
-		COMPILE_PDB_OUTPUT_DIR "${CMAKE_BINARY_DIR}"
+		COMPILE_FLAGS "/MP /sdl /wd4201 /wd4458 /wd4706 /wd26812"
+		COMPILE_PDB_NAME "leviathan"
+		COMPILE_PDB_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}"
 	)
+	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+		set_target_properties(leviathan PROPERTIES
+			LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL:NO"
+		)
+	else()
+		set_target_properties(leviathan PROPERTIES
+			LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF /LTCG:incremental"
+		)
+	endif()
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")

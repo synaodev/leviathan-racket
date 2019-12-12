@@ -10,7 +10,7 @@
 #include "../cnt/liquid.hpp"
 #include "../sys/audio.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
 	SYNAO_CTOR_TABLE_PUSH(ai::shoshi_normal::type, 	ai::shoshi_normal::ctor);

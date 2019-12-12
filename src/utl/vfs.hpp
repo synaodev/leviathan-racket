@@ -18,7 +18,6 @@ struct setup_file_t;
 struct vfs_t;
 
 namespace vfs {
-	static constexpr arch_t kTotalThreads = 4;
 	static vfs_t* device = nullptr;
 	std::back_insert_iterator<std::u32string> to_utf32(
 		std::string::const_iterator begin, 
@@ -51,17 +50,9 @@ namespace vfs {
 
 struct vfs_t : public not_copyable_t {
 public:
-	vfs_t() : 
-		thread_pool(),
-		storage_mutex(),
-		language(),
-		i18n(),
-		noises(),
-		textures(),
-		palettes(),
-		shaders(),
-		fonts(),
-		animations() {}
+	vfs_t();
+	vfs_t(vfs_t&&) = default;
+	vfs_t& operator=(vfs_t&&) = default;
 	~vfs_t();
 	bool mount(const setup_file_t& config);
 	template<typename T>

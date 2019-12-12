@@ -6,7 +6,7 @@
 #include "../cnt/sprite.hpp"
 #include "../cnt/blinker.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
 	SYNAO_CTOR_TABLE_PUSH(ai::kyoko::type, 		ai::kyoko::ctor);

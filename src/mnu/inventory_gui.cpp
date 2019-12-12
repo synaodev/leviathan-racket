@@ -3,17 +3,14 @@
 #include "./dialogue_gui.hpp"
 
 #include "../utl/vfs.hpp"
-
 #include "../eve/receiver.hpp"
-
 #include "../oly/draw_title_view.hpp"
-
 #include "../sys/input.hpp"
 #include "../sys/audio.hpp"
 #include "../sys/renderer.hpp"
 #include "../sys/kernel.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 static constexpr arch_t kWrongItem = (arch_t)-1;
 static constexpr arch_t kTotalItem = 30;

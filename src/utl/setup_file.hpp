@@ -40,6 +40,8 @@ public:
 	bool load(const std::string& full_path);
 	bool save(const std::string& full_path);
 	bool save();
+	void clear(const std::string& full_path);
+	void clear();
 	bool exists(const std::string& title) const;
 	arch_t size() const;
 	bool read(std::ifstream& file);

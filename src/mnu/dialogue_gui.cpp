@@ -9,7 +9,7 @@
 #include "../sys/audio.hpp"
 #include "../sys/renderer.hpp"
 
-#include "../res_id.hpp"
+#include "../res.hpp"
 
 static const glm::vec2 kDefaultRect = glm::vec2(256.0f, 56.0f);
 static const glm::vec2 kFacesOffset = glm::vec2(10.0f, 4.0f);
