@@ -79,7 +79,8 @@ namespace vfs {
 	const texture_t* texture(const std::string& name);
 	const palette_t* palette(const std::string& name, const std::string& directory);
 	const palette_t* palette(const std::string& name);
-	const shader_t* shader(const std::string& name, shader_stage_t stage);
+	const shader_t* shader_load(const std::string& name, shader_stage_t stage);
+	const shader_t* shader_from(const std::string& name, const std::string& source, shader_stage_t stage);
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
 	const animation_t* animation(const std::string& name);

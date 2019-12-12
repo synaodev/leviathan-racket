@@ -352,7 +352,7 @@ const palette_t* vfs::palette(const std::string& name) {
 	return vfs::palette(name, kPalettePath);
 }
 
-const shader_t* vfs::shader(const std::string& name, shader_stage_t stage) {
+const shader_t* vfs::shader_load(const std::string& name, shader_stage_t stage) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -374,6 +374,34 @@ const shader_t* vfs::shader(const std::string& name, shader_stage_t stage) {
 		);
 		return nullptr;
 	}
+	return &it->second;
+}
+
+const shader_t* vfs::shader_from(const std::string& name, const std::string& source, shader_stage_t stage) {
+	if (vfs::device != nullptr) {
+		return nullptr;
+	}
+	auto it = vfs::device->shaders.find(name);
+	if (it == vfs::device->shaders.end()) {
+		shader_t& ref = vfs::device->allocate_safely(name, vfs::device->shaders);
+		if (!ref.from(source, stage)) {
+			SYNAO_LOG(
+				"Failed to create shader from source named %s!\n", 
+				name.c_str()
+			);
+		}
+		return &ref;
+	} else if (!it->second.matches(stage)) {
+		SYNAO_LOG(
+			"Found shader %s should have different stage!\n", 
+			name.c_str()
+		);
+		return nullptr;
+	}
+	SYNAO_LOG(
+		"Tried to create shader twice from source named %s!\n", 
+		name.c_str()
+	);
 	return &it->second;
 }
 

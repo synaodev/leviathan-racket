@@ -4,12 +4,22 @@
 #include <glm/mat4x4.hpp>
 
 #include "../utl/enums.hpp"
-#include "../utl/render_pass.hpp"
 #include "../gfx/const_buffer.hpp"
 #include "../gfx/quad_batch.hpp"
 
 struct setup_file_t;
 struct video_t;
+
+namespace __enum_render_pass {
+	enum type : arch_t {
+		VtxBlankColors,
+		VtxMajorSprites,
+		VtxMajorIndexed,
+		Total
+	};
+}
+
+using render_pass_t = __enum_render_pass::type;
 
 struct renderer_t : public not_copyable_t {
 public:

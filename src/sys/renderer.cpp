@@ -5,6 +5,8 @@
 #include "../utl/vfs.hpp"
 #include "../gfx/frame_buffer.hpp"
 
+// #include <sstream>
+// #include <SDL2/SDL_opengl.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 static constexpr arch_t kMaxIndices = 65535;
@@ -70,11 +72,11 @@ bool renderer_t::init(const setup_file_t&) {
 	);
 	graphics_state.set_buffer(&viewport_buffer, 0);
 
-	const shader_t* blank = vfs::shader("blank", shader_stage_t::Vertex);
-	const shader_t* major = vfs::shader("major", shader_stage_t::Vertex);
+	const shader_t* blank = vfs::shader_load("blank", shader_stage_t::Vertex);
+	const shader_t* major = vfs::shader_load("major", shader_stage_t::Vertex);
 	bool result = programs[render_pass_t::VtxBlankColors].create(
 		blank,
-		vfs::shader("colors", shader_stage_t::Fragment)
+		vfs::shader_load("colors", shader_stage_t::Fragment)
 	);
 	if (!result) {
 		SYNAO_LOG("VtxBlankColors program creation failed!\n");
@@ -82,7 +84,7 @@ bool renderer_t::init(const setup_file_t&) {
 	}
 	result = programs[render_pass_t::VtxMajorSprites].create(
 		major,
-		vfs::shader("sprites", shader_stage_t::Fragment)
+		vfs::shader_load("sprites", shader_stage_t::Fragment)
 	);
 	if (!result) {
 		SYNAO_LOG("VtxMajorSprites program creation failed!\n");
@@ -90,7 +92,7 @@ bool renderer_t::init(const setup_file_t&) {
 	}
 	result = programs[render_pass_t::VtxMajorIndexed].create(
 		major,
-		vfs::shader("indexed", shader_stage_t::Fragment)
+		vfs::shader_load("indexed", shader_stage_t::Fragment)
 	);
 	if (!result) {
 		SYNAO_LOG("VtxMajorIndexed program creation failed!\n");
@@ -221,3 +223,13 @@ quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mod
 		nullptr, nullptr	
 	);
 }
+
+/*program_t renderer_t::generate(render_pass_t pass) {
+	std::ostringstream os;
+	sint_t major = 0;
+	sint_t minor = 0;
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
+	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
+	os << "#version " << major << minor << "0 core\n";
+}
+*/

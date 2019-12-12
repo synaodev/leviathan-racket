@@ -24,6 +24,7 @@ public:
 	~shader_t();
 public:
 	bool load(const std::string& full_path, shader_stage_t stage);
+	bool from(const std::string& source, shader_stage_t stage);
 	void destroy();
 	bool matches(shader_stage_t _stage) const;
 	static const byte_t* extension(shader_stage_t stage);

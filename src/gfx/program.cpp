@@ -30,10 +30,10 @@ shader_t::~shader_t() {
 	this->destroy();
 }
 
-bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
+bool shader_t::from(const std::string& source, shader_stage_t stage) {
 	if (!handle) {
 		this->stage = stage;
-		const std::string source = vfs::string_buffer(full_path);
+		
 		const byte_t* source_pointer = source.c_str();
 		if (program_t::has_pipelines()) {
 			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
@@ -62,6 +62,14 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 				return false;
 			}
 		}
+	}
+	return true;
+}
+
+bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
+	if (!handle) {
+		const std::string source = vfs::string_buffer(full_path);
+		return this->from(source, stage);
 	}
 	return true;
 }
