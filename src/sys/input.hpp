@@ -9,6 +9,16 @@
 
 struct setup_file_t;
 
+namespace __enum_policy {
+	enum type : arch_t {
+		Run,
+		Stop,
+		Quit
+	};
+}
+
+using policy_t = __enum_policy::type;
+
 namespace __enum_btn {
 	enum type : arch_t {
 		Jump, 
@@ -40,7 +50,7 @@ public:
 	~input_t();
 public:
 	bool init(const setup_file_t& config);
-	void poll(policy_t& policy);
+	policy_t poll(policy_t policy);
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
 public:

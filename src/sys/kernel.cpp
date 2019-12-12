@@ -61,11 +61,9 @@ void kernel_t::reset(const std::string& field) {
 	std::fill(flags.begin(), flags.end(), 0);
 }
 
-void kernel_t::handle(policy_t& policy) {
-	if (bitmask[kernel_state_t::Quit]) {
-		policy = policy_t::Quit;
-	} else if (!bitmask.any()) {
-		timer += misc::kIntervalMin;
+void kernel_t::update(real64_t delta) {
+	if (!bitmask.any()) {
+		timer += delta;
 	}
 }
 

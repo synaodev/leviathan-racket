@@ -30,6 +30,7 @@ struct setup_file_t;
 struct input_t;
 struct audio_t;
 struct music_t;
+struct renderer_t;
 
 struct kernel_t : public not_copyable_t {
 public:
@@ -40,7 +41,7 @@ public:
 public:
 	void reset(const setup_file_t& config);
 	void reset(const std::string& field);
-	void handle(policy_t& policy);
+	void update(real64_t delta);
 	void read_data(const setup_file_t& file);
 	void read_stream(const std::string& path);
 	void write_data(setup_file_t& file) const;

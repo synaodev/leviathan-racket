@@ -27,7 +27,7 @@ bool input_t::init(const setup_file_t& config) {
 	this->all_key_bindings(config);
 	this->all_joy_bindings(config);
 	if (joystick != nullptr) {
-		SYNAO_LOG("Joystick already exists!");
+		SYNAO_LOG("Error! Joystick already exists!\n");
 		return false;
 	}
 	if (SDL_NumJoysticks() != 0) {
@@ -43,13 +43,12 @@ bool input_t::init(const setup_file_t& config) {
 	return true;
 }
 
-void input_t::poll(policy_t& policy) {
+policy_t input_t::poll(policy_t policy) {
 	SDL_Event evt;
 	while(SDL_PollEvent(&evt)) {
 		switch (evt.type) {
 		case SDL_QUIT: {
 			policy = policy_t::Quit;
-			break;
 		}
 		case SDL_WINDOWEVENT: {
 			if (evt.window.type == SDL_WINDOWEVENT_FOCUS_GAINED) {
@@ -198,6 +197,7 @@ void input_t::poll(policy_t& policy) {
 		}
 		}
 	}
+	return policy;
 }
 
 bool input_t::get_button_pressed(btn_t btn) const {

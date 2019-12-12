@@ -1,7 +1,6 @@
 #ifndef SYNAO_UTILITY_VFS_HPP
 #define SYNAO_UTILITY_VFS_HPP
 
-#include <memory>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -16,47 +15,11 @@
 #include "./thread_pool.hpp"
 
 struct setup_file_t;
+struct vfs_t;
 
 namespace vfs {
-	struct __vfs_t;
-	static __vfs_t* device = nullptr;
-	struct __vfs_t : public not_copyable_t {
-	public:
-		__vfs_t() : 
-			thread_pool(),
-			storage_mutex(),
-			language(),
-			i18n(),
-			noises(),
-			textures(),
-			palettes(),
-			shaders(),
-			fonts(),
-			animations() {}
-		~__vfs_t() {
-			if (this == vfs::device) {
-				vfs::device = nullptr;
-			}
-		}
-		template<typename T>
-		T& allocate_safely(const std::string& name, std::unordered_map<std::string, T>& map) {
-			std::lock_guard<std::mutex> lock{vfs::device->storage_mutex};
-			return map[name];
-		}
-	public:
-		static constexpr arch_t kTotalThreads = 4;
-		std::unique_ptr<thread_pool_t> thread_pool;
-		std::mutex storage_mutex;
-		std::string language;
-		std::unordered_map<std::string, std::vector<std::string> > i18n;
-		std::unordered_map<std::string, noise_t> noises;
-		std::unordered_map<std::string, texture_t> textures;
-		std::unordered_map<std::string, palette_t> palettes;
-		std::unordered_map<std::string, shader_t> shaders;
-		std::unordered_map<std::string, font_t> fonts;
-		std::unordered_map<std::string, animation_t> animations;
-	};
-	std::unique_ptr<__vfs_t> mount(const setup_file_t& config);
+	static constexpr arch_t kTotalThreads = 4;
+	static vfs_t* device = nullptr;
 	std::back_insert_iterator<std::u32string> to_utf32(
 		std::string::const_iterator begin, 
 		std::string::const_iterator end, 
@@ -85,5 +48,38 @@ namespace vfs {
 	const font_t* font(arch_t index);
 	const animation_t* animation(const std::string& name);
 }
+
+struct vfs_t : public not_copyable_t {
+public:
+	vfs_t() : 
+		thread_pool(),
+		storage_mutex(),
+		language(),
+		i18n(),
+		noises(),
+		textures(),
+		palettes(),
+		shaders(),
+		fonts(),
+		animations() {}
+	~vfs_t();
+	bool mount(const setup_file_t& config);
+	template<typename T>
+	T& allocate_safely(const std::string& name, std::unordered_map<std::string, T>& map) {
+		std::lock_guard<std::mutex> lock{this->storage_mutex};
+		return map[name];
+	}
+public:
+	std::unique_ptr<thread_pool_t> thread_pool;
+	std::mutex storage_mutex;
+	std::string language;
+	std::unordered_map<std::string, std::vector<std::string> > i18n;
+	std::unordered_map<std::string, noise_t> noises;
+	std::unordered_map<std::string, texture_t> textures;
+	std::unordered_map<std::string, palette_t> palettes;
+	std::unordered_map<std::string, shader_t> shaders;
+	std::unordered_map<std::string, font_t> fonts;
+	std::unordered_map<std::string, animation_t> animations;
+};
 
 #endif // SYNAO_UTILITY_VFS_HPP

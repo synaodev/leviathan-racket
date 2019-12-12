@@ -61,11 +61,32 @@ bool runtime_t::init(const setup_file_t& config, input_t& input, audio_t& audio,
 	return true;
 }
 
-void runtime_t::handle(setup_file_t& config, policy_t& policy, input_t& input, video_t& video, audio_t& audio, music_t& music) {
+bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	while (this->viable()) {
 		accum = glm::max(accum - misc::kIntervalMin, 0.0);
-		kernel.handle(policy);
-		receiver.handle(policy, input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
+		if (headsup.is_fade_done()) {
+			if (kernel.has(kernel_state_t::Boot)) {
+				this->setup_boot(config, renderer);
+			}
+			if (kernel.has(kernel_state_t::Load)) {
+				this->setup_load();
+			}
+			if (kernel.has(kernel_state_t::Field)) {
+				if (!this->setup_field(audio, renderer)) {
+					return false;
+				}
+			}
+		}
+		if (kernel.has(kernel_state_t::Save)) {
+			this->setup_save();
+		}
+		if (kernel.has(kernel_state_t::Quit)) {
+			return false;
+		}
+#ifdef SYNAO_DEBUG_BUILD
+		this->setup_debug(input, renderer);
+#endif // SYNAO_DEBUG_BUILD
+		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
 		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
 		dialogue_gui.handle(input, audio);
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
@@ -80,26 +101,12 @@ void runtime_t::handle(setup_file_t& config, policy_t& policy, input_t& input, v
 		input.pressed.reset();
 		audio.flush();
 	}
+	return true;
 }
 
-void runtime_t::update(real64_t delta, const setup_file_t& config, policy_t& policy, input_t& input, audio_t& audio, renderer_t& renderer) {
-	if (headsup.is_fade_done()) {
-		if (kernel.has(kernel_state_t::Boot)) {
-			this->setup_boot(config, renderer);
-		}
-		if (kernel.has(kernel_state_t::Load)) {
-			this->setup_load();
-		}
-		if (kernel.has(kernel_state_t::Field)) {
-			if (!this->setup_field(audio, renderer)) {
-				policy = policy_t::Quit;
-			}
-		}
-	}
-	if (kernel.has(kernel_state_t::Save)) {
-		this->setup_save();
-	}
+void runtime_t::update(real64_t delta) {
 	accum += delta;
+	kernel.update(delta);
 	stack_gui.update(delta);
 	dialogue_gui.update(delta);
 	inventory_gui.update(delta);
@@ -108,9 +115,6 @@ void runtime_t::update(real64_t delta, const setup_file_t& config, policy_t& pol
 		camera.update(delta);
 		kontext.update(delta);
 	}
-#ifdef SYNAO_DEBUG_BUILD
-	this->setup_debug(input, renderer);
-#endif // SYNAO_DEBUG_BUILD
 }
 
 void runtime_t::render(const video_t& video, renderer_t& renderer) const {
@@ -141,6 +145,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	kontext.reset();
 	tilemap.reset();
 	if (!receiver.load(kernel)) {
+		kernel.finish_field();
 		return false;
 	}
 	receiver.run_field(kernel);
@@ -148,12 +153,11 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
 		SYNAO_LOG("Map file loading failed! Map Path: %s\n", full_path.c_str());
+		kernel.finish_field();
 		return false;
 	}
 	camera.set_view_limits(
-		tmx_convert::rect_to_rect(
-			tmxmap.getBounds()
-		)
+		tmx_convert::rect_to_rect(tmxmap.getBounds())
 	);
 	tilemap.push_properties(tmxmap);
 	for (auto&& layer : tmxmap.getLayers()) {
@@ -248,7 +252,6 @@ void runtime_t::setup_save() {
 #ifdef SYNAO_DEBUG_BUILD
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 	if (input.pressed[btn_t::Editor]) {
-		input.pressed.reset(btn_t::Editor);
 		if (!input.holding[btn_t::Inventory]) {
 			SYNAO_LOG(
 				"Draw Calls : %d\n",

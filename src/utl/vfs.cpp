@@ -24,33 +24,36 @@ static const byte_t kEventPaths[]	= "data/event/";
 static const byte_t kLangsPaths[]	= "data/event/i18n/";
 static const byte_t kGlobalPaths[]	= "data/event/global/";
 
-std::unique_ptr<vfs::__vfs_t> vfs::mount(const setup_file_t& config) {
+vfs_t::~vfs_t() {
 	if (vfs::device != nullptr) {
-		SYNAO_LOG("Error! Virtual file system already exists!\n");
-		return nullptr;
+		if (vfs::device == this) {
+			vfs::device = nullptr;
+		} else {
+			SYNAO_LOG("Error! There should not be more than one virtual filesystem!\n");
+		}
 	}
-	auto result = std::make_unique<vfs::__vfs_t>();
-	if (result == nullptr) {
-		SYNAO_LOG("Error! Could not allocate virtual file system!\n");
-		result.reset();
-		return nullptr;
+}
+
+bool vfs_t::mount(const setup_file_t& config) {
+	if (vfs::device == this) {
+		SYNAO_LOG("Error! This virtual file system already exists!\n");
+		return false;
+	} else if (vfs::device != nullptr) {
+		SYNAO_LOG("Error! Another virtual filesystem already exists!\n");
+		return false;
 	}
-	vfs::device = result.get();
-	config.get("Setup", "Language", result->language);
-	if (!vfs::try_language(result->language)) {
-		SYNAO_LOG(
-			"Error! Could not load first language: %s\n", 
-			result->language.c_str()
-		);
-		result.reset();
-		return nullptr;
+	vfs::device = this;
+	config.get("Setup", "Language", language);
+	if (!vfs::try_language(language)) {
+		SYNAO_LOG("Error! Could not load first language: %s\n", language.c_str());
+		return false;
 	}
-	result->thread_pool = std::make_unique<thread_pool_t>(__vfs_t::kTotalThreads);
-	if (!result->thread_pool) {
+	vfs::device->thread_pool = std::make_unique<thread_pool_t>(vfs::kTotalThreads);
+	if (vfs::device->thread_pool == nullptr) {
 		SYNAO_LOG("Error! Couldn't create thread pool!\n");
-		return nullptr;
+		return false;
 	}
-	return result;
+	return true;
 }
 
 static std::string::const_iterator decode(std::string::const_iterator begin, std::string::const_iterator end, uint_t& output, uint_t replacement = 0) {

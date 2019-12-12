@@ -39,7 +39,7 @@ receiver_t::receiver_t() :
 	boot(nullptr),
 	events()
 {
-	ANGELSCRIPT_VERSION_STRING;
+	
 }
 
 receiver_t::~receiver_t() {
@@ -102,7 +102,19 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	return true;
 }
 
-void receiver_t::handle(policy_t& policy, const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, draw_headsup_t& headsup) {
+void receiver_t::reset() {
+	if (bitmask[rec_bits_t::Running]) {
+		state->Abort();
+		state->Unprepare();
+	}
+	bitmask[rec_bits_t::Running] = false;
+	bitmask[rec_bits_t::Waiting] = false;
+	bitmask[rec_bits_t::Stalled] = false;
+	timer = 0.0;
+	this->discard_all_events();
+}
+
+void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, draw_headsup_t& headsup) {
 	if (bitmask[rec_bits_t::Running]) {
 		if (!headsup.is_fade_moving() and !dialogue_gui.get_flag(dialogue_flag_t::Question)) {
 			if (bitmask[rec_bits_t::Stalled]) {
@@ -123,10 +135,11 @@ void receiver_t::handle(policy_t& policy, const input_t& input, kernel_t& kernel
 			} else {
 				sint_t r = state->Execute();
 				switch (r) {
-				case asEXECUTION_SUSPENDED:
+				case asEXECUTION_SUSPENDED: {
 					break;
+				}
 				case asEXECUTION_FINISHED:
-				case asEXECUTION_ABORTED:
+				case asEXECUTION_ABORTED: {
 					this->close_dependencies(
 						kernel, 
 						stack_gui, 
@@ -134,33 +147,27 @@ void receiver_t::handle(policy_t& policy, const input_t& input, kernel_t& kernel
 						dialogue_gui
 					);
 					break;
-				case asEXECUTION_EXCEPTION:
-					policy = policy_t::Quit;
+				}
+				case asEXECUTION_EXCEPTION: {
+					bitmask.reset();
+					timer = 0.0;
 					SYNAO_LOG(
 						"Running script threw an exception!\n%s\n%s at line %d!\n",
 						state->GetExceptionString(),
 						state->GetExceptionFunction()->GetName(),
 						state->GetExceptionLineNumber()
 					);
+					state->Abort();
+					state->Unprepare();
 					break;
-				default:
+				}
+				default: {
 					break;
+				}
 				}
 			}
 		}
 	}
-}
-
-void receiver_t::reset() {
-	if (bitmask[rec_bits_t::Running]) {
-		state->Abort();
-		state->Unprepare();
-	}
-	bitmask[rec_bits_t::Running] = false;
-	bitmask[rec_bits_t::Waiting] = false;
-	bitmask[rec_bits_t::Stalled] = false;
-	timer = 0.0;
-	this->discard_all_events();
 }
 
 bool receiver_t::running() const {

@@ -5,8 +5,8 @@
 #include "../utl/vfs.hpp"
 #include "../sfx/alcheck.hpp"
 
+// Needed in order to quell annoying warnings...
 #define _CRT_SECURE_NO_WARNINGS
-
 #include "../pxt/pxtnService.h"
 #include "../pxt/pxtnError.h"
 

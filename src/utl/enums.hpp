@@ -71,14 +71,4 @@ inline direction_t& operator&=(direction_t& lhv, const direction_t& rhv) {
 	return lhv;
 }
 
-namespace __enum_policy {
-	enum type : arch_t {
-		Run,
-		Stop,
-		Quit
-	};
-}
-
-using policy_t = __enum_policy::type;
-
 #endif // SYNAO_UTILITY_ENUMS_HPP
