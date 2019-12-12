@@ -201,7 +201,7 @@ void assign_item(const std::string &in wpn_name, arch_t index) // Set Weapon
 	}
 }
 
-void inven_menu(arch_t type, arch_t index) // Using Inventory
+void inven(arch_t type, arch_t index) // Using Inventory
 {
 	if(sys::getKeyHeld(Input::Yes))
 	{

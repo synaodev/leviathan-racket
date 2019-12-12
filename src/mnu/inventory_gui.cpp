@@ -45,12 +45,14 @@ void inventory_gui_element_t::reset(glm::ivec4 item) {
 		scheme.set_direction(
 			static_cast<direction_t>(item.x - 1)
 		);
+		scheme.force();
 		if ((item.y > 1 and !item.w) or (item.w != 0)) {
 			count.set_visible(true);
 			count.set_value(item.y);
 		} else {
 			count.set_visible(false);
 		}
+		count.force();
 	} else {
 		visible = false;
 	}
@@ -117,7 +119,7 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 			if (input.pressed[btn_t::Jump] or input.pressed[btn_t::Hammer]) {
 				if (!receiver.running()) {
 					arch_t cursor_index = kernel.get_cursor_index();
-					glm::ivec4 item_data = kernel.get_item_at(cursor_index);  
+					glm::ivec4 item_data = kernel.get_item_at(cursor_index);
 					arch_t item_type = static_cast<arch_t>(item_data.x);
 					receiver.run_inventory(item_type, cursor_index);
 					audio.play(res::sfx::TitleBeg, 0);
