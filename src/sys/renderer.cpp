@@ -5,8 +5,6 @@
 #include "../utl/vfs.hpp"
 #include "../gfx/frame_buffer.hpp"
 
-// #include <sstream>
-// #include <SDL2/SDL_opengl.h>
 #include <glm/gtc/matrix_transform.hpp>
 
 static constexpr arch_t kMaxIndices = 65535;
@@ -136,6 +134,40 @@ void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
 	graphics_state.set_buffer(&projection_buffer, 0);
 	for (auto&& batch : overlay_quads) {
 		batch.flush(&graphics_state);
+	}
+}
+
+void renderer_t::flush(const glm::ivec2& dimensions) {
+	// Draw Overlay Quads (Only)
+	frame_buffer_t::clear(dimensions);
+	graphics_state.set_buffer(&projection_buffer, 0);
+	for (auto&& batch : overlay_quads) {
+		batch.flush(&graphics_state);
+	}
+}
+
+void renderer_t::ortho(glm::ivec2 integral_dimensions) {
+	if (projection_buffer.valid() and viewport_buffer.valid()) {
+		glm::vec2 dimensions = glm::vec2(integral_dimensions);
+		gk_projection_matrix = glm::ortho(0.0f, dimensions.x, dimensions.y, 0.0f);
+		gk_viewport_matrix = gk_projection_matrix;
+		gk_video_dimensions = dimensions;
+		gk_video_resolution = dimensions;
+		projection_buffer.update(
+			&gk_projection_matrix,
+			sizeof(glm::mat4)
+		);
+		projection_buffer.update(
+			&gk_video_dimensions,
+			sizeof(glm::vec2) + sizeof(glm::vec2),
+			sizeof(glm::mat4)
+		);
+		viewport_buffer.update(
+			&gk_viewport_matrix,
+			sizeof(glm::mat4) + 
+			sizeof(glm::vec2) + 
+			sizeof(glm::vec2)
+		);
 	}
 }
 

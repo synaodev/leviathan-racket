@@ -4,6 +4,7 @@
 #include <bitset>
 #include <unordered_map>
 #include <SDL2/SDL_joystick.h>
+#include <SDL2/SDL_events.h>
 
 #include "../utl/enums.hpp"
 
@@ -35,7 +36,9 @@ namespace __enum_btn {
 		Down, 
 		Left, 
 		Right,
-		Editor, 
+		Editor,
+		ClickL,
+		ClickR,
 		Total
 	};
 }
@@ -50,11 +53,13 @@ public:
 	~input_t();
 public:
 	bool init(const setup_file_t& config);
+	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
 public:
 	std::bitset<btn_t::Total> pressed, holding;
+	glm::vec2 position;
 private:
 	void all_key_bindings(const setup_file_t& config);
 	void all_joy_bindings(const setup_file_t& config);

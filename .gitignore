@@ -17,3 +17,4 @@ data/save/file_2/cpntstat.cfg
 data/save/file_2/progflag.bin
 data/save/file_2/progstat.cfg
 CMakeSettings.json
+imgui.ini

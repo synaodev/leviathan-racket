@@ -31,6 +31,8 @@ public:
 	bool init(const setup_file_t& config);
 	void clear();
 	void flush(const video_t& video, const glm::mat4& viewport_matrix);
+	void flush(const glm::ivec2& dimensions);
+	void ortho(glm::ivec2 integral_dimensions);
 	arch_t get_draw_calls() const;
 	quad_batch_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
 	quad_batch_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, render_pass_t render_pass, const texture_t* texture, const palette_t* palette);

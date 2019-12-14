@@ -9,6 +9,7 @@
 
 static constexpr sint_t kVideoWidths = 320;
 static constexpr sint_t kVideoHeight = 180;
+static constexpr sint_t kImguiWidths = 800;
 
 static const byte_t kWindowName[] = "Leviathan Racket";
 
@@ -31,7 +32,7 @@ video_t::~video_t() {
 	}
 }
 
-bool video_t::init(const setup_file_t& config) {
+bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	bool_t use_opengl_4 = true;
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
@@ -86,14 +87,25 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	window = SDL_CreateWindow(
-		kWindowName,
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		kVideoWidths * params.scaling,
-		kVideoHeight * params.scaling,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-	);
+	if (start_imgui) {
+		window = SDL_CreateWindow(
+			kWindowName,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			kImguiWidths,
+			kImguiWidths,
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+		);
+	} else {
+		window = SDL_CreateWindow(
+			kWindowName,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			kVideoWidths * params.scaling,
+			kVideoHeight * params.scaling,
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+		);
+	}	
 
 	if (window == nullptr) {
 		SYNAO_LOG("Window creation failed! SDL Error: %s\n", SDL_GetError());
@@ -132,14 +144,21 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	frame_buffer_t::clear(
-		glm::ivec2(kVideoWidths, kVideoHeight) * params.scaling,
-		glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
-	);
+	if (start_imgui) {
+		frame_buffer_t::clear(
+			glm::ivec2(kImguiWidths),
+			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
+		);
+	} else {
+		frame_buffer_t::clear(
+			glm::ivec2(kVideoWidths, kVideoHeight) * params.scaling,
+			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
+		);
+	}
 
 	SDL_GL_SwapWindow(window);
 
-	if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
+	if (!start_imgui and SDL_GL_SetSwapInterval(params.vsync) < 0) {
 		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
@@ -159,7 +178,6 @@ bool video_t::init(const setup_file_t& config) {
 	} else {
 		SYNAO_LOG("Icon surface creation failed! SDL Error: %s\n", SDL_GetError());
 	}
-
 	return true;
 }
 
@@ -233,4 +251,8 @@ glm::ivec2 video_t::get_integral_dimensions() const {
 		kVideoWidths,
 		kVideoHeight
 	);
+}
+
+glm::ivec2 video_t::get_imgui_dimensions() const {
+	return glm::ivec2(kImguiWidths);
 }

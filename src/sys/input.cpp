@@ -3,12 +3,10 @@
 #include "../utl/logger.hpp"
 #include "../utl/setup_file.hpp"
 
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_timer.h>
-
 input_t::input_t() :
 	pressed(0),
 	holding(0),
+	position(0.0f),
 	key_bind(),
 	joy_bind(),
 	joystick(nullptr)
@@ -43,9 +41,18 @@ bool input_t::init(const setup_file_t& config) {
 	return true;
 }
 
-policy_t input_t::poll(policy_t policy) {
+policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 	SDL_Event evt;
-	while(SDL_PollEvent(&evt)) {
+	while (SDL_PollEvent(&evt) != 0) {
+		if (callback != nullptr) {
+			std::invoke(callback, &evt);
+			glm::ivec2 integral_position = glm::zero<glm::ivec2>();
+			SDL_GetMouseState(
+				&integral_position.x, 
+				&integral_position.y
+			);
+			position = glm::vec2(integral_position);
+		}
 		switch (evt.type) {
 		case SDL_QUIT: {
 			policy = policy_t::Quit;
@@ -81,6 +88,21 @@ policy_t input_t::poll(policy_t policy) {
 				btn_t btn = it->second;
 				holding[btn] = false;
 			}
+			break;
+		}
+		case SDL_MOUSEBUTTONDOWN: {
+			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ? 
+				btn_t::ClickL :
+				btn_t::ClickR;
+			pressed[btn] = !holding[btn];
+			holding[btn] = true;
+			break;
+		}
+		case SDL_MOUSEBUTTONUP: {
+			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ? 
+				btn_t::ClickL :
+				btn_t::ClickR;
+			holding[btn] = false;
 			break;
 		}
 		case SDL_JOYAXISMOTION: {
@@ -198,6 +220,10 @@ policy_t input_t::poll(policy_t policy) {
 		}
 	}
 	return policy;
+}
+
+policy_t input_t::poll(policy_t policy) {
+	return this->poll(policy, nullptr);
 }
 
 bool input_t::get_button_pressed(btn_t btn) const {

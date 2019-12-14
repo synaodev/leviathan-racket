@@ -1,6 +1,7 @@
 #ifndef SYNAO_MAIN_VIDEO_HPP
 #define SYNAO_MAIN_VIDEO_HPP
 
+#include <tuple>
 #include <SDL2/SDL_video.h>
 
 #include "../utl/watch.hpp"
@@ -41,13 +42,17 @@ public:
 	video_t& operator=(video_t&&) = default;
 	~video_t();
 public:
-	bool init(const setup_file_t& config);
+	bool init(const setup_file_t& config, bool start_imgui = false);
 	void submit(const frame_buffer_t* frame_buffer, arch_t index) const;
 	void flip() const;
 	void set_parameters(screen_params_t params);
 	screen_params_t get_parameters() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
+	glm::ivec2 get_imgui_dimensions() const;
+	auto get_device() const {
+		return std::make_tuple(window, context);
+	}
 private:
 	SDL_Window* window;
 	SDL_GLContext context;

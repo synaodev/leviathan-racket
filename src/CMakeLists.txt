@@ -10,6 +10,8 @@ file(GLOB FIELD_SOURCES 		"./fld/[a-zA-Z]*.cpp")
 file(GLOB FIELD_HEADERS 		"./fld/[a-zA-Z]*.hpp")
 file(GLOB GRAPHICS_SOURCES 		"./gfx/[a-zA-Z]*.cpp")
 file(GLOB GRAPHICS_HEADERS 		"./gfx/[a-zA-Z]*.hpp")
+file(GLOB IMGUI_SOURCES 		"./gui/[a-zA-Z]*.cpp")
+file(GLOB IMGUI_HEADERS 		"./gui/[a-zA-Z]*.h")
 file(GLOB MENU_SOURCES 			"./mnu/[a-zA-Z]*.cpp")
 file(GLOB MENU_HEADERS 			"./mnu/[a-zA-Z]*.hpp")
 file(GLOB OVERLAY_SOURCES		"./oly/[a-zA-Z]*.cpp")
@@ -36,6 +38,8 @@ add_executable(leviathan
 	"${FIELD_HEADERS}"
 	"${GRAPHICS_SOURCES}"
 	"${GRAPHICS_HEADERS}"
+	"${IMGUI_SOURCES}"
+	"${IMGUI_HEADERS}"
 	"${MENU_SOURCES}"
 	"${MENU_HEADERS}"
 	"${OVERLAY_SOURCES}"
