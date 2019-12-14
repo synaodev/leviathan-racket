@@ -274,13 +274,31 @@ void input_t::all_key_bindings(const setup_file_t& config) {
 	key_bind[editor]	= btn_t::Editor;
 }
 
-void input_t::all_joy_bindings(const setup_file_t&) {
-	joy_bind[0] = btn_t::Jump;
-	joy_bind[1] = btn_t::Hammer;
-	joy_bind[2] = btn_t::Item;
-	joy_bind[3] = btn_t::Dash;
-	joy_bind[4] = btn_t::Context;
-	joy_bind[5] = btn_t::Strafe;
-	joy_bind[6] = btn_t::Inventory;
-	joy_bind[7] = btn_t::Options;
+void input_t::all_joy_bindings(const setup_file_t& config) {
+	sint_t jump		= 0;
+	sint_t hammer	= 1;
+	sint_t item		= 2;
+	sint_t litedash = 3;
+	sint_t context	= 4;
+	sint_t strafe	= 5;
+	sint_t inven	= 6;
+	sint_t options	= 7;
+
+	config.get("Input", "JoyJump",		jump);
+	config.get("Input", "JoyHammer",	hammer);
+	config.get("Input", "JoyItem",		item);
+	config.get("Input", "JoyLiteDash",	litedash);
+	config.get("Input", "JoyContext",	context);
+	config.get("Input", "JoyStrafe",	strafe);
+	config.get("Input", "JoyInventory",	inven);
+	config.get("Input", "JoyOptions",	options);
+
+	joy_bind[jump] 		= btn_t::Jump;
+	joy_bind[hammer] 	= btn_t::Hammer;
+	joy_bind[item] 		= btn_t::Item;
+	joy_bind[litedash] 	= btn_t::Dash;
+	joy_bind[context] 	= btn_t::Context;
+	joy_bind[strafe] 	= btn_t::Strafe;
+	joy_bind[inven] 	= btn_t::Inventory;
+	joy_bind[options] 	= btn_t::Options;
 }

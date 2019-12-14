@@ -2,8 +2,8 @@
 .vscode/
 AS_DEBUG/
 build/
-test/
 out/
+data/boot.cfg
 data/save/file_0/cpntflag.bin
 data/save/file_0/cpntstat.cfg
 data/save/file_0/progflag.bin
@@ -16,5 +16,4 @@ data/save/file_2/cpntflag.bin
 data/save/file_2/cpntstat.cfg
 data/save/file_2/progflag.bin
 data/save/file_2/progstat.cfg
-CMakeSettings.json
 imgui.ini

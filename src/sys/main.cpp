@@ -30,22 +30,30 @@ static void generate_default_config(setup_file_t& config) {
 	config.set("Video", "FrameLimiter", 60);
 	config.set("Video", "UseOpenGL4", 1);
 	config.set("Audio", "Volume", 1.0f);
-	config.set("Music", "Volume", 0.3f);
+	config.set("Music", "Volume", 0.34f);
 	config.set("Music", "Channels", 2);
 	config.set("Music", "SamplingRate", 44100);
 	config.set("Music", "kBufferedTime", 0.1f);
-	config.set("Input", "KeyJump", 29);
-	config.set("Input", "KeyHammer", 27);
-	config.set("Input", "KeyItem", 225);
-	config.set("Input", "KeyLiteDash", 22);
-	config.set("Input", "KeyContext", 44);
-	config.set("Input", "KeyStrafe", 224);
-	config.set("Input", "KeyInventory", 43);
-	config.set("Input", "KeyOptions", 41);
-	config.set("Input", "KeyUp", 82);
-	config.set("Input", "KeyDown", 81);
-	config.set("Input", "KeyLeft", 80);
-	config.set("Input", "KeyRight", 79);
+	config.set("Input", "KeyJump", (sint_t)SDL_SCANCODE_Z);
+	config.set("Input", "KeyHammer", (sint_t)SDL_SCANCODE_X);
+	config.set("Input", "KeyItem", (sint_t)SDL_SCANCODE_LSHIFT);
+	config.set("Input", "KeyLiteDash", (sint_t)SDL_SCANCODE_A);
+	config.set("Input", "KeyContext", (sint_t)SDL_SCANCODE_SPACE);
+	config.set("Input", "KeyStrafe", (sint_t)SDL_SCANCODE_LCTRL);
+	config.set("Input", "KeyInventory", (sint_t)SDL_SCANCODE_TAB);
+	config.set("Input", "KeyOptions", (sint_t)SDL_SCANCODE_ESCAPE);
+	config.set("Input", "KeyUp", (sint_t)SDL_SCANCODE_UP);
+	config.set("Input", "KeyDown", (sint_t)SDL_SCANCODE_DOWN);
+	config.set("Input", "KeyLeft", (sint_t)SDL_SCANCODE_LEFT);
+	config.set("Input", "KeyRight", (sint_t)SDL_SCANCODE_RIGHT);
+	config.set("Input", "JoyJump", 0);
+	config.set("Input", "JoyHammer", 1);
+	config.set("Input", "JoyItem", 2);
+	config.set("Input", "JoyLiteDash", 3);
+	config.set("Input", "JoyContext", 4);
+	config.set("Input", "JoyStrafe", 5);
+	config.set("Input", "JoyInventory",	6);
+	config.set("Input", "JoyOptions", 7);
 }
 
 static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {

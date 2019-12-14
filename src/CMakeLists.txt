@@ -56,7 +56,8 @@ add_executable(leviathan
 	"${BASIC_HEADERS}"
 )
 
+target_precompile_headers(leviathan PRIVATE "./stdafx.hxx")
+
 if(WIN32)
 	target_sources(leviathan PUBLIC "./icon.rc")
-	target_precompile_headers(leviathan PUBLIC "./stdafx.hxx")
 endif()

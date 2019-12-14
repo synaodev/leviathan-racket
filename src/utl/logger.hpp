@@ -8,7 +8,7 @@
 #include <cstdio>
 #include <string>
 
-#define SYNAO_LOG(...) do { sint_t r = std::printf(__VA_ARGS__); assert(r >= 0); } while(false)
+#define SYNAO_LOG(...) do { sint_t _r = std::printf(__VA_ARGS__); assert(_r >= 0); } while(false)
 #else // SYNAO_DEBUG_BUILD
 #define SYNAO_LOG(...) 
 #endif // SYNAO_DEBUG_BUILD

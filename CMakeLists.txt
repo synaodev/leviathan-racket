@@ -21,6 +21,8 @@ cmake_minimum_required(VERSION 3.16.1)
 # TMXLITE_LIBRARY
 # ------------------------------
 
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "./cmk/CompilerOptions.cmake")
+
 project("Leviathan")
 add_subdirectory("src")
 
@@ -77,16 +79,6 @@ target_link_libraries(leviathan PUBLIC
 )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-	if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
-		string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/W4")
-	endif()
-	if(CMAKE_CXX_FLAGS MATCHES "/Zi")
-		string(REGEX REPLACE "/Zi" "/ZI" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-	else()
-		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/ZI")
-	endif()
 	set_target_properties(leviathan PROPERTIES
 		CXX_STANDARD 17
 		COMPILE_FLAGS "/MP /sdl /wd4201 /wd4458 /wd4706 /wd26812"
@@ -102,9 +94,9 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 			LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
 		)
 	endif()
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "AppleClang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 else()
 	message(FATAL_ERROR "Compiler not supported!")
