@@ -2,7 +2,7 @@
 This is the current official repository for Leviathan Racket.
 ## Required To Build
 - Compiler with C++17 support
-- CMake 3.13.0
+- CMake 3.16.1
 - Angescript 2.34.0
 - GLM 0.9.9.3
 - OpenAL 1.1

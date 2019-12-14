@@ -4,6 +4,12 @@
 
 #include "../utl/logger.hpp"
 #include "../utl/misc.hpp"
+
+// Needed in order to quell annoying warnings...
+#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
+#define _CRT_SECURE_NO_WARNINGS
+#endif // _MSC_VER
+
 #include "../gui/imgui.h"
 #include "../gui/imgui_impl_opengl3.h"
 #include "../gui/imgui_impl_sdl.h"

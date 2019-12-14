@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.16.1)
 
 # ------------------------------
 # ANGELSCRIPT_INCLUDE
@@ -21,8 +21,8 @@ cmake_minimum_required(VERSION 3.13)
 # TMXLITE_LIBRARY
 # ------------------------------
 
-project(Leviathan)
-add_subdirectory(src)
+project("Leviathan")
+add_subdirectory("src")
 
 # ------------------------------ Windows
 if(WIN32)
