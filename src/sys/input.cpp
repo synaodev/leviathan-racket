@@ -31,10 +31,7 @@ bool input_t::init(const setup_file_t& config) {
 	if (SDL_NumJoysticks() != 0) {
 		joystick = SDL_JoystickOpen(0);
 		if (joystick == nullptr) {
-			SYNAO_LOG(
-				"Joystick cannot be created at startup! SDL Error: %s\n", 
-				SDL_GetError()
-			);
+			SYNAO_LOG("Joystick cannot be created at startup! SDL Error: %s\n", SDL_GetError());
 			return false;
 		}
 	}
@@ -46,12 +43,6 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 	while (SDL_PollEvent(&evt) != 0) {
 		if (callback != nullptr) {
 			std::invoke(callback, &evt);
-			glm::ivec2 integral_position = glm::zero<glm::ivec2>();
-			SDL_GetMouseState(
-				&integral_position.x, 
-				&integral_position.y
-			);
-			position = glm::vec2(integral_position);
 		}
 		switch (evt.type) {
 		case SDL_QUIT: {
@@ -219,6 +210,12 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		}
 	}
+	glm::ivec2 integral_position = glm::zero<glm::ivec2>();
+	SDL_GetMouseState(
+		&integral_position.x, 
+		&integral_position.y
+	);
+	position = glm::vec2(integral_position);
 	return policy;
 }
 

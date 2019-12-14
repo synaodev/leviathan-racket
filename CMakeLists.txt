@@ -82,7 +82,11 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	else()
 		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/W4")
 	endif()
-	target_compile_options(leviathan PRIVATE "/Zi")
+	if(CMAKE_CXX_FLAGS MATCHES "/Zi")
+		string(REGEX REPLACE "/Zi" "/ZI" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+	else()
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/ZI")
+	endif()
 	set_target_properties(leviathan PROPERTIES
 		CXX_STANDARD 17
 		COMPILE_FLAGS "/MP /sdl /wd4201 /wd4458 /wd4706 /wd26812"
@@ -91,7 +95,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	)
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		set_target_properties(leviathan PROPERTIES
-			LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL:NO"
+			LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL"
 		)
 	else()
 		set_target_properties(leviathan PROPERTIES

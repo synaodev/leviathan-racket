@@ -14,6 +14,7 @@ static constexpr arch_t kMaskLength = 256;
 static const glm::vec2 kDefaultPosition = glm::vec2(96.0f, 16.0f);
 
 tileset_viewer_t::tileset_viewer_t() : 
+	write(false),
 	select(false),
 	flash(false),
 	cursor(0.0f, 0.0f, 16.0f, 16.0f),
@@ -27,6 +28,7 @@ tileset_viewer_t::tileset_viewer_t() :
 }
 
 void tileset_viewer_t::reset() {
+	write = true;
 	select = false;
 	index = 0;
 	for (auto&& mask : bitmasks) {
@@ -53,6 +55,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				pressed = true;
 			}
 			if (pressed) {
+				write = true;
 				glm::vec2 position = glm::vec2(
 					static_cast<real_t>(index % 16) * cursor.w,
 					static_cast<real_t>(index / 16) * cursor.h
@@ -81,16 +84,19 @@ void tileset_viewer_t::handle(const input_t& input) {
 					integral_coordinates.x, 
 					integral_coordinates.y
 				);
+				write = true;
 				select = true;
 				index = static_cast<arch_t>(integral_coordinates.x) + static_cast<arch_t>(integral_coordinates.y) * 16;
 				cursor.x = real_coordinates.x + kDefaultPosition.x;
 				cursor.y = real_coordinates.y + kDefaultPosition.y;
 			}
 		} else if (input.pressed[btn_t::ClickR]) {
+			write = true;
 			select = false;
 			index = 0;
 		}
 	} else {
+		write = true;
 		select = false;
 		index = 0;
 	}
@@ -100,6 +106,7 @@ void tileset_viewer_t::update(real64_t delta) {
 	if (select) {
 		timer -= delta;
 		if (timer <= 0.0) {
+			write = true;
 			timer = 0.048;
 			flash = !flash;
 		}
@@ -107,40 +114,44 @@ void tileset_viewer_t::update(real64_t delta) {
 }
 
 void tileset_viewer_t::render(renderer_t& renderer) const {
-	if (select and flash) {
-		auto& batch = renderer.get_overlay_quads(
-			layer_value::HeadsUp,
-			blend_mode_t::Alpha,
-			render_pass_t::VtxBlankColors
-		);
-		batch.begin(quad_batch_t::SingleQuad)
-			.vtx_blank_write(
-				rect_t(glm::zero<glm::vec2>(), cursor.dimensions()), 
-				glm::one<glm::vec4>()
-			)
-			.vtx_transform_write(cursor.left_top())
-		.end();
-	}
-	if (texture != nullptr) {
-		auto& batch = renderer.get_overlay_quads(
-			layer_value::HeadsUp,
-			blend_mode_t::Alpha,
-			render_pass_t::VtxMajorSprites,
-			texture,
-			nullptr
-		);
-		batch.begin(quad_batch_t::SingleQuad)
-			.vtx_major_write(
-				rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()), 
-				texture->get_dimensions(), 
-				0.0f, 1.0f
-			)
-			.vtx_transform_write(kDefaultPosition)
-		.end();
+	if (write) {
+		write = false;
+		if (select and flash) {
+			auto& batch = renderer.get_overlay_quads(
+				layer_value::HeadsUp,
+				blend_mode_t::Alpha,
+				render_pass_t::VtxBlankColors
+			);
+			batch.begin(quad_batch_t::SingleQuad)
+				.vtx_blank_write(
+					rect_t(glm::zero<glm::vec2>(), cursor.dimensions()), 
+					glm::one<glm::vec4>()
+				)
+				.vtx_transform_write(cursor.left_top())
+			.end();
+		}
+		if (texture != nullptr) {
+			auto& batch = renderer.get_overlay_quads(
+				layer_value::HeadsUp,
+				blend_mode_t::Alpha,
+				render_pass_t::VtxMajorSprites,
+				texture,
+				nullptr
+			);
+			batch.begin(quad_batch_t::SingleQuad)
+				.vtx_major_write(
+					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()), 
+					texture->get_dimensions(), 
+					0.0f, 1.0f
+				)
+				.vtx_transform_write(kDefaultPosition)
+			.end();
+		}
 	}
 }
 
 bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
+	write = true;
 	select = false;
 	if (file != path) {
 		texture = vfs::texture(path);

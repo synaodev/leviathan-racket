@@ -4,7 +4,6 @@
 
 #include "../utl/logger.hpp"
 #include "../utl/misc.hpp"
-
 #include "../gui/imgui.h"
 #include "../gui/imgui_impl_opengl3.h"
 #include "../gui/imgui_impl_sdl.h"
@@ -82,42 +81,40 @@ void editor_t::handle(const input_t& input, renderer_t& renderer) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
-	while (this->viable()) {
-		accum = glm::max(accum - misc::kIntervalMin, 0.0);
-		attribute_gui.handle(tileset_viewer, renderer);
-		tileset_viewer.handle(input);
-		if (!attribute_gui.active()) {
-			if (tileset_viewer.selected()) {
-				ImGui::SetNextWindowPos(ImVec2(8, 32));
-				ImGui::Begin(
-					"Attributes",
-					nullptr,
-					ImGuiWindowFlags_NoCollapse | 
-					ImGuiWindowFlags_NoMove | 
-					ImGuiWindowFlags_NoResize
-				);
-				sint_t mask = tileset_viewer.get_bitmask();
-				if (ImGui::Button("Reset")) {
-					mask = 0;
-				}
-				for (arch_t it = 0; it < kFirstSize; ++it) {
-					ImGui::CheckboxFlags(
-						kTileFlagNames[it],
-						reinterpret_cast<uint_t*>(&mask),
-						kTileFlagInts[it]
-					);
-				}
-				ImGui::Separator();
-				for (arch_t it = 0; it < kSecondSize; ++it) {
-					ImGui::CheckboxFlags(
-						kSlopeFlagNames[it],
-						reinterpret_cast<uint_t*>(&mask),
-						kSlopeFlagInts[it]
-					);
-				}
-				tileset_viewer.set_bitmask(mask);
-				ImGui::End();
+	accum = 0.0;
+	attribute_gui.handle(tileset_viewer, renderer);
+	tileset_viewer.handle(input);
+	if (!attribute_gui.active()) {
+		if (tileset_viewer.selected()) {
+			ImGui::SetNextWindowPos(ImVec2(8, 32));
+			ImGui::Begin(
+				"Attributes",
+				nullptr,
+				ImGuiWindowFlags_NoCollapse | 
+				ImGuiWindowFlags_NoMove | 
+				ImGuiWindowFlags_NoResize
+			);
+			sint_t bitmask = tileset_viewer.get_bitmask();
+			if (ImGui::Button("Reset")) {
+				bitmask = 0;
 			}
+			for (arch_t it = 0; it < kFirstSize; ++it) {
+				ImGui::CheckboxFlags(
+					kTileFlagNames[it],
+					reinterpret_cast<uint_t*>(&bitmask),
+					kTileFlagInts[it]
+				);
+			}
+			ImGui::Separator();
+			for (arch_t it = 0; it < kSecondSize; ++it) {
+				ImGui::CheckboxFlags(
+					kSlopeFlagNames[it],
+					reinterpret_cast<uint_t*>(&bitmask),
+					kSlopeFlagInts[it]
+				);
+			}
+			tileset_viewer.set_bitmask(bitmask);
+			ImGui::End();
 		}
 	}
 	ImGui::Render();
@@ -128,7 +125,7 @@ void editor_t::update(real64_t delta) {
 	tileset_viewer.update(delta);
 }
 
-void editor_t::render(renderer_t& renderer, const video_t& video) const {
+void editor_t::render(const video_t& video, renderer_t& renderer) const {
 	tileset_viewer.render(renderer);
 	renderer.flush(video.get_imgui_dimensions());
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

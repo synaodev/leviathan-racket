@@ -97,7 +97,7 @@ static bool run_edit(input_t& input, video_t& video, renderer_t& renderer) {
 			editor.update(head_watch.restart());
 			if (editor.viable()) {
 				editor.handle(input, renderer);
-				editor.render(renderer, video);
+				editor.render(video, renderer);
 				real64_t waiting = misc::kIntervalMin - sync_watch.elapsed();
 				if (waiting > 0.0) {
 					uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
@@ -176,7 +176,6 @@ static int proc_edit(setup_file_t& config) {
 }
 
 int main(int argc, char** argv) {
-	// Basics
 	if (std::atexit(SDL_Quit) != 0) {
 		SYNAO_LOG("Pushing to \"std::atexit\" buffer failed!\n");
 		return EXIT_FAILURE;

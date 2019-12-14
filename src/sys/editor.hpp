@@ -20,7 +20,7 @@ public:
 	bool init(const video_t& video, renderer_t& renderer);
 	void update(real64_t delta);
 	void handle(const input_t& input, renderer_t& renderer);
-	void render(renderer_t& renderer, const video_t& video) const;
+	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 public:
 	typedef bool(*event_callback_t)(const SDL_Event*);
