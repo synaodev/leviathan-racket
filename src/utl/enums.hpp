@@ -29,7 +29,7 @@ namespace __enum_direction {
 		Up 		= 1 << 1,
 		Down 	= 1 << 2,
 		Neutral = 1 << 3,
-		Invalid = -1
+		Invalid = (arch_t)-1
 	};
 }
 
