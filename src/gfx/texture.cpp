@@ -68,19 +68,30 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		this->layers = layers;
 		this->format = format;
 		glCheck(glGenTextures(1, &handle));
-		glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-
-		if (sampler_t::has_immutable_storage()) {
-			glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
+		if (layers > 1) {
+			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+			if (sampler_t::has_immutable_storage()) {
+				glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
+			} else {
+				glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			}
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 		} else {
-			glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
+			if (sampler_t::has_immutable_storage()) {
+				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, format, dimensions.x, dimensions.y));
+			} else {
+				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			}
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 		}
-
-		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
-		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
-		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_REPEAT));
-		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 		return true;
 	}
 	return false;
@@ -103,7 +114,23 @@ bool texture_t::color_buffer(glm::ivec2 dimensions, arch_t layers, pixel_format_
 	return ready;
 }
 
+bool texture_t::color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, arch_t offset) {
+	if (this->create(dimensions, 1, format)) {
+		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+		glCheck(glFramebufferTexture2D(
+			GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(offset),
+			GL_TEXTURE_2D,
+			handle, 0
+		));
+		ready = true;
+	}
+	return ready;
+}
+
 void texture_t::destroy() {
+	this->assure();
 	ready = false;
 	if (handle != 0) {
 		glCheck(glDeleteTextures(1, &handle));
@@ -117,7 +144,7 @@ void texture_t::destroy() {
 void texture_t::assure() {
 	if (!ready) {
 		const std::vector<image_t> images = future.get();
-		if (!images.empty()) {
+		if (images.size() > 1) {
 			if (this->create(images[0].get_dimensions(), images.size(), format)) {
 				arch_t index = 0;
 				for (auto&& image : images) {
@@ -132,6 +159,17 @@ void texture_t::assure() {
 				}
 			}
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+		} else if (!images.empty()) {
+			auto& image = images[0];
+			if (this->create(image.get_dimensions(), 1, format)) {
+				glCheck(glTexSubImage2D(
+					GL_TEXTURE_2D, 0, 0, 0, 
+					dimensions.x, dimensions.y, 
+					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
+				));
+				glCheck(glGenerateMipmap(GL_TEXTURE_2D));
+			}
+			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 		ready = true;
 	}
@@ -148,6 +186,7 @@ bool texture_t::valid() const {
 }
 
 uint_t texture_t::get_layers() const {
+	this->assure();
 	return static_cast<uint_t>(layers);
 }
 
@@ -159,7 +198,7 @@ glm::vec2 texture_t::get_dimensions() const {
 glm::vec2 texture_t::get_inverse_dimensions() const {
 	this->assure();
 	if (dimensions.x != 0.0f and dimensions.y != 0.0f) {
-		return 1.0f / this->get_dimensions();
+		return 1.0f / glm::vec2(dimensions);
 	}
 	return glm::one<glm::vec2>();
 }

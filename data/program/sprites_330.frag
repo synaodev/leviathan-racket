@@ -1,6 +1,6 @@
 #version 330 core
 
-uniform sampler2DArray diffuse_map;
+uniform sampler2D diffuse_map;
 
 in STAGE {
 	layout(location = 0) vec3 uvcoords;
@@ -10,6 +10,6 @@ in STAGE {
 layout(location = 0) out vec4 fragment;
 
 void main() {
-	vec4 color = texture(diffuse_map, vec3(fs.uvcoords.xy, 0.0f));
+	vec4 color = texture(diffuse_map, fs.uvcoords.xy);
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 }

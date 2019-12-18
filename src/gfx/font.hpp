@@ -43,6 +43,7 @@ public:
 	const palette_t* get_palette() const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_inverse_dimensions() const;
+	real_t convert_table(real_t index) const;
 private:
 	std::unordered_map<char32_t, font_glyph_t> glyphs;
 	glm::vec2 dimensions;

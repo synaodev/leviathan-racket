@@ -205,6 +205,7 @@ void draw_text_t::generate() {
 		glm::vec2 start_pos = position - origin;
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
+		real_t table = font->convert_table(params);
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
 			char32_t& c = buffer[it];
 			switch (c) {
@@ -226,22 +227,22 @@ void draw_text_t::generate() {
 
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
-				quad[0].table = params;
+				quad[0].table = table;
 				quad[0].alpha = 1.0f;
 
 				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
-				quad[1].table = params;
+				quad[1].table = table;
 				quad[1].alpha = 1.0f;
 
 				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
-				quad[2].table = params;
+				quad[2].table = table;
 				quad[2].alpha = 1.0f;
 
 				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
-				quad[3].table = params;
+				quad[3].table = table;
 				quad[3].alpha = 1.0f;
 
 				start_pos.x += glyph.x_advance;

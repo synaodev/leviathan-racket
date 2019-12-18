@@ -56,10 +56,15 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	glm::vec2 sequorig = sequences[state].get_origin(frame, direction);
 	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 		rect_t seququad = sequences[state].get_quad(inverts, frame, direction);
+		render_pass_t render_pass = render_pass_t::VtxMajorSprites;
+		if (palette != nullptr) {
+			render_pass = render_pass_t::VtxMajorIndexed;
+			index = palette->convert(index);
+		}
 		auto& batch = renderer.get_normal_quads(
 			layer, 
 			blend_mode_t::Alpha,
-			palette != nullptr ? render_pass_t::VtxMajorIndexed : render_pass_t::VtxMajorSprites,
+			render_pass,
 			texture,
 			palette
 		);
@@ -81,10 +86,15 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	const glm::vec2& sequorig = sequences[state].get_origin(frame, direction);
 	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 		rect_t seququad = sequences[state].get_quad(inverts, frame, direction);
+		render_pass_t render_pass = render_pass_t::VtxMajorSprites;
+		if (palette != nullptr) {
+			render_pass = render_pass_t::VtxMajorIndexed;
+			index = palette->convert(index);
+		}
 		auto& batch = renderer.get_normal_quads(
 			layer,
 			blend_mode_t::Alpha,
-			palette != nullptr ? render_pass_t::VtxMajorIndexed : render_pass_t::VtxMajorSprites,
+			render_pass,
 			texture,
 			palette
 		);

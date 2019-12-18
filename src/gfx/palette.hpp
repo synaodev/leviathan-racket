@@ -14,6 +14,10 @@ public:
 	void assure();
 	void assure() const;
 	void destroy();
+	glm::vec2 get_dimensions() const;
+	glm::vec2 get_inverse_dimensions() const;
+	glm::ivec2 get_integral_dimensions() const;
+	real_t convert(real_t index) const;
 private:
 	friend struct gfx_t;
 	std::atomic<bool> ready;

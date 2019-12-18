@@ -38,6 +38,7 @@ public:
 	bool load(const std::vector<std::string>& full_paths, pixel_format_t format, thread_pool_t& thread_pool);
 	bool create(glm::ivec2 dimensions, arch_t layers, pixel_format_t format);
 	bool color_buffer(glm::ivec2 dimensions, arch_t layers, pixel_format_t format);
+	bool color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, arch_t offset);
 	void assure();
 	void assure() const;
 	void destroy();

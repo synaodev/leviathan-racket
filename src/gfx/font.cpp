@@ -87,3 +87,10 @@ glm::vec2 font_t::get_inverse_dimensions() const {
 glm::vec2 font_t::get_dimensions() const {
 	return dimensions;
 }
+
+real_t font_t::convert_table(real_t index) const {
+	if (palette != nullptr) {
+		return palette->convert(index);
+	}
+	return 0.0f;
+}
