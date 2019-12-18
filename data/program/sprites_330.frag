@@ -3,8 +3,8 @@
 uniform sampler2D diffuse_map;
 
 in STAGE {
-	layout(location = 0) vec3 uvcoords;
-	layout(location = 1) float alpha;
+	vec3 uvcoords;
+	float alpha;
 } fs;
 
 layout(location = 0) out vec4 fragment;

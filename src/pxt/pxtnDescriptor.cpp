@@ -37,7 +37,7 @@ bool pxtnDescriptor::set_file_r  ( FILE *fd )
 
 #ifdef pxSCE
 	_size   = (int32_t)sz._Off;
-#elif defined(__GNUC__)
+#elif defined(__GNUC__) && !defined(__APPLE__)
 	_size   = (int32_t)sz.__pos;
 #else
 	_size 	= (int32_t)sz;

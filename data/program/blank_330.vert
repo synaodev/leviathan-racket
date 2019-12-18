@@ -10,7 +10,7 @@ layout(location = 0) in vec2 position;
 layout(location = 1) in vec4 color;
 
 out STAGE {
-	layout(location = 0) vec4 color;
+	vec4 color;
 } vs;
 
 void main() {

@@ -56,6 +56,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("OpenGL context already created!\n");
 		return false;
 	}
+#ifndef __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0) < 0) {
 		SYNAO_LOG("Setting context flags failed! SDL Error: %s\n", SDL_GetError());
 		return false;
@@ -64,6 +65,16 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Setting context profile mask failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+#else // __APPLE__
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
+		SYNAO_LOG("Setting context flags failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
+		SYNAO_LOG("Setting context profile mask failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+#endif // __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) < 0) {
 		SYNAO_LOG("Setting depth buffer size failed! SDL Error: %s\n", SDL_GetError());
 		return false;
@@ -76,12 +87,16 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Setting double-buffering failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+#ifndef __APPLE__
 	sint_t opengl_major = use_opengl_4 ? 4 : 3;
+#else // __APPLE__
+	sint_t opengl_major = 3;
+#endif // __APPLE__ 
+	sint_t opengl_minor = 3;
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, opengl_major) < 0) {
 		SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	sint_t opengl_minor = 3;
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, opengl_minor) < 0) {
 		SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;

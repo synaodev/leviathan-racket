@@ -12,7 +12,7 @@ find_package(OpenAL CONFIG REQUIRED)
 find_path(OpenAL_INCLUDE "AL/al.h")
 
 find_package(OpenGL REQUIRED)
-find_path(OpenGL_INCLUDE "gl/gl.h")
+# find_path(OpenGL_INCLUDE "gl/gl.h")
 
 find_package(SDL2 CONFIG REQUIRED)
 find_path(SDL2_INCLUDE "SDL2/SDL.h")
@@ -29,7 +29,6 @@ find_path(GLM_INCLUDE "glm/glm.hpp")
 target_include_directories(leviathan PRIVATE
 	${Angelscript_INCLUDE}
 	${OpenAL_INCLUDE}
-	# ${OpenGL_INCLUDE}
 	${SDL2_INCLUDE}
 	${Tmxlite_INCLUDE}
 	${EnTT_INCLUDE}
@@ -44,7 +43,16 @@ target_link_libraries(leviathan PRIVATE
 	Tmxlite::tmxlite
 )
 
-if(NOT WIN32)
+if(APPLE)
+	target_include_directories(leviathan PRIVATE
+		${OPENGL_INCLUDE_DIR}
+	)
+	find_package(Threads REQUIRED)
+	target_link_libraries(leviathan PRIVATE 
+		${OPENGL_LIBRARIES}
+		Threads::Threads
+	)
+elseif(UNIX)
 	find_package(Threads REQUIRED)
 	target_link_libraries(leviathan PRIVATE 
 		OpenGL::OpenGL

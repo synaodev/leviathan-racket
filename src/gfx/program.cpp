@@ -277,5 +277,9 @@ const vertex_spec_t& program_t::get_specify() const {
 }
 
 bool program_t::has_pipelines() {
+#ifndef __APPLE__
 	return glBindProgramPipeline != nullptr;
+#else // __APPLE__
+	return glTexStorage2D != nullptr;
+#endif // __APPLE__	
 }

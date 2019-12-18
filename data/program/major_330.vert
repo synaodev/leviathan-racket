@@ -11,8 +11,8 @@ layout(location = 1) in vec3 uvcoords;
 layout(location = 2) in float alpha;
 
 out STAGE {
-	layout(location = 0) vec3 uvcoords;
-	layout(location = 1) float alpha;
+	vec3 uvcoords;
+	float alpha;
 } vs;
 
 void main() {
