@@ -1,7 +1,7 @@
 #ifndef SYNAO_OVERLAY_DRAW_HEADSUP_HPP
 #define SYNAO_OVERLAY_DRAW_HEADSUP_HPP
 
-#include <entt/signal/delegate.hpp>
+#include <functional>
 
 #include "./draw_count.hpp"
 #include "./draw_units.hpp"
@@ -63,7 +63,7 @@ private:
 	draw_item_view_t item_view;
 	draw_fade_t fade;
 	draw_framerate_t framerate;
-	entt::delegate<void(void)> suspender;
+	std::function<void(void)> suspender;
 };
 
 #endif // SYNAO_OVERLAY_DRAW_HEADSUP_HPP

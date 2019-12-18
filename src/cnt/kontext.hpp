@@ -4,8 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <functional>
 #include <entt/entity/registry.hpp>
-#include <entt/signal/delegate.hpp>
 #include <tmxlite/Layer.hpp>
 
 #include "./common.hpp"
@@ -86,8 +86,8 @@ private:
 	entt::registry registry;
 	std::vector<actor_spawn_t> spawn_commands;
 	std::unordered_map<arch_t, routine_ctor_fn> ctor_table;
-	entt::delegate<void(sint_t)> run_event;
-	entt::delegate<void(sint_t, asIScriptFunction*)> push_event;
+	std::function<void(sint_t)> run_event;
+	std::function<void(sint_t, asIScriptFunction*)> push_event;
 };
 
 inline void kontext_t::run(const actor_trigger_t& trigger) const {

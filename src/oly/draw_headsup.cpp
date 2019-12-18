@@ -54,7 +54,9 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	item_view.init(texture, animation);
 	fade.init();
 	framerate.init(texture);
-	suspender.connect<&receiver_t::suspend>(&receiver);
+	suspender = [&receiver] {
+		receiver.suspend();
+	};
 	return true;
 }
 

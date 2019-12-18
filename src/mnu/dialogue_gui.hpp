@@ -1,8 +1,8 @@
 #ifndef SYNAO_MENU_DIALOGUE_GUI_HPP
 #define SYNAO_MENU_DIALOGUE_GUI_HPP
 
+#include <functional>
 #include <bitset>
-#include <entt/signal/delegate.hpp>
 
 #include "../oly/draw_text.hpp"
 #include "../oly/draw_scheme.hpp"
@@ -56,7 +56,7 @@ private:
 	rect_t rect;
 	draw_text_t text;
 	draw_scheme_t faces, arrow;
-	entt::delegate<void(void)> suspender;
+	std::function<void(void)> suspender;
 };
 
 #endif // SYNAO_MENU_DIALOGUE_GUI_HPP

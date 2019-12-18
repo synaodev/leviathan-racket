@@ -1,89 +1,59 @@
-cmake_minimum_required(VERSION 3.16.1)
+cmake_minimum_required(VERSION 3.15)
 
-# ------------------------------
-# ANGELSCRIPT_INCLUDE
-# ENTT_INCLUDE
-# GLM_INCLUDE
-# OPENAL_INCLUDE
-# SDL2_INCLUDE
-# TMXLITE_INCLUDE
-# ------------------------------
-# ANGELSCRIPT_LINKDIR
-# OPENAL_LINKDIR
-# SDL2_LINKDIR
-# TMXLITE_LINKDIR
-# ------------------------------
-# ANGELSCRIPT_LIBRARY
-# OPENAL_LIBRARY"
-# OPENGL_LIBRARY
-# SDL2_LIBRARY
-# SDL2_MAIN_LIBRARY
-# TMXLITE_LIBRARY
-# ------------------------------
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "./Options.cmake")
 
-set(CMAKE_USER_MAKE_RULES_OVERRIDE "./cmk/CompilerOptions.cmake")
+project(Leviathan)
+add_subdirectory(src)
 
-project("Leviathan")
-add_subdirectory("src")
+find_package(Angelscript CONFIG REQUIRED)
+find_path(Angelscript_INCLUDE "angelscript.h")
 
-# ------------------------------ Windows
-if(WIN32)
-	target_include_directories(leviathan PUBLIC
-		"C:/Libs/angelscript/angelscript/include"
-		"C:/Libs/entt/src"
-		"C:/Libs/glm"
-		"C:/Libs/openal/include"
-		"C:/Libs/sdl2/include"
-		"C:/Libs/tmxlite/tmxlite/include"
-	)
-	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-		set(ANGELSCRIPT_LIBRARY "angelscript64d.lib")
-		set(TMXLITE_LIBRARY 	"libtmxlite-d.lib")
-		target_link_directories(leviathan PUBLIC
-			"C:/Libs/angelscript/angelscript/lib"
-			"C:/Libs/openal/lib/x64"
-			"C:/Libs/sdl2/lib/x64"
-			"C:/Libs/tmxlite/tmxlite/x64/bin/DebugShared"
-		)
-	else()
-		set(ANGELSCRIPT_LIBRARY "angelscript64.lib")
-		set(TMXLITE_LIBRARY 	"libtmxlite.lib")
-		target_link_directories(leviathan PUBLIC
-			"C:/Libs/angelscript/angelscript/lib"
-			"C:/Libs/openal/lib/x64"
-			"C:/Libs/sdl2/lib/x64"
-			"C:/Libs/tmxlite/tmxlite/x64/bin/ReleaseShared"
-		)
-	endif()
-	set(OPENAL_LIBRARY 		"openal32.lib")
-	set(OPENGL_LIBRARY 		"opengl32.lib")
-	set(SDL2_LIBRARY 		"SDL2.lib")
-	set(SDL2_MAIN_LIBRARY 	"SDL2main.lib")
-# ------------------------------ MacOS
-elseif(APPLE)
-	message(FATAL_ERROR "Platform not supported!")
-# ------------------------------ Linux
-elseif(UNIX)
-	message(FATAL_ERROR "Platform not supported!")
-else()
-	message(FATAL_ERROR "Platform not supported!")
-endif()
+find_package(OpenAL CONFIG REQUIRED)
+find_path(OpenAL_INCLUDE "AL/al.h")
 
-target_link_libraries(leviathan PUBLIC
-	"${ANGELSCRIPT_LIBRARY}"
-	"${OPENAL_LIBRARY}"
-	"${OPENGL_LIBRARY}"
-	"${SDL2_LIBRARY}"
-	"${SDL2_MAIN_LIBRARY}"
-	"${TMXLITE_LIBRARY}"
+find_package(OpenGL REQUIRED)
+find_path(OpenGL_INCLUDE "gl/gl.h")
+
+find_package(SDL2 CONFIG REQUIRED)
+find_path(SDL2_INCLUDE "SDL2/SDL.h")
+
+find_package(Tmxlite CONFIG REQUIRED)
+find_path(Tmxlite_INCLUDE "tmxlite/Config.hpp")
+
+# find_package(EnTT REQUIRED)
+find_path(EnTT_INCLUDE "entt/entt.hpp")
+
+# find_package(GLM REQUIRED)
+find_path(GLM_INCLUDE "glm/glm.hpp")
+
+target_include_directories(leviathan PRIVATE
+	${Angelscript_INCLUDE}
+	${OpenAL_INCLUDE}
+	${OpenGL_INCLUDE}
+	${SDL2_INCLUDE}
+	${Tmxlite_INCLUDE}
+	${EnTT_INCLUDE}
+	${GLM_INCLUDE}
 )
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+target_link_libraries(leviathan PRIVATE
+	Angelscript::angelscript
+	OpenAL::OpenAL
+	SDL2::SDL2
+	SDL2::SDL2main
+	Tmxlite::tmxlite
+)
+
+if(NOT WIN32)
+	target_link_libraries(leviathan PRIVATE OpenGL)
+endif()
+
+if(MSVC)
 	set_target_properties(leviathan PROPERTIES
 		CXX_STANDARD 17
 		COMPILE_FLAGS "/MP /sdl /wd4201 /wd4458 /wd4706 /wd26812"
-		COMPILE_PDB_NAME "leviathan"
-		COMPILE_PDB_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}"
+		COMPILE_PDB_NAME leviathan
+		COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 	)
 	if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 		set_target_properties(leviathan PROPERTIES

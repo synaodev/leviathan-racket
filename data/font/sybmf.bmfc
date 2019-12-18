@@ -1,0 +1,58 @@
+# AngelCode Bitmap Font Generator configuration file
+fileVersion=1
+
+# font settings
+fontName=Constantia
+fontFile=
+charSet=0
+fontSize=48
+aa=1
+scaleH=100
+useSmoothing=0
+isBold=1
+isItalic=0
+useUnicode=1
+disableBoxChars=1
+outputInvalidCharGlyph=0
+dontIncludeKerningPairs=0
+useHinting=0
+renderFromOutline=0
+useClearType=1
+
+# character alignment
+paddingDown=0
+paddingUp=0
+paddingRight=0
+paddingLeft=0
+spacingHoriz=1
+spacingVert=1
+useFixedHeight=0
+forceZero=0
+
+# output file
+outWidth=256
+outHeight=512
+outBitDepth=32
+fontDescFormat=1
+fourChnlPacked=0
+textureFormat=png
+textureCompression=0
+alphaChnl=0
+redChnl=4
+greenChnl=4
+blueChnl=4
+invA=0
+invR=0
+invG=0
+invB=0
+
+# outline
+outlineThickness=0
+
+# selected chars
+chars=32-126,161-163,165,167,171,177,183,187,191-193,196,198,200-201,203-205,207-208,210-211,214-218,220
+chars=221-222,224-225,228,230,232-233,235-237,239-240,242-243,246-250,252-257,262-263,274-275,294-295
+chars=298-299,304-305,313-314,323-324,332-333,338-341,346-347,358-359,362-363,376,383,7808-7813,7922-7923
+
+
+# imported icon images

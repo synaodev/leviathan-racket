@@ -506,8 +506,6 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	assert(r >= 0);
 	r = engine->RegisterEnumValue("Font", "Three", 3);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Font", "Four", 4);
-	assert(r >= 0);
 
 	// Set Funcdef
 	r = engine->SetDefaultNamespace("std");

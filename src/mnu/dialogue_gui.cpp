@@ -43,7 +43,9 @@ bool dialogue_gui_t::init(receiver_t& receiver) {
 	faces.set_file(animation);
 	arrow.set_file(animation);
 	arrow.set_state(4);
-	suspender.connect<&receiver_t::suspend>(&receiver);
+	suspender = [&receiver] {
+		receiver.suspend();
+	};
 	return font != nullptr and animation != nullptr;
 }
 

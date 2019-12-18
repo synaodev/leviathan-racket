@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16.1)
+cmake_minimum_required(VERSION 3.15)
 
 file(GLOB ACTOR_SOURCES 		"./act/[a-zA-Z]*.cpp")
 file(GLOB ACTOR_HEADERS 		"./act/[a-zA-Z]*.hpp")
@@ -28,36 +28,37 @@ file(GLOB BASIC_SOURCES			"./[a-zA-Z]*.cpp")
 file(GLOB BASIC_HEADERS			"./[a-zA-Z]*.hpp")
 
 add_executable(leviathan
-	"${ACTOR_SOURCES}"
-	"${ACTOR_HEADERS}"
-	"${COMPONENT_SOURCES}"
-	"${COMPONENT_HEADERS}"
-	"${EVENT_SOURCES}"
-	"${EVENT_HEADERS}"
-	"${FIELD_SOURCES}"
-	"${FIELD_HEADERS}"
-	"${GRAPHICS_SOURCES}"
-	"${GRAPHICS_HEADERS}"
-	"${IMGUI_SOURCES}"
-	"${IMGUI_HEADERS}"
-	"${MENU_SOURCES}"
-	"${MENU_HEADERS}"
-	"${OVERLAY_SOURCES}"
-	"${OVERLAY_HEADERS}"
-	"${PXTONE_SOURCES}"
-	"${PXTONE_HEADERS}"
-	"${SOUND_SOURCES}"
-	"${SOUND_HEADERS}"
-	"${SYSTEM_SOURCES}"
-	"${SYSTEM_HEADERS}"
-	"${UTILITY_SOURCES}"
-	"${UTILITY_HEADERS}"
-	"${BASIC_SOURCES}"
-	"${BASIC_HEADERS}"
+	${ACTOR_SOURCES}
+	${ACTOR_HEADERS}
+	${COMPONENT_SOURCES}
+	${COMPONENT_HEADERS}
+	${EVENT_SOURCES}
+	${EVENT_HEADERS}
+	${FIELD_SOURCES}
+	${FIELD_HEADERS}
+	${GRAPHICS_SOURCES}
+	${GRAPHICS_HEADERS}
+	${IMGUI_SOURCES}
+	${IMGUI_HEADERS}
+	${MENU_SOURCES}
+	${MENU_HEADERS}
+	${OVERLAY_SOURCES}
+	${OVERLAY_HEADERS}
+	${PXTONE_SOURCES}
+	${PXTONE_HEADERS}
+	${SOUND_SOURCES}
+	${SOUND_HEADERS}
+	${SYSTEM_SOURCES}
+	${SYSTEM_HEADERS}
+	${UTILITY_SOURCES}
+	${UTILITY_HEADERS}
+	${BASIC_SOURCES}
+	${BASIC_HEADERS}
 )
 
-target_precompile_headers(leviathan PRIVATE "./stdafx.hxx")
+# -- If cmake version is >= 3.16.1 -- 
+# target_precompile_headers(leviathan PRIVATE "./stdafx.hxx")
 
 if(WIN32)
-	target_sources(leviathan PUBLIC "./icon.rc")
+	target_sources(leviathan PRIVATE "./icon.rc")
 endif()

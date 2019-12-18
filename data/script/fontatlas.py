@@ -13,7 +13,7 @@ def generate(path):
 	result.save(path)
 
 if __name__ == '__main__':
-	syslen = len(sys.args)
+	syslen = len(sys.argv)
 	if syslen == 0:
 		print('Error! No paths given!')
 	elif syslen > 1:

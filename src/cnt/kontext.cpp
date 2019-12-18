@@ -32,8 +32,12 @@ kontext_t::kontext_t() :
 }
 
 bool kontext_t::init(receiver_t& receiver) {
-	run_event.connect<&receiver_t::run_event>(&receiver);
-	push_event.connect<&receiver_t::push_from_function>(&receiver);
+	run_event = [&receiver](sint_t id) {
+		receiver.run_event(id);
+	};
+	push_event = [&receiver](sint_t id, asIScriptFunction* function) {
+		receiver.push_from_function(id, function);
+	};
 	return routine_generator_t::init(ctor_table);
 }
 
