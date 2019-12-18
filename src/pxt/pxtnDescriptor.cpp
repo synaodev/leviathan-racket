@@ -37,8 +37,10 @@ bool pxtnDescriptor::set_file_r  ( FILE *fd )
 
 #ifdef pxSCE
 	_size   = (int32_t)sz._Off;
+#elif defined(__GNUC__)
+	_size   = (int32_t)sz.__pos;
 #else
-	_size   = (int32_t)sz;
+	_size 	= (int32_t)sz;
 #endif
 
 	_b_file = true;

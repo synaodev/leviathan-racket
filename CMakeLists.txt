@@ -29,7 +29,7 @@ find_path(GLM_INCLUDE "glm/glm.hpp")
 target_include_directories(leviathan PRIVATE
 	${Angelscript_INCLUDE}
 	${OpenAL_INCLUDE}
-	${OpenGL_INCLUDE}
+	# ${OpenGL_INCLUDE}
 	${SDL2_INCLUDE}
 	${Tmxlite_INCLUDE}
 	${EnTT_INCLUDE}
@@ -45,7 +45,11 @@ target_link_libraries(leviathan PRIVATE
 )
 
 if(NOT WIN32)
-	target_link_libraries(leviathan PRIVATE OpenGL)
+	find_package(Threads REQUIRED)
+	target_link_libraries(leviathan PRIVATE 
+		OpenGL::OpenGL
+		Threads::Threads
+	)
 endif()
 
 if(MSVC)

@@ -53,6 +53,7 @@ void close_gl(void) {
 	}
 }
 #else
+#include "glad.hpp"
 #include <dlfcn.h>
 static void* libGL;
 

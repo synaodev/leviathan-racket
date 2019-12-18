@@ -35,7 +35,7 @@ public:
 	template<typename V>
 	inline void setup(primitive_t primitive, buffer_usage_t usage) {
 		static_assert(std::is_base_of<vertex_t, V>::value);
-		desc_vtx_t specify = desc_vtx_t::from(typeid(V));
+		vertex_spec_t specify = vertex_spec_t::from(typeid(V));
 		this->setup(primitive, usage, specify);
 	}
 	void setup(primitive_t primitive, buffer_usage_t usage, vertex_spec_t specify);

@@ -3,6 +3,8 @@
 #include "../utl/logger.hpp"
 #include "../utl/setup_file.hpp"
 
+#include <functional>
+
 input_t::input_t() :
 	pressed(0),
 	holding(0),
