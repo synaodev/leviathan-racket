@@ -56,7 +56,6 @@ add_executable(leviathan
 	${BASIC_HEADERS}
 )
 
-# -- If cmake version is >= 3.16.1 -- 
 # target_precompile_headers(leviathan PRIVATE "./stdafx.hxx")
 
 if(WIN32)

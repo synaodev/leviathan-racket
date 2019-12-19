@@ -30,7 +30,7 @@ target_include_directories(leviathan PRIVATE
 	${GLM_INCLUDE_DIR}
 )
 
-if(NOT APPLE)
+if(NOT DEFINED ${OPENAL_LIBRARIES})
 	set(OPENAL_LIBRARIES OpenAL::OpenAL)
 endif()
 
@@ -42,6 +42,13 @@ target_link_libraries(leviathan PRIVATE
 	SDL2::SDL2main
 	Tmxlite::tmxlite
 )
+
+if(UNIX)
+	find_package(Threads REQUIRED)
+	target_link_libraries(leviathan PRIVATE 
+		Threads::Threads
+	)
+endif()
 
 if(MSVC)
 	set_target_properties(leviathan PROPERTIES
@@ -62,10 +69,6 @@ if(MSVC)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-	find_package(Threads REQUIRED)
-	target_link_libraries(leviathan PRIVATE 
-		Threads::Threads
-	)
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 else()
 	message(FATAL_ERROR "Compiler not supported!")
