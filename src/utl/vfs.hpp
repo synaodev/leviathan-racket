@@ -51,8 +51,8 @@ namespace vfs {
 struct vfs_t : public not_copyable_t {
 public:
 	vfs_t();
-	vfs_t(vfs_t&&) = default;
-	vfs_t& operator=(vfs_t&&) = default;
+	vfs_t(vfs_t&&) = delete;
+	vfs_t& operator=(vfs_t&&) = delete;
 	~vfs_t();
 	bool mount(const setup_file_t& config);
 	template<typename T>
