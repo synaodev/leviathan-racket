@@ -6,59 +6,42 @@ project(Leviathan)
 add_subdirectory(src)
 
 find_package(Angelscript CONFIG REQUIRED)
-find_path(Angelscript_INCLUDE "angelscript.h")
+find_path(Angelscript_INCLUDE_DIR "angelscript.h")
 
 find_package(OpenAL CONFIG REQUIRED)
-find_path(OpenAL_INCLUDE "AL/al.h")
-
 find_package(OpenGL REQUIRED)
-# find_path(OpenGL_INCLUDE "gl/gl.h")
 
 find_package(SDL2 CONFIG REQUIRED)
-find_path(SDL2_INCLUDE "SDL2/SDL.h")
+find_path(SDL2_INCLUDE_DIR "SDL2/SDL.h")
 
 find_package(Tmxlite CONFIG REQUIRED)
-find_path(Tmxlite_INCLUDE "tmxlite/Config.hpp")
+find_path(Tmxlite_INCLUDE_DIR "tmxlite/Config.hpp")
 
-# find_package(EnTT REQUIRED)
-find_path(EnTT_INCLUDE "entt/entt.hpp")
-
-# find_package(GLM REQUIRED)
-find_path(GLM_INCLUDE "glm/glm.hpp")
+find_path(EnTT_INCLUDE_DIR "entt/entt.hpp")
+find_path(GLM_INCLUDE_DIR "glm/glm.hpp")
 
 target_include_directories(leviathan PRIVATE
-	${Angelscript_INCLUDE}
-	${OpenAL_INCLUDE}
-	${SDL2_INCLUDE}
-	${Tmxlite_INCLUDE}
-	${EnTT_INCLUDE}
-	${GLM_INCLUDE}
+	${Angelscript_INCLUDE_DIR}
+	${OPENAL_INCLUDE_DIR}
+	${OPENGL_INCLUDE_DIR}
+	${SDL2_INCLUDE_DIR}
+	${Tmxlite_INCLUDE_DIR}
+	${EnTT_INCLUDE_DIR}
+	${GLM_INCLUDE_DIR}
 )
+
+if(NOT APPLE)
+	set(OPENAL_LIBRARIES OpenAL::OpenAL)
+endif()
 
 target_link_libraries(leviathan PRIVATE
 	Angelscript::angelscript
-	OpenAL::OpenAL
+	${OPENAL_LIBRARIES}
+	${OPENGL_LIBRARIES}
 	SDL2::SDL2
 	SDL2::SDL2main
 	Tmxlite::tmxlite
 )
-
-if(APPLE)
-	target_include_directories(leviathan PRIVATE
-		${OPENGL_INCLUDE_DIR}
-	)
-	find_package(Threads REQUIRED)
-	target_link_libraries(leviathan PRIVATE 
-		${OPENGL_LIBRARIES}
-		Threads::Threads
-	)
-elseif(UNIX)
-	find_package(Threads REQUIRED)
-	target_link_libraries(leviathan PRIVATE 
-		OpenGL::OpenGL
-		Threads::Threads
-	)
-endif()
 
 if(MSVC)
 	set_target_properties(leviathan PROPERTIES
@@ -79,6 +62,10 @@ if(MSVC)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	find_package(Threads REQUIRED)
+	target_link_libraries(leviathan PRIVATE 
+		Threads::Threads
+	)
 	set_target_properties(leviathan PROPERTIES CXX_STANDARD 17)
 else()
 	message(FATAL_ERROR "Compiler not supported!")
