@@ -7,11 +7,16 @@
 
 #include "../res.hpp"
 
-static constexpr sint_t kVideoWidths = 320;
-static constexpr sint_t kVideoHeight = 180;
-static constexpr sint_t kImguiWidths = 800;
-
-static const byte_t kWindowName[] = "Leviathan Racket";
+static constexpr byte_t kWindowName[] = "Leviathan Racket";
+static constexpr sint_t kVideoWidths  = 320;
+static constexpr sint_t kVideoHeight  = 180;
+static constexpr sint_t kImguiWidths  = 800;
+static constexpr sint_t kOGLVersion[8][2] = {
+	{ 4, 6 }, { 4, 5 },
+	{ 4, 4 }, { 4, 3 }, 
+	{ 4, 2 }, { 4, 1 },
+	{ 4, 0 }, { 3, 3 }
+};
 
 video_t::video_t() :
 	window(nullptr),
@@ -33,12 +38,16 @@ video_t::~video_t() {
 }
 
 bool video_t::init(const setup_file_t& config, bool start_imgui) {
-	bool_t use_opengl_4 = true;
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
+#ifndef __APPLE__
+	bool_t use_opengl_4 = true;
 	config.get("Video", "UseOpenGL4", use_opengl_4);
+#else // __APPLE__
+	bool_t use_opengl_4 = false;
+#endif // __APPLE__
 	params.scaling = glm::clamp(
 		params.scaling, 
 		screen_params_t::kDefaultScaling, 
@@ -87,22 +96,6 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Setting double-buffering failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-#ifndef __APPLE__
-	sint_t opengl_major = use_opengl_4 ? 4 : 3;
-	sint_t opengl_minor = use_opengl_4 ? 2 : 3;
-#else // __APPLE__
-	sint_t opengl_major = 3;
-	sint_t opengl_minor = 3;
-#endif // __APPLE__ 
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, opengl_major) < 0) {
-		SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, opengl_minor) < 0) {
-		SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
-
 	if (start_imgui) {
 		window = SDL_CreateWindow(
 			kWindowName,
@@ -121,8 +114,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			kVideoHeight * params.scaling,
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
 		);
-	}	
-
+	}
 	if (window == nullptr) {
 		SYNAO_LOG("Window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
@@ -131,14 +123,34 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Fullscreen after window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	
-	context = SDL_GL_CreateContext(window);
-
+	sint_t opengl_major = use_opengl_4 ? 4 : 3;
+	sint_t opengl_minor = use_opengl_4 ? 6 : 3;
+	while (1) {
+		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, opengl_major) < 0) {
+			SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
+			return false;
+		}
+		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, opengl_minor) < 0) {
+			SYNAO_LOG("Setting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
+			return false;
+		}
+		context = SDL_GL_CreateContext(window);
+		if (context != nullptr) {
+			break;
+		} else if (opengl_major == 4 and opengl_minor > 0) {
+			opengl_minor -= 1;
+		} else if (opengl_major == 4 and opengl_minor == 0) {
+			opengl_major = 3;
+			opengl_minor = 3;
+		} else {
+			SYNAO_LOG("Error! OpenGL version must be at least 3.3!\n");
+			break;
+		}
+	}
 	if (context == nullptr) {
 		SYNAO_LOG("OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &opengl_major) < 0) {
 		SYNAO_LOG("Getting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
@@ -147,19 +159,11 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Getting OpenGL minor version failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-
-	if ((opengl_major < 3) or (opengl_major == 3 and opengl_minor < 3)) {
-		SYNAO_LOG("OpenGL Version %d.%d is unsupported! At least 3.3 is required!\n", opengl_major, opengl_minor);
-		return false;
-	} else {
-		SYNAO_LOG("OpenGL Version is %d.%d!\n", opengl_major, opengl_minor);
-	}
-	
+	SYNAO_LOG("OpenGL Version is %d.%d!\n", opengl_major, opengl_minor);
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		SYNAO_LOG("OpenGL Extension loading failed!\n");
 		return false;
 	}
-
 	if (start_imgui) {
 		frame_buffer_t::clear(
 			glm::ivec2(kImguiWidths),
