@@ -45,8 +45,8 @@ public:
 	bool create(const shader_t* vert, const shader_t* frag, const shader_t* geom);
 	bool create(const shader_t* vert, const shader_t* frag);
 	void destroy();
-	void set_block(arch_t index, arch_t binding) const;
-	void set_sampler(arch_t index, arch_t sampler) const;
+	void set_block(const byte_t* name, arch_t binding) const;
+	void set_sampler(const byte_t* name, arch_t sampler) const;
 	const vertex_spec_t& get_specify() const;
 	static bool has_pipelines();
 private:

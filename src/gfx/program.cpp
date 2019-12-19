@@ -247,28 +247,35 @@ void program_t::destroy() {
 	}
 }
 
-void program_t::set_block(arch_t index, arch_t binding) const {
+void program_t::set_block(const byte_t* name, arch_t binding) const {
 	if (program_t::has_pipelines()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
-		glCheck(glUniformBlockBinding(
-			handle,
-			static_cast<uint_t>(index),
-			static_cast<uint_t>(binding)
-		));
+		uint_t index = GL_INVALID_INDEX;
+		glCheck(index = glGetUniformBlockIndex(handle, name));
+		if (index != GL_INVALID_INDEX) {
+			glCheck(glUniformBlockBinding(
+				handle,
+				index,
+				static_cast<uint_t>(binding)
+			));
+		}
 	}
 }
 
-void program_t::set_sampler(arch_t index, arch_t sampler) const {
+void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
 	if (program_t::has_pipelines()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set sampler bindings!\n");
 	} else if (handle != 0) {
-		glCheck(glUseProgram(handle));
-		glCheck(glUniform1i(
-			static_cast<sint_t>(index),
-			static_cast<sint_t>(sampler)
-		));
-		glCheck(glUseProgram(0));
+		sint_t index = GL_INVALID_INDEX;
+		glCheck(index = glGetUniformLocation(handle, name));
+		if (index != GL_INVALID_INDEX) {
+			glCheck(glUseProgram(handle));
+			glCheck(glUniform1i(
+				index, static_cast<sint_t>(sampler)
+			));
+			glCheck(glUseProgram(0));
+		}
 	}
 }
 

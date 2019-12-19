@@ -97,12 +97,12 @@ bool renderer_t::init(const setup_file_t&) {
 		return false;
 	}
 	if (!program_t::has_pipelines()) {
-		programs[render_pass_t::VtxBlankColors].set_block(0, 0);
-		programs[render_pass_t::VtxMajorSprites].set_block(0, 0);
-		programs[render_pass_t::VtxMajorSprites].set_sampler(0, 0);
-		programs[render_pass_t::VtxMajorIndexed].set_block(0, 0);
-		programs[render_pass_t::VtxMajorIndexed].set_sampler(0, 0);
-		programs[render_pass_t::VtxMajorIndexed].set_sampler(1, 1);
+		programs[render_pass_t::VtxBlankColors].set_block("transforms", 0);
+		programs[render_pass_t::VtxMajorSprites].set_block("transforms", 0);
+		programs[render_pass_t::VtxMajorSprites].set_sampler("diffuse_map", 0);
+		programs[render_pass_t::VtxMajorIndexed].set_block("transforms", 0);
+		programs[render_pass_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
+		programs[render_pass_t::VtxMajorIndexed].set_sampler("palette_map", 1);
 	}
 	return true;
 }
