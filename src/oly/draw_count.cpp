@@ -32,7 +32,7 @@ void draw_count_t::render(renderer_t& renderer) const {
 		auto& batch = renderer.get_overlay_quads(
 			layer,
 			blend_mode_t::Alpha,
-			render_pass_t::VtxMajorSprites,
+			pipeline_t::VtxMajorSprites,
 			texture,
 			nullptr
 		);

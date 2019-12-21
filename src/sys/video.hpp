@@ -50,6 +50,7 @@ public:
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
 	glm::ivec2 get_imgui_dimensions() const;
+	glm::ivec2 get_opengl_version() const;
 	auto get_device() const {
 		return std::make_tuple(window, context);
 	}
@@ -57,6 +58,7 @@ private:
 	SDL_Window* window;
 	SDL_GLContext context;
 	screen_params_t params;
+	sint_t major, minor;
 };
 
 #endif // SYNAO_MAIN_VIDEO_HPP

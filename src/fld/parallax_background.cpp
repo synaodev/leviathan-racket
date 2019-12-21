@@ -98,7 +98,7 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 	auto& batch = renderer.get_normal_quads(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
-		render_pass_t::VtxMajorSprites,
+		pipeline_t::VtxMajorSprites,
 		texture,
 		nullptr
 	);

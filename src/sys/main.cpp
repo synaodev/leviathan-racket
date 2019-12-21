@@ -16,8 +16,7 @@
 
 static constexpr byte_t kBootPath[]	= "./data/boot.cfg";
 static constexpr uint_t kStopDelay  = 40;
-static constexpr uint_t kGL42Delay  = 10;
-static constexpr uint_t kGL33Delay  = 16;
+static constexpr uint_t kNormDelay  = 10;
 
 static void generate_default_config(setup_file_t& config) {
 	config.clear(kBootPath);
@@ -72,7 +71,7 @@ static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audi
 					runtime.render(video, renderer);
 					const screen_params_t params = video.get_parameters();
 					if (params.vsync != 0) {
-						SDL_Delay(program_t::has_pipelines() ? kGL42Delay : kGL33Delay);
+						SDL_Delay(kNormDelay);
 					} else {
 						real64_t waiting = (1.0 / params.framerate) - sync_watch.elapsed();
 						if (waiting > 0.0) {
@@ -149,8 +148,9 @@ static int proc_naomi(setup_file_t& config) {
 	}
 	// Global renderer device is dependent on existance of virtual filesystem and audio devices.
 	// Must destroy this before destroying virtual filesystem and audio devices.
+	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(config)) {
+	if (!renderer.init(version)) {
 		return EXIT_FAILURE;
 	}
 	if (!run_naomi(config, input, video, audio, music, renderer)) {
@@ -173,8 +173,9 @@ static int proc_edit(setup_file_t& config) {
 	if (!fs.mount(config)) {
 		return EXIT_FAILURE;
 	}
+	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(config)) {
+	if (!renderer.init(version)) {
 		return EXIT_FAILURE;
 	}
 	if (!run_edit(input, video, renderer)) {

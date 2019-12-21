@@ -71,7 +71,7 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 		auto& batch = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
-			render_pass_t::VtxBlankColors
+			pipeline_t::VtxBlankColors
 		);
 		if (write) {
 			write = false;

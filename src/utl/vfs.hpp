@@ -41,8 +41,7 @@ namespace vfs {
 	const texture_t* texture(const std::string& name);
 	const palette_t* palette(const std::string& name, const std::string& directory);
 	const palette_t* palette(const std::string& name);
-	const shader_t* shader_load(const std::string& name, shader_stage_t stage);
-	const shader_t* shader_from(const std::string& name, const std::string& source, shader_stage_t stage);
+	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
 	const animation_t* animation(const std::string& name);
@@ -55,10 +54,10 @@ public:
 	vfs_t& operator=(vfs_t&&) = delete;
 	~vfs_t();
 	bool mount(const setup_file_t& config);
-	template<typename T>
-	T& allocate_safely(const std::string& name, std::unordered_map<std::string, T>& map) {
+	template<typename K, typename T>
+	T& allocate_safely(const K& key, std::unordered_map<K, T>& map) {
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
-		return map[name];
+		return map[key];
 	}
 public:
 	std::unique_ptr<thread_pool_t> thread_pool;

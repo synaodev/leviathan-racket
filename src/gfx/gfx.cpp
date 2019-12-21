@@ -70,7 +70,7 @@ void gfx_t::set_program(const program_t* program) {
 	if (this->program != program) {
 		this->program = program;
 		if (program != nullptr) {
-			if (program_t::has_pipelines()) {
+			if (program_t::has_separable()) {
 				glCheck(glBindProgramPipeline(program->handle));
 			} else {
 				glCheck(glUseProgram(program->handle));

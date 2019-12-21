@@ -48,7 +48,7 @@ public:
 	void set_block(const byte_t* name, arch_t binding) const;
 	void set_sampler(const byte_t* name, arch_t sampler) const;
 	const vertex_spec_t& get_specify() const;
-	static bool has_pipelines();
+	static bool has_separable();
 private:
 	friend struct gfx_t;
 	uint_t handle;

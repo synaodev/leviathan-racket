@@ -35,7 +35,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 		this->stage = stage;
 		
 		const byte_t* source_pointer = source.c_str();
-		if (program_t::has_pipelines()) {
+		if (program_t::has_separable()) {
 			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
 			sint_t length = 0;
@@ -76,7 +76,7 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 
 void shader_t::destroy() {
 	if (handle != 0) {
-		if (program_t::has_pipelines()) {
+		if (program_t::has_separable()) {
 			glCheck(glUseProgram(0));
 			glCheck(glDeleteProgram(handle));
 		} else {
@@ -92,7 +92,7 @@ bool shader_t::matches(shader_stage_t stage) const {
 }
 
 const byte_t* shader_t::extension(shader_stage_t stage) {
-	if (program_t::has_pipelines()) {
+	if (program_t::has_separable()) {
 		switch (stage) {
 		case shader_stage_t::Vertex:
 			return "_420.vert";
@@ -169,7 +169,7 @@ program_t::~program_t() {
 
 bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
 	if (!handle) {
-		if (program_t::has_pipelines()) {
+		if (program_t::has_separable()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
 			glCheck(glBindProgramPipeline(handle));
@@ -235,7 +235,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag) {
 
 void program_t::destroy() {
 	if (handle != 0) {
-		if (program_t::has_pipelines()) {
+		if (program_t::has_separable()) {
 			glCheck(glBindProgramPipeline(0));
 			glCheck(glDeleteProgramPipelines(1, &handle));
 		} else {
@@ -248,7 +248,7 @@ void program_t::destroy() {
 }
 
 void program_t::set_block(const byte_t* name, arch_t binding) const {
-	if (program_t::has_pipelines()) {
+	if (program_t::has_separable()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
 		uint_t index = GL_INVALID_INDEX;
@@ -264,7 +264,7 @@ void program_t::set_block(const byte_t* name, arch_t binding) const {
 }
 
 void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
-	if (program_t::has_pipelines()) {
+	if (program_t::has_separable()) {
 		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set sampler bindings!\n");
 	} else if (handle != 0) {
 		sint_t index = GL_INVALID_INDEX;
@@ -283,7 +283,7 @@ const vertex_spec_t& program_t::get_specify() const {
 	return specify;
 }
 
-bool program_t::has_pipelines() {
+bool program_t::has_separable() {
 #ifndef __APPLE__
 	return glBindProgramPipeline != nullptr;
 #else // __APPLE__

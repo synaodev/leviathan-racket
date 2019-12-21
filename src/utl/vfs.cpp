@@ -18,7 +18,6 @@ static const byte_t kNoisePath[]	= "data/noise/";
 static const byte_t kFontsPath[]	= "data/font/";
 static const byte_t kImagePath[]	= "data/image/";
 static const byte_t kPalettePath[]	= "data/palette/";
-static const byte_t kProgramPath[]	= "data/program/";
 static const byte_t kSpritePath[]	= "data/sprite/";
 static const byte_t kEventPaths[]	= "data/event/";
 static const byte_t kLangsPaths[]	= "data/event/i18n/";
@@ -373,33 +372,8 @@ const palette_t* vfs::palette(const std::string& name) {
 	return vfs::palette(name, kPalettePath);
 }
 
-const shader_t* vfs::shader_load(const std::string& name, shader_stage_t stage) {
+const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
 	if (vfs::device == nullptr) {
-		return nullptr;
-	}
-	auto it = vfs::device->shaders.find(name);
-	if (it == vfs::device->shaders.end()) {
-		const std::string full_path = kProgramPath + name + shader_t::extension(stage);
-		shader_t& ref = vfs::device->allocate_safely(name, vfs::device->shaders);
-		if (!ref.load(full_path, stage)) {
-			SYNAO_LOG(
-				"Failed to load shader from %s!\n", 
-				full_path.c_str()
-			);
-		}
-		return &ref;
-	} else if (!it->second.matches(stage)) {
-		SYNAO_LOG(
-			"Found shader %s should have different stage!\n", 
-			name.c_str()
-		);
-		return nullptr;
-	}
-	return &it->second;
-}
-
-const shader_t* vfs::shader_from(const std::string& name, const std::string& source, shader_stage_t stage) {
-	if (vfs::device != nullptr) {
 		return nullptr;
 	}
 	auto it = vfs::device->shaders.find(name);
@@ -407,7 +381,7 @@ const shader_t* vfs::shader_from(const std::string& name, const std::string& sou
 		shader_t& ref = vfs::device->allocate_safely(name, vfs::device->shaders);
 		if (!ref.from(source, stage)) {
 			SYNAO_LOG(
-				"Failed to create shader from source named %s!\n", 
+				"Failed to create shader from %s!\n", 
 				name.c_str()
 			);
 		}

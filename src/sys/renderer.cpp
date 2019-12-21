@@ -12,7 +12,7 @@ static constexpr arch_t kMaxIndices = 65535;
 renderer_t::renderer_t() :
 	overlay_quads(),
 	normal_quads(),
-	programs(render_pass_t::Total),
+	programs(pipeline_t::Total),
 	projection_buffer(),
 	viewport_buffer(),
 	graphics_state(),
@@ -32,7 +32,7 @@ renderer_t::~renderer_t() {
 	}
 } 
 
-bool renderer_t::init(const setup_file_t&) {
+bool renderer_t::init(glm::ivec2 version) {
 	if (!quad_list_t::allocate_indexer(kMaxIndices, primitive_t::Triangles)) {
 		SYNAO_LOG("Couldn't allocate quad_list_t indexer!\n");
 		return false;
@@ -70,39 +70,53 @@ bool renderer_t::init(const setup_file_t&) {
 	);
 	graphics_state.set_buffer(&viewport_buffer, 0);
 
-	const shader_t* blank = vfs::shader_load("blank", shader_stage_t::Vertex);
-	const shader_t* major = vfs::shader_load("major", shader_stage_t::Vertex);
-	bool result = programs[render_pass_t::VtxBlankColors].create(
-		blank,
-		vfs::shader_load("colors", shader_stage_t::Fragment)
+	const shader_t* blank = vfs::shader(
+		"blank", 
+		pipelines::blank_vert(version), 
+		shader_stage_t::Vertex
 	);
+	const shader_t* major = vfs::shader(
+		"major",
+		pipelines::major_vert(version),
+		shader_stage_t::Vertex
+	);
+	const shader_t* colors = vfs::shader(
+		"colors",
+		pipelines::colors_frag(version),
+		shader_stage_t::Fragment
+	);
+	const shader_t* sprites = vfs::shader(
+		"sprites",
+		pipelines::sprites_frag(version),
+		shader_stage_t::Fragment
+	);
+	const shader_t* indexed = vfs::shader(
+		"indexed",
+		pipelines::indexed_frag(version),
+		shader_stage_t::Fragment
+	);
+	bool result = programs[pipeline_t::VtxBlankColors].create(blank, colors);
 	if (!result) {
 		SYNAO_LOG("VtxBlankColors program creation failed!\n");
 		return false;
 	}
-	result = programs[render_pass_t::VtxMajorSprites].create(
-		major,
-		vfs::shader_load("sprites", shader_stage_t::Fragment)
-	);
+	result = programs[pipeline_t::VtxMajorSprites].create(major, sprites);
 	if (!result) {
 		SYNAO_LOG("VtxMajorSprites program creation failed!\n");
 		return false;
 	}
-	result = programs[render_pass_t::VtxMajorIndexed].create(
-		major,
-		vfs::shader_load("indexed", shader_stage_t::Fragment)
-	);
+	result = programs[pipeline_t::VtxMajorIndexed].create(major, indexed);
 	if (!result) {
 		SYNAO_LOG("VtxMajorIndexed program creation failed!\n");
 		return false;
 	}
-	if (!program_t::has_pipelines()) {
-		programs[render_pass_t::VtxBlankColors].set_block("transforms", 0);
-		programs[render_pass_t::VtxMajorSprites].set_block("transforms", 0);
-		programs[render_pass_t::VtxMajorSprites].set_sampler("diffuse_map", 0);
-		programs[render_pass_t::VtxMajorIndexed].set_block("transforms", 0);
-		programs[render_pass_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
-		programs[render_pass_t::VtxMajorIndexed].set_sampler("palette_map", 1);
+	if (!program_t::has_separable()) {
+		programs[pipeline_t::VtxBlankColors].set_block("transforms", 0);
+		programs[pipeline_t::VtxMajorSprites].set_block("transforms", 0);
+		programs[pipeline_t::VtxMajorSprites].set_sampler("diffuse_map", 0);
+		programs[pipeline_t::VtxMajorIndexed].set_block("transforms", 0);
+		programs[pipeline_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
+		programs[pipeline_t::VtxMajorIndexed].set_sampler("palette_map", 1);
 	}
 	return true;
 }
@@ -205,18 +219,18 @@ quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mo
 	);
 }
 
-quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, render_pass_t render_pass, const texture_t* texture, const palette_t* palette) {
+quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_overlay_quads(
 		layer, blend_mode,
-		&programs[render_pass],
+		&programs[pipeline],
 		texture, palette
 	);
 }
 
-quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, render_pass_t render_pass) {
+quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
 	return this->get_overlay_quads(
 		layer, blend_mode,
-		render_pass,
+		pipeline,
 		nullptr, nullptr	
 	);
 }
@@ -240,23 +254,23 @@ quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mod
 	);
 }
 
-quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, render_pass_t render_pass, const texture_t* texture, const palette_t* palette) {
+quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_normal_quads(
 		layer, blend_mode,
-		&programs[render_pass],
+		&programs[pipeline],
 		texture, palette
 	);
 }
 
-quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, render_pass_t render_pass) {
+quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
 	return this->get_normal_quads(
 		layer, blend_mode,
-		render_pass,
+		pipeline,
 		nullptr, nullptr	
 	);
 }
 
-/*program_t renderer_t::generate(render_pass_t pass) {
+/*program_t renderer_t::generate(pipeline_t pass) {
 	std::ostringstream os;
 	sint_t major = 0;
 	sint_t minor = 0;

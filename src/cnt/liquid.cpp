@@ -53,7 +53,7 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 		auto& batch = renderer.get_normal_quads(
 			layer_value::TileFront,
 			blend_mode_t::Add,
-			render_pass_t::VtxBlankColors
+			pipeline_t::VtxBlankColors
 		);
 		view.each([&batch, &viewport](entt::entity, const liquid_body_t& instance) {
 			if (!instance.hitbox.overlaps(viewport)) {

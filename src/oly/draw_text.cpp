@@ -67,7 +67,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 		auto& batch = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
-			render_pass_t::VtxMajorIndexed,
+			pipeline_t::VtxMajorIndexed,
 			font->get_texture(),
 			font->get_palette()
 		);

@@ -127,7 +127,7 @@ void tilemap_layer_t::render(renderer_t& renderer, bool_t write, const texture_t
 	auto& batch = renderer.get_normal_quads(
 		priority,
 		blend_mode_t::Alpha,
-		palette != nullptr ? render_pass_t::VtxMajorIndexed : render_pass_t::VtxMajorSprites,
+		palette != nullptr ? pipeline_t::VtxMajorIndexed : pipeline_t::VtxMajorSprites,
 		texture,
 		palette
 	);

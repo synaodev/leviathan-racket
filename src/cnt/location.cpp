@@ -71,7 +71,7 @@ void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t v
 	auto& batch = renderer.get_normal_quads(
 		layer_value::HeadsUp,
 		blend_mode_t::Add,
-		render_pass_t::VtxBlankColors
+		pipeline_t::VtxBlankColors
 	);
 	kontext.slice<location_t>().each([&batch, &viewport, &color](entt::entity, const location_t& location) {
 		rect_t hitbox = location.hitbox();
