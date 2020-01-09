@@ -13,7 +13,7 @@ I hope to release in Winter 2020.
 ### Required Dependencies
 - OpenGL 3.3 - 4.6
 - CMake v3.15 (https://cmake.org/)
-- Angescript v2.34.0 (https://www.angelcode.com/angelscript/)
+- Angelscript v2.34.0 (https://www.angelcode.com/angelscript/)
 - OpenAL-Soft v1.19.0 (https://github.com/kcat/openal-soft)
 - GLM v0.9.9.5 (https://glm.g-truc.net/0.9.9/index.html)
 - SDL v2.0.10 (https://www.libsdl.org/download-2.0.php)
