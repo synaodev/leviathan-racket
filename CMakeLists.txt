@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
 
-set(CMAKE_USER_MAKE_RULES_OVERRIDE "./Options.cmake")
+set(CMAKE_USER_MAKE_RULES_OVERRIDE "./cmake/MakeRules.cmake")
 
 project(Leviathan)
 add_subdirectory(src)
