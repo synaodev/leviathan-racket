@@ -5,8 +5,6 @@ I hope to release in Winter 2020.
 ## Building From Source
 - C++17 compiler support is absolutely required.
 - I recommend vcpkg to manage dependencies. (https://github.com/microsoft/vcpkg)
-- To use a vcpkg toolchain file on the CMake CLI, add this:<br>
-	"-DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake"
 - Tmxlite's vcpkg port has inconsistent CMake configuration files, so I've included a fix.
 - Copy the Tmxlite files from the "/cmake" project directory to this directory:<br>
 	"/path/to/vcpkg/installed/architecture/share/tmxlite"
