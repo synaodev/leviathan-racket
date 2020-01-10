@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <memory>
 #include <functional>
-#include <entt/entity/registry.hpp>
+#include <entt/entity/entity.hpp>
 #include <tmxlite/Layer.hpp>
 
 #include "./common.hpp"
@@ -63,11 +63,11 @@ public:
 	arch_t size() const;
 	arch_t active() const;
 	entt::registry* backend();
-	entt::view<actor_header_t> actors();
+	entt::basic_view<entt::entity, entt::exclude_t<>, actor_header_t> actors();
 	template<typename... Component>
-	entt::view<Component...> slice();
+	entt::basic_view<entt::entity, entt::exclude_t<>, Component...> slice();
 	template<typename... Component>
-	entt::view<Component...> slice() const;
+	entt::basic_view<entt::entity, entt::exclude_t<>, Component...> slice() const;
 	template<typename... Component>
 	bool has(entt::entity actor) const;
 	template<typename... Component>
@@ -128,17 +128,17 @@ inline entt::registry* kontext_t::backend() {
 	return &registry;
 }
 
-inline entt::view<actor_header_t> kontext_t::actors() {
+inline entt::basic_view<entt::entity, entt::exclude_t<>, actor_header_t> kontext_t::actors() {
 	return this->slice<actor_header_t>();
 }
 
 template<typename... Component>
-inline entt::view<Component...> kontext_t::slice() {
+inline entt::basic_view<entt::entity, entt::exclude_t<>, Component...> kontext_t::slice() {
 	return registry.view<Component...>();
 }
 
 template<typename... Component>
-inline entt::view<Component...> kontext_t::slice() const {
+inline entt::basic_view<entt::entity, entt::exclude_t<>, Component...> kontext_t::slice() const {
 	return const_cast<entt::registry&>(registry).view<Component...>();
 }
 

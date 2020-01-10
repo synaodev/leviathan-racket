@@ -48,7 +48,7 @@ void liquid::handle(audio_t& audio, kontext_t& kontext) {
 }
 
 void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
-	const entt::view<liquid_body_t> view = kontext.slice<liquid_body_t>();
+	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
 		auto& batch = renderer.get_normal_quads(
 			layer_value::TileFront,

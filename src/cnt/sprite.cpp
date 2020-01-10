@@ -112,7 +112,7 @@ void sprite_t::update(kontext_t& kontext, real64_t delta) {
 void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport, bool_t panic) {
 	static arch_t previous = 0;
 	arch_t current = 0;
-	const entt::view<sprite_t> view = kontext.slice<sprite_t>();
+	const auto view = kontext.slice<sprite_t>();
 	if (!panic) {
 		view.each([&viewport, &current](entt::entity, const sprite_t& sprite) {
 			if (sprite.file != nullptr) {

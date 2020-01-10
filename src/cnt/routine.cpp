@@ -41,7 +41,7 @@ routine_t::routine_t() :
 }
 
 void routine_t::handle(audio_t& audio, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext, tilemap_t& tilemap) {
-	entt::view<routine_t> view = kontext.slice<routine_t>();
+	auto view = kontext.slice<routine_t>();
 	if (!view.empty()) {
 		routine_tuple_t rtp(
 			audio, 

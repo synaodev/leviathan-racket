@@ -28,7 +28,7 @@ kontext_t::kontext_t() :
 	run_event(),
 	push_event()
 {
-
+	
 }
 
 bool kontext_t::init(receiver_t& receiver) {
@@ -44,7 +44,7 @@ bool kontext_t::init(receiver_t& receiver) {
 void kontext_t::reset() {
 	panic_draw = true;
 	liquid_flag = false;
-	entt::view<actor_header_t> view = registry.view<actor_header_t>();
+	auto view = registry.view<actor_header_t>();
 	for (auto&& actor : view) {
 		registry.destroy(actor);
 	}
@@ -83,7 +83,7 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 }
 
 entt::entity kontext_t::search_type(arch_t type) const {
-	const entt::view<actor_header_t> view = const_cast<entt::registry&>(registry).view<actor_header_t>();
+	const auto view = const_cast<entt::registry&>(registry).view<actor_header_t>();
 	for (auto&& actor : view) {
 		auto& header = registry.get<actor_header_t>(actor);
 		if (header.type == type) {
@@ -95,7 +95,7 @@ entt::entity kontext_t::search_type(arch_t type) const {
 
 entt::entity kontext_t::search_id(sint_t identity) const {
 	if (identity > 0) {
-		const entt::view<actor_trigger_t> view = const_cast<entt::registry&>(registry).view<actor_trigger_t>();
+		const auto view = const_cast<entt::registry&>(registry).view<actor_trigger_t>();
 		for (auto&& actor : view) {
 			auto& trigger = registry.get<actor_trigger_t>(actor);
 			if (trigger.identity == identity) {
