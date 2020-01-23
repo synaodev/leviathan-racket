@@ -13,7 +13,7 @@ public:
 	wgt_language_t& operator=(wgt_language_t&&) = default;
 	~wgt_language_t() = default;
 public:
-	void init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) override;
+	void init(const input_t& input, const video_t& video, audio_t& audio, const music_t& music, kernel_t& kernel) override;
 	void handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) override;
 	void update(real64_t delta) override;
 	void render(renderer_t& renderer) const override;

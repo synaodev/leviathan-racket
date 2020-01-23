@@ -2,7 +2,9 @@
 #define SYNAO_MAIN_INPUT_HPP
 
 #include <bitset>
+#include <string>
 #include <unordered_map>
+#include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
 
@@ -57,6 +59,9 @@ public:
 	policy_t poll(policy_t policy);
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
+	const byte_t* get_scancode_name(arch_t index) const;
+	static const byte_t* get_key_setting(arch_t index);
+	static const byte_t* get_joy_setting(arch_t index);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 	glm::vec2 position;

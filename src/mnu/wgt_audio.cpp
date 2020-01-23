@@ -20,7 +20,7 @@ wgt_audio_t::wgt_audio_t(arch_t flags) :
 
 }
 
-void wgt_audio_t::init(video_t&, audio_t& audio, music_t& music, kernel_t&) {
+void wgt_audio_t::init(const input_t&, const video_t&, audio_t& audio, const music_t& music, kernel_t&) {
 	ready = true;
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);
@@ -106,7 +106,7 @@ void wgt_audio_t::force() const {
 	}
 }
 
-void wgt_audio_t::setup_text(audio_t& audio, music_t& music) {
+void wgt_audio_t::setup_text(const audio_t& audio, const music_t& music) {
 	std::string data;
 	data += vfs::i18n_find("Audio", 0, 1);
 	data += std::to_string(audio.get_volume());

@@ -26,7 +26,7 @@ wgt_language_t::wgt_language_t(arch_t flags) :
 
 }
 
-void wgt_language_t::init(video_t&, audio_t&, music_t&, kernel_t&) {
+void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
 	languages = vfs::file_list("data/event/i18n/");
 	text.set_font(vfs::font(0));

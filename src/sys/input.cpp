@@ -233,6 +233,76 @@ bool input_t::get_button_held(btn_t btn) const {
 	return holding[btn];
 }
 
+const byte_t* input_t::get_scancode_name(arch_t index) const {
+	index = glm::clamp(index, (arch_t)0, (arch_t)11);
+	arch_t check = 0;
+	for (auto&& pair : key_bind) {
+		if (check == index) {
+			SDL_Scancode code = static_cast<SDL_Scancode>(pair.first);
+			return SDL_GetScancodeName(code);
+		}
+		++check;
+	}
+	static const byte_t empty_string[] = "";
+	return empty_string;
+}
+
+const byte_t* input_t::get_key_setting(arch_t index) {
+	switch (index) {
+	case 0:
+		return "KeyJump";
+	case 1:
+		return "KeyHammer";
+	case 2:
+		return "KeyItem";
+	case 3:
+		return "KeyLiteDash";
+	case 4:
+		return "KeyContext";
+	case 5:
+		return "KeyStrafe";
+	case 6:
+		return "KeyInventory";
+	case 7:
+		return "KeyOptions";
+	case 8:
+		return "KeyUp";
+	case 9:
+		return "KeyDown";
+	case 10:
+		return "KeyLeft";
+	case 11:
+		return "KeyRight";
+	default:
+		break;
+	}
+	return "KeyNull";
+}
+
+const byte_t* input_t::get_joy_setting(arch_t index) {
+	switch (index) {
+	case 0:
+		return "JoyJump";
+	case 1:
+		return "JoyHammer";
+	case 2:
+		return "JoyItem";
+	case 3:
+		return "JoyLiteDash";
+	case 4:
+		return "JoyContext";
+	case 5:
+		return "JoyStrafe";
+	case 6:
+		return "JoyInventory";
+	case 7:
+		return "JoyOptions";
+	default:
+		break;
+	}
+	return "JoyNull";
+}
+
 void input_t::all_key_bindings(const setup_file_t& config) {
 	sint_t jump		= SDL_SCANCODE_Z;
 	sint_t hammer	= SDL_SCANCODE_X;

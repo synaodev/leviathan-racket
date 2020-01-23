@@ -26,7 +26,7 @@ wgt_field_t::wgt_field_t(arch_t flags) :
 
 }
 
-void wgt_field_t::init(video_t&, audio_t&, music_t&, kernel_t& kernel) {
+void wgt_field_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t& kernel) {
 	ready = true;
 	fields = vfs::file_list("data/field/");
 	kernel.freeze();

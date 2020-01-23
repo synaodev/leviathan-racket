@@ -9,6 +9,7 @@ namespace __enum_menu {
 	enum type : arch_t {
 		Option,
 		File,
+		Input,
 		Video,
 		Audio,
 		Language,
@@ -40,7 +41,7 @@ public:
 	widget_i& operator=(widget_i&&) = default;
 	virtual ~widget_i() = default;
 public:
-	virtual void init(video_t& video, audio_t& audio, music_t& music, kernel_t& kernel) = 0;
+	virtual void init(const input_t& input, const video_t& video, audio_t& audio, const music_t& music, kernel_t& kernel) = 0;
 	virtual void handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) = 0;
 	virtual void update(real64_t delta) = 0;
 	virtual void render(renderer_t& renderer) const = 0;

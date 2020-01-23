@@ -23,7 +23,7 @@ wgt_file_t::wgt_file_t(arch_t flags) :
 
 }
 
-void wgt_file_t::init(video_t&, audio_t&, music_t&, kernel_t& kernel) {
+void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t& kernel) {
 	ready = true;
 	cursor = kernel.get_file_index();
 	kernel.freeze();

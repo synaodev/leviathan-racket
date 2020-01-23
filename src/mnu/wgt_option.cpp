@@ -9,7 +9,7 @@
 
 #include "../res.hpp"
 
-static constexpr arch_t kTotalOptions = 5;
+static constexpr arch_t kTotalOptions = 6;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 wgt_option_t::wgt_option_t(arch_t flags) :
@@ -21,13 +21,13 @@ wgt_option_t::wgt_option_t(arch_t flags) :
 
 }
 
-void wgt_option_t::init(video_t&, audio_t& audio, music_t&, kernel_t& kernel) {
+void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const music_t&, kernel_t& kernel) {
 	ready = true;
 	audio.play(res::sfx::Inven);
 	kernel.freeze();
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);
-	text.set_string(vfs::i18n_find("Options", 0, 6));
+	text.set_string(vfs::i18n_find("Options", 0, 7));
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(4);
 	arrow.set_position(
@@ -56,23 +56,27 @@ void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audi
 		case 0: // Return
 			active = false;
 			break;
-		case 1: // Video
+		case 1: // Input
+			audio.play(res::sfx::Inven);
+			stack_gui.push(menu_t::Input, 0);
+			break;
+		case 2: // Video
 			audio.play(res::sfx::Inven);
 			stack_gui.push(menu_t::Video, 0);
 			break;
-		case 2: // Audio
+		case 3: // Audio
 			audio.play(res::sfx::Inven);
 			stack_gui.push(menu_t::Audio, 0);
 			break;
-		case 3: // Language
+		case 4: // Language
 			audio.play(res::sfx::Inven);
 			stack_gui.push(menu_t::Language, 0);
 			break;
-		case 4: // Reboot
+		case 5: // Reboot
 			reboot = true;
 			active = false;
 			break;
-		case 5: // Exit
+		case 6: // Exit
 			kernel.quit();
 			break;
 		default:

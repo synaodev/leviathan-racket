@@ -20,7 +20,7 @@ wgt_video_t::wgt_video_t(arch_t flags) :
 
 }
 
-void wgt_video_t::init(video_t& video, audio_t&, music_t&, kernel_t&) {
+void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
 	text.set_font(vfs::font(0));
 	text.set_position(kDefaultPosition);

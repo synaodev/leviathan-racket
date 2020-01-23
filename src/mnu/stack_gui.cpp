@@ -1,6 +1,7 @@
 #include "./stack_gui.hpp"
 #include "./wgt_option.hpp"
 #include "./wgt_file.hpp"
+#include "./wgt_input.hpp"
 #include "./wgt_video.hpp"
 #include "./wgt_audio.hpp"
 #include "./wgt_language.hpp"
@@ -32,7 +33,7 @@ void stack_gui_t::reset() {
 void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, draw_title_view_t& title_view, draw_headsup_t& headsup) {
 	if (!widgets.empty()) {
 		if (!widgets.back()->is_ready()) {
-			widgets.back()->init(video, audio, music, kernel);
+			widgets.back()->init(input, video, audio, music, kernel);
 			title_view.set_head();
 		}
 		widgets.back()->handle(
@@ -99,6 +100,9 @@ void stack_gui_t::push(menu_t type, arch_t flags) {
 		break;
 	case menu_t::File:
 		widgets.emplace_back(std::make_unique<wgt_file_t>(flags));
+		break;
+	case menu_t::Input:
+		widgets.emplace_back(std::make_unique<wgt_input_t>(flags));
 		break;
 	case menu_t::Video:
 		widgets.emplace_back(std::make_unique<wgt_video_t>(flags));

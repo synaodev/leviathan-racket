@@ -1,6 +1,6 @@
 {
 	"Fonts" : [
-		"system", "legal", "clock", "evangelion"
+		"system", "legal", "clock", "evangelion", "console"
 	],
 
 	"Main" : [
@@ -10,11 +10,28 @@
 	"Options" : [
 		"Leviathan Racket:\n\n", 
 		"\t Return\n",
+		"\t Input\n",
 		"\t Video\n",
 		"\t Audio\n",
 		"\t Language\n",
 		"\t Reboot\n",
 		"\t Exit"
+	],
+
+	"Input" : [
+		"Keyboard Settings:\t\t\tJoystick Settings:",
+		"\t Jump - ",
+		"\n\t Hammer - ",
+		"\n\t Item - ",
+		"\n\t Light Dash - ",
+		"\n\t Context - ",
+		"\n\t Strafe - ",
+		"\n\t Inventory - ",
+		"\n\t Options - ",
+		"\n\t Up - ",
+		"\n\t Down - ",
+		"\n\t Left - ",
+		"\n\t Right - "
 	],
 
 	"Video" : [
