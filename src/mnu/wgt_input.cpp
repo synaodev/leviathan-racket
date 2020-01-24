@@ -9,6 +9,7 @@
 
 static constexpr arch_t kTotalOptionsA = 11;
 static constexpr arch_t kTotalOptionsB = 7;
+static constexpr real64_t kTotalDelays = 0.32;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
 static const glm::vec2 kAddingPositions = glm::vec2(3.0f, 16.0f);
 static const glm::vec2 kRightsPositions = glm::vec2(175.0f, 16.0f);
@@ -16,6 +17,8 @@ static const glm::vec2 kRightsPositions = glm::vec2(175.0f, 16.0f);
 wgt_input_t::wgt_input_t(arch_t flags) :
 	widget_i(flags),
 	siding(false),
+	waiting(false),
+	flashed(false),
 	cursor(0),
 	header(),
 	left_text(),
@@ -44,7 +47,26 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 }
 
 void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, draw_headsup_t&) {
-	if (input.pressed[btn_t::Up]) {
+	if (waiting) {
+		flashed = !flashed;
+		if (input.has_valid_recording()) {
+			const std::string name = input.get_config_name(cursor, siding);
+			sint_t code = input.receive_record();
+			config.set("Input", name, code);
+			if (siding) {
+				input.set_joystick_binding(code, cursor);
+			} else {
+				input.set_keyboard_binding(code, cursor);
+			}
+			waiting = false;
+			flashed = false;
+			audio.play(res::sfx::TitleBeg, 9);
+		} else if (!input.has_joystick_connection() and siding) {
+			waiting = false;
+			flashed = false;
+			audio.play(res::sfx::Inven, 0);
+		}
+	} else if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
 			audio.play(res::sfx::Select, 0);
@@ -79,6 +101,20 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(-kRightsPositions.x + 3.0f, 0.0f);
 		}
+	} else if (input.pressed[btn_t::Yes]) {
+		if (siding) {
+			if (input.has_joystick_connection()) {
+				waiting = true;
+				flashed = false;
+				input.set_joystick_recording();
+				audio.play(res::sfx::Inven, 0);
+			}
+		} else {
+			waiting = true;
+			flashed = false;
+			input.set_keyboard_recording();
+			audio.play(res::sfx::Inven, 0);
+		}
 	} else if (input.pressed[btn_t::No] or input.pressed[btn_t::Options]) {
 		active = false;
 	}
@@ -99,7 +135,15 @@ void wgt_input_t::render(renderer_t& renderer) const {
 		header.render(renderer);
 		left_text.render(renderer);
 		right_text.render(renderer);
-		arrow.render(renderer);
+		if (waiting) {
+			if (flashed) {
+				arrow.force();
+			} else {
+				arrow.render(renderer);
+			}
+		} else {
+			arrow.render(renderer);
+		}
 	}
 }
 

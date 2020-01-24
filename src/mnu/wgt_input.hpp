@@ -22,6 +22,8 @@ private:
 	void setup_text(const input_t& input);
 private:
 	bool_t siding;
+	bool_t waiting;
+	bool_t flashed;
 	arch_t cursor;
 	draw_text_t header, left_text, right_text;
 	draw_scheme_t arrow;

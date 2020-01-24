@@ -69,8 +69,9 @@ void tileset_viewer_t::handle(const input_t& input) {
 				kDefaultPosition,
 				texture->get_dimensions()
 			);
-			if (bounds.contains(input.position)) {
-				glm::vec2 mouse_position = input.position - kDefaultPosition;
+			const glm::vec2 input_position = input.get_position();
+			if (bounds.contains(input_position)) {
+				glm::vec2 mouse_position = input_position - kDefaultPosition;
 				glm::ivec2 integral_coordinates = glm::ivec2(
 					static_cast<sint_t>(mouse_position.x) / 16,
 					static_cast<sint_t>(mouse_position.y) / 16

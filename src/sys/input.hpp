@@ -4,6 +4,7 @@
 #include <bitset>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
@@ -59,18 +60,26 @@ public:
 	policy_t poll(policy_t policy);
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
+	glm::vec2 get_position() const;
+	bool has_joystick_connection() const;
+	bool has_valid_recording() const;
 	std::string get_scancode_name(arch_t index) const;
 	std::string get_joystick_button(arch_t index) const;
-	void set_keyboard_binding(SDL_Scancode code, btn_t btn);
-	void set_joystick_binding(sint_t code, btn_t btn);
-public:
-	std::bitset<btn_t::Total> pressed, holding;
-	glm::vec2 position;
+	std::string get_config_name(arch_t index, bool_t keys) const;
+	sint_t receive_record();
+	void set_keyboard_recording();
+	void set_keyboard_binding(sint_t code, arch_t btn);
+	void set_joystick_recording();
+	void set_joystick_binding(sint_t code, arch_t btn);
 private:
 	void all_key_bindings(const setup_file_t& config);
 	void all_joy_bindings(const setup_file_t& config);
+public:
+	std::bitset<btn_t::Total> pressed, holding;
 private:
 	std::unordered_map<sint_t, btn_t> key_bind, joy_bind;
+	sint_t recorder;
+	glm::vec2 position;
 	SDL_Joystick* joystick;
 };
 

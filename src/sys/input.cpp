@@ -5,12 +5,17 @@
 
 #include <functional>
 
+static constexpr sint_t kRecordNothings = -1;
+static constexpr sint_t kRecordKeyboard = -2;
+static constexpr sint_t kRecordJoystick = -3;
+
 input_t::input_t() :
 	pressed(0),
 	holding(0),
-	position(0.0f),
 	key_bind(),
 	joy_bind(),
+	recorder(kRecordNothings),
+	position(0.0f),
 	joystick(nullptr)
 {
 
@@ -71,6 +76,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 				btn_t btn = it->second;
 				pressed[btn] = !holding[btn];
 				holding[btn] = true;
+			}
+			if (recorder == kRecordKeyboard) {
+				recorder = code;
 			}
 			break;
 		}
@@ -178,6 +186,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		case SDL_JOYBUTTONDOWN: {
 			if (evt.jbutton.which == 0) {
 				sint_t code = static_cast<sint_t>(evt.jbutton.button);
+				if (recorder == kRecordJoystick) {
+					recorder = code;
+				}
 				auto it = joy_bind.find(code);
 				if (it != joy_bind.end()) {
 					btn_t btn = it->second;
@@ -233,6 +244,18 @@ bool input_t::get_button_held(btn_t btn) const {
 	return holding[btn];
 }
 
+glm::vec2 input_t::get_position() const {
+	return position;
+}
+
+bool input_t::has_joystick_connection() const {
+	return joystick != nullptr;
+}
+
+bool input_t::has_valid_recording() const {
+	return recorder < 0;
+}
+
 std::string input_t::get_scancode_name(arch_t index) const {
 	for (auto&& pair : key_bind) {
 		if (pair.second == index) {
@@ -252,19 +275,69 @@ std::string input_t::get_joystick_button(arch_t index) const {
 	return std::string();
 }
 
-void input_t::set_keyboard_binding(SDL_Scancode code, btn_t btn) {
+std::string input_t::get_config_name(arch_t index, bool_t keys) const {
+	if (keys) {
+		switch (index) {
+			case 0: return "KeyJump";
+			case 1: return "KeyHammer";
+			case 2: return "KeyItem";
+			case 3: return "KeyLiteDash";
+			case 4: return "KeyContext";
+			case 5: return "KeyStrafe";
+			case 6: return "KeyInventory";
+			case 7: return "KeyOptions";
+			case 8: return "KeyUp";
+			case 9: return "KeyDown";
+			case 10: return "KeyLeft";
+			case 11: return "KeyRight";
+		}
+	}
+	switch (index) {
+		case 0: return "JoyJump";
+		case 1: return "JoyHammer";
+		case 2: return "JoyItem";
+		case 3: return "JoyLiteDash";
+		case 4: return "JoyContext";
+		case 5: return "JoyStrafe";
+		case 6: return "JoyInventory";
+		case 7: return "JoyOptions";
+	}
+	return "Invalid";
+}
+
+sint_t input_t::receive_record() {
+	sint_t value = recorder;
+	recorder = kRecordNothings;
+	return value;
+}
+
+void input_t::set_keyboard_recording() {
+	recorder = kRecordKeyboard;
+}
+
+void input_t::set_keyboard_binding(sint_t code, arch_t btn) {
+	if (btn > btn_t::Right) {
+		btn = btn_t::Right;
+	}
 	for (auto&& pair : key_bind) {
 		if (pair.first == code) {
-			pair.second = btn;
+			pair.second = static_cast<btn_t>(btn);
 			break;
 		}
 	}
 }
 
-void input_t::set_joystick_binding(sint_t code, btn_t btn) {
+void input_t::set_joystick_recording() {
+	recorder = kRecordJoystick;
+}
+
+void input_t::set_joystick_binding(sint_t code, arch_t btn) {
+	if (btn > btn_t::Options) {
+		btn = btn_t::Options;
+	}
 	for (auto&& pair : joy_bind) {
 		if (pair.first == code) {
-			pair.second = btn;
+			pair.second = static_cast<btn_t>(btn);
 			break;
 		}
 	}
