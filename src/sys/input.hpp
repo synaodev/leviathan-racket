@@ -59,9 +59,10 @@ public:
 	policy_t poll(policy_t policy);
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
-	const byte_t* get_scancode_name(arch_t index) const;
-	static const byte_t* get_key_setting(arch_t index);
-	static const byte_t* get_joy_setting(arch_t index);
+	std::string get_scancode_name(arch_t index) const;
+	std::string get_joystick_button(arch_t index) const;
+	void set_keyboard_binding(SDL_Scancode code, btn_t btn);
+	void set_joystick_binding(sint_t code, btn_t btn);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 	glm::vec2 position;
