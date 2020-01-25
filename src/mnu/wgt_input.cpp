@@ -61,9 +61,11 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 			waiting = false;
 			flashed = false;
 			audio.play(res::sfx::TitleBeg, 9);
+			this->setup_text(input);
 		} else if (!input.has_joystick_connection() and siding) {
 			waiting = false;
 			flashed = false;
+			input.set_nothings_recording();
 			audio.play(res::sfx::Inven, 0);
 		}
 	} else if (input.pressed[btn_t::Up]) {

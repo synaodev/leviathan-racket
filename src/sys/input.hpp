@@ -65,8 +65,9 @@ public:
 	bool has_valid_recording() const;
 	std::string get_scancode_name(arch_t index) const;
 	std::string get_joystick_button(arch_t index) const;
-	std::string get_config_name(arch_t index, bool_t keys) const;
+	std::string get_config_name(arch_t index, bool_t is_joystick) const;
 	sint_t receive_record();
+	void set_nothings_recording();
 	void set_keyboard_recording();
 	void set_keyboard_binding(sint_t code, arch_t btn);
 	void set_joystick_recording();
