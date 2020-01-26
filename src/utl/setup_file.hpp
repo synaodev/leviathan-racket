@@ -27,6 +27,7 @@ public:
 	void set(const std::string& key, const std::string& value);
 	void set(std::pair<std::string, std::string>& kvp);
 	void write_to(std::string& buffer) const;
+	bool swap(const std::string& lhk, const std::string& rhk);
 private:
 	std::string title;
 	std::vector<std::pair<std::string, std::string> > data;
@@ -44,6 +45,7 @@ public:
 	void clear();
 	bool exists(const std::string& title) const;
 	arch_t size() const;
+	bool swap(const std::string& title, const std::string& lhk, const std::string& rhk);
 	bool read(std::ifstream& file);
 	bool write(std::ofstream& file) const;
 	std::pair<std::string, std::string> parse(const std::string& line) const;

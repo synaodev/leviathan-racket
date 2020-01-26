@@ -53,6 +53,23 @@ void setup_chunk_t::set(std::pair<std::string, std::string>& kvp) {
 	data.push_back(kvp);
 }
 
+bool setup_chunk_t::swap(const std::string& lhk, const std::string& rhk) {
+	std::pair<std::string, std::string>* lhp = nullptr;
+	std::pair<std::string, std::string>* rhp = nullptr;
+	for (auto&& pair : data) {
+		if (pair.first == lhk) {
+			lhp = &pair;
+		} else if (pair.first == rhk) {
+			rhp = &pair;
+		}
+	}
+	if (lhp != nullptr and rhp != nullptr) {
+		std::swap(lhp->second, rhp->second);
+		return true;
+	}
+	return false;
+}
+
 void setup_chunk_t::write_to(std::string& buffer) const {
 	for (auto&& pair : data) {
 		buffer.append(pair.first + " = " + pair.second + '\n');
@@ -112,6 +129,15 @@ bool setup_file_t::exists(const std::string& title) const {
 
 arch_t setup_file_t::size() const {
 	return data.size();
+}
+
+bool setup_file_t::swap(const std::string& title, const std::string& lhk, const std::string& rhk) {
+	for (auto&& chunk : data) {
+		if (chunk.get_title() == title) {
+			return chunk.swap(lhk, rhk);
+		}
+	}
+	return false;
 }
 
 bool setup_file_t::read(std::ifstream& file) {

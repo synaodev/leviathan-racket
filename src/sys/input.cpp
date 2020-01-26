@@ -319,7 +319,7 @@ void input_t::set_keyboard_recording() {
 	recorder = kRecordKeyboard;
 }
 
-void input_t::set_keyboard_binding(sint_t code, arch_t btn) {
+btn_t input_t::set_keyboard_binding(sint_t code, arch_t btn) {
 	if (btn > btn_t::Right) {
 		btn = btn_t::Right;
 	}
@@ -331,16 +331,23 @@ void input_t::set_keyboard_binding(sint_t code, arch_t btn) {
 		}
 	}
 	if (found != -1) {
+		if (key_bind.find(code) != key_bind.end()) {
+			btn_t index = key_bind[code];
+			key_bind[found] = key_bind[code];
+			key_bind[code] = static_cast<btn_t>(btn);
+			return index;
+		}
 		key_bind.erase(found);
 		key_bind[code] = static_cast<btn_t>(btn);
 	}
+	return btn_t::Total;
 }
 
 void input_t::set_joystick_recording() {
 	recorder = kRecordJoystick;
 }
 
-void input_t::set_joystick_binding(sint_t code, arch_t btn) {
+btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 	if (btn > btn_t::Options) {
 		btn = btn_t::Options;
 	}
@@ -352,9 +359,16 @@ void input_t::set_joystick_binding(sint_t code, arch_t btn) {
 		}
 	}
 	if (found != -1) {
+		if (joy_bind.find(code) != joy_bind.end()) {
+			btn_t index = key_bind[code];
+			joy_bind[found] = joy_bind[code];
+			joy_bind[code] = static_cast<btn_t>(btn);
+			return index;
+		}
 		joy_bind.erase(found);
 		joy_bind[code] = static_cast<btn_t>(btn);
 	}
+	return btn_t::Total;
 }
 
 void input_t::all_key_bindings(const setup_file_t& config) {

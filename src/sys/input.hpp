@@ -69,9 +69,9 @@ public:
 	sint_t receive_record();
 	void set_nothings_recording();
 	void set_keyboard_recording();
-	void set_keyboard_binding(sint_t code, arch_t btn);
+	btn_t set_keyboard_binding(sint_t code, arch_t btn);
 	void set_joystick_recording();
-	void set_joystick_binding(sint_t code, arch_t btn);
+	btn_t set_joystick_binding(sint_t code, arch_t btn);
 private:
 	void all_key_bindings(const setup_file_t& config);
 	void all_joy_bindings(const setup_file_t& config);

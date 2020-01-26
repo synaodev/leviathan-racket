@@ -52,11 +52,20 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 		if (input.has_valid_recording()) {
 			const std::string name = input.get_config_name(cursor, siding);
 			sint_t code = input.receive_record();
-			config.set("Input", name, code);
 			if (siding) {
-				input.set_joystick_binding(code, cursor);
+				btn_t other = input.set_joystick_binding(code, cursor);
+				if (other == btn_t::Total) {
+					config.set("Input", name, code);
+				} else {
+					config.swap("Input", name, input.get_config_name(other, siding));
+				}
 			} else {
-				input.set_keyboard_binding(code, cursor);
+				btn_t other = input.set_keyboard_binding(code, cursor);
+				if (other == btn_t::Total) {
+					config.set("Input", name, code);
+				} else {
+					config.swap("Input", name, input.get_config_name(other, siding));
+				}
 			}
 			waiting = false;
 			flashed = false;
