@@ -24,6 +24,7 @@ namespace vfs {
 		std::string::const_iterator end, 
 		std::back_insert_iterator<std::u32string> output
 	);
+	bool create_directory(const std::string& name);
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);

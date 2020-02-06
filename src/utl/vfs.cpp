@@ -12,6 +12,8 @@
 #include <filesystem>
 #else // __APPLE__ __GNUC__
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #endif // __APPLE__ __GNUC__
 
 static const byte_t kNoisePath[]	= "data/noise/";
@@ -120,6 +122,22 @@ std::back_insert_iterator<std::u32string> vfs::to_utf32(
 		*output++ = point;
 	}
 	return output;
+}
+
+bool vfs::create_directory(const std::string& name) {
+#if !defined(__APPLE__) && !defined(__GNUC__)
+	if (std::filesystem::exists(name)) {
+		return true;
+	}
+	return std::filesystem::create_directory(name);
+#else // __APPLE__ __GNUC__
+	struct stat st;
+	if (stat(name.c_str(), &st) == 0) {
+		return true;
+	}
+	int r = mkdir(name.c_str(), 0755);
+	return r == 0;
+#endif // __APPLE__ __GNUC__
 }
 
 std::vector<std::string> vfs::file_list(const std::string& path) {
