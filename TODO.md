@@ -1,2 +1,2 @@
 ## (SyNaoDev)
-- Change syntax for scripting.
+- Test enemy status bar.

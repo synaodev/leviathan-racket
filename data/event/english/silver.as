@@ -1,7 +1,7 @@
 // Silver
 
 void main() {
-	msg::fadeIn();
+	msg::fade_in();
 }
 
 void door_to_practice() {
@@ -9,8 +9,8 @@ void door_to_practice() {
 	const sint32_t kThatDoorID = 300;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, Dir::Left);
+	ctx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
-	msg::fadeOut();
-	sys::setField("practice", kThatDoorID);
+	msg::fade_out();
+	sys::set_field("practice", kThatDoorID);
 }

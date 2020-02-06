@@ -2,7 +2,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-enum Input {
+enum input_t {
 	Yes	= 0,
 	No 	= 1
 };
@@ -11,22 +11,22 @@ enum Input {
 
 void boot() {
 	pxt::exit();
-	msg::setCard("Leviathan Racket", Font::One, true, false, 160.0f, 48.0f);
+	msg::set_card("Leviathan Racket", font_t::One, true, false, 160.0f, 48.0f);
 	sys::wait(1.5);
-	msg::setCard();
-	msg::fadeIn();
+	msg::set_card();
+	msg::fade_in();
 }
 
 void is_empty() /* Empty Chest */ {
 	sys::freeze();
-	msg::topBox();
+	msg::top_box();
 	msg::say(sys::locale("IsEmpty", 0));
 	sys::wait();
 }
 
 void use_bed() /* Bed */ {
 	sys::freeze();
-	msg::topBox();
+	msg::top_box();
 
 	std::array<std::string> question = {
 		sys::locale("UseBed", 0),
@@ -34,37 +34,34 @@ void use_bed() /* Bed */ {
 		sys::locale("UseBed", 2)
 	};
 	msg::ask(question);
-	arch_t answer = msg::getAnswer();
+	arch_t answer = msg::get_answer();
 
-	switch(answer) {
+	switch (answer) {
 		case 0: /* If "Save Progress" */ {
 			const arch_t kFileGUI = 1;
-			
-			sys::setFlag(10, true);
+			sys::set_flag(10, true);
 			msg::close();
 			aud::play("inven");
-			sys::pushWidget(kFileGUI, 1);
-
+			sys::push_widget(kFileGUI, 1);
 			break;
 		}
 		case 1: /* If "Rest in Bed" */ {
 			msg::close();
 			pxt::fade(2.0f);
-			msg::fadeOut();
+			msg::fade_out();
 			sys::wait(1.0);
-			msg::topBox();
+			msg::top_box();
 			msg::say(sys::locale("UseBed", 3));
 			sys::wait();
 			msg::close();
-			nao::lifeUp(20);
+			nao::life_up(20);
 			sys::wait(1.0);
-			msg::fadeIn();
+			msg::fade_in();
 			pxt::redo(1.0f);
 			sys::wait(0.5);
-			msg::topBox();
+			msg::top_box();
 			msg::say(sys::locale("UseBed", 4));
 			sys::wait();
-
 			break;
 		}
 		default: {
@@ -75,7 +72,7 @@ void use_bed() /* Bed */ {
 
 void death(arch_t type) /* Naomi Dies */ {
 	std::string death_print;
-	switch(type) {
+	switch (type) {
 		case 1: /* Disintegration */ {
 			aud::play("player_death");
 			aud::play("crash");
@@ -92,7 +89,7 @@ void death(arch_t type) /* Naomi Dies */ {
 			break;
 		}
 		case 4: /* Drowned */ {
-			nao::animate(2, Dir::Right);
+			nao::animate(2, dir_t::Right);
 			death_print = sys::locale("Death", 3);
 			break;
 		}
@@ -112,11 +109,11 @@ void death(arch_t type) /* Naomi Dies */ {
 
 	pxt::load("game_over", 0.0f, 0.0f);
 	sys::freeze();
-	msg::topBox();
+	msg::top_box();
 	msg::say(death_print);
 	sys::wait();
 
-	if(sys::getFlag(10)) {
+	if (sys::get_flag(10)) {
 		msg::clear();
 		msg::say(sys::locale("Death", 6));
 		sys::wait();
@@ -125,15 +122,15 @@ void death(arch_t type) /* Naomi Dies */ {
 			sys::locale("Main", 2) 
 		};
 		msg::ask(question);
-		if(msg::getAnswer() == 0) {
+		if (msg::get_answer() == 0) {
 			msg::close();
-			msg::fadeOut();
+			msg::fade_out();
 			sys::wait(0.5);
 			pxt::exit();
-			sys::loadProg();
+			sys::load_progress();
 		} else {
 			msg::close();
-			msg::fadeOut();
+			msg::fade_out();
 			pxt::fade(2.0f);
 			sys::wait(2.0);
 			pxt::exit();
@@ -141,7 +138,7 @@ void death(arch_t type) /* Naomi Dies */ {
 		}
 	} else {
 		msg::close();
-		msg::fadeOut();
+		msg::fade_out();
 		pxt::fade(2.0f);
 		sys::wait(2.0);
 		pxt::exit();
@@ -152,8 +149,8 @@ void death(arch_t type) /* Naomi Dies */ {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 void assign_item(const std::string &in wpn_name, arch_t index) /* Set Weapon */ {
-	if(index != sys::getItemPtrIndex()) {
-		sys::setItemPtrIndex(index);
+	if (index != sys::get_item_ptr_index()) {
+		sys::set_item_ptr_index(index);
 	} else {
 		msg::say(wpn_name);
 		sys::wait();
@@ -161,21 +158,19 @@ void assign_item(const std::string &in wpn_name, arch_t index) /* Set Weapon */ 
 }
 
 void inven(arch_t type, arch_t index) /* Using Inventory */ {
-	if(sys::getKeyHeld(Input::Yes)) {
-		msg::lowBox();
-		if(type >= sys::locale("Inven")) {
+	if (sys::get_key_held(input_t::Yes)) {
+		msg::low_box();
+		if (type >= sys::locale("Inven")) {
 			msg::say(sys::locale("Main", 3));
 			sys::wait();
-		} else if(type != 0) {
+		} else if (type != 0) {
 			assign_item(sys::locale("Inven", type), index);
 		} else {
 			msg::say(sys::locale("Inven", 0));
 			sys::wait();
 		}
-	}
-
-	else if(sys::getKeyHeld(Input::No)) {
-		sys::setItemPtrIndex();
+	} else if (sys::get_key_held(input_t::No)) {
+		sys::set_item_ptr_index();
 		aud::play("selected");
 	}
 }

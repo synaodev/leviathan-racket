@@ -1,8 +1,8 @@
 // Commons Room
 
 void main() {
-	msg::setFieldText("Common Room");
-	msg::fadeIn();
+	msg::set_field_text("Common Room");
+	msg::fade_in();
 }
 
 void door_to_naomi() {
@@ -10,10 +10,10 @@ void door_to_naomi() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, Dir::Left);
+	ctx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
-	msg::fadeOut();
-	sys::setField("naomi", kThatDoorID);
+	msg::fade_out();
+	sys::set_field("naomi", kThatDoorID);
 }
 
 void door_to_practice() {
@@ -21,15 +21,15 @@ void door_to_practice() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, Dir::Left);
+	ctx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
-	msg::fadeOut();
-	sys::setField("practice", kThatDoorID);
+	msg::fade_out();
+	sys::set_field("practice", kThatDoorID);
 }
 
 void check_fireplace() {
 	sys::lock();
-	msg::topBox();
+	msg::top_box();
 	msg::say("Crackle!\nSnap!");
 	sys::wait();
 	msg::clear();

@@ -475,36 +475,36 @@ void receiver_t::generate_properties() {
 void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	sint_t r = 0;
 	// Set Direction Enum
-	r = engine->RegisterEnum("Dir");
+	r = engine->RegisterEnum("dir_t");
 	assert(r >= 0);
 
 	// Direction Indices
-	r = engine->RegisterEnumValue("Dir", "Right", 0);
+	r = engine->RegisterEnumValue("dir_t", "Right", 0);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "Left", 1);
+	r = engine->RegisterEnumValue("dir_t", "Left", 1);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "RightUp", 2);
+	r = engine->RegisterEnumValue("dir_t", "RightUp", 2);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "LeftUp", 3);
+	r = engine->RegisterEnumValue("dir_t", "LeftUp", 3);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "RightDown", 4);
+	r = engine->RegisterEnumValue("dir_t", "RightDown", 4);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "LeftDown", 5);
+	r = engine->RegisterEnumValue("dir_t", "LeftDown", 5);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Dir", "None", 6);
+	r = engine->RegisterEnumValue("dir_t", "None", 6);
 	assert(r >= 0);
 
 	// Set Font Enum
-	r = engine->RegisterEnum("Font");
+	r = engine->RegisterEnum("font_t");
 	assert(r >= 0);
 	// Font Names
-	r = engine->RegisterEnumValue("Font", "Zero", 0);
+	r = engine->RegisterEnumValue("font_t", "Zero", 0);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Font", "One", 1);
+	r = engine->RegisterEnumValue("font_t", "One", 1);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Font", "Two", 2);
+	r = engine->RegisterEnumValue("font_t", "Two", 2);
 	assert(r >= 0);
-	r = engine->RegisterEnumValue("Font", "Three", 3);
+	r = engine->RegisterEnumValue("font_t", "Three", 3);
 	assert(r >= 0);
 
 	// Set Funcdef
@@ -531,43 +531,43 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void suspend()", asMETHOD(receiver_t, suspend), asCALL_THISCALL_ASGLOBAL, this);
 	assert(r >= 0);
 	// Getting Flags
-	r = engine->RegisterGlobalFunction("bool getFlag(arch_t index)", asMETHOD(kernel_t, get_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("bool get_flag(arch_t index)", asMETHOD(kernel_t, get_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Setting Flags
-	r = engine->RegisterGlobalFunction("void setFlag(arch_t index, bool value)", asMETHOD(kernel_t, set_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_flag(arch_t index, bool value)", asMETHOD(kernel_t, set_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Setting Items
-	r = engine->RegisterGlobalFunction("void setItem(sint32_t type, sint32_t count, sint32_t limit, sint32_t optor)", asMETHOD(kernel_t, set_item), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item(sint32_t type, sint32_t count, sint32_t limit, sint32_t optor)", asMETHOD(kernel_t, set_item), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Setting Item Limit
-	r = engine->RegisterGlobalFunction("void setItemLimit(sint32_t type, sint32_t limit)", asMETHOD(kernel_t, set_item_limit), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_limit(sint32_t type, sint32_t limit)", asMETHOD(kernel_t, set_item_limit), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Setting Item Optor
-	r = engine->RegisterGlobalFunction("void setItemOptor(sint32_t type, sint32_t optor)", asMETHOD(kernel_t, set_item_optor), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_optor(sint32_t type, sint32_t optor)", asMETHOD(kernel_t, set_item_optor), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Adding Items
-	r = engine->RegisterGlobalFunction("void addItem(sint32_t type, sint32_t count, sint32_t limit)", asMETHOD(kernel_t, add_item), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void add_item(sint32_t type, sint32_t count, sint32_t limit)", asMETHOD(kernel_t, add_item), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Sutracting Items
-	r = engine->RegisterGlobalFunction("void subItem(sint32_t type, sint32_t count)", asMETHOD(kernel_t, sub_item), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void sub_item(sint32_t type, sint32_t count)", asMETHOD(kernel_t, sub_item), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Ridding Items
-	r = engine->RegisterGlobalFunction("void ridItem(sint32_t type)", asMETHOD(kernel_t, rid_item), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void rid_item(sint32_t type)", asMETHOD(kernel_t, rid_item), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Polling Items
-	r = engine->RegisterGlobalFunction("sint32_t getItemCount(sint32_t type)", asMETHOD(kernel_t, get_item_count), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("sint32_t get_item_count(sint32_t type)", asMETHOD(kernel_t, get_item_count), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set ItmPtr Index
-	r = engine->RegisterGlobalFunction("void setItemPtrIndex(arch_t index)", asMETHODPR(kernel_t, set_item_ptr_index, (arch_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_ptr_index(arch_t index)", asMETHODPR(kernel_t, set_item_ptr_index, (arch_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set ItmPtr Index
-	r = engine->RegisterGlobalFunction("void setItemPtrIndex()", asMETHODPR(kernel_t, set_item_ptr_index, (void), void), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_ptr_index()", asMETHODPR(kernel_t, set_item_ptr_index, (void), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Get ItmPtr Index
-	r = engine->RegisterGlobalFunction("arch_t getItemPtrIndex()", asMETHOD(kernel_t, get_item_ptr_index), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_item_ptr_index()", asMETHOD(kernel_t, get_item_ptr_index), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Get Max Items
-	r = engine->RegisterGlobalFunction("arch_t getMaxItems()", asMETHOD(kernel_t, get_max_items), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_max_items()", asMETHOD(kernel_t, get_max_items), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Lock Keys
 	r = engine->RegisterGlobalFunction("void lock()", asMETHOD(kernel_t, lock), asCALL_THISCALL_ASGLOBAL, &kernel);
@@ -585,40 +585,40 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void quit()", asMETHOD(kernel_t, quit), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set Room Default Function
-	r = engine->RegisterGlobalFunction("void setField(const std::string &in field, sint32_t id)", asMETHODPR(kernel_t, buffer_field, (const std::string&, sint_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id)", asMETHODPR(kernel_t, buffer_field, (const std::string&, sint_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set Room Special Function
-	r = engine->RegisterGlobalFunction("void setField(const std::string &in field, sint32_t id, std::event@ event)", asMETHODPR(kernel_t, buffer_field, (const std::string&, sint_t, asIScriptFunction*), void), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id, std::event@ event)", asMETHODPR(kernel_t, buffer_field, (const std::string&, sint_t, asIScriptFunction*), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Load Progress
-	r = engine->RegisterGlobalFunction("void loadProg()", asMETHOD(kernel_t, load_progress), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void load_progress()", asMETHOD(kernel_t, load_progress), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Save Progress
-	r = engine->RegisterGlobalFunction("void saveProg()", asMETHOD(kernel_t, save_progress), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void save_progress()", asMETHOD(kernel_t, save_progress), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Load CheckPoint
-	r = engine->RegisterGlobalFunction("void loadCpnt()", asMETHOD(kernel_t, load_checkpoint), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void load_checkpoint()", asMETHOD(kernel_t, load_checkpoint), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Save CheckPoint
-	r = engine->RegisterGlobalFunction("void saveCpnt()", asMETHOD(kernel_t, save_checkpoint), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void save_checkpoint()", asMETHOD(kernel_t, save_checkpoint), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set FileIndex
-	r = engine->RegisterGlobalFunction("void setFileIndex(arch_t index)", asMETHOD(kernel_t, set_file_index), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_file_index(arch_t index)", asMETHOD(kernel_t, set_file_index), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Get FileIndex
-	r = engine->RegisterGlobalFunction("arch_t getFileIndex()", asMETHOD(kernel_t, get_file_index), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_file_index()", asMETHOD(kernel_t, get_file_index), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Random Int
-	r = engine->RegisterGlobalFunction("sint32_t getRand(sint32_t lowest, sint32_t highest)", asFUNCTIONPR(rng::next, (sint_t, sint_t), sint_t), asCALL_CDECL);
+	r = engine->RegisterGlobalFunction("sint32_t get_rand(sint32_t lowest, sint32_t highest)", asFUNCTIONPR(rng::next, (sint_t, sint_t), sint_t), asCALL_CDECL);
 	assert(r >= 0);
 	// Random Float
-	r = engine->RegisterGlobalFunction("real32_t getRand(real32_t lowest, real32_t highest)", asFUNCTIONPR(rng::next, (real_t, real_t), real_t), asCALL_CDECL);
+	r = engine->RegisterGlobalFunction("real32_t get_rand(real32_t lowest, real32_t highest)", asFUNCTIONPR(rng::next, (real_t, real_t), real_t), asCALL_CDECL);
 	assert(r >= 0);
 	// Get Input Press
-	r = engine->RegisterGlobalFunction("bool getKeyPress(arch_t action)", asMETHOD(input_t, get_button_pressed), asCALL_THISCALL_ASGLOBAL, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_press(arch_t action)", asMETHOD(input_t, get_button_pressed), asCALL_THISCALL_ASGLOBAL, &input);
 	assert(r >= 0);
 	// Get Input Held
-	r = engine->RegisterGlobalFunction("bool getKeyHeld(arch_t action)", asMETHOD(input_t, get_button_held), asCALL_THISCALL_ASGLOBAL, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", asMETHOD(input_t, get_button_held), asCALL_THISCALL_ASGLOBAL, &input);
 	assert(r >= 0);
 	// Get Locale String
 	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", asFUNCTIONPR(vfs::i18n_find, (const std::string&, arch_t), std::string), asCALL_CDECL);
@@ -630,47 +630,47 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("arch_t locale(const std::string &in key)", asFUNCTIONPR(vfs::i18n_size, (const std::string&), arch_t), asCALL_CDECL);
 	assert(r >= 0);
 	// Push Menu
-	r = engine->RegisterGlobalFunction("void pushWidget(arch_t type, arch_t flags)", asMETHOD(stack_gui_t, push), asCALL_THISCALL_ASGLOBAL, &stack_gui);
+	r = engine->RegisterGlobalFunction("void push_widget(arch_t type, arch_t flags)", asMETHOD(stack_gui_t, push), asCALL_THISCALL_ASGLOBAL, &stack_gui);
 	assert(r >= 0);
 	// Pop Menu
-	r = engine->RegisterGlobalFunction("void popWidget()", asMETHOD(stack_gui_t, pop), asCALL_THISCALL_ASGLOBAL, &stack_gui);
+	r = engine->RegisterGlobalFunction("void pop_widget()", asMETHOD(stack_gui_t, pop), asCALL_THISCALL_ASGLOBAL, &stack_gui);
 	assert(r >= 0);
 	
 	// Set Namespace
 	r = engine->SetDefaultNamespace("msg");
 	assert(r >= 0);
 	// Fade In
-	r = engine->RegisterGlobalFunction("void fadeIn()", asMETHOD(draw_headsup_t, fade_in), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_in()", asMETHOD(draw_headsup_t, fade_in), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Fade Out
-	r = engine->RegisterGlobalFunction("void fadeOut()", asMETHOD(draw_headsup_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_out()", asMETHOD(draw_headsup_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void setFieldText(const std::string &in text)", asMETHODPR(draw_title_view_t, set_head, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", asMETHODPR(draw_title_view_t, set_head, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &title_view);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void setFieldText()", asMETHODPR(draw_title_view_t, set_head, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_field_text()", asMETHODPR(draw_title_view_t, set_head, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
 	assert(r >= 0);
 	// Set Facebox
-	r = engine->RegisterGlobalFunction("void setFace(arch_t index, arch_t type)", asMETHODPR(dialogue_gui_t, set_face, (arch_t, direction_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void set_face(arch_t index, arch_t type)", asMETHODPR(dialogue_gui_t, set_face, (arch_t, direction_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Set No Facebox
-	r = engine->RegisterGlobalFunction("void setFace()", asMETHODPR(dialogue_gui_t, set_face, (void), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void set_face()", asMETHODPR(dialogue_gui_t, set_face, (void), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Set Delay Textbox
-	// r = engine->RegisterGlobalFunction("void setDelay(real32 msec)", asMETHOD(dialogue_gui_t, mssgDelay), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	// r = engine->RegisterGlobalFunction("void set_delay(real32 msec)", asMETHOD(dialogue_gui_t, mssgDelay), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	// assert(r >= 0);
 	// Add Titlecard
-	r = engine->RegisterGlobalFunction("void setCard(const std::string &in text, arch_t font, bool cenx, bool ceny, real32_t posx, real32_t posy)", asMETHODPR(draw_title_view_t, set_card, (const std::string&, arch_t, bool, bool, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card(const std::string &in text, arch_t font, bool cenx, bool ceny, real32_t posx, real32_t posy)", asMETHODPR(draw_title_view_t, set_card, (const std::string&, arch_t, bool, bool, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &title_view);
 	assert(r >= 0);
 	// End Titlecard
-	r = engine->RegisterGlobalFunction("void setCard()", asMETHODPR(draw_title_view_t, set_card, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card()", asMETHODPR(draw_title_view_t, set_card, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
 	assert(r >= 0);
 	// Open Textbox Top
-	r = engine->RegisterGlobalFunction("void topBox()", asMETHOD(dialogue_gui_t, open_textbox_high), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void top_box()", asMETHOD(dialogue_gui_t, open_textbox_high), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Open Textbox Bottom
-	r = engine->RegisterGlobalFunction("void lowBox()", asMETHOD(dialogue_gui_t, open_textbox_low), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void low_box()", asMETHOD(dialogue_gui_t, open_textbox_low), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Set Textbox Text
 	r = engine->RegisterGlobalFunction("void say(const std::string &in words)", asMETHOD(dialogue_gui_t, write_textbox), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
@@ -685,7 +685,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void ask(const std::array<std::string> &in question)", asMETHODPR(dialogue_gui_t, ask_question, (const CScriptArray*), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Get Answer
-	r = engine->RegisterGlobalFunction("arch_t getAnswer()", asMETHOD(dialogue_gui_t, get_answer), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("arch_t get_answer()", asMETHOD(dialogue_gui_t, get_answer), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 
 	// Set Namespace
@@ -704,10 +704,10 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void resume(arch_t channel)", asMETHODPR(audio_t, resume, (arch_t), void), asCALL_THISCALL_ASGLOBAL, &audio);
 	assert(r >= 0);
 	// Sound Set Volume
-	r = engine->RegisterGlobalFunction("void setVolume(real32_t volume)", asMETHOD(audio_t, set_volume), asCALL_THISCALL_ASGLOBAL, &audio);
+	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", asMETHOD(audio_t, set_volume), asCALL_THISCALL_ASGLOBAL, &audio);
 	assert(r >= 0);
 	// Sound Get Volume
-	r = engine->RegisterGlobalFunction("real32_t getVolume()", asMETHOD(audio_t, get_volume), asCALL_THISCALL_ASGLOBAL, &audio);
+	r = engine->RegisterGlobalFunction("real32_t get_volume()", asMETHOD(audio_t, get_volume), asCALL_THISCALL_ASGLOBAL, &audio);
 	assert(r >= 0);
 
 	// Set Namespace
@@ -741,10 +741,10 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("bool playing()", asMETHOD(music_t, running), asCALL_THISCALL_ASGLOBAL, &music);
 	assert(r >= 0);
 	// Pxtone Set Volume
-	r = engine->RegisterGlobalFunction("void setVolume(real32_t volume)", asMETHOD(music_t, set_volume), asCALL_THISCALL_ASGLOBAL, &music);
+	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", asMETHOD(music_t, set_volume), asCALL_THISCALL_ASGLOBAL, &music);
 	assert(r >= 0);
 	// Pxtone Get Volume
-	r = engine->RegisterGlobalFunction("real32_t getVolume()", asMETHOD(music_t, get_volume), asCALL_THISCALL_ASGLOBAL, &music);
+	r = engine->RegisterGlobalFunction("real32_t get_volume()", asMETHOD(music_t, get_volume), asCALL_THISCALL_ASGLOBAL, &music);
 	assert(r >= 0);
 
 	// Set Namespace
@@ -772,16 +772,16 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void animate(sint32_t id, arch_t state, arch_t dir)", asMETHOD(kontext_t, animate), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Set Actor State
-	r = engine->RegisterGlobalFunction("void setState(sint32_t id, arch_t state)", asMETHOD(kontext_t, set_state), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("void set_state(sint32_t id, arch_t state)", asMETHOD(kontext_t, set_state), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Set Actor Flag
-	r = engine->RegisterGlobalFunction("void setFlag(sint32_t id, arch_t flag, bool value)", asMETHOD(kontext_t, set_mask), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("void set_flag(sint32_t id, arch_t flag, bool value)", asMETHOD(kontext_t, set_mask), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Set Actor Event
-	r = engine->RegisterGlobalFunction("void setEvent(sint32_t id, std::event@ event)", asMETHOD(kontext_t, set_event), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("void set_event(sint32_t id, std::event@ event)", asMETHOD(kontext_t, set_event), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Is Actor Still
-	r = engine->RegisterGlobalFunction("bool getStill(sint32_t id)", asMETHOD(kontext_t, still), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("bool still(sint32_t id)", asMETHOD(kontext_t, still), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 
 	// Set Namespace
@@ -797,13 +797,13 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void teleport(real32_t x, real32_t y)", asMETHOD(naomi_state_t, set_teleport_location), asCALL_THISCALL_ASGLOBAL, &naomi_state);
 	assert(r >= 0);
 	// Heal Naomi
-	r = engine->RegisterGlobalFunction("void lifeUp(sint32_t amount)", asMETHOD(naomi_state_t, boost_current_barrier), asCALL_THISCALL_ASGLOBAL, &naomi_state);
+	r = engine->RegisterGlobalFunction("void life_up(sint32_t amount)", asMETHOD(naomi_state_t, boost_current_barrier), asCALL_THISCALL_ASGLOBAL, &naomi_state);
 	assert(r >= 0);
 	// Boost Life Naomi
-	r = engine->RegisterGlobalFunction("void lifeBoost(sint32_t amount)", asMETHOD(naomi_state_t, boost_maximum_barrer), asCALL_THISCALL_ASGLOBAL, &naomi_state);
+	r = engine->RegisterGlobalFunction("void life_boost(sint32_t amount)", asMETHOD(naomi_state_t, boost_maximum_barrer), asCALL_THISCALL_ASGLOBAL, &naomi_state);
 	assert(r >= 0);
 	// Modify Corruption Naomi
-	r = engine->RegisterGlobalFunction("void angelicUp(sint32_t amount)", asMETHOD(naomi_state_t, mut_leviathan_power), asCALL_THISCALL_ASGLOBAL, &naomi_state);
+	r = engine->RegisterGlobalFunction("void mut_leviathan(sint32_t amount)", asMETHOD(naomi_state_t, mut_leviathan_power), asCALL_THISCALL_ASGLOBAL, &naomi_state);
 	assert(r >= 0);
 	// Set Equip Naomi
 	r = engine->RegisterGlobalFunction("void equip(arch_t flag, bool value)", asMETHOD(naomi_state_t, set_equips), asCALL_THISCALL_ASGLOBAL, &naomi_state);
@@ -816,10 +816,10 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->SetDefaultNamespace("cam");
 	assert(r >= 0);
 	// Infinite Quake
-	r = engine->RegisterGlobalFunction("void setQuake(real32_t factor)", asMETHODPR(camera_t, quake, (real_t), void), asCALL_THISCALL_ASGLOBAL, &camera);
+	r = engine->RegisterGlobalFunction("void quake(real32_t factor)", asMETHODPR(camera_t, quake, (real_t), void), asCALL_THISCALL_ASGLOBAL, &camera);
 	assert(r >= 0);
 	// Timed Quake
-	r = engine->RegisterGlobalFunction("void setQuake(real32_t factor, real64_t seconds)", asMETHODPR(camera_t, quake, (real_t, real64_t), void), asCALL_THISCALL_ASGLOBAL, &camera);
+	r = engine->RegisterGlobalFunction("void quake(real32_t factor, real64_t seconds)", asMETHODPR(camera_t, quake, (real_t, real64_t), void), asCALL_THISCALL_ASGLOBAL, &camera);
 	assert(r >= 0);
 
 	// Set Namespace

@@ -1,7 +1,7 @@
 // Practice
 
 void main() {
-	msg::fadeIn();
+	msg::fade_in();
 }
 
 void door_to_common() {
@@ -9,10 +9,10 @@ void door_to_common() {
 	const sint32_t kThatDoorID = 300;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, Dir::Left);
+	ctx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
-	msg::fadeOut();
-	sys::setField("common", kThatDoorID);
+	msg::fade_out();
+	sys::set_field("common", kThatDoorID);
 }
 
 void door_to_silver() {
@@ -20,8 +20,8 @@ void door_to_silver() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, Dir::Left);
+	ctx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
-	msg::fadeOut();
-	sys::setField("silver", kThatDoorID);
+	msg::fade_out();
+	sys::set_field("silver", kThatDoorID);
 }
