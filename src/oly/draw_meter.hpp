@@ -1,8 +1,6 @@
 #ifndef SYNAO_OVERLAY_DRAW_METER_HPP
 #define SYNAO_OVERLAY_DRAW_METER_HPP
 
-#include <entt/entity/registry.hpp>
-
 #include "./draw_scheme.hpp"
 
 #include "../utl/rect.hpp"

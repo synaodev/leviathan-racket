@@ -7,8 +7,8 @@
 #include "../utl/misc.hpp"
 #include "../utl/setup_file.hpp"
 
-static const byte_t kFlagProgsName[] = "/progsflag.bin";
-static const byte_t kFlagCheckName[] = "/checkflag.bin";
+static const byte_t kFlagProgsName[] = "_prog.bin";
+static const byte_t kFlagCheckName[] = "_check.bin";
 
 static constexpr arch_t kMaxItemList  = 30;
 static constexpr arch_t kMaxFlagList  = 128;
@@ -82,7 +82,7 @@ void kernel_t::read_data(const setup_file_t& file) {
 	}
 }
 
-void kernel_t::read_stream(const std::string& path) {
+bool kernel_t::read_stream(const std::string& path) {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
 	std::ifstream ifs(path + std::to_string(file_index) + name, std::ifstream::binary);
 	if (ifs.is_open()) {
@@ -90,7 +90,9 @@ void kernel_t::read_stream(const std::string& path) {
 			reinterpret_cast<byte_t*>(flags.data()),
 			flags.size() * sizeof(decltype(flags)::value_type)
 		);
+		return true;
 	}
+	return false;
 }
 
 void kernel_t::write_data(setup_file_t& file) const {
@@ -107,7 +109,7 @@ void kernel_t::write_data(setup_file_t& file) const {
 	}
 }
 
-void kernel_t::write_stream(const std::string& path) const {
+bool kernel_t::write_stream(const std::string& path) const {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
 	std::ofstream ofs(path + std::to_string(file_index) + name, std::ofstream::binary);
 	if (ofs.is_open()) {
@@ -115,7 +117,9 @@ void kernel_t::write_stream(const std::string& path) const {
 			reinterpret_cast<const byte_t*>(flags.data()),
 			flags.size() * sizeof(decltype(flags)::value_type)
 		);
+		return true;
 	}
+	return false;
 }
 
 void kernel_t::boot() {

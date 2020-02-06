@@ -12,11 +12,13 @@
 #include "../utl/logger.hpp"
 #include "../utl/tmx_convert.hpp"
 #include "../utl/setup_file.hpp"
+#include "../utl/vfs.hpp"
 
 static const byte_t kFieldPath[] 	= "data/field/";
-static const byte_t kSavesPath[] 	= "data/save/file_";
-static const byte_t kStatProgPath[] = "/progstat.cfg";
-static const byte_t kStatCpntPath[] = "/cpntstat.cfg";
+
+static const byte_t kSavesPath[] 	= "./save/";
+static const byte_t kStatProgPath[] = "_prog.cfg";
+static const byte_t kStatCpntPath[] = "_check.cfg";
 
 runtime_t::runtime_t() : 
 	accum(0.0),
@@ -190,61 +192,71 @@ void runtime_t::setup_boot(const setup_file_t& config, renderer_t& renderer) {
 }
 
 void runtime_t::setup_load() {
-	setup_file_t file;
-	std::string base_path = kernel.has(kernel_state_t::Check) ? 
-		kStatCpntPath : 
-		kStatProgPath;
-	if (file.load(kSavesPath + std::to_string(kernel.get_file_index()) + base_path)) {
-		arch_t maximum = 2;
-		arch_t current = 2;
-		arch_t leviathan = 1;
-		glm::vec2 position = glm::zero<glm::vec2>();
-		arch_t direction = 0;
-		std::string equips;
-		std::string field_name;
-		file.get("Status", "MaxHp", maximum);
-		file.get("Status", "CurHp", current);
-		file.get("Status", "CurAp", leviathan);
-		file.get("Status", "Field", field_name);
-		file.get("Status", "Position", position);
-		file.get("Status", "Direction", direction);
-		file.get("Status", "Equips", equips);
-		kernel.reset(field_name);
-		stack_gui.reset();
-		dialogue_gui.reset();
-		headsup.reset();
-		naomi_state.reset(
-			kontext, position * 16.0f,
-			static_cast<direction_t>(direction),
-			static_cast<sint_t>(current),
-			static_cast<sint_t>(maximum),
-			static_cast<sint_t>(leviathan), 
-			static_cast<arch_t>(std::stoi(equips, nullptr, 0))
-		);
-		kernel.read_data(file);
-		kernel.read_stream(kSavesPath);
+	if (vfs::create_directory(kSavesPath)) {
+		setup_file_t file;
+		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
+		if (file.load(kSavesPath + std::to_string(kernel.get_file_index()) + path_type)) {
+			arch_t maximum = 2;
+			arch_t current = 2;
+			arch_t leviathan = 1;
+			glm::vec2 position = glm::zero<glm::vec2>();
+			arch_t direction = 0;
+			std::string equips;
+			std::string field_name;
+			file.get("Status", "MaxHp", maximum);
+			file.get("Status", "CurHp", current);
+			file.get("Status", "CurAp", leviathan);
+			file.get("Status", "Field", field_name);
+			file.get("Status", "Position", position);
+			file.get("Status", "Direction", direction);
+			file.get("Status", "Equips", equips);
+			kernel.reset(field_name);
+			stack_gui.reset();
+			dialogue_gui.reset();
+			headsup.reset();
+			naomi_state.reset(
+				kontext, position * 16.0f,
+				static_cast<direction_t>(direction),
+				static_cast<sint_t>(current),
+				static_cast<sint_t>(maximum),
+				static_cast<sint_t>(leviathan), 
+				static_cast<arch_t>(std::stoi(equips, nullptr, 0))
+			);
+			kernel.read_data(file);
+			if (!kernel.read_stream(kSavesPath)) {
+				SYNAO_LOG("Couldn't load current flags!\n");
+			}
+		} else {
+			SYNAO_LOG("Couldn't load current state!\n");
+		}
 	} else {
-		SYNAO_LOG("Couldn't load current state!\n");
+		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
 }
 
 void runtime_t::setup_save() {
-	setup_file_t file;
-	std::string base_path = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
-	auto& location = kontext.get<location_t>(naomi_state.actor);
-	auto& health = kontext.get<health_t>(naomi_state.actor);
-	file.set("Status", "MaxHp", health.maximum);
-	file.set("Status", "CurHp", health.current);
-	file.set("Status", "CurAp", health.leviathan);
-	file.set("Status", "Field", kernel.get_field());
-	file.set("Status", "Position", location.position / 16.0f);
-	file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
-	file.set("Status", "Equips", naomi_state.hexadecimal_equips());
-	kernel.write_data(file);
-	kernel.write_stream(kSavesPath);
-	if (!file.save(kSavesPath + std::to_string(kernel.get_file_index()) + base_path)) {
-		SYNAO_LOG("Couldn't save current state!\n");
+	if (vfs::create_directory(kSavesPath)) {
+		setup_file_t file;
+		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
+		auto& location = kontext.get<location_t>(naomi_state.actor);
+		auto& health = kontext.get<health_t>(naomi_state.actor);
+		file.set("Status", "MaxHp", health.maximum);
+		file.set("Status", "CurHp", health.current);
+		file.set("Status", "CurAp", health.leviathan);
+		file.set("Status", "Field", kernel.get_field());
+		file.set("Status", "Position", location.position / 16.0f);
+		file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
+		file.set("Status", "Equips", naomi_state.hexadecimal_equips());
+		kernel.write_data(file);
+		if (!kernel.write_stream(kSavesPath)) {
+			SYNAO_LOG("Couldn't save current flags!\n");
+		}
+		if (!file.save(kSavesPath + std::to_string(kernel.get_file_index()) + path_type)) {
+			SYNAO_LOG("Couldn't save current state!\n");
+		}
+	} else {
+		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
 }

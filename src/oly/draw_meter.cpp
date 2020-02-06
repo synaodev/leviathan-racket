@@ -1,32 +1,33 @@
 #include "./draw_meter.hpp"
 
-#include "../gfx/texture.hpp"
 #include "../cnt/kontext.hpp"
 #include "../cnt/health.hpp"
 #include "../sys/renderer.hpp"
 
-static constexpr glm::vec2 kBarPos	= glm::vec2(48.0f); 
-static constexpr glm::vec2 kBarSize = glm::vec2(6.0f, 94.0f);
+static const glm::vec2 kGraphedPosition		= glm::vec2(302.0f, 142.0f);
+static const glm::vec2 kVaryingPosition 	= kGraphedPosition + glm::vec2(9.0f, 1.0f);
+static const glm::vec2 kVaryingDimensions 	= glm::vec2(6.0f, 94.0f);
 
 draw_meter_t::draw_meter_t() :
 	write(false),
 	current(0),
 	identity(0),
-	varying(kBarPos, kBarSize),
+	varying(kGraphedPosition, kVaryingDimensions),
 	graphed()
 {
 	
 }
 
-void draw_meter_t::init(const animation_t* graphed_animation) {
+void draw_meter_t::init(const animation_t* animation) {
 	this->reset();
-	graphed.set_file(graphed_animation);
+	graphed.set_file(animation);
 	graphed.set_state(6);
-	graphed.set_position(kBarPos);
+	graphed.set_position(kVaryingPosition);
 }
 
 void draw_meter_t::reset() {
 	this->force();
+	current = 0;
 	identity = 0;
 }
 
@@ -39,8 +40,9 @@ void draw_meter_t::handle(const kontext_t& kontext) {
 				if (this->current != health.current) {
 					this->current = health.current;
 					if (health.maximum != 0) {
-						real_t ratio = static_cast<real_t>(current) / static_cast<real_t>(health.maximum);
-						varying.h = glm::round(ratio * kBarSize.y);
+						real_t ratio = static_cast<real_t>(health.current) / static_cast<real_t>(health.maximum);
+						varying.h = glm::round(ratio * kVaryingDimensions.y);
+						varying.y = kVaryingPosition.y + varying.h;
 					} else {
 						varying.h = 0.0f;
 					}

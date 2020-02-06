@@ -43,9 +43,9 @@ public:
 	void reset(const std::string& field);
 	void update(real64_t delta);
 	void read_data(const setup_file_t& file);
-	void read_stream(const std::string& path);
+	bool read_stream(const std::string& path);
 	void write_data(setup_file_t& file) const;
-	void write_stream(const std::string& path) const;
+	bool write_stream(const std::string& path) const;
 	void boot();
 	void quit();
 	void lock();

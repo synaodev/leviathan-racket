@@ -125,6 +125,9 @@ std::back_insert_iterator<std::u32string> vfs::to_utf32(
 }
 
 bool vfs::create_directory(const std::string& name) {
+	if (name.empty()) {
+		return false;
+	}
 #if !defined(__APPLE__) && !defined(__GNUC__)
 	if (std::filesystem::exists(name)) {
 		return true;
@@ -135,7 +138,7 @@ bool vfs::create_directory(const std::string& name) {
 	if (stat(name.c_str(), &st) == 0) {
 		return true;
 	}
-	int r = mkdir(name.c_str(), 0755);
+	sint_t r = mkdir(name.c_str(), 0755);
 	return r == 0;
 #endif // __APPLE__ __GNUC__
 }
