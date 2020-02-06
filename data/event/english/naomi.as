@@ -1,14 +1,12 @@
 // Naomi's Dorm
 
-void main()
-{
+void main() {
 	pxt::exit();
 	msg::setFieldText("Naomi's Dorm");
 	msg::fadeIn();
 }
 
-void door_to_hallway()
-{
+void door_to_hallway() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 100;
 
@@ -19,8 +17,7 @@ void door_to_hallway()
 	sys::setField("common", kThatDoorID);
 }
 
-void use_cmptr()
-{
+void use_cmptr() {
 	const arch_t kFileGUI = 1;
 	const sint32_t kCmptrID = 200;
 
@@ -30,8 +27,7 @@ void use_cmptr()
 	sys::pushWidget(kFileGUI, 0);
 }
 
-void shoshi_bed()
-{
+void shoshi_bed() {
 	sys::lock();
 	msg::topBox();
 	msg::setFace(0, 2);

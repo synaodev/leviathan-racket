@@ -1,12 +1,10 @@
 // Silver
 
-void main()
-{
+void main() {
 	msg::fadeIn();
 }
 
-void door_to_practice()
-{
+void door_to_practice() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 300;
 

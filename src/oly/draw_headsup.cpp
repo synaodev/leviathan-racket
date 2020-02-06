@@ -14,6 +14,7 @@ draw_headsup_t::draw_headsup_t() :
 	barrier_units(),
 	oxygen_count(),
 	item_view(),
+	enemy_meter(),
 	fade(),
 	framerate(),
 	suspender()
@@ -52,6 +53,7 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	oxygen_count.set_backwards(false);
 
 	item_view.init(texture, animation);
+	enemy_meter.init(animation);
 	fade.init();
 	framerate.init(texture);
 	suspender = [&receiver] {
@@ -63,16 +65,19 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 void draw_headsup_t::reset() {
 	main_scheme.set_state(0);
 	main_scheme.set_direction(direction_t::Right);
+	enemy_meter.reset();
 	fade.reset();
 }
 
-void draw_headsup_t::handle(const kernel_t& kernel) {
+void draw_headsup_t::handle(const kernel_t& kernel, const kontext_t& kontext) {
 	item_view.handle(kernel);
+	enemy_meter.handle(kontext);
 	fade.handle();
 }
 
 void draw_headsup_t::update(real64_t delta) {
 	main_scheme.update(delta);
+	enemy_meter.update(delta);
 	if constexpr (misc::kFramerate) {
 		framerate.update(delta);
 	}
@@ -85,12 +90,14 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		barrier_units.render(renderer);
 		oxygen_count.render(renderer);
 		item_view.render(renderer);
+		enemy_meter.render(renderer);
 	} else {
 		main_scheme.force();
 		leviathan_count.force();
 		barrier_units.force();
 		oxygen_count.force();
 		item_view.force();
+		enemy_meter.force();
 		if constexpr (misc::kFramerate) {
 			framerate.force();
 		}
@@ -110,6 +117,14 @@ void draw_headsup_t::set_parameters(headsup_params_t params) {
 	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
 	oxygen_count.set_visible(params.current_oxygen != params.maximum_oxygen);
 	oxygen_count.set_value(params.current_oxygen);
+}
+
+void draw_headsup_t::set_enemy_id(sint_t identity) {
+	enemy_meter.set_enemy(identity);
+}
+
+void draw_headsup_t::set_enemy_id() {
+	enemy_meter.set_enemy(0);
 }
 
 void draw_headsup_t::fade_in() {

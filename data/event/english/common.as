@@ -1,13 +1,11 @@
 // Commons Room
 
-void main()
-{
+void main() {
 	msg::setFieldText("Common Room");
 	msg::fadeIn();
 }
 
-void door_to_naomi()
-{
+void door_to_naomi() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 100;
 
@@ -18,8 +16,7 @@ void door_to_naomi()
 	sys::setField("naomi", kThatDoorID);
 }
 
-void door_to_practice()
-{
+void door_to_practice() {
 	const sint32_t kThisDoorID = 300;
 	const sint32_t kThatDoorID = 100;
 
@@ -30,8 +27,7 @@ void door_to_practice()
 	sys::setField("practice", kThatDoorID);
 }
 
-void check_fireplace()
-{
+void check_fireplace() {
 	sys::lock();
 	msg::topBox();
 	msg::say("Crackle!\nSnap!");

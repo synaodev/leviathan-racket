@@ -8,6 +8,7 @@
 #include "./draw_scheme.hpp"
 #include "./draw_fade.hpp"
 #include "./draw_item_view.hpp"
+#include "./draw_meter.hpp"
 #include "./draw_framerate.hpp"
 
 struct input_t;
@@ -46,10 +47,12 @@ public:
 public:
 	bool init(receiver_t& receiver);
 	void reset();
-	void handle(const kernel_t& kernel);
+	void handle(const kernel_t& kernel, const kontext_t& kontext);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	void set_parameters(headsup_params_t params);
+	void set_enemy_id(sint_t identity);
+	void set_enemy_id();
 	void fade_in();
 	void fade_out();
 	bool is_fade_done() const;
@@ -61,6 +64,7 @@ private:
 	draw_units_t barrier_units;
 	draw_count_t oxygen_count;
 	draw_item_view_t item_view;
+	draw_meter_t enemy_meter;
 	draw_fade_t fade;
 	draw_framerate_t framerate;
 	std::function<void(void)> suspender;

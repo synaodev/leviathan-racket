@@ -1,12 +1,10 @@
 // Practice
 
-void main()
-{
+void main() {
 	msg::fadeIn();
 }
 
-void door_to_common()
-{
+void door_to_common() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 300;
 
@@ -17,8 +15,7 @@ void door_to_common()
 	sys::setField("common", kThatDoorID);
 }
 
-void door_to_silver()
-{
+void door_to_silver() {
 	const sint32_t kThisDoorID = 300;
 	const sint32_t kThatDoorID = 100;
 
