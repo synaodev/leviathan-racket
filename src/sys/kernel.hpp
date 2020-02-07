@@ -39,7 +39,7 @@ public:
 	kernel_t& operator=(kernel_t&&) = default;
 	~kernel_t();
 public:
-	void reset(const setup_file_t& config);
+	void reset();
 	void reset(const std::string& field);
 	void update(real64_t delta);
 	void read_data(const setup_file_t& file);

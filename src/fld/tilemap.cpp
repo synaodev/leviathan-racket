@@ -7,7 +7,7 @@
 #include "../sys/renderer.hpp"
 #include "../utl/vfs.hpp"
 
-static const byte_t kAttributeKeyPath[]	= "data/key/";
+static const byte_t kAttributeKeyPath[]	= "./data/key/";
 
 static constexpr sint_t kScreenWidth  = 21;
 static constexpr sint_t kScreenHeight = 12;

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="12" tilewidth="16" tileheight="16" nextobjectid="25">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="40" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="25">
  <tileset firstgid="1" name="prtsilver" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <properties>
    <property name="indexed" type="bool" value="true"/>
   </properties>
   <image source="../image/prtsilver.png" width="256" height="256"/>
  </tileset>
- <layer name="Main" width="40" height="12">
+ <layer id="1" name="Main" width="40" height="12">
   <properties>
    <property name="collide" type="bool" value="true"/>
   </properties>
@@ -14,7 +14,7 @@
    eJxjYmBgYAZiDiDmHEQ0E9RdQkAszDD4AMxdMHcONjAafpSB0fCjDIyGH2WAVuFXTyVz0MOvBoirgLh6kLDRw08PiPUHEQ1zFwDJZhuA
   </data>
  </layer>
- <objectgroup draworder="index" name="Actor">
+ <objectgroup draworder="index" id="2" name="Actor">
   <object id="13" name="door" type="actor" x="48" y="144" width="16" height="16">
    <properties>
     <property name="dir" type="int" value="0"/>

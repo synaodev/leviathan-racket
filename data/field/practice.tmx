@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="41" height="12" tilewidth="16" tileheight="16" nextobjectid="26">
+<map version="1.2" tiledversion="1.2.4" orientation="orthogonal" renderorder="right-down" width="41" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="26">
  <tileset firstgid="1" name="prtcave" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="../image/prtcave.png" width="256" height="256"/>
  </tileset>
- <layer name="Back" width="41" height="12">
+ <layer id="1" name="Back" width="41" height="12">
   <data encoding="base64" compression="zlib">
    eJzjYmBg4AZirkFMSwGx9CCnB0M4jYbjaDiOhuNoOA5GejCE03AIRwD8bSOJ
   </data>
  </layer>
- <layer name="Main" width="41" height="12">
+ <layer id="2" name="Main" width="41" height="12">
   <properties>
    <property name="collide" type="bool" value="true"/>
   </properties>
@@ -16,7 +16,7 @@
    eJzjYGBg4ARijkFKg7AEw+AGkgwQ9w5mMBqO1AGj4UgdMBqO1AG0CEd2KpsHC8fBUJ8QqmckBzENwgDTuwfo
   </data>
  </layer>
- <objectgroup draworder="index" name="Actor">
+ <objectgroup draworder="index" id="3" name="Actor">
   <object id="13" name="door" type="actor" x="32" y="144" width="16" height="16">
    <properties>
     <property name="dir" type="int" value="0"/>

@@ -9,10 +9,12 @@
 
 static const byte_t kFlagProgsName[] = "_prog.bin";
 static const byte_t kFlagCheckName[] = "_check.bin";
+static const byte_t kTheFirstField[] = "naomi";
 
-static constexpr arch_t kMaxItemList  = 30;
-static constexpr arch_t kMaxFlagList  = 128;
-static constexpr arch_t kMaxFlagBits  = sizeof(uint64_t) * 8;
+static constexpr sint_t kTheFirstIDN = 10000;
+static constexpr arch_t kMaxItemList = 30;
+static constexpr arch_t kMaxFlagList = 128;
+static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
 
 kernel_t::kernel_t() :
 	bitmask(0),
@@ -36,15 +38,15 @@ kernel_t::~kernel_t() {
 	}
 }
 
-void kernel_t::reset(const setup_file_t& config) {
+void kernel_t::reset() {
 	bitmask.reset();
 	bitmask[kernel_state_t::Boot] = true;
 	bitmask[kernel_state_t::Field] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
 	item_ptr = nullptr;
-	config.get("Setup", "Field", field);
-	config.get("Setup", "Actor", identity);
+	field = kTheFirstField; // config.get("Setup", "Field", field);
+	identity = kTheFirstIDN; // config.get("Setup", "Actor", identity);
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }

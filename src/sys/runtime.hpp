@@ -29,14 +29,14 @@ public:
 	runtime_t& operator=(runtime_t&&) = default;
 	~runtime_t() = default;
 public:
-	bool init(const setup_file_t& config, input_t& input, audio_t& audio, music_t& music, renderer_t& renderer);
+	bool init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer);
 	bool handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer);
 	void update(real64_t delta);
 	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 private:
 	bool setup_field(audio_t& audio, renderer_t& renderer);
-	void setup_boot(const setup_file_t& config, renderer_t& renderer);
+	void setup_boot(renderer_t& renderer);
 	void setup_load();
 	void setup_save();
 #ifdef SYNAO_DEBUG_BUILD

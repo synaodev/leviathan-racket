@@ -19,7 +19,7 @@ void door_to_hallway() {
 
 void use_cmptr() {
 	const arch_t kFileGUI = 1;
-	const sint32_t kCmptrID = 200;
+	const sint32_t kCmptrID = 10000;
 
 	sys::freeze();
 	ctx::animate(kCmptrID, 1, dir_t::Right);

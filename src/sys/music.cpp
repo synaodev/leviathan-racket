@@ -22,7 +22,7 @@ static constexpr sint_t kTotalChannel 	= 2;
 static constexpr sint_t kSamplingRate 	= 44100;
 static constexpr real_t kBufferedTime 	= 0.1f;
 static constexpr real_t kWaitConstant 	= 750.0f;
-static const byte_t 	kPxtonePath[] 	= "data/pxtone/";
+static const byte_t 	kPxtonePath[] 	= "./data/pxtone/";
 
 music_t::music_t() :
 	service(nullptr),

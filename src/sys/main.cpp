@@ -14,15 +14,15 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 
-static constexpr byte_t kBootPath[]	= "./data/boot.cfg";
+static constexpr byte_t kBootPath[]	= "./boot.cfg";
 static constexpr uint_t kStopDelay  = 40;
 static constexpr uint_t kNormDelay  = 10;
 
 static void generate_default_config(setup_file_t& config) {
 	config.clear(kBootPath);
 	config.set("Setup", "Language", std::string("english"));
-	config.set("Setup", "Field", std::string("naomi"));
-	config.set("Setup", "Actor", 200);
+	// config.set("Setup", "Field", std::string("naomi"));
+	// config.set("Setup", "Actor", 200);
 	config.set("Video", "VerticalSync", 0);
 	config.set("Video", "Fullscreen", 0);
 	config.set("Video", "ScaleFactor", 3);
@@ -58,7 +58,7 @@ static void generate_default_config(setup_file_t& config) {
 static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	runtime_t runtime;
-	if (!runtime.init(config, input, audio, music, renderer)) {
+	if (!runtime.init(input, audio, music, renderer)) {
 		return false;
 	}
 	watch_t sync_watch, head_watch;

@@ -4,6 +4,6 @@ AS_DEBUG/
 build/
 out/
 save/
-data/boot.cfg
 CMakeSettings.json
+boot.cfg
 imgui.ini

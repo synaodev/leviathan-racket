@@ -14,7 +14,7 @@
 #include "../utl/setup_file.hpp"
 #include "../utl/vfs.hpp"
 
-static const byte_t kFieldPath[] 	= "data/field/";
+static const byte_t kFieldPath[] 	= "./data/field/";
 
 static const byte_t kSavesPath[] 	= "./save/";
 static const byte_t kStatProgPath[] = "_prog.cfg";
@@ -37,7 +37,7 @@ runtime_t::runtime_t() :
 	
 }
 
-bool runtime_t::init(const setup_file_t& config, input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {
+bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {
 	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, title_view, headsup, camera, naomi_state, kontext)) {
 		return false;
 	}
@@ -59,7 +59,7 @@ bool runtime_t::init(const setup_file_t& config, input_t& input, audio_t& audio,
 	if (!naomi_state.init(kontext)) {
 		return false;
 	}
-	this->setup_boot(config, renderer);
+	this->setup_boot(renderer);
 	return true;
 }
 
@@ -68,7 +68,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		accum = glm::max(accum - misc::kIntervalMin, 0.0);
 		if (headsup.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
-				this->setup_boot(config, renderer);
+				this->setup_boot(renderer);
 			}
 			if (kernel.has(kernel_state_t::Load)) {
 				this->setup_load();
@@ -182,9 +182,9 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	return true;
 }
 
-void runtime_t::setup_boot(const setup_file_t& config, renderer_t& renderer) {
+void runtime_t::setup_boot(renderer_t& renderer) {
 	renderer.clear();
-	kernel.reset(config);
+	kernel.reset();
 	stack_gui.reset();
 	dialogue_gui.reset();
 	headsup.reset();

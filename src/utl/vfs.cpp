@@ -16,17 +16,16 @@
 #include <sys/types.h>
 #endif // __APPLE__ __GNUC__
 
-static const byte_t kNoisePath[]	= "data/noise/";
-static const byte_t kFontsPath[]	= "data/font/";
-static const byte_t kImagePath[]	= "data/image/";
-static const byte_t kPalettePath[]	= "data/palette/";
-static const byte_t kSpritePath[]	= "data/sprite/";
-static const byte_t kEventPaths[]	= "data/event/";
-static const byte_t kLangsPaths[]	= "data/event/i18n/";
-static const byte_t kGlobalPaths[]	= "data/event/global/";
+static const byte_t kNoisePath[]	= "./data/noise/";
+static const byte_t kFontsPath[]	= "./data/font/";
+static const byte_t kImagePath[]	= "./data/image/";
+static const byte_t kPalettePath[]	= "./data/palette/";
+static const byte_t kSpritePath[]	= "./data/sprite/";
+static const byte_t kEventPath[]	= "./data/event/";
+static const byte_t kI18NPath[]		= "./data/i18n/";
 
 static constexpr byte_t kDefaultLang[] = "english";
-static constexpr arch_t kTotalThreads  = 4;
+static constexpr arch_t kTotalThreads  = 3;
 
 vfs_t::vfs_t() : 
 	thread_pool(),
@@ -227,9 +226,9 @@ std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 		return std::string();
 	}
 	if (flags & rec_loading_t::Global) {
-		return kGlobalPaths + name + ".as";
+		return kEventPath + name + ".as";
 	}
-	return kEventPaths + vfs::device->language + '/' + name + ".as";
+	return kEventPath + vfs::device->language + '/' + name + ".as";
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {
@@ -279,7 +278,7 @@ bool vfs::try_language(const std::string& language) {
 	if (vfs::device == nullptr) {
 		return false;
 	}
-	const std::string full_path = kLangsPaths + language + ".json";
+	const std::string full_path = kI18NPath + language + ".json";
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
 	std::ifstream ifs(full_path, std::ios::binary);
 	if (ifs.is_open()) {
@@ -306,14 +305,14 @@ std::string vfs::local_script(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return std::string();
 	}
-	return kEventPaths + vfs::device->language + '/' + name + ".as";
+	return kEventPath + vfs::device->language + '/' + name + ".as";
 }
 
 std::string vfs::global_script(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return std::string();
 	}
-	return kGlobalPaths + name + ".as";
+	return kEventPath + name + ".as";
 }
 
 const noise_t* vfs::noise(const std::string& name) {
