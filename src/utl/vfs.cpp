@@ -79,6 +79,7 @@ bool vfs_t::mount(const setup_file_t& config) {
 	return true;
 }
 
+// Copied from SFML
 static std::string::const_iterator decode(std::string::const_iterator begin, std::string::const_iterator end, uint_t& output, uint_t replacement = 0) {
 	static const sint_t trailing[256] = {
 		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -144,7 +145,7 @@ bool vfs::directory_exists(const std::string& name) {
 		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
 		return false;
 	}
-	if (S_IFDIR(sb.st_mode) == 0) {
+	if (S_ISDIR(sb.st_mode) == 0) {
 		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
 		return false;
 	}
