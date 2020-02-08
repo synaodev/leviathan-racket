@@ -748,7 +748,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	assert(r >= 0);
 
 	// Set Namespace
-	r = engine->SetDefaultNamespace("ctx");
+	r = engine->SetDefaultNamespace("ktx");
 	assert(r >= 0);
 	// Spawn Actor
 	r = engine->RegisterGlobalFunction("bool spawn(const std::string &in name, real32_t x, real32_t y, arch_t direction, sint32_t id, arch_t flags, std::event@ event)", asMETHODPR(kontext_t, create, (const std::string&, real_t, real_t, direction_t, sint_t, arch_t, asIScriptFunction*), bool), asCALL_THISCALL_ASGLOBAL, &kontext);

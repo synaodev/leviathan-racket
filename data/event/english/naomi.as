@@ -11,7 +11,7 @@ void door_to_hallway() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, dir_t::Left);
+	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
 	sys::set_field("common", kThatDoorID);
@@ -22,7 +22,7 @@ void use_cmptr() {
 	const sint32_t kCmptrID = 10000;
 
 	sys::freeze();
-	ctx::animate(kCmptrID, 1, dir_t::Right);
+	ktx::animate(kCmptrID, 1, dir_t::Right);
 	aud::play("cmptr");
 	sys::push_widget(kFileGUI, 0);
 }

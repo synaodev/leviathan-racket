@@ -10,7 +10,7 @@ void door_to_naomi() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, dir_t::Left);
+	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
 	sys::set_field("naomi", kThatDoorID);
@@ -21,7 +21,7 @@ void door_to_practice() {
 	const sint32_t kThatDoorID = 100;
 
 	sys::lock();
-	ctx::animate(kThisDoorID, 0, dir_t::Left);
+	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
 	sys::set_field("practice", kThatDoorID);

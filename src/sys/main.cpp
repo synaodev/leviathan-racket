@@ -185,6 +185,10 @@ static int proc_edit(setup_file_t& config) {
 }
 
 int main(int argc, char** argv) {
+	if (!vfs::verify_structure()) {
+		SYNAO_LOG("Fatal error! Directory structure is incorrect!\n");
+		return EXIT_FAILURE;
+	}
 	if (std::atexit(SDL_Quit) != 0) {
 		SYNAO_LOG("Pushing to \"std::atexit\" buffer failed!\n");
 		return EXIT_FAILURE;

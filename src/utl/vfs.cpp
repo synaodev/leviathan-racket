@@ -16,16 +16,21 @@
 #include <sys/types.h>
 #endif // __APPLE__ __GNUC__
 
-static const byte_t kNoisePath[]	= "./data/noise/";
-static const byte_t kFontsPath[]	= "./data/font/";
-static const byte_t kImagePath[]	= "./data/image/";
-static const byte_t kPalettePath[]	= "./data/palette/";
-static const byte_t kSpritePath[]	= "./data/sprite/";
+#define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
+
 static const byte_t kEventPath[]	= "./data/event/";
+static const byte_t kFieldPath[]	= "./data/field/";
+static const byte_t kFontPath[]		= "./data/font/";
 static const byte_t kI18NPath[]		= "./data/i18n/";
+static const byte_t kImagePath[]	= "./data/image/";
+static const byte_t kKeyPath[]		= "./data/key/";
+static const byte_t kNoisePath[]	= "./data/noise/";
+static const byte_t kPalettePath[]	= "./data/palette/";
+static const byte_t kPxtonePath[]	= "./data/pxtone/";
+static const byte_t kSpritePath[]	= "./data/sprite/";
 
 static constexpr byte_t kDefaultLang[] = "english";
-static constexpr arch_t kTotalThreads  = 3;
+static constexpr arch_t kTotalThreads  = 4;
 
 vfs_t::vfs_t() : 
 	thread_pool(),
@@ -123,23 +128,56 @@ std::back_insert_iterator<std::u32string> vfs::to_utf32(
 	return output;
 }
 
-bool vfs::create_directory(const std::string& name) {
-	if (name.empty()) {
+bool vfs::directory_exists(const std::string& name) {
+#if !defined(__APPLE__) && !defined(__GNUC__)
+	if (!std::filesystem::exists(name)) {
+		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
 		return false;
 	}
-#if !defined(__APPLE__) && !defined(__GNUC__)
-	if (std::filesystem::exists(name)) {
+	if (!std::filesystem::is_directory(name)) {
+		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
+		return false;
+	}
+#else // __APPLE__ __GNUC__
+	struct stat sb;
+	if (stat(name.c_str(), &sb) != 0) {
+		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+		return false;
+	}
+	if (S_IFDIR(sb.st_mode) == 0) {
+		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
+		return false;
+	}
+#endif // __APPLE__ __GNUC__
+	return true;
+}
+
+bool vfs::create_directory(const std::string& name) {
+	if (vfs::directory_exists(name)) {
 		return true;
 	}
+#if !defined(__APPLE__) && !defined(__GNUC__)
 	return std::filesystem::create_directory(name);
 #else // __APPLE__ __GNUC__
-	struct stat st;
-	if (stat(name.c_str(), &st) == 0) {
-		return true;
-	}
-	sint_t r = mkdir(name.c_str(), 0755);
-	return r == 0;
+	return mkdir(name.c_str(), 0755) == 0;
 #endif // __APPLE__ __GNUC__
+}
+
+bool vfs::verify_structure() {
+	const byte_t* kDirList[] = {
+		kEventPath, kFieldPath, 
+		kFontPath, kI18NPath, 
+		kImagePath, kKeyPath,
+		kNoisePath, kPalettePath, 
+		kPxtonePath, kSpritePath
+	};
+	bool result = true;
+	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
+		if (!vfs::directory_exists(kDirList[it])) {
+			result = false;
+		}
+	}
+	return result;
 }
 
 std::vector<std::string> vfs::file_list(const std::string& path) {
@@ -426,9 +464,9 @@ const font_t* vfs::font(const std::string& name) {
 	}
 	auto it = vfs::device->fonts.find(name);
 	if (it == vfs::device->fonts.end()) {
-		const std::string full_path = kFontsPath + name + ".fnt";
+		const std::string full_path = kFontPath + name + ".fnt";
 		font_t& ref = vfs::device->allocate_safely(name, vfs::device->fonts);
-		if (!ref.load(kFontsPath, full_path)) {
+		if (!ref.load(kFontPath, full_path)) {
 			SYNAO_LOG(
 				"Failed to load font from %s!\n", 
 				full_path.c_str()
