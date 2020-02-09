@@ -220,6 +220,12 @@ void video_t::set_parameters(screen_params_t params) {
 		this->params.full = params.full;
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
 			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
+		} else {
+			SDL_SetWindowPosition(
+				window, 
+				SDL_WINDOWPOS_CENTERED, 
+				SDL_WINDOWPOS_CENTERED
+			);
 		}
 	}
 	if (this->params.scaling != params.scaling) {

@@ -23,6 +23,7 @@ struct receiver_t;
 struct camera_t;
 struct naomi_state_t;
 struct tilemap_t;
+struct draw_headsup_t;
 
 struct kontext_t : public not_copyable_t {
 public:
@@ -31,7 +32,7 @@ public:
 	kontext_t& operator=(kontext_t&&) = default;
 	~kontext_t() = default;
 public:
-	bool init(receiver_t& receiver);
+	bool init(receiver_t& receiver, draw_headsup_t& headsup);
 	void reset();
 	void handle(audio_t& audio, receiver_t& receiver, camera_t& camera, naomi_state_t& naomi_state, tilemap_t& tilemap);
 	void update(real64_t delta);
@@ -53,8 +54,10 @@ public:
 	void set_state(sint_t identity, arch_t state);
 	void set_mask(sint_t identity, arch_t index, bool value);
 	void set_event(sint_t identity, asIScriptFunction* function);
+	void set_fight(sint_t identity, asIScriptFunction* function);
 	bool still(sint_t identity) const;
 	void run(const actor_trigger_t& trigger) const;
+	void meter(sint_t current, sint_t maximum) const;
 	template<typename... Args>
 	bool spawn(arch_t type, Args&& ...args);
 	bool spawn(const actor_spawn_t& spawn);
@@ -88,10 +91,15 @@ private:
 	std::unordered_map<arch_t, routine_ctor_fn> ctor_table;
 	std::function<void(sint_t)> run_event;
 	std::function<void(sint_t, asIScriptFunction*)> push_event;
+	std::function<void(sint_t, sint_t)> push_meter;
 };
 
 inline void kontext_t::run(const actor_trigger_t& trigger) const {
 	std::invoke(run_event, trigger.identity);
+}
+
+inline void kontext_t::meter(sint_t current, sint_t maximum) const {
+	std::invoke(push_meter, current, maximum);
 }
 
 template<typename... Args>

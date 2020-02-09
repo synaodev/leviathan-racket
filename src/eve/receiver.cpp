@@ -780,6 +780,9 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Set Actor Event
 	r = engine->RegisterGlobalFunction("void set_event(sint32_t id, std::event@ event)", asMETHOD(kontext_t, set_event), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
+	// Set Actor Major Fight
+	r = engine->RegisterGlobalFunction("void set_fight(sint32_t id, std::event@ event)", asMETHOD(kontext_t, set_fight), asCALL_THISCALL_ASGLOBAL, &kontext);
+	assert(r >= 0);
 	// Is Actor Still
 	r = engine->RegisterGlobalFunction("bool still(sint32_t id)", asMETHOD(kontext_t, still), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);

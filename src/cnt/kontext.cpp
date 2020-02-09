@@ -14,6 +14,7 @@
 #include "../act/particles.hpp"
 #include "../sys/kernel.hpp"
 #include "../eve/receiver.hpp"
+#include "../oly/draw_headsup.hpp"
 #include "../utl/misc.hpp"
 #include "../utl/hash.hpp"
 #include "../utl/logger.hpp"
@@ -26,17 +27,21 @@ kontext_t::kontext_t() :
 	spawn_commands(),
 	ctor_table(),
 	run_event(),
-	push_event()
+	push_event(),
+	push_meter()
 {
 	
 }
 
-bool kontext_t::init(receiver_t& receiver) {
+bool kontext_t::init(receiver_t& receiver, draw_headsup_t& headsup) {
 	run_event = [&receiver](sint_t id) {
 		receiver.run_event(id);
 	};
 	push_event = [&receiver](sint_t id, asIScriptFunction* function) {
 		receiver.push_from_function(id, function);
+	};
+	push_meter = [&headsup](sint_t current, sint_t maximum) {
+		headsup.set_fight_values(current, maximum);
 	};
 	return routine_generator_t::init(ctor_table);
 }
@@ -201,7 +206,7 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 				direction, symbol,
 				flags, identity, deterrent
 			);
-			if (kernel.get_flag(deterrent) == (flags & trigger_bits_t::Deterred)) {
+			if (kernel.get_flag(deterrent) == (flags & (1 << trigger_bits_t::Deterred))) {
 				glm::vec2 position = tmx_convert::vec_to_vec(object.getPosition());
 				if (this->create(name, position, direction, identity, flags)) {
 					if (identity != 0) {
@@ -296,6 +301,24 @@ void kontext_t::set_mask(sint_t identity, arch_t index, bool value) {
 void kontext_t::set_event(sint_t identity, asIScriptFunction* function) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
+		std::invoke(push_event, identity, function);
+	} else if (function != nullptr) {
+		function->Release();
+	}
+}
+
+void kontext_t::set_fight(sint_t identity, asIScriptFunction* function) {
+	entt::entity actor = this->search_id(identity);
+	if (actor != entt::null) {
+		auto& trigger = this->get<actor_trigger_t>(actor);
+		trigger.bitmask[trigger_bits_t::Hostile] = true;
+		trigger.bitmask[trigger_bits_t::InteractionEvent] = false;
+		trigger.bitmask[trigger_bits_t::DeathEvent] = true;
+
+		auto& health = this->assign_if<health_t>(actor);
+		health.reset();
+		health.flags[health_flags_t::MajorFight] = true;
+
 		std::invoke(push_event, identity, function);
 	} else if (function != nullptr) {
 		function->Release();

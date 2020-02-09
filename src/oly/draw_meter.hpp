@@ -5,9 +5,6 @@
 
 #include "../utl/rect.hpp"
 
-struct kontext_t;
-struct health_t;
-
 struct draw_meter_t : public not_copyable_t {
 public:
 	draw_meter_t();
@@ -17,15 +14,13 @@ public:
 public:
 	void init(const animation_t* animation);
 	void reset();
-	void handle(const kontext_t& kontext);
 	void update(real64_t delta);
 	void force() const;
 	void render(renderer_t& renderer) const;
-	void set_enemy(sint_t identity);
-	bool is_active() const;
+	void set_values(sint_t current, sint_t maximum);
 private:
 	mutable bool_t write;
-	sint_t current, identity;
+	sint_t current;
 	rect_t varying;
 	draw_scheme_t graphed;
 };

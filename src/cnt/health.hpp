@@ -16,6 +16,7 @@ namespace __enum_health_flags {
 		Grappled,
 		Instant,
 		OnceMore,
+		MajorFight,
 		Total
 	};
 }
@@ -42,6 +43,7 @@ public:
 	~health_t() = default;
 public:
 	void reset(sint_t current, sint_t maximum, sint_t leviathan, sint_t damage);
+	void reset();
 	void attack(health_t& victim) const;
 public:
 	static void handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi_state, kontext_t& kontext);

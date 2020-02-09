@@ -53,7 +53,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!headsup.init(receiver)) {
 		return false;
 	}
-	if (!kontext.init(receiver)) {
+	if (!kontext.init(receiver, headsup)) {
 		return false;
 	}
 	if (!naomi_state.init(kontext)) {
@@ -93,7 +93,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		dialogue_gui.handle(input, audio);
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
 		title_view.handle();
-		headsup.handle(kernel, kontext);
+		headsup.handle(kernel);
 		if (!kernel.has(kernel_state_t::Freeze)) {
 			camera.handle(naomi_state);
 			naomi_state.handle(input, audio, kernel, receiver, headsup, kontext, tilemap);
