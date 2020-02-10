@@ -106,7 +106,7 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 		for (real_t y = position.y - dimensions.y; y < viewport.h; y += dimensions.y) {
 			for (real_t x = position.x - dimensions.x; x < viewport.w; x += dimensions.x) {
 				batch.begin(quad_batch_t::SingleQuad)
-					.vtx_major_write(bounding, dimensions, 0.0f, 1.0f)
+					.vtx_major_write(bounding, dimensions, 0.0f, 1.0f, mirroring_t::None)
 					.vtx_transform_write(x, y)
 				.end();
 				indices += quad_batch_t::SingleQuad;

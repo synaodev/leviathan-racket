@@ -22,7 +22,7 @@ public:
 public:
 	quad_batch_t& begin(arch_t count);
 	quad_batch_t& vtx_pool_write(const vertex_pool_t* that_pool);
-	quad_batch_t& vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color);
+	quad_batch_t& vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring);
 	quad_batch_t& vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color);
 	quad_batch_t& vtx_transform_write(glm::vec2 position, glm::vec2 scale, glm::vec2 axis, real_t rotation);
 	quad_batch_t& vtx_transform_write(glm::vec2 position, glm::vec2 axis, real_t rotation);

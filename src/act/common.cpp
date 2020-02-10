@@ -37,7 +37,7 @@ void ai::hv_trigger::ctor(entt::entity s, kontext_t& ktx) {
 
 void ai::hv_trigger::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& trigger = rtp.ktx.get<actor_trigger_t>(s);
-	if (trigger.bitmask[trigger_bits_t::InteractionEvent]) {
+	if (trigger.bitmask[trigger_flags_t::InteractionEvent]) {
 		auto& this_location = rtp.ktx.get<location_t>(s);
 		auto& that_location = rtp.ktx.get<location_t>(rtp.nao.actor);
 		if (this_location.overlap(that_location)) {

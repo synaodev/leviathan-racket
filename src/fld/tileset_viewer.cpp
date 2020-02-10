@@ -143,7 +143,8 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				.vtx_major_write(
 					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()), 
 					texture->get_dimensions(), 
-					0.0f, 1.0f
+					0.0f, 1.0f,
+					mirroring_t::None
 				)
 				.vtx_transform_write(kDefaultPosition)
 			.end();

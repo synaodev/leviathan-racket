@@ -41,10 +41,11 @@ public:
 	real_t alpha, table;
 	arch_t state;
 	direction_t direction;
+	mirroring_t mirroring;
 	arch_t frame;
 	layer_t layer;
 	glm::vec2 scale, position, pivot;
-	real_t angle, shake, power;
+	real_t angle, shake;
 };
 
 #endif // SYNAO_COMPONENT_SPRITE_HPP

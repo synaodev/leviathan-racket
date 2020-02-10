@@ -33,8 +33,8 @@ void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi
 		if (health.current <= 0) {
 			if (kontext.has<actor_trigger_t>(actor)) {
 				auto& trigger = kontext.get<actor_trigger_t>(actor);
-				if (trigger.bitmask[trigger_bits_t::DeathEvent]) {
-					trigger.bitmask[trigger_bits_t::DeathEvent] = false;
+				if (trigger.bitmask[trigger_flags_t::DeathEvent]) {
+					trigger.bitmask[trigger_flags_t::DeathEvent] = false;
 					receiver.run_event(trigger.identity);
 				}
 			}

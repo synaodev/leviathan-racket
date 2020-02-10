@@ -50,12 +50,12 @@ void animation_t::update(real64_t delta, bool_t& write, arch_t state, real64_t& 
 	sequences[state].update(delta, write, timer, frame);
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, direction_t direction, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
 	glm::vec2 sequsize = sequences[state].get_dimensions();
-	glm::vec2 sequorig = sequences[state].get_origin(frame, direction);
+	glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
 	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-		rect_t seququad = sequences[state].get_quad(inverts, frame, direction);
+		rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
 		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
 		if (palette != nullptr) {
 			pipeline = pipeline_t::VtxMajorIndexed;
@@ -71,7 +71,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		if (write or panic) {
 			write = false;
 			batch.begin(quad_batch_t::SingleQuad)
-				.vtx_major_write(seququad, sequsize, index, alpha)
+				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
 				.vtx_transform_write(position - sequorig, scale, pivot, angle)
 			.end();
 		} else {
@@ -80,12 +80,12 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, direction_t direction, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const {
 	this->assure();
 	const glm::vec2& sequsize = sequences[state].get_dimensions();
-	const glm::vec2& sequorig = sequences[state].get_origin(frame, direction);
+	const glm::vec2& sequorig = sequences[state].get_origin(frame, variation, mirroring);
 	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-		rect_t seququad = sequences[state].get_quad(inverts, frame, direction);
+		rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
 		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
 		if (palette != nullptr) {
 			pipeline = pipeline_t::VtxMajorIndexed;
@@ -101,7 +101,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		if (write or panic) {
 			write = false;
 			batch.begin(quad_batch_t::SingleQuad)
-				.vtx_major_write(seququad, sequsize, index, alpha)
+				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
 				.vtx_transform_write(position - sequorig, scale)
 			.end();
 		} else {
@@ -110,7 +110,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, direction_t direction, glm::vec2 position) const {
+void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, glm::vec2 position) const {
 	this->assure();
 	auto& batch = renderer.get_overlay_quads(
 		layer_value::HeadsUp, 
@@ -122,10 +122,10 @@ void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch
 	if (write) {
 		write = false;
 		glm::vec2 sequsize	= sequences[state].get_dimensions();
-		glm::vec2 sequorig	= sequences[state].get_origin(frame, direction);
-		rect_t seququads	= sequences[state].get_quad(inverts, frame, direction);
+		glm::vec2 sequorig	= sequences[state].get_origin(frame, variation, mirroring_t::None);
+		rect_t seququads	= sequences[state].get_quad(inverts, frame, variation);
 		batch.begin(quad_batch_t::SingleQuad)
-			.vtx_major_write(seququads, sequsize, 0.0f, 1.0f)
+			.vtx_major_write(seququads, sequsize, 0.0f, 1.0f, mirroring_t::None)
 			.vtx_transform_write(position - sequorig)
 		.end();
 	} else {
@@ -165,14 +165,16 @@ bool animation_t::load(const std::string& full_path) {
 			arch_t hvtype 	 = 0;
 			arch_t frames 	 = 0;
 			bool_t repeat 	 = true;
+			bool_t origin 	 = false;
 			setup.get(chunk, "starts", starts);
 			setup.get(chunk, "vksize", vksize);
 			setup.get(chunk, "tdelay", tdelay);
 			setup.get(chunk, "hvtype", hvtype);
 			setup.get(chunk, "frames", frames);
 			setup.get(chunk, "repeat", repeat);
+			setup.get(chunk, "origin", origin);
 
-			auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat);
+			auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, origin);
 			for (arch_t d = 0; d < hvtype; ++d) {
 				axnpnt = glm::zero<glm::vec2>();
 				setup.get(chunk, std::to_string(d) + "-X", axnpnt);
@@ -209,13 +211,13 @@ void animation_t::assure() const {
 	}
 }
 
-bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, direction_t direction, layer_t layer, glm::vec2 position, glm::vec2 scale) const {
+bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const {
 	if (layer == layer_value::Invisible) {
 		return false;
 	}
 	this->assure();
 	glm::vec2 sequsize = sequences[state].get_dimensions();
-	glm::vec2 sequorig = sequences[state].get_origin(frame, direction);
+	glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
 	return viewport.overlaps(position - sequorig, sequsize * scale);
 }
 
@@ -224,12 +226,12 @@ bool animation_t::is_finished(arch_t state, arch_t frame, real64_t timer) const 
 	return sequences[state].is_finished(frame, timer);
 }
 
-glm::vec2 animation_t::get_origin(arch_t state, arch_t frame, direction_t dir) const {
+glm::vec2 animation_t::get_origin(arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring) const {
 	this->assure();
-	return sequences[state].get_origin(frame, dir);
+	return sequences[state].get_origin(frame, variation, mirroring);
 }
 
-glm::vec2 animation_t::get_action_point(arch_t state, direction_t dir) const {
+glm::vec2 animation_t::get_action_point(arch_t state, arch_t variation, mirroring_t mirroring) const {
 	this->assure();
-	return sequences[state].get_action_point(dir);
+	return sequences[state].get_action_point(variation, mirroring);
 }

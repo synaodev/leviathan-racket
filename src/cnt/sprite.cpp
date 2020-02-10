@@ -3,6 +3,7 @@
 #include "./kontext.hpp"
 
 #include "../utl/vfs.hpp"
+#include "../utl/misc.hpp"
 
 sprite_t::sprite_t(const std::string& name) :
 	file(nullptr),
@@ -12,14 +13,14 @@ sprite_t::sprite_t(const std::string& name) :
 	table(0.0f),
 	state(0),
 	direction(direction_t::Right),
+	mirroring(mirroring_t::None),
 	frame(0),
 	layer(layer_value::Automatic),
 	scale(1.0f),
 	position(0.0f),
 	pivot(0.0f),
 	angle(0.0f),
-	shake(0.0f),
-	power(0.0f)
+	shake(0.0f)
 {
 	file = vfs::animation(name);
 }
@@ -32,16 +33,16 @@ sprite_t::sprite_t() :
 	table(0.0f),
 	state(0),
 	direction(direction_t::Right),
+	mirroring(mirroring_t::None),
 	frame(0),
 	layer(layer_value::Automatic),
 	scale(1.0f),
 	position(0.0f),
 	pivot(0.0f),
 	angle(0.0f),
-	shake(0.0f),
-	power(0.0f)
+	shake(0.0f)
 {
-
+	
 }
 
 void sprite_t::reset() {
@@ -51,6 +52,7 @@ void sprite_t::reset() {
 	table = 0.0f;
 	state = 0;
 	direction = direction_t::Right;
+	mirroring = mirroring_t::None;
 	frame = 0;
 	layer = layer_value::Automatic;
 	scale = glm::one<glm::vec2>();
@@ -58,7 +60,6 @@ void sprite_t::reset() {
 	pivot = glm::zero<glm::vec2>();
 	angle = 0.0f;
 	shake = 0.0f;
-	power = 0.0f;
 }
 
 void sprite_t::new_state(arch_t state) {
@@ -74,7 +75,7 @@ void sprite_t::new_state(arch_t state) {
 
 glm::vec2 sprite_t::action_point(arch_t state, direction_t direction, glm::vec2 position) const {
 	if (file != nullptr) {
-		return position + file->get_action_point(state, direction);
+		return position + file->get_action_point(state, direction, mirroring);
 	}
 	return glm::zero<glm::vec2>();
 }
@@ -100,10 +101,12 @@ void sprite_t::update(kontext_t& kontext, real64_t delta) {
 				sprite.write = true;
 				sprite.position = location.position;
 			}
-			if (sprite.power != 0.0f) {
+			if (sprite.shake != 0.0f) {
 				sprite.write = true;
-				sprite.shake -= static_cast<real_t>(delta);
-				sprite.power = (sprite.shake > 0.0f) ? -sprite.power : 0.0f;
+				real_t amount = static_cast<real_t>(delta * misc::kIntervalMin);
+				sprite.shake = (sprite.shake > 0.0f) ?
+					glm::max(0.0f, sprite.shake - static_cast<real_t>(delta * misc::kIntervalMin)) :
+					glm::min(0.0f, sprite.shake + static_cast<real_t>(delta * misc::kIntervalMin));
 			}
 		}
 	});
@@ -143,6 +146,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					sprite.state,
 					sprite.frame,
 					sprite.direction,
+					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,
 					sprite.table,
@@ -160,6 +164,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					sprite.state,
 					sprite.frame,
 					sprite.direction,
+					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,
 					sprite.table,

@@ -28,7 +28,7 @@ namespace __enum_phy {
 
 using phy_t = __enum_phy::type;
 
-namespace __enum_trigger_bits {
+namespace __enum_trigger_flags {
 	enum type : arch_t {
 		Deterred,
 		Hostile,
@@ -38,7 +38,7 @@ namespace __enum_trigger_bits {
 	};
 }
 
-using trigger_bits_t = __enum_trigger_bits::type;
+using trigger_flags_t = __enum_trigger_flags::type;
 
 struct actor_header_t {
 public:
@@ -119,12 +119,12 @@ public:
 	glm::vec2 position, velocity;
 	direction_t direction;
 	sint_t identity;
-	std::bitset<trigger_bits_t::Total> bitmask;
+	std::bitset<trigger_flags_t::Total> bitmask;
 };
 
 struct actor_trigger_t {
 public:
-	actor_trigger_t(sint_t identity, const std::bitset<trigger_bits_t::Total>& bitmask) :
+	actor_trigger_t(sint_t identity, const std::bitset<trigger_flags_t::Total>& bitmask) :
 		identity(identity),
 		bitmask(bitmask) {}
 	actor_trigger_t(sint_t identity, arch_t flags) :
@@ -151,7 +151,7 @@ public:
 	~actor_trigger_t() = default;
 public:
 	sint_t identity;
-	std::bitset<trigger_bits_t::Total> bitmask;
+	std::bitset<trigger_flags_t::Total> bitmask;
 };
 
 struct actor_timer_t {
