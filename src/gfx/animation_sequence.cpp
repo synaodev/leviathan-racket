@@ -6,18 +6,20 @@ animation_sequence_t::animation_sequence_t() :
 	dimensions(0.0f),
 	delay(0.0),
 	total(0),
-	repeat(true)
+	repeat(true),
+	mirrorigin(false)
 {
 
 }
 
-animation_sequence_t::animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat) :
+animation_sequence_t::animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t mirrorigin) :
 	frames(),
 	action_points(),
 	dimensions(dimensions),
 	delay(delay),
 	total(total),
-	repeat(repeat)
+	repeat(repeat),
+	mirrorigin(mirrorigin)
 {
 
 }
@@ -30,6 +32,7 @@ animation_sequence_t::animation_sequence_t(animation_sequence_t&& that) noexcept
 		std::swap(delay, that.delay);
 		std::swap(total, that.total);
 		std::swap(repeat, that.repeat);
+		std::swap(mirrorigin, that.mirrorigin);
 	}
 }
 
@@ -41,6 +44,7 @@ animation_sequence_t& animation_sequence_t::operator=(animation_sequence_t&& tha
 		std::swap(delay, that.delay);
 		std::swap(total, that.total);
 		std::swap(repeat, that.repeat);
+		std::swap(mirrorigin, that.mirrorigin);
 	}
 	return *this;
 }
@@ -55,20 +59,20 @@ void animation_sequence_t::append(glm::vec2 invert, glm::vec2 start, glm::vec4 p
 	frames.emplace_back(position, origin);
 }
 
-const sequence_frame_t& animation_sequence_t::get_frame(arch_t frame, direction_t direction) const {
+const sequence_frame_t& animation_sequence_t::get_frame(arch_t frame, arch_t variation) const {
 	static const sequence_frame_t kFrameZero = sequence_frame_t(
 		glm::zero<glm::vec2>(),
 		glm::one<glm::vec2>()
 	);
-	arch_t index = frame + (direction * total);
+	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
 		return frames[index];
 	}
 	return kFrameZero;
 }
 
-rect_t animation_sequence_t::get_quad(glm::vec2 invert, arch_t frame, direction_t direction) const {
-	arch_t index = frame + (direction * total);
+rect_t animation_sequence_t::get_quad(glm::vec2 invert, arch_t frame, arch_t variation) const {
+	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
 		return rect_t(frames[index].position, dimensions * invert);
 	}
@@ -82,17 +86,37 @@ glm::vec2 animation_sequence_t::get_dimensions() const {
 	return dimensions;
 }
 
-glm::vec2 animation_sequence_t::get_origin(arch_t frame, direction_t direction) const {
-	arch_t index = frame + (direction * total);
+glm::vec2 animation_sequence_t::get_origin(arch_t frame, arch_t variation, mirroring_t mirroring) const {
+	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
-		return frames[index].origin;
+		glm::vec2 origin = frames[index].origin;
+		if (mirrorigin) {
+			if (mirroring & mirroring_t::Horizontal) {
+				origin.x = -origin.x;
+			}
+			if (mirroring & mirroring_t::Vertical) {
+				origin.y = -origin.y;
+			}
+		}
+		return origin;
 	}
 	return glm::zero<glm::vec2>();
 }
 
-glm::vec2 animation_sequence_t::get_action_point(direction_t direction) const {
-	if (direction < action_points.size()) {
-		return action_points[direction];
+glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t mirroring) const {
+	if (variation < action_points.size()) {
+		glm::vec2 action_point = action_points[variation];
+		if (mirroring & mirroring_t::Horizontal) {
+			real_t center_x = dimensions.x / 2.0f;
+			real_t distance = glm::abs(action_point.x - center_x);
+			action_point.x = glm::round(center_x + distance);
+		}
+		if (mirroring & mirroring_t::Vertical) {
+			real_t center_y = dimensions.y / 2.0f;
+			real_t distance = glm::abs(action_point.y - center_y);
+			action_point.y = glm::round(center_y + distance);
+		}
+		return action_point;
 	}
 	return glm::zero<glm::vec2>();
 }

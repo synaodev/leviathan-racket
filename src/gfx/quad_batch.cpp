@@ -89,7 +89,7 @@ quad_batch_t& quad_batch_t::vtx_pool_write(const vertex_pool_t* that_pool) {
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color) {
+quad_batch_t& quad_batch_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring) {
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].uvcoords = texture_rect.left_top();
@@ -107,6 +107,22 @@ quad_batch_t& quad_batch_t::vtx_major_write(rect_t texture_rect, glm::vec2 raste
 	vtx[3].uvcoords = texture_rect.right_bottom();
 	vtx[3].table 	= table_index;
 	vtx[3].alpha	= alpha_color;
+	switch (mirroring) {
+	case mirroring_t::None:
+		break;
+	case mirroring_t::Horizontal:
+		std::swap(vtx[0].uvcoords.x, vtx[3].uvcoords.x);
+		std::swap(vtx[1].uvcoords.x, vtx[2].uvcoords.x);
+		break;
+	case mirroring_t::Vertical:
+		std::swap(vtx[0].uvcoords.y, vtx[3].uvcoords.y);
+		std::swap(vtx[1].uvcoords.y, vtx[2].uvcoords.y);
+		break;
+	case mirroring_t::Both:
+		std::swap(vtx[0].uvcoords, vtx[3].uvcoords);
+		std::swap(vtx[1].uvcoords, vtx[2].uvcoords);
+		break;
+	}
 	return *this;
 }
 

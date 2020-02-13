@@ -71,4 +71,51 @@ inline direction_t& operator&=(direction_t& lhv, const direction_t& rhv) {
 	return lhv;
 }
 
+namespace __enum_mirroring {
+	enum type : arch_t {
+		None 		= 0 << 0,
+		Horizontal 	= 1 << 0,
+		Vertical 	= 1 << 1,
+		Both		= (Horizontal | Vertical)
+	};
+}
+
+using mirroring_t = __enum_mirroring::type;
+
+inline mirroring_t operator~(mirroring_t lhv) {
+	return static_cast<mirroring_t>(
+		~static_cast<std::underlying_type<mirroring_t>::type>(lhv)
+	);
+}
+
+inline mirroring_t operator&(mirroring_t lhv, mirroring_t rhv) {
+	return static_cast<mirroring_t>(
+		static_cast<std::underlying_type<mirroring_t>::type>(lhv) &
+		static_cast<std::underlying_type<mirroring_t>::type>(rhv)
+	);
+}
+
+inline mirroring_t operator|(mirroring_t lhv, mirroring_t rhv) {
+	return static_cast<mirroring_t>(
+		static_cast<std::underlying_type<mirroring_t>::type>(lhv) |
+		static_cast<std::underlying_type<mirroring_t>::type>(rhv)
+	);
+}
+
+inline mirroring_t& operator|=(mirroring_t& lhv, const mirroring_t& rhv) {
+	lhv = static_cast<mirroring_t>(
+		static_cast<std::underlying_type<mirroring_t>::type>(lhv) |
+		static_cast<std::underlying_type<mirroring_t>::type>(rhv)
+	);
+	return lhv;
+}
+
+inline mirroring_t& operator&=(mirroring_t& lhv, const mirroring_t& rhv) {
+	lhv = static_cast<mirroring_t>(
+		static_cast<std::underlying_type<mirroring_t>::type>(lhv) &
+		static_cast<std::underlying_type<mirroring_t>::type>(rhv)
+	);
+	return lhv;
+}
+
 #endif // SYNAO_UTILITY_ENUMS_HPP
