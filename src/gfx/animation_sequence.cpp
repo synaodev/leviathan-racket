@@ -7,19 +7,19 @@ animation_sequence_t::animation_sequence_t() :
 	delay(0.0),
 	total(0),
 	repeat(true),
-	mirrorigin(false)
+	reflect(false)
 {
 
 }
 
-animation_sequence_t::animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t mirrorigin) :
+animation_sequence_t::animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t reflect) :
 	frames(),
 	action_points(),
 	dimensions(dimensions),
 	delay(delay),
 	total(total),
 	repeat(repeat),
-	mirrorigin(mirrorigin)
+	reflect(reflect)
 {
 
 }
@@ -32,7 +32,7 @@ animation_sequence_t::animation_sequence_t(animation_sequence_t&& that) noexcept
 		std::swap(delay, that.delay);
 		std::swap(total, that.total);
 		std::swap(repeat, that.repeat);
-		std::swap(mirrorigin, that.mirrorigin);
+		std::swap(reflect, that.reflect);
 	}
 }
 
@@ -44,7 +44,7 @@ animation_sequence_t& animation_sequence_t::operator=(animation_sequence_t&& tha
 		std::swap(delay, that.delay);
 		std::swap(total, that.total);
 		std::swap(repeat, that.repeat);
-		std::swap(mirrorigin, that.mirrorigin);
+		std::swap(reflect, that.reflect);
 	}
 	return *this;
 }
@@ -90,7 +90,7 @@ glm::vec2 animation_sequence_t::get_origin(arch_t frame, arch_t variation, mirro
 	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
 		glm::vec2 origin = frames[index].origin;
-		if (mirrorigin) {
+		if (reflect) {
 			if (mirroring & mirroring_t::Horizontal) {
 				origin.x = -origin.x;
 			}

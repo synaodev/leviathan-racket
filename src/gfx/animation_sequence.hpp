@@ -29,7 +29,7 @@ public:
 struct animation_sequence_t : public not_copyable_t {
 public:
 	animation_sequence_t();
-	animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t mirrorigin);
+	animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t reflect);
 	animation_sequence_t(animation_sequence_t&& that) noexcept;
 	animation_sequence_t& operator=(animation_sequence_t&& that) noexcept;
 	~animation_sequence_t() = default;
@@ -49,7 +49,7 @@ private:
 	glm::vec2 dimensions;
 	real64_t delay;
 	arch_t total;
-	bool_t repeat, mirrorigin;
+	bool_t repeat, reflect;
 };
 
 #endif // SYNAO_GRAPHICS_ANIMATION_SEQUENCE_HPP

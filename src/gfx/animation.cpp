@@ -165,16 +165,16 @@ bool animation_t::load(const std::string& full_path) {
 			arch_t hvtype 	 = 0;
 			arch_t frames 	 = 0;
 			bool_t repeat 	 = true;
-			bool_t origin 	 = false;
+			bool_t reflect 	 = false;
 			setup.get(chunk, "starts", starts);
 			setup.get(chunk, "vksize", vksize);
 			setup.get(chunk, "tdelay", tdelay);
 			setup.get(chunk, "hvtype", hvtype);
 			setup.get(chunk, "frames", frames);
 			setup.get(chunk, "repeat", repeat);
-			setup.get(chunk, "origin", origin);
+			setup.get(chunk, "reflect", reflect);
 
-			auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, origin);
+			auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, reflect);
 			for (arch_t d = 0; d < hvtype; ++d) {
 				axnpnt = glm::zero<glm::vec2>();
 				setup.get(chunk, std::to_string(d) + "-X", axnpnt);
