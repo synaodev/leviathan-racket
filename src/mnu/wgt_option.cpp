@@ -29,7 +29,7 @@ void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const mu
 	text.set_position(kDefaultPosition);
 	text.set_string(vfs::i18n_find("Options", 0, 7));
 	arrow.set_file(vfs::animation(res::anim::Heads));
-	arrow.set_state(4);
+	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x, 
 		4.0f + kDefaultPosition.y + 

@@ -35,7 +35,7 @@ void wgt_field_t::init(const input_t&, const video_t&, audio_t&, const music_t&,
 	text_identity.set_font(vfs::font(0));
 	text_identity.set_position(kBottomPosition);
 	arrow.set_file(vfs::animation(res::anim::Heads));
-	arrow.set_state(4);
+	arrow.set_state(1);
 	arrow.set_position(
 		text_listing.get_font_size().x, 
 		4.0f + kDefaultPosition.y + 

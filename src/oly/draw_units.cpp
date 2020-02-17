@@ -11,6 +11,7 @@ draw_units_t::draw_units_t() :
 	bounding(0.0f, 0.0f, 0.0f, 0.0f),
 	current_value(0),
 	maximum_value(0),
+	table(0.0f),
 	texture(nullptr),
 	quads()
 {
@@ -26,9 +27,9 @@ void draw_units_t::render(renderer_t& renderer) const {
 		auto& batch = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha, 
-			pipeline_t::VtxMajorSprites,
+			pipeline_t::VtxMajorIndexed,
 			texture,
-			nullptr
+			palette
 		);
 		if (write) {
 			write = false;
@@ -82,9 +83,22 @@ void draw_units_t::set_values(sint_t current, sint_t maximum) {
 	}
 }
 
+void draw_units_t::set_table(real_t table) {
+	if (this->table != table) {
+		write = true;
+		this->table = table;
+		this->set_values(current_value, maximum_value);
+	}	
+}
+
 void draw_units_t::set_texture(const texture_t* texture) {
 	write = true;
 	this->texture = texture;
+}
+
+void draw_units_t::set_palette(const palette_t* palette) {
+	write = true;
+	this->palette = palette;
 }
 
 glm::vec2 draw_units_t::get_position() const {
@@ -108,22 +122,22 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 
 		quad[0].position = pos;
 		quad[0].uvcoords = uvs * inv;
-		quad[0].table = 0.0f;
+		quad[0].table = table;
 		quad[0].alpha = 1.0f;
 
 		quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
 		quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
-		quad[1].table = 0.0f;
+		quad[1].table = table;
 		quad[1].alpha = 1.0f;
 
 		quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
 		quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
-		quad[2].table = 0.0f;
+		quad[2].table = table;
 		quad[2].alpha = 1.0f;
 
 		quad[3].position = pos + bounding.dimensions();
 		quad[3].uvcoords = inv * (uvs + bounding.dimensions());
-		quad[3].table = 0.0f;
+		quad[3].table = table;
 		quad[3].alpha = 1.0f;
 
 		if (it != kLoopPoint) {	

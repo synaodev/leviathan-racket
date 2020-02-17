@@ -19,7 +19,7 @@ struct receiver_t;
 struct headsup_params_t {
 public:
 	sint_t current_barrier, maximum_barrier, current_leviathan;
-	arch_t main_state;
+	real_t main_state;
 	direction_t main_direction;
 	sint_t current_oxygen, maximum_oxygen;
 public:
@@ -27,7 +27,7 @@ public:
 		current_barrier(0), 
 		maximum_barrier(0),
 		current_leviathan(0),
-		main_state(0),
+		main_state(0.0f),
 		main_direction(direction_t::Right),
 		current_oxygen(0),
 		maximum_oxygen(0) {}
@@ -56,7 +56,7 @@ public:
 	void fade_out();
 	bool is_fade_done() const;
 	bool is_fade_moving() const;
-	arch_t get_main_state() const;
+	real_t get_main_index() const;
 private:
 	draw_scheme_t main_scheme;
 	draw_count_t leviathan_count;

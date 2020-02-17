@@ -26,7 +26,7 @@ void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const mus
 	text.set_position(kDefaultPosition);
 	this->setup_text(video.get_parameters());
 	arrow.set_file(vfs::animation(res::anim::Heads));
-	arrow.set_state(4);
+	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x, 
 		4.0f + kDefaultPosition.y + 

@@ -7,6 +7,7 @@
 
 struct renderer_t;
 struct texture_t;
+struct palette_t;
 
 struct draw_count_t : public not_copyable_t {
 public:
@@ -20,6 +21,7 @@ public:
 	void set_layer(layer_t layer);
 	void set_backwards(bool_t backwards);
 	void set_visible(bool_t visible);
+	void set_table(real_t table);
 	void set_position(real_t x, real_t y);
 	void set_position(glm::vec2 position);
 	void mut_position(real_t x, real_t y);
@@ -31,6 +33,7 @@ public:
 	void add_value(sint_t number);
 	void set_minimum_zeroes(arch_t minimum_zeroes);
 	void set_texture(const texture_t* texture);
+	void set_palette(const palette_t* palette);
 	glm::vec2 get_position() const;
 	bool is_backwards() const;
 	bool is_visible() const;
@@ -42,11 +45,13 @@ private:
 	mutable bool_t write;
 	layer_t layer;
 	bool_t backwards, visible;
+	real_t table;
 	glm::vec2 position;
 	rect_t bounding;
 	sint_t value;
 	arch_t minimum_zeroes;
 	const texture_t* texture;
+	const palette_t* palette;
 	vertex_pool_t quads;
 };
 

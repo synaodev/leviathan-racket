@@ -10,7 +10,7 @@ public:
 	draw_framerate_t& operator=(draw_framerate_t&&) = default;
 	~draw_framerate_t() = default;
 public:
-	void init(const texture_t* texture);
+	void init(const texture_t* texture, const palette_t* palette);
 	void update(real64_t delta);
 	void render(renderer_t& renderer) const;
 	void force() const;

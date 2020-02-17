@@ -39,7 +39,7 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 	right_text.set_position(kDefaultPosition + kRightsPositions);
 	this->setup_text(input);
 	arrow.set_file(vfs::animation(res::anim::Heads));
-	arrow.set_state(4);
+	arrow.set_state(1);
 	arrow.set_position(
 		left_text.get_font_size().x, 
 		(left_text.get_font_size().y * 2.0f) - 3.0f

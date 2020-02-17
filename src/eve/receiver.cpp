@@ -766,10 +766,10 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void destroy(sint32_t id)", asMETHOD(kontext_t, destroy_id), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Bump Actor
-	r = engine->RegisterGlobalFunction("void move(sint32_t id, arch_t direction, real32_t velocity_x, real32_t velocity_y)", asMETHOD(kontext_t, bump), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("void move(sint32_t id, real32_t velocity_x, real32_t velocity_y)", asMETHOD(kontext_t, bump), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Animate Actor
-	r = engine->RegisterGlobalFunction("void animate(sint32_t id, arch_t state, arch_t dir)", asMETHOD(kontext_t, animate), asCALL_THISCALL_ASGLOBAL, &kontext);
+	r = engine->RegisterGlobalFunction("void animate(sint32_t id, arch_t state, arch_t variation)", asMETHOD(kontext_t, animate), asCALL_THISCALL_ASGLOBAL, &kontext);
 	assert(r >= 0);
 	// Set Actor State
 	r = engine->RegisterGlobalFunction("void set_state(sint32_t id, arch_t state)", asMETHOD(kontext_t, set_state), asCALL_THISCALL_ASGLOBAL, &kontext);

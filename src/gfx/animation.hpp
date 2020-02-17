@@ -22,7 +22,7 @@ public:
 	void update(real64_t delta, bool_t& write, arch_t state, real64_t& timer, arch_t& frame) const;
 	void render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const;
 	void render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const;
-	void render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, glm::vec2 position) const;
+	void render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const;
 	bool load(const std::string& full_path);
 	bool load(const std::string& full_path, thread_pool_t& thread_pool);
 	void assure() const;

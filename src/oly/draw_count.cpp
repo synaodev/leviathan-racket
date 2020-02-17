@@ -1,6 +1,7 @@
 #include "./draw_count.hpp"
 
 #include "../gfx/texture.hpp"
+#include "../gfx/palette.hpp"
 #include "../sys/renderer.hpp"
 
 static constexpr sint_t kFirst = -4735916;
@@ -13,11 +14,13 @@ draw_count_t::draw_count_t() :
 	layer(layer_value::HeadsUp),
 	backwards(false),
 	visible(false),
+	table(0.0f),
 	position(0.0f),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f),
 	value(kFirst),
 	minimum_zeroes(0),
 	texture(nullptr),
+	palette(nullptr),
 	quads()
 {
 	quads.setup<vtx_major_t>();
@@ -32,9 +35,9 @@ void draw_count_t::render(renderer_t& renderer) const {
 		auto& batch = renderer.get_overlay_quads(
 			layer,
 			blend_mode_t::Alpha,
-			pipeline_t::VtxMajorSprites,
+			pipeline_t::VtxMajorIndexed,
 			texture,
-			nullptr
+			palette
 		);
 		if (write) {
 			write = false;
@@ -60,6 +63,14 @@ void draw_count_t::set_backwards(bool_t backwards) {
 void draw_count_t::set_visible(bool_t visible) {
 	write = true;
 	this->visible = visible;
+}
+
+void draw_count_t::set_table(real_t table) {
+	if (this->table != table) {
+		write = true;
+		this->table = table;
+		this->new_value(value);
+	}
 }
 
 void draw_count_t::set_position(real_t x, real_t y) {
@@ -134,6 +145,11 @@ void draw_count_t::set_texture(const texture_t* texture) {
 	this->texture = texture;
 }
 
+void draw_count_t::set_palette(const palette_t* palette) {
+	write = true;
+	this->palette = palette;
+}
+
 glm::vec2 draw_count_t::get_position() const {
 	return position;
 }
@@ -200,21 +216,21 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 void draw_count_t::generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv) {
 	quad[0].position = pos;
 	quad[0].uvcoords = uvs * inv;
-	quad[0].table = 0.0f;
+	quad[0].table = table;
 	quad[0].alpha = 1.0f;
 
 	quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
 	quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
-	quad[1].table = 0.0f;
+	quad[1].table = table;
 	quad[1].alpha = 1.0f;
 
 	quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
 	quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
-	quad[2].table = 0.0f;
+	quad[2].table = table;
 	quad[2].alpha = 1.0f;
 
 	quad[3].position = pos + bounding.dimensions();
 	quad[3].uvcoords = inv * (uvs + bounding.dimensions());
-	quad[3].table = 0.0f;
+	quad[3].table = table;
 	quad[3].alpha = 1.0f;
 }

@@ -25,17 +25,17 @@ inventory_gui_element_t::inventory_gui_element_t() :
 
 }
 
-void inventory_gui_element_t::init(const texture_t* texture, const animation_t* animation, arch_t index) {
+void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
 	glm::vec2 position = glm::vec2(
 		2.0f + static_cast<real_t>((index % 6) * 49), 
 		2.0f + static_cast<real_t>((index / 6) * 21)
 	);
 	scheme.set_file(animation);
-	scheme.set_state(7);
 	scheme.set_position(position);
 	count.set_texture(texture);
+	count.set_palette(palette);
 	count.set_position(position + glm::vec2(38.0f, 10.0f));
-	count.set_bounding(156.0f, 18.0f, 8.0f, 10.0f);
+	count.set_bounding(56.0f, 18.0f, 8.0f, 10.0f);
 	count.set_backwards(true);
 }
 
@@ -82,13 +82,14 @@ inventory_gui_t::inventory_gui_t() :
 
 bool inventory_gui_t::init() {
 	const texture_t* texture = vfs::texture(res::img::Heads);
-	const animation_t* animation = vfs::animation(res::anim::Heads);
-	if (texture == nullptr or animation == nullptr) {
+	const palette_t* palette = vfs::palette(res::pal::Heads);
+	const animation_t* animation = vfs::animation(res::anim::Items);
+	if (texture == nullptr or palette == nullptr or animation == nullptr) {
 		return false;
 	}
 	arch_t index = 0;
 	for (auto&& element : elements) {
-		element.init(texture, animation, index);
+		element.init(texture, palette, animation, index);
 		++index;
 	}
 	return true;

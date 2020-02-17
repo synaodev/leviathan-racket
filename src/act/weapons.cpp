@@ -206,21 +206,24 @@ void ai::weak_hammer::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.position -= 8.0f;
 	location.bounding = rect_t(2.0f, 2.0f, 12.0f, 12.0f);
+	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Hammer);
+	sprite.layer = 0.6f;
+	sprite.position = location.position;
 	auto& kinematics = ktx.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
 	if (location.direction & direction_t::Down) {
 		kinematics.velocity.y += 5.0f;
+		sprite.oriented = oriented_t::Top;
+		sprite.mirroring = mirroring_t::Vertical;
 	} else if (location.direction & direction_t::Up) {
 		kinematics.velocity.y -= 5.0f;
+		sprite.oriented = oriented_t::Top;
 	} else if (location.direction & direction_t::Left) {
 		kinematics.velocity.x -= 5.0f;
+		sprite.mirroring = mirroring_t::Horizontal;
 	} else {
 		kinematics.velocity.x += 5.0f;
 	}
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Hammer);
-	sprite.direction = location.direction;
-	sprite.layer = 0.6f;
-	sprite.position = location.position;
 	auto& timer = ktx.assign_if<actor_timer_t>(s);
 	timer[0] = 9;
 	auto& health = ktx.assign_if<health_t>(s);
@@ -245,22 +248,25 @@ void ai::strong_hammer::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.position -= 12.0f;
 	location.bounding = rect_t(4.0f, 4.0f, 16.0f, 16.0f);
+	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Hammer);
+	sprite.state = 1;
+	sprite.layer = 0.6f;
+	sprite.position = location.position;
 	auto& kinematics = ktx.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
 	if (location.direction & direction_t::Down) {
 		kinematics.velocity.y += 6.0f;
+		sprite.oriented = oriented_t::Top;
+		sprite.mirroring = mirroring_t::Vertical;
 	} else if (location.direction & direction_t::Up) {
 		kinematics.velocity.y -= 6.0f;
+		sprite.oriented = oriented_t::Top;
 	} else if (location.direction & direction_t::Left) {
 		kinematics.velocity.x -= 6.0f;
+		sprite.mirroring = mirroring_t::Horizontal;
 	} else {
 		kinematics.velocity.x += 6.0f;
 	}
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Hammer);
-	sprite.state = 1;
-	sprite.direction = location.direction;
-	sprite.layer = 0.6f;
-	sprite.position = location.position;
 	auto& timer = ktx.assign_if<actor_timer_t>(s);
 	timer[0] = 12;
 	auto& health = ktx.assign_if<health_t>(s);
@@ -503,22 +509,21 @@ void ai::nail_ray::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.position -= 16.0f;
 	location.bounding = rect_t(8.0f, 8.0f, 16.0f, 16.0f);
+	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::NailRay);
+	sprite.layer = 0.6f;
+	sprite.position = location.position;
 	auto& kinematics = ktx.assign_if<kinematics_t>(s);
 	if (location.direction & direction_t::Down) {
-		location.direction = direction_t::Left;
 		kinematics.velocity.y = kTopSpeed;
+		sprite.mirroring = mirroring_t::Horizontal;
 	} else if (location.direction & direction_t::Up) {
-		location.direction = direction_t::Right;
 		kinematics.velocity.y = -kTopSpeed;
 	} else if (location.direction & direction_t::Left) {
 		kinematics.velocity = glm::vec2(-kTopSpeed, kLowSpeed);
+		sprite.mirroring = mirroring_t::Horizontal;
 	} else {
 		kinematics.velocity = glm::vec2(kTopSpeed, kLowSpeed);
 	}
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::NailRay);
-	sprite.direction = location.direction;
-	sprite.layer = 0.6f;
-	sprite.position = location.position;
 	auto& health = ktx.assign_if<health_t>(s);
 	health.damage = 4;
 	ktx.assign_if<actor_timer_t>(s);

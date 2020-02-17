@@ -26,6 +26,7 @@ namespace res {
 		SYNAO_RES_ID_EXTERN_DEF(Heads);
 		SYNAO_RES_ID_EXTERN_DEF(Helpful);
 		SYNAO_RES_ID_EXTERN_DEF(HolyLance);
+		SYNAO_RES_ID_EXTERN_DEF(Items);
 		SYNAO_RES_ID_EXTERN_DEF(Kannon);
 		SYNAO_RES_ID_EXTERN_DEF(Kyoko);
 		SYNAO_RES_ID_EXTERN_DEF(NailRay);
@@ -64,6 +65,9 @@ namespace res {
 		SYNAO_RES_ID_EXTERN_DEF(Razor);
 	}
 	namespace img {
+		SYNAO_RES_ID_EXTERN_DEF(Heads);
+	}
+	namespace pal {
 		SYNAO_RES_ID_EXTERN_DEF(Heads);
 	}
 	namespace icon {

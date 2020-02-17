@@ -49,8 +49,8 @@ public:
 	void smoke(real_t x, real_t y, arch_t count);
 	void shrapnel(glm::vec2 position, arch_t count);
 	void shrapnel(real_t x, real_t y, arch_t count);
-	void bump(sint_t identity, direction_t direction, real_t velocity_x, real_t velocity_y);
-	void animate(sint_t identity, arch_t state, direction_t direction);
+	void bump(sint_t identity, real_t velocity_x, real_t velocity_y);
+	void animate(sint_t identity, arch_t state, arch_t variation);
 	void set_state(sint_t identity, arch_t state);
 	void set_mask(sint_t identity, arch_t index, bool value);
 	void set_event(sint_t identity, asIScriptFunction* function);

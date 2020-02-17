@@ -18,7 +18,7 @@ draw_meter_t::draw_meter_t() :
 void draw_meter_t::init(const animation_t* animation) {
 	this->reset();
 	graphed.set_file(animation);
-	graphed.set_state(6);
+	graphed.set_state(3);
 	graphed.set_position(kVaryingPosition);
 }
 

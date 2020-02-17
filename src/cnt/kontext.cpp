@@ -247,16 +247,9 @@ void kontext_t::shrapnel(real_t x, real_t y, arch_t count) {
 	this->shrapnel(glm::vec2(x, y), count);
 }
 
-void kontext_t::bump(sint_t identity, direction_t direction, real_t velocity_x, real_t velocity_y) {
+void kontext_t::bump(sint_t identity, real_t velocity_x, real_t velocity_y) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		auto& location = registry.get<location_t>(actor);
-		location.direction = direction;
-		if (registry.has<sprite_t>(actor)) {
-			auto& sprite = registry.get<sprite_t>(actor);
-			sprite.write = true;
-			sprite.direction = direction;
-		}
 		if (registry.has<kinematics_t>(actor)) {
 			auto& kinematics = registry.get<kinematics_t>(actor);
 			kinematics.velocity = glm::vec2(velocity_x, velocity_y);
@@ -264,17 +257,13 @@ void kontext_t::bump(sint_t identity, direction_t direction, real_t velocity_x, 
 	}
 }
 
-void kontext_t::animate(sint_t identity, arch_t state, direction_t direction) {
+void kontext_t::animate(sint_t identity, arch_t state, arch_t variation) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
 		if (registry.has<sprite_t>(actor)) {
-			auto& location = registry.get<location_t>(actor);
 			auto& sprite = registry.get<sprite_t>(actor);
-			if (direction != direction_t::Neutral) {
-				location.direction = direction;
-				sprite.write = true;
-				sprite.direction = direction;
-			}
+			sprite.write = true;
+			sprite.variation = variation;
 			sprite.new_state(state);
 		}
 	}

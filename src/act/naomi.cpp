@@ -25,10 +25,10 @@
 #include "../res.hpp"
 
 namespace kNao {
-	static constexpr arch_t BoxGood = 0;
-	static constexpr arch_t BoxOkay = 1;
-	static constexpr arch_t BoxSick = 2;
-	static constexpr arch_t BoxHeal = 3;
+	static constexpr real_t BoxGood = 0;
+	static constexpr real_t BoxOkay = 1;
+	static constexpr real_t BoxSick = 2;
+	static constexpr real_t BoxHeal = 3;
 	static constexpr sint_t Oxygens = 1500;
 }
 
@@ -41,6 +41,7 @@ naomi_state_t::naomi_state_t() :
 	view_point(0.0f),
 	reticule(0.0f),
 	backend(nullptr),
+	last_direction(direction_t::Right),
 	max_hspeed(0.0f),
 	max_hsling(0.0f),
 	max_vspeed(0.0f),
@@ -109,6 +110,7 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	riding = glm::zero<glm::vec2>();
 	view_point = glm::zero<glm::vec2>();
 	reticule = glm::zero<glm::vec2>();
+	last_direction = direction_t::Right;
 	this->set_phys_const(false);
 }
 
@@ -123,7 +125,6 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	kinematics.reset();
 	kinematics.flags[phy_t::Bottom] = true;
 	sprite.reset();
-	sprite.direction = direction;
 	sprite.layer = 0.35f;
 	health.reset(current_barrier, maximum_barrier, leviathan, 0);
 	listener.liquid = entt::null;
@@ -144,10 +145,12 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	riding = glm::zero<glm::vec2>();
 	view_point = glm::zero<glm::vec2>();
 	reticule = glm::zero<glm::vec2>();
+	last_direction = direction_t::Right;
 	this->set_phys_const(false);
 }
 
 void naomi_state_t::setup(audio_t& audio, const kernel_t& kernel, camera_t& camera, kontext_t& kontext) {
+	last_direction = direction_t::Right;
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
 	auto& sprite = kontext.get<sprite_t>(actor);
@@ -408,12 +411,21 @@ void naomi_state_t::set_teleport_location(real_t x, real_t y) {
 
 void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
 	flags[naomi_flags_t::Scripted] = true;
-	auto& location = backend->get<location_t>(actor);
 	auto& sprite = backend->get<sprite_t>(actor);
 	if (direction != direction_t::Neutral) {
-		location.direction = direction;
-		sprite.direction = direction;
 		sprite.write = true;
+		if (direction & direction_t::Left) {
+			sprite.mirroring = mirroring_t::Horizontal;
+		} else {
+			sprite.mirroring = mirroring_t::None;
+		}
+		if (direction & direction_t::Down) {
+			sprite.oriented = oriented_t::Down;
+		} else if (direction & direction_t::Up) {
+			sprite.oriented = oriented_t::Top;
+		} else {
+			sprite.oriented = oriented_t::None;
+		}
 	}
 	sprite.new_state(state);
 }
@@ -490,8 +502,8 @@ naomi_death_t naomi_state_t::get_death_type(const kinematics_t& kinematics, cons
 	return naomi_death_t::Error;
 }
 
-arch_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
-	if (headsup.get_main_state() != kNao::BoxHeal) {
+real_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
+	if (headsup.get_main_index() != kNao::BoxHeal) {
 		if (flags[naomi_flags_t::HealthIncrement]) {
 			return kNao::BoxHeal;
 		} else if (params.current_leviathan >= 650) {
@@ -501,7 +513,7 @@ arch_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bit
 		}
 		return kNao::BoxGood;
 	}
-	return draw_scheme_t::NonState;
+	return 0.0f;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -600,9 +612,11 @@ void naomi_state_t::do_fire(const input_t& input, audio_t& audio, kernel_t& kern
 				direction_t direction = location.direction;
 				glm::vec2 position = location.position;
 				glm::vec2 velocity = kinematics.velocity;
+				mirroring_t mirroring = sprite.mirroring;
 				glm::vec2 action_point = sprite.action_point(
 					naomi_anim_t::JumpingFiring,
 					direction,
+					mirroring,
 					position
 				);
 				switch (weapon->x) {
@@ -1083,9 +1097,21 @@ void naomi_state_t::do_animation(location_t& location, sprite_t& sprite, const h
 			state = naomi_anim_t::Idle;
 		}
 		sprite.new_state(state);
-		if (sprite.direction != location.direction) {
+		if (location.direction != last_direction) {
+			last_direction = location.direction;
 			sprite.write = true;
-			sprite.direction = location.direction;
+			if (location.direction & direction_t::Left) {
+				sprite.mirroring |= mirroring_t::Horizontal;
+			} else {
+				sprite.mirroring &= ~mirroring_t::Horizontal;
+			}
+			if (location.direction & direction_t::Down) {
+				sprite.oriented = oriented_t::Down;
+			} else if (location.direction & direction_t::Up) {
+				sprite.oriented = oriented_t::Top;
+			} else {
+				sprite.oriented = oriented_t::None;
+			}
 		}
 	}
 }

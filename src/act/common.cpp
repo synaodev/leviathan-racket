@@ -51,12 +51,8 @@ void ai::chest_full::ctor(entt::entity s, kontext_t& ktx) {
 }
 
 void ai::chest_empty::ctor(entt::entity s, kontext_t& ktx) {
-	auto& location = ktx.get<location_t>(s);
-	location.direction = direction_t::Left;
-
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Chest);
-	sprite.direction = location.direction;
-	sprite.position = location.position;
+	sprite.variation = 1;
 }
 
 void ai::door::ctor(entt::entity s, kontext_t& ktx) {

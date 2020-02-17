@@ -23,6 +23,7 @@ namespace res {
 		SYNAO_RES_ID_INTERN_DEF(Frontier,	"frontier");
 		SYNAO_RES_ID_INTERN_DEF(Hammer,		"hammer");
 		SYNAO_RES_ID_INTERN_DEF(HolyLance,	"holylance");
+		SYNAO_RES_ID_INTERN_DEF(Items,		"items");
 		SYNAO_RES_ID_INTERN_DEF(Kannon,		"kannon");
 		SYNAO_RES_ID_INTERN_DEF(NailRay,	"nailray");
 		SYNAO_RES_ID_INTERN_DEF(WolfVulcan,	"wolfvulcan");
@@ -61,6 +62,9 @@ namespace res {
 		SYNAO_RES_ID_INTERN_DEF(Razor,			"razor");
 	}
 	namespace img {
+		SYNAO_RES_ID_INTERN_DEF(Heads, "heads");
+	}
+	namespace pal {
 		SYNAO_RES_ID_INTERN_DEF(Heads, "heads");
 	}
 	namespace icon {

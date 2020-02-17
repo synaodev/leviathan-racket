@@ -13,7 +13,7 @@ public:
 	draw_item_view_t& operator=(draw_item_view_t&&) = default;
 	~draw_item_view_t() = default;
 public:
-	void init(const texture_t* texture, const animation_t* animation);
+	void init(const texture_t* texture, const palette_t* palette, const animation_t* heads_animation, const animation_t* items_animation);
 	void handle(const kernel_t& kernel);
 	void render(renderer_t& renderer) const;
 	void force() const;

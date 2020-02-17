@@ -17,7 +17,7 @@ static const glm::vec2 kArrowOffset = glm::vec2(5.0f, 10.0f);
 static const glm::vec2 kTextOffsetA = glm::vec2(10.0f, 6.0f);
 static const glm::vec2 kTextOffsetB = glm::vec2(68.0f, 6.0f);
 
-static constexpr arch_t kFacesAnimState = 8;
+static constexpr arch_t kFacesAnimState = 4;
 static constexpr real64_t kDefaultDelay = 0.04;
 
 dialogue_gui_t::dialogue_gui_t() :
@@ -42,7 +42,7 @@ bool dialogue_gui_t::init(receiver_t& receiver) {
 	text.set_font(font);
 	faces.set_file(animation);
 	arrow.set_file(animation);
-	arrow.set_state(4);
+	arrow.set_state(1);
 	suspender = [&receiver] {
 		receiver.suspend();
 	};

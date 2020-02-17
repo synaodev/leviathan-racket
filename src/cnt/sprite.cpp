@@ -32,7 +32,7 @@ sprite_t::sprite_t() :
 	alpha(1.0f),
 	table(0.0f),
 	state(0),
-	direction(direction_t::Right),
+	variation(0),
 	mirroring(mirroring_t::None),
 	frame(0),
 	layer(layer_value::Automatic),
@@ -51,7 +51,7 @@ void sprite_t::reset() {
 	alpha = 1.0f;
 	table = 0.0f;
 	state = 0;
-	direction = direction_t::Right;
+	variation = 0;
 	mirroring = mirroring_t::None;
 	frame = 0;
 	layer = layer_value::Automatic;
@@ -73,9 +73,9 @@ void sprite_t::new_state(arch_t state) {
 	}
 }
 
-glm::vec2 sprite_t::action_point(arch_t state, direction_t direction, glm::vec2 position) const {
+glm::vec2 sprite_t::action_point(arch_t state, arch_t variation, mirroring_t mirroring, glm::vec2 position) const {
 	if (file != nullptr) {
-		return position + file->get_action_point(state, direction, mirroring);
+		return position + file->get_action_point(state, variation, mirroring);
 	}
 	return glm::zero<glm::vec2>();
 }
@@ -123,7 +123,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					viewport,
 					sprite.state,
 					sprite.frame,
-					sprite.direction, 
+					sprite.variation, 
 					sprite.layer,
 					sprite.position,
 					sprite.scale
@@ -145,7 +145,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					sprite.write,
 					sprite.state,
 					sprite.frame,
-					sprite.direction,
+					sprite.variation,
 					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,
@@ -163,7 +163,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					sprite.write,
 					sprite.state,
 					sprite.frame,
-					sprite.direction,
+					sprite.variation,
 					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,

@@ -24,7 +24,7 @@ public:
 public:
 	void reset();
 	void new_state(arch_t state);
-	glm::vec2 action_point(arch_t state, direction_t direction, glm::vec2 position) const;
+	glm::vec2 action_point(arch_t state, arch_t variation, mirroring_t mirroring, glm::vec2 position) const;
 	bool finished() const;
 public:
 	static void update(kontext_t& kontext, real64_t delta);
@@ -40,7 +40,11 @@ public:
 	real64_t timer;
 	real_t alpha, table;
 	arch_t state;
-	direction_t direction;
+	union {
+		arch_t variation;
+		direction_t direction;
+		oriented_t oriented;
+	};
 	mirroring_t mirroring;
 	arch_t frame;
 	layer_t layer;

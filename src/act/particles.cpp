@@ -238,7 +238,7 @@ void ai::barrier::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Barrier);
 
-	sprite.direction = location.direction;
+	sprite.variation = location.direction & direction_t::Left;
 	sprite.layer = 0.6f;
 	sprite.scale = glm::vec2(2.0f);
 	sprite.position = location.position;

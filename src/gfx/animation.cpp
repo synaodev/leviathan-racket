@@ -110,22 +110,27 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, glm::vec2 position) const {
+void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const {
 	this->assure();
+	pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+	if (palette != nullptr) {
+		pipeline = pipeline_t::VtxMajorIndexed;
+		index = palette->convert(index);
+	}
 	auto& batch = renderer.get_overlay_quads(
 		layer_value::HeadsUp, 
 		blend_mode_t::Alpha,
-		pipeline_t::VtxMajorSprites,
+		pipeline,
 		texture,
 		palette
 	);
 	if (write) {
 		write = false;
-		glm::vec2 sequsize	= sequences[state].get_dimensions();
-		glm::vec2 sequorig	= sequences[state].get_origin(frame, variation, mirroring_t::None);
-		rect_t seququads	= sequences[state].get_quad(inverts, frame, variation);
+		glm::vec2 sequsize = sequences[state].get_dimensions();
+		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
+		rect_t seququads   = sequences[state].get_quad(inverts, frame, variation);
 		batch.begin(quad_batch_t::SingleQuad)
-			.vtx_major_write(seququads, sequsize, 0.0f, 1.0f, mirroring_t::None)
+			.vtx_major_write(seququads, sequsize, index, 1.0f, mirroring_t::None)
 			.vtx_transform_write(position - sequorig)
 		.end();
 	} else {

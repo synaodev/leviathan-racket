@@ -9,9 +9,10 @@ draw_framerate_t::draw_framerate_t() :
 
 }
 
-void draw_framerate_t::init(const texture_t* texture) {
+void draw_framerate_t::init(const texture_t* texture, const palette_t* palette) {
 	count.set_texture(texture);
-	count.set_bounding(156.0f, 18.0f, 8.0f, 10.0f);
+	count.set_palette(palette);
+	count.set_bounding(56.0f, 18.0f, 8.0f, 10.0f);
 	count.set_position(310.0f, 168.0f);
 	count.set_visible(true);
 	count.set_backwards(true);

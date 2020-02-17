@@ -18,6 +18,13 @@ SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
 	SYNAO_CTOR_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
 }
 
+static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t direction) {
+	return (
+		(mirroring == mirroring_t::None and (direction & direction_t::Left) == direction_t::Right) or
+		(mirroring == mirroring_t::Horizontal and (direction & direction_t::Left) == direction_t::Left)
+	);
+}
+
 void ai::shoshi_normal::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
@@ -40,9 +47,13 @@ void ai::shoshi_normal::tick(entt::entity s, routine_tuple_t& rtp) {
 	if (!routine.state) {
 		if (kinematics.velocity.x != 0.0f) {
 			location.direction = kinematics.velocity.x > 0.0f ? direction_t::Right : direction_t::Left;
-			if (sprite.direction != location.direction) {
+			if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
 				sprite.write = true;
-				sprite.direction = location.direction;
+				if (location.direction & direction_t::Left) {
+					sprite.mirroring = mirroring_t::Horizontal;
+				} else {
+					sprite.mirroring = mirroring_t::None;
+				}
 			}
 			sprite.new_state(kinematics.flags[phy_t::Bottom] ? 1 : 2);
 		} else if (!kinematics.flags[phy_t::Bottom]) {
@@ -72,16 +83,17 @@ void ai::shoshi_carry::ctor(entt::entity s, kontext_t& ktx) {
 void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& naomi_location = rtp.ktx.get<location_t>(rtp.nao.actor);
 	auto& location = rtp.ktx.get<location_t>(s);
-
 	location.position = naomi_location.position;
 	location.hori(
 		naomi_location.direction & direction_t::Left ? 
-			direction_t::Left : direction_t::Right
+		direction_t::Left : direction_t::Right
 	);
+
+	auto& naomi_sprite = rtp.ktx.get<sprite_t>(rtp.nao.actor);
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	if (sprite.direction != location.direction) {
+	if (sprite.mirroring != naomi_sprite.mirroring) {
 		sprite.write = true;
-		sprite.direction = location.direction;
+		sprite.mirroring = naomi_sprite.mirroring;
 	}
 }
 
@@ -187,8 +199,12 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 		helper.augment = true;
 	}
 	kinematics.accel_y(kGravSp, kMaxVsp);
-	if (sprite.direction != location.direction) {
+	if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
 		sprite.write = true;
-		sprite.direction = location.direction;
+		if (location.direction & direction_t::Left) {
+			sprite.mirroring = mirroring_t::Horizontal;
+		} else {
+			sprite.mirroring = mirroring_t::None;
+		}
 	}
 }

@@ -71,6 +71,52 @@ inline direction_t& operator&=(direction_t& lhv, const direction_t& rhv) {
 	return lhv;
 }
 
+namespace __enum_orientated {
+	enum type : arch_t {
+		None = 0 << 0,
+		Top	 = 1 << 0,
+		Down = 1 << 1
+	};
+}
+
+using oriented_t = __enum_orientated::type;
+
+inline oriented_t operator~(oriented_t lhv) {
+	return static_cast<oriented_t>(
+		~static_cast<std::underlying_type<oriented_t>::type>(lhv)
+	);
+}
+
+inline oriented_t operator&(oriented_t lhv, oriented_t rhv) {
+	return static_cast<oriented_t>(
+		static_cast<std::underlying_type<oriented_t>::type>(lhv) &
+		static_cast<std::underlying_type<oriented_t>::type>(rhv)
+	);
+}
+
+inline oriented_t operator|(oriented_t lhv, oriented_t rhv) {
+	return static_cast<oriented_t>(
+		static_cast<std::underlying_type<oriented_t>::type>(lhv) |
+		static_cast<std::underlying_type<oriented_t>::type>(rhv)
+	);
+}
+
+inline oriented_t& operator|=(oriented_t& lhv, const oriented_t& rhv) {
+	lhv = static_cast<oriented_t>(
+		static_cast<std::underlying_type<oriented_t>::type>(lhv) |
+		static_cast<std::underlying_type<oriented_t>::type>(rhv)
+	);
+	return lhv;
+}
+
+inline oriented_t& operator&=(oriented_t& lhv, const oriented_t& rhv) {
+	lhv = static_cast<oriented_t>(
+		static_cast<std::underlying_type<oriented_t>::type>(lhv) &
+		static_cast<std::underlying_type<oriented_t>::type>(rhv)
+	);
+	return lhv;
+}
+
 namespace __enum_mirroring {
 	enum type : arch_t {
 		None 		= 0 << 0,
