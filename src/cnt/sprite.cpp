@@ -77,7 +77,7 @@ glm::vec2 sprite_t::action_point(arch_t state, arch_t variation, mirroring_t mir
 	if (file != nullptr) {
 		return position + file->get_action_point(state, variation, mirroring);
 	}
-	return glm::zero<glm::vec2>();
+	return position;
 }
 
 bool sprite_t::finished() const {

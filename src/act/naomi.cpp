@@ -609,13 +609,14 @@ void naomi_state_t::do_fire(const input_t& input, audio_t& audio, kernel_t& kern
 		if (!chroniker[naomi_timer_t::Reloading]) {
 			glm::ivec4* weapon = kernel.get_item_ptr();
 			if (weapon != nullptr and weapon->w != 0 and weapon->y > 0) {
-				direction_t direction = location.direction;
 				glm::vec2 position = location.position;
+				direction_t direction = location.direction;
 				glm::vec2 velocity = kinematics.velocity;
+				oriented_t oriented = sprite.oriented;
 				mirroring_t mirroring = sprite.mirroring;
 				glm::vec2 action_point = sprite.action_point(
 					naomi_anim_t::JumpingFiring,
-					direction,
+					oriented,
 					mirroring,
 					position
 				);

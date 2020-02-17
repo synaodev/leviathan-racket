@@ -1,4 +1,5 @@
 #include "./animation_sequence.hpp"
+#include "../utl/logger.hpp"
 
 animation_sequence_t::animation_sequence_t() :
 	frames(),
@@ -109,12 +110,16 @@ glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t m
 		if (mirroring & mirroring_t::Horizontal) {
 			real_t center_x = dimensions.x / 2.0f;
 			real_t distance = glm::abs(action_point.x - center_x);
-			action_point.x = glm::round(center_x + distance);
+			action_point.x = action_point.x > center_x ?
+				glm::round(action_point.x - distance * 2.0f) :
+				glm::round(action_point.x + distance * 2.0f);
 		}
 		if (mirroring & mirroring_t::Vertical) {
 			real_t center_y = dimensions.y / 2.0f;
 			real_t distance = glm::abs(action_point.y - center_y);
-			action_point.y = glm::round(center_y + distance);
+			action_point.y = action_point.y > center_y ? 
+				glm::round(center_y - distance * 2.0f) :
+				glm::round(center_y + distance * 2.0f);
 		}
 		return action_point;
 	}
