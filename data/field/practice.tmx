@@ -13,7 +13,7 @@
    <property name="collide" type="bool" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzjYGBg4ARijkFKg7AEw+AGkgwQ9w5mMBqO1AGj4UgdMBqO1AG0CEd2KpsHC8fBUJ8QqmckBzENwgDTuwfo
+   eJzjYGBg4ARijkFKg7AEw+AGkgwQ9w5mMBqO1AGj4UgdMBqO1AFDKRwHQ31CqJ6RHMQ0CAMAyHcH4Q==
   </data>
  </layer>
  <objectgroup draworder="index" id="3" name="Actor">

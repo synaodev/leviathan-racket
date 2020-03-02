@@ -216,7 +216,7 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 			this->do_jump(input, audio, kinematics, false);
 			this->do_step(audio, sprite);
 			this->do_interact(input, receiver, kontext, location, kinematics);
-			this->do_light_dash(input, kontext, location, kinematics);
+			this->do_light_dash(input, kontext, location, kinematics, sprite);
 			this->do_wall_kick(input, audio, tilemap, location, kinematics);
 		}
 	} else {
@@ -843,7 +843,7 @@ void naomi_state_t::do_interact(const input_t& input, receiver_t& receiver, kont
 	}
 }
 
-void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, location_t& location, kinematics_t& kinematics) {
+void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, location_t& location, kinematics_t& kinematics, sprite_t& sprite) {
 	if (equips[naomi_equips_t::LightDash]) {
 		if (flags[naomi_flags_t::Dashing]) {
 			if (chroniker[naomi_timer_t::Flashing]-- <= 0) {
@@ -870,6 +870,12 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					flags[naomi_flags_t::DashingWalls] = true;
 					flags[naomi_flags_t::DashingCeiling] = false;
 					flags[naomi_flags_t::CannotFall] = true;
+					if (location.direction & direction_t::Left) {
+						sprite.mirroring = mirroring_t::Vertical;
+					}
+					else {
+						sprite.mirroring = mirroring_t::Both;
+					}
 				} else if (kinematics.flags[phy_t::Left]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -884,6 +890,11 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					flags[naomi_flags_t::DashingWalls] = true;
 					flags[naomi_flags_t::DashingCeiling] = false;
 					flags[naomi_flags_t::CannotFall] = true;
+					if (location.direction & direction_t::Left) {
+						sprite.mirroring = mirroring_t::Vertical;
+					} else {
+						sprite.mirroring = mirroring_t::Both;
+					}
 				} else {
 					kinematics.velocity.x = speed;
 				}
@@ -904,6 +915,11 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					flags[naomi_flags_t::DashingCeiling] = true;
 					flags[naomi_flags_t::DashingWalls] = false;
 					flags[naomi_flags_t::CannotFall] = false;
+					if (location.direction & direction_t::Left) {
+						sprite.mirroring = mirroring_t::Horizontal;
+					} else {
+						sprite.mirroring = mirroring_t::None;
+					}
 				} else if (kinematics.flags[phy_t::Bottom]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -914,6 +930,11 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					flags[naomi_flags_t::DashingCeiling] = false;
 					flags[naomi_flags_t::DashingWalls] = false;
 					flags[naomi_flags_t::CannotFall] = false;
+					if (location.direction & direction_t::Left) {
+						sprite.mirroring = mirroring_t::Horizontal;
+					} else {
+						sprite.mirroring = mirroring_t::None;
+					}
 				} else {
 					kinematics.velocity = glm::vec2(0.0f, speed);
 				}
@@ -930,6 +951,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.flags[phy_t::Top] = false;
 					kinematics.flags[phy_t::Bottom] = false;
 					kinematics.velocity = glm::zero<glm::vec2>();
+					sprite.mirroring = mirroring_t::None;
 				} else if (kinematics.flags[phy_t::Left]) {
 					flags[naomi_flags_t::DashingWalls] = true;
 					flags[naomi_flags_t::CannotFall] = true;
@@ -940,6 +962,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.flags[phy_t::Top] = false;
 					kinematics.flags[phy_t::Bottom] = false;
 					kinematics.velocity = glm::zero<glm::vec2>();
+					sprite.mirroring = mirroring_t::Horizontal;
 				} else {
 					kinematics.velocity.x = speed;
 				}
@@ -1098,7 +1121,7 @@ void naomi_state_t::do_animation(location_t& location, sprite_t& sprite, const h
 			state = naomi_anim_t::Idle;
 		}
 		sprite.new_state(state);
-		if (location.direction != last_direction) {
+		if (location.direction != last_direction and !flags[naomi_flags_t::Dashing]) {
 			last_direction = location.direction;
 			sprite.write = true;
 			if (location.direction & direction_t::Left) {

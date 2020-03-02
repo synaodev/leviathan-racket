@@ -196,7 +196,7 @@ private:
 	void do_step(audio_t& audio, const sprite_t& sprite);
 	void do_jump(const input_t& input, audio_t& audio, kinematics_t& kinematics, bool_t locked);
 	void do_interact(const input_t& input, receiver_t& receiver, kontext_t& kontext, const location_t& location, kinematics_t& kinematics);
-	void do_light_dash(const input_t& input, kontext_t& kontext, location_t& location, kinematics_t& kinematics);
+	void do_light_dash(const input_t& input, kontext_t& kontext, location_t& location, kinematics_t& kinematics, sprite_t& sprite);
 	void do_wall_kick(const input_t& input, audio_t& audio, const tilemap_t& tilemap, location_t& location, kinematics_t& kinematics);
 	void do_cam_move(const location_t& location);
 	void do_physics(kinematics_t& kinematics);
