@@ -876,6 +876,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					else {
 						sprite.mirroring = mirroring_t::Both;
 					}
+					sprite.variation = 0;
 				} else if (kinematics.flags[phy_t::Left]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -895,6 +896,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					} else {
 						sprite.mirroring = mirroring_t::Both;
 					}
+					sprite.variation = 1;
 				} else {
 					kinematics.velocity.x = speed;
 				}
@@ -920,6 +922,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					} else {
 						sprite.mirroring = mirroring_t::None;
 					}
+					sprite.variation = 0;
 				} else if (kinematics.flags[phy_t::Bottom]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -935,6 +938,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					} else {
 						sprite.mirroring = mirroring_t::None;
 					}
+					sprite.variation = 0;
 				} else {
 					kinematics.velocity = glm::vec2(0.0f, speed);
 				}
@@ -952,6 +956,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.flags[phy_t::Bottom] = false;
 					kinematics.velocity = glm::zero<glm::vec2>();
 					sprite.mirroring = mirroring_t::None;
+					sprite.variation = 0;
 				} else if (kinematics.flags[phy_t::Left]) {
 					flags[naomi_flags_t::DashingWalls] = true;
 					flags[naomi_flags_t::CannotFall] = true;
@@ -963,6 +968,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.flags[phy_t::Bottom] = false;
 					kinematics.velocity = glm::zero<glm::vec2>();
 					sprite.mirroring = mirroring_t::Horizontal;
+					sprite.variation = 1;
 				} else {
 					kinematics.velocity.x = speed;
 				}
@@ -973,6 +979,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 				flags[naomi_flags_t::DashingWalls] = false;
 				flags[naomi_flags_t::CannotFall] = false;
 				chroniker[naomi_timer_t::Flashing] = 0;
+				sprite.variation = 0;
 			}
 		} else if (!flags[naomi_flags_t::Charging] and !flags[naomi_flags_t::TetheredTile]) {
 			if (kinematics.flags[phy_t::Bottom]) {
