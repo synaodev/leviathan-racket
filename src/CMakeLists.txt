@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.16)
 
 file(GLOB ACTOR_SOURCES 		"./act/[a-zA-Z]*.cpp")
 file(GLOB ACTOR_HEADERS 		"./act/[a-zA-Z]*.hpp")
@@ -59,3 +59,6 @@ add_executable(leviathan
 if(WIN32)
 	target_sources(leviathan PRIVATE "./icon.rc")
 endif()
+
+target_precompile_headers(leviathan PRIVATE "./stdafx.inl")
+
