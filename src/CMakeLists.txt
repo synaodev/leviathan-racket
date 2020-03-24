@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.15)
 
 file(GLOB ACTOR_SOURCES 		"./act/[a-zA-Z]*.cpp")
 file(GLOB ACTOR_HEADERS 		"./act/[a-zA-Z]*.hpp")
@@ -60,5 +60,6 @@ if(WIN32)
 	target_sources(leviathan PRIVATE "./icon.rc")
 endif()
 
-target_precompile_headers(leviathan PRIVATE "./stdafx.inl")
-
+if(${CMAKE_VERSION} VERSION_GREATER "3.15")
+	target_precompile_headers(leviathan PRIVATE "./stdafx.inl")
+endif()
