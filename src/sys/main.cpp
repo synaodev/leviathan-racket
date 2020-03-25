@@ -159,7 +159,7 @@ static int proc_naomi(setup_file_t& config) {
 	return EXIT_SUCCESS;
 }
 
-static int proc_edit(setup_file_t& config) {
+static int proc_editor(setup_file_t& config) {
 	config.set("Video", "VerticalSync", 0);
 	input_t input;
 	if (!input.init(config)) {
@@ -184,6 +184,11 @@ static int proc_edit(setup_file_t& config) {
 	return EXIT_SUCCESS;
 }
 
+static int proc_version(const setup_file_t&) {
+	SYNAO_LOG("0.0.0.0\n");
+	return EXIT_SUCCESS;
+}
+
 int main(int argc, char** argv) {
 	if (!vfs::verify_structure()) {
 		SYNAO_LOG("Fatal error! Directory structure is incorrect!\n");
@@ -203,9 +208,11 @@ int main(int argc, char** argv) {
 		generate_default_config(config);
 	}
 	if (argc > 1) {
-		const std::string arg = argv[1];
-		if (arg == "edit") {
-			return proc_edit(config);
+		const byte_t* option = argv[1];
+		if (std::strcmp(option, "--editor") == 0) {
+			return proc_editor(config);
+		} else if (std::strcmp(option, "--version") == 0) {
+			return proc_version(config);
 		}
 		SYNAO_LOG("Error! Unknown command option!\n");
 		return EXIT_FAILURE;
