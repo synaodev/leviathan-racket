@@ -19,7 +19,7 @@ public:
 public:
 	bool init(const video_t& video, renderer_t& renderer);
 	void update(real64_t delta);
-	void handle(const input_t& input, renderer_t& renderer);
+	void handle(input_t& input, renderer_t& renderer);
 	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 public:

@@ -11,7 +11,7 @@
 static constexpr byte_t kTilekeyPath[] = "./data/key/";
 static constexpr arch_t kMaskLength = 256;
 
-static const glm::vec2 kDefaultPosition = glm::vec2(96.0f, 16.0f);
+static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
 
 tileset_viewer_t::tileset_viewer_t() : 
 	write(false),
@@ -56,6 +56,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 			}
 			if (pressed) {
 				write = true;
+				index = glm::clamp(index, (arch_t)0, (arch_t)255);
 				glm::vec2 position = glm::vec2(
 					static_cast<real_t>(index % 16) * cursor.w,
 					static_cast<real_t>(index / 16) * cursor.h
@@ -133,7 +134,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 		}
 		if (texture != nullptr) {
 			auto& batch = renderer.get_overlay_quads(
-				layer_value::HeadsUp,
+				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				pipeline_t::VtxMajorSprites,
 				texture,
@@ -148,6 +149,25 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				)
 				.vtx_transform_write(kDefaultPosition)
 			.end();
+		}
+	} else {
+		if (select and flash) {
+			auto& batch = renderer.get_overlay_quads(
+				layer_value::HeadsUp,
+				blend_mode_t::Alpha,
+				pipeline_t::VtxBlankColors
+			);
+			batch.skip(quad_batch_t::SingleQuad);
+		}
+		if (texture != nullptr) {
+			auto& batch = renderer.get_overlay_quads(
+				layer_value::Automatic,
+				blend_mode_t::Alpha,
+				pipeline_t::VtxMajorSprites,
+				texture,
+				nullptr
+			);
+			batch.skip(quad_batch_t::SingleQuad);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 #include "./editor.hpp"
+#include "./input.hpp"
 #include "./video.hpp"
 #include "./renderer.hpp"
 
@@ -83,7 +84,7 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 	return true;
 }
 
-void editor_t::handle(const input_t& input, renderer_t& renderer) {
+void editor_t::handle(input_t& input, renderer_t& renderer) {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(window);
 	ImGui::NewFrame();
@@ -124,6 +125,7 @@ void editor_t::handle(const input_t& input, renderer_t& renderer) {
 		}
 	}
 	ImGui::Render();
+	input.pressed.reset();
 }
 
 void editor_t::update(real64_t delta) {
