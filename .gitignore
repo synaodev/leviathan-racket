@@ -1,9 +1,15 @@
-.vs/
-.vscode/
-AS_DEBUG/
+# Editor
+**/.vs/
+**/.vscode/
+**/__pycache__/
+
+# CMake
 build/
 out/
-save/
 CMakeSettings.json
+
+# Game
+**/AS_DEBUG/
+**/save/
 boot.cfg
 imgui.ini
