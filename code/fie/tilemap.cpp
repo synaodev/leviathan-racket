@@ -104,7 +104,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 			}
 		}
 		tilemap_layer_texture = vfs::texture(tileset.getName());
-		attribute_key = vfs::sint_buffer(kAttributeKeyPath + tileset.getName() + ".atr");
+		attribute_key = vfs::sint_buffer(kTileKeyPath + tileset.getName() + ".atr");
 	}
 	if (tilesets.size() > 1) {
 		parallax_texture = vfs::texture(tilesets[1].getName());
