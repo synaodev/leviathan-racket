@@ -36,6 +36,7 @@ namespace res {
 		SYNAO_RES_ID_INTERN_DEF(Fireplace,	"fireplace");
 		SYNAO_RES_ID_INTERN_DEF(Helpful,	"helpful");
 		SYNAO_RES_ID_INTERN_DEF(Spring,		"spring");
+		SYNAO_RES_ID_INTERN_DEF(Ghost,		"ghost");
 	}
 	namespace sfx {
 		SYNAO_RES_ID_INTERN_DEF(Spark,			"spark");
