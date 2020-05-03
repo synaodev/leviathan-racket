@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../graphics/quad_batch.hpp"
+#include "../video/quad_batch.hpp"
 #include "../actor/naomi.hpp"
 
 static const glm::vec2 kDefaultSpeed  = glm::vec2(16.0f, 8.0f);

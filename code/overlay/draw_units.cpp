@@ -1,7 +1,7 @@
 #include "./draw_units.hpp"
 
 #include "../system/renderer.hpp"
-#include "../graphics/texture.hpp"
+#include "../video/texture.hpp"
 
 static constexpr arch_t kLoopPoint = 7;
 

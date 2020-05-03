@@ -1,6 +1,6 @@
 #include "./draw_scheme.hpp"
 
-#include "../graphics/animation.hpp"
+#include "../video/animation.hpp"
 #include "../system/renderer.hpp"
 
 draw_scheme_t::draw_scheme_t() :

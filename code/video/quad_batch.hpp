@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_QUAD_BATCH_HPP
-#define SYNAO_GRAPHICS_QUAD_BATCH_HPP
+#ifndef SYNAO_VIDEO_QUAD_BATCH_HPP
+#define SYNAO_VIDEO_QUAD_BATCH_HPP
 
 #include "../utility/enums.hpp"
 
@@ -52,4 +52,4 @@ private:
 
 bool operator<(const quad_batch_t& lhv, const quad_batch_t& rhv);
 
-#endif // SYNAO_GRAPHICS_QUAD_BATCH_HPP
+#endif // SYNAO_VIDEO_QUAD_BATCH_HPP

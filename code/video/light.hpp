@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_LIGHT_HPP
-#define SYNAO_GRAPHICS_LIGHT_HPP
+#ifndef SYNAO_VIDEO_LIGHT_HPP
+#define SYNAO_VIDEO_LIGHT_HPP
 
 #include "../types.hpp"
 
@@ -22,4 +22,4 @@ private:
 	glm::vec4 color;
 };
 
-#endif // SYNAO_GRAPHICS_LIGHT_HPP
+#endif // SYNAO_VIDEO_LIGHT_HPP

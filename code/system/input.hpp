@@ -1,5 +1,5 @@
-#ifndef SYNAO_MAIN_INPUT_HPP
-#define SYNAO_MAIN_INPUT_HPP
+#ifndef SYNAO_SYSTEM_INPUT_HPP
+#define SYNAO_SYSTEM_INPUT_HPP
 
 #include <bitset>
 #include <string>
@@ -84,4 +84,4 @@ private:
 	SDL_Joystick* joystick;
 };
 
-#endif // SYNAO_MAIN_INPUT_HPP
+#endif // SYNAO_SYSTEM_INPUT_HPP

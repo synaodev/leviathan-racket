@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_QUAD_LIST_HPP
-#define SYNAO_GRAPHICS_QUAD_LIST_HPP
+#ifndef SYNAO_VIDEO_QUAD_LIST_HPP
+#define SYNAO_VIDEO_QUAD_LIST_HPP
 
 #include <vector>
 
@@ -43,4 +43,4 @@ private:
 	arch_t length;
 };
 
-#endif // SYNAO_GRAPHICS_QUAD_LIST_HPP
+#endif // SYNAO_VIDEO_QUAD_LIST_HPP

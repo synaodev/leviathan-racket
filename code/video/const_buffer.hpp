@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_CONST_BUFFER_HPP
-#define SYNAO_GRAPHICS_CONST_BUFFER_HPP
+#ifndef SYNAO_VIDEO_CONST_BUFFER_HPP
+#define SYNAO_VIDEO_CONST_BUFFER_HPP
 
 #include "../types.hpp"
 
@@ -37,4 +37,4 @@ private:
 	arch_t length;
 };
 
-#endif // SYNAO_GRAPHICS_CONST_BUFFER_HPP
+#endif // SYNAO_VIDEO_CONST_BUFFER_HPP

@@ -5,7 +5,7 @@
 #include <tmxlite/Layer.hpp>
 
 #include "../utility/enums.hpp"
-#include "../graphics/vertex_pool.hpp"
+#include "../video/vertex_pool.hpp"
 
 struct texture_t;
 struct palette_t;

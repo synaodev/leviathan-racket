@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_VERTEX_HPP
-#define SYNAO_GRAPHICS_VERTEX_HPP
+#ifndef SYNAO_VIDEO_VERTEX_HPP
+#define SYNAO_VIDEO_VERTEX_HPP
 
 #include <typeinfo>
 
@@ -62,4 +62,4 @@ public:
 	bool operator!=(const vertex_spec_t& that);
 };
 
-#endif // SYNAO_GRAPHICS_VERTEX_HPP
+#endif // SYNAO_VIDEO_VERTEX_HPP

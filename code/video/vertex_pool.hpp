@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_VERTEX_POOL_HPP
-#define SYNAO_GRAPHICS_VERTEX_POOL_HPP
+#ifndef SYNAO_VIDEO_VERTEX_POOL_HPP
+#define SYNAO_VIDEO_VERTEX_POOL_HPP
 
 #include <type_traits>
 #include <cassert>
@@ -50,4 +50,4 @@ inline const V* vertex_pool_t::at(arch_t index) const {
 	return reinterpret_cast<const V*>(&memory[index * specify.length]);
 }
 
-#endif // SYNAO_GRAPHICS_VERTEX_POOL_HPP
+#endif // SYNAO_VIDEO_VERTEX_POOL_HPP

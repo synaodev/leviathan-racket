@@ -1,13 +1,12 @@
-#ifndef SYNAO_MAIN_RENDERER_HPP
-#define SYNAO_MAIN_RENDERER_HPP
+#ifndef SYNAO_SYSTEM_RENDERER_HPP
+#define SYNAO_SYSTEM_RENDERER_HPP
 
 #include <glm/mat4x4.hpp>
 
-#include "./pipelines.hpp"
-
 #include "../utility/enums.hpp"
-#include "../graphics/const_buffer.hpp"
-#include "../graphics/quad_batch.hpp"
+#include "../resource/pipeline.hpp"
+#include "../video/const_buffer.hpp"
+#include "../video/quad_batch.hpp"
 
 struct setup_file_t;
 struct video_t;
@@ -40,4 +39,4 @@ private:
 	glm::vec2 gk_video_dimensions, gk_video_resolution;
 };
 
-#endif // SYNAO_MAIN_RENDER_HPP
+#endif // SYNAO_SYSTEM_RENDERER_HPP

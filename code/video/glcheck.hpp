@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_GLCHECK_HPP
-#define SYNAO_GRAPHICS_GLCHECK_HPP
+#ifndef SYNAO_VIDEO_GLCHECK_HPP
+#define SYNAO_VIDEO_GLCHECK_HPP
 
 #include "../types.hpp"
 
@@ -14,4 +14,4 @@ namespace priv {
 #define glCheck(expr) (expr)
 #endif // SYNAO_DEBUG_BUILD
 
-#endif // SYNAO_GRAPHICS_GLCHECK_HPP
+#endif // SYNAO_VIDEO_GLCHECK_HPP

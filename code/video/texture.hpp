@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_TEXTURE_HPP
-#define SYNAO_GRAPHICS_TEXTURE_HPP
+#ifndef SYNAO_VIDEO_TEXTURE_HPP
+#define SYNAO_VIDEO_TEXTURE_HPP
 
 #include <future>
 #include <atomic>
@@ -57,4 +57,4 @@ private:
 	pixel_format_t format;
 };
 
-#endif // SYNAO_GRAPHICS_TEXTURE_HPP
+#endif // SYNAO_VIDEO_TEXTURE_HPP

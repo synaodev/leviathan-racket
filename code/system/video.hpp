@@ -1,5 +1,5 @@
-#ifndef SYNAO_MAIN_VIDEO_HPP
-#define SYNAO_MAIN_VIDEO_HPP
+#ifndef SYNAO_SYSTEM_VIDEO_HPP
+#define SYNAO_SYSTEM_VIDEO_HPP
 
 #include <tuple>
 #include <SDL2/SDL_video.h>
@@ -61,4 +61,4 @@ private:
 	sint_t major, minor;
 };
 
-#endif // SYNAO_MAIN_VIDEO_HPP
+#endif // SYNAO_SYSTEM_VIDEO_HPP

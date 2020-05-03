@@ -4,8 +4,8 @@
 #include <string>
 
 #include "../utility/rect.hpp"
-#include "../graphics/vertex_pool.hpp"
-#include "../graphics/gfx.hpp"
+#include "../video/vertex_pool.hpp"
+#include "../video/gfx.hpp"
 
 struct font_t;
 struct renderer_t;

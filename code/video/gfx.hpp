@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_GFX_HPP
-#define SYNAO_GRAPHICS_GFX_HPP
+#ifndef SYNAO_VIDEO_GFX_HPP
+#define SYNAO_VIDEO_GFX_HPP
 
 #include "../types.hpp"
 
@@ -64,4 +64,4 @@ private:
 	const const_buffer_t* buffers[kBufUnits];
 };
 
-#endif // SYNAO_GRAPHICS_GFX_HPP
+#endif // SYNAO_VIDEO_GFX_HPP

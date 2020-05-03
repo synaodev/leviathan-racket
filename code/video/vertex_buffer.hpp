@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_VERTEX_BUFFER_HPP
-#define SYNAO_GRAPHICS_VERTEX_BUFFER_HPP
+#ifndef SYNAO_VIDEO_VERTEX_BUFFER_HPP
+#define SYNAO_VIDEO_VERTEX_BUFFER_HPP
 
 #include "./vertex.hpp"
 #include "./const_buffer.hpp"
@@ -64,4 +64,4 @@ private:
 };
 
 
-#endif // SYNAO_GRAPHICS_VERTEX_BUF_HPP
+#endif // SYNAO_VIDEO_VERTEX_BUF_HPP

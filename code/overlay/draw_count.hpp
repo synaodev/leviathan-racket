@@ -3,7 +3,7 @@
 
 #include "../utility/enums.hpp"
 #include "../utility/rect.hpp"
-#include "../graphics/vertex_pool.hpp"
+#include "../video/vertex_pool.hpp"
 
 struct renderer_t;
 struct texture_t;

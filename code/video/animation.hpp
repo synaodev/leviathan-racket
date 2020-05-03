@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_ANIMATION_HPP
-#define SYNAO_GRAPHICS_ANIMATION_HPP
+#ifndef SYNAO_VIDEO_ANIMATION_HPP
+#define SYNAO_VIDEO_ANIMATION_HPP
 
 #include <future>
 
@@ -39,4 +39,4 @@ private:
 	const palette_t* palette;
 };
 
-#endif // SYNAO_GRAPHICS_ANIMATION_HPP
+#endif // SYNAO_VIDEO_ANIMATION_HPP

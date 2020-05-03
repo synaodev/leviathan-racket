@@ -1,5 +1,5 @@
-#ifndef SYNAO_DISPLAY_PIPELINES_HPP
-#define SYNAO_DISPLAY_PIPELINES_HPP
+#ifndef SYNAO_RESOURCE_PIPELINE_HPP
+#define SYNAO_RESOURCE_PIPELINE_HPP
 
 #include <string>
 
@@ -16,7 +16,7 @@ namespace __enum_pipeline {
 
 using pipeline_t = __enum_pipeline::type;
 
-namespace pipelines {
+namespace pipeline {
 	std::string minor_vert(glm::ivec2 version);
 	std::string blank_vert(glm::ivec2 version);
 	std::string major_vert(glm::ivec2 version);
@@ -26,4 +26,4 @@ namespace pipelines {
 	std::string lighting_frag(glm::ivec2 version);
 }
 
-#endif // SYNAO_DISPLAY_PIPELINES_HPP
+#endif // SYNAO_RESOURCE_PIPELINE_HPP

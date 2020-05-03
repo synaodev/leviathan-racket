@@ -1,7 +1,7 @@
 #include "./video.hpp"
 
-#include "../graphics/glad.hpp"
-#include "../graphics/frame_buffer.hpp"
+#include "../video/glad.hpp"
+#include "../video/frame_buffer.hpp"
 #include "../resource/icon.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"

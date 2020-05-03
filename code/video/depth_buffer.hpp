@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_DEPTH_BUFFER_HPP
-#define SYNAO_GRAPHICS_DEPTH_BUFFER_HPP
+#ifndef SYNAO_VIDEO_DEPTH_BUFFER_HPP
+#define SYNAO_VIDEO_DEPTH_BUFFER_HPP
 
 #include "./texture.hpp"
 
@@ -20,4 +20,4 @@ private:
 	bool_t compress;
 };
 
-#endif // SYNAO_GRAPHICS_DEPTH_BUFFER_HPP
+#endif // SYNAO_VIDEO_DEPTH_BUFFER_HPP

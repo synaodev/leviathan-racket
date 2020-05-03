@@ -1,6 +1,6 @@
 #include "./draw_text.hpp"
 
-#include "../graphics/font.hpp"
+#include "../video/font.hpp"
 #include "../utility/vfs.hpp"
 #include "../system/renderer.hpp"
 

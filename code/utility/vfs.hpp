@@ -6,11 +6,11 @@
 #include <unordered_map>
 
 #include "../audio/noise.hpp"
-#include "../graphics/texture.hpp"
-#include "../graphics/palette.hpp"
-#include "../graphics/program.hpp"
-#include "../graphics/font.hpp"
-#include "../graphics/animation.hpp"
+#include "../video/texture.hpp"
+#include "../video/palette.hpp"
+#include "../video/program.hpp"
+#include "../video/font.hpp"
+#include "../video/animation.hpp"
 #include "../event/receiver.hpp"
 #include "./thread_pool.hpp"
 

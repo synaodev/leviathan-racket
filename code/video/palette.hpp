@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_PALETTE_HPP
-#define SYNAO_GRAPHICS_PALETTE_HPP
+#ifndef SYNAO_VIDEO_PALETTE_HPP
+#define SYNAO_VIDEO_PALETTE_HPP
 
 #include "./texture.hpp"
 
@@ -27,4 +27,4 @@ private:
 	pixel_format_t format;
 };
 
-#endif // SYNAO_GRAPHICS_PALETTE_HPP
+#endif // SYNAO_VIDEO_PALETTE_HPP

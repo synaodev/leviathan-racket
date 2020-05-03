@@ -1,5 +1,5 @@
-#ifndef SYNAO_MAIN_MUSIC_HPP
-#define SYNAO_MAIN_MUSIC_HPP
+#ifndef SYNAO_SYSTEM_MUSIC_HPP
+#define SYNAO_SYSTEM_MUSIC_HPP
 
 #include <string>
 #include <vector>
@@ -44,4 +44,4 @@ private:
 	real_t buffered_time, volume;
 };
 
-#endif // SYNAO_MAIN_MUSIC_HPP
+#endif // SYNAO_SYSTEM_MUSIC_HPP

@@ -1,6 +1,6 @@
 #include "./tileset_viewer.hpp"
 
-#include "../graphics/texture.hpp"
+#include "../video/texture.hpp"
 #include "../system/input.hpp"
 #include "../system/renderer.hpp"
 #include "../utility/logger.hpp"

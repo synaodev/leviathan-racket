@@ -3,7 +3,7 @@
 
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
-#include "../graphics/frame_buffer.hpp"
+#include "../video/frame_buffer.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

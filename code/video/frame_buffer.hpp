@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_FRAME_BUFFER_HPP
-#define SYNAO_GRAPHICS_FRAME_BUFFER_HPP
+#ifndef SYNAO_VIDEO_FRAME_BUFFER_HPP
+#define SYNAO_VIDEO_FRAME_BUFFER_HPP
 
 #include "./texture.hpp"
 #include "./depth_buffer.hpp"
@@ -49,4 +49,4 @@ private:
 	depth_buffer_t depth_buffer;
 };
 
-#endif // SYNAO_GRAPHICS_FRAME_BUFFER_HPP
+#endif // SYNAO_VIDEO_FRAME_BUFFER_HPP

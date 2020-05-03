@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_FONT_HPP
-#define SYNAO_GRAPHICS_FONT_HPP
+#ifndef SYNAO_VIDEO_FONT_HPP
+#define SYNAO_VIDEO_FONT_HPP
 
 #include <string>
 #include <unordered_map>
@@ -51,4 +51,4 @@ private:
 	const palette_t* palette;
 };
 
-#endif // SYNAO_GRAPHICS_FONT_HPP
+#endif // SYNAO_VIDEO_FONT_HPP

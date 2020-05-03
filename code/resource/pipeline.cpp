@@ -1,4 +1,4 @@
-#include "./pipelines.hpp"
+#include "./pipeline.hpp"
 
 static constexpr byte_t kMinorVert420[] = R"("
 #version 420 core
@@ -14,7 +14,7 @@ void main() {
 	gl_Position = vec4(position, 0.0f, 1.0f);
 })";
 
-std::string pipelines::minor_vert(glm::ivec2 version) {
+std::string pipeline::minor_vert(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMinorVert420;
 	}
@@ -55,7 +55,7 @@ void main() {
 	vs.color = color;
 })";
 
-std::string pipelines::blank_vert(glm::ivec2 version) {
+std::string pipeline::blank_vert(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kBlankVert420;
 	}
@@ -102,7 +102,7 @@ void main() {
 	vs.alpha = alpha;
 })";
 
-std::string pipelines::major_vert(glm::ivec2 version) {
+std::string pipeline::major_vert(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMajorVert420;
 	}
@@ -129,7 +129,7 @@ void main() {
 	fragment = fs.color;
 })";
 
-std::string pipelines::colors_frag(glm::ivec2 version) {
+std::string pipeline::colors_frag(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kColorsFrag420;
 	}
@@ -162,7 +162,7 @@ void main() {
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
-std::string pipelines::sprites_frag(glm::ivec2 version) {
+std::string pipeline::sprites_frag(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kSpritesFrag420;
 	}
@@ -199,7 +199,7 @@ void main() {
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
-std::string pipelines::indexed_frag(glm::ivec2 version) {
+std::string pipeline::indexed_frag(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kIndexedFrag420;
 	}
@@ -276,7 +276,7 @@ void main() {
 	}
 })";
 
-std::string pipelines::lighting_frag(glm::ivec2 version) {
+std::string pipeline::lighting_frag(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kLightingFrag420;
 	}

@@ -1,5 +1,5 @@
-#ifndef SYNAO_GRAPHICS_PROGRAM_HPP
-#define SYNAO_GRAPHICS_PROGRAM_HPP
+#ifndef SYNAO_VIDEO_PROGRAM_HPP
+#define SYNAO_VIDEO_PROGRAM_HPP
 
 #include <string>
 #include <vector>
@@ -55,4 +55,4 @@ private:
 	vertex_spec_t specify;
 };
 
-#endif // SYNAO_GRAPHICS_PROGRAM_HPP
+#endif // SYNAO_VIDEO_PROGRAM_HPP
