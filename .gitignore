@@ -10,6 +10,6 @@ CMakeSettings.json
 
 # Game
 **/AS_DEBUG/
-**/save/
+**/saves/
 boot.cfg
-imgui.ini
+imgui.cfg

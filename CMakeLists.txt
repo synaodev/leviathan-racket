@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.15)
 
 set(CMAKE_USER_MAKE_RULES_OVERRIDE "./cmake/MakeRules.cmake")
 
-project(Leviathan)
-add_subdirectory(src)
+project(leviathan_racket)
+add_subdirectory("./code/")
 
 find_package(Angelscript CONFIG REQUIRED)
 find_path(Angelscript_INCLUDE_DIR "angelscript.h")

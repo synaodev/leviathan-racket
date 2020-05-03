@@ -1,13 +1,13 @@
 # Leviathan Racket
 This is the current official repository for Leviathan Racket.
-It's a computer game inspired by my love for Cave Story, Shounen Manga, Linguistics, and Geopolitics.
+It's a computer game inspired by my love for Cave Story, Linguistics, and Geopolitics.
 I hope to release in Winter 2020.
 ## Building From Source
-- C++17 compiler support is absolutely required.
+- C++17 compiler support is required.
 - I recommend vcpkg to manage dependencies. (https://github.com/microsoft/vcpkg)
 - Tmxlite's vcpkg port has inconsistent CMake configuration files, so I've included a fix.
 - Copy the Tmxlite files from the "/cmake" project directory to this directory:<br>
-	"/path/to/vcpkg/installed/architecture/share/tmxlite"
+    /path/to/vcpkg/installed/architecture/share/tmxlite
 ### Required Dependencies
 - OpenGL 3.3 - 4.6
 - CMake v3.15 (https://cmake.org/)
