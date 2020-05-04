@@ -19,33 +19,6 @@ draw_text_t::draw_text_t() :
 	quads.setup<vtx_major_t>();
 }
 
-/*draw_text_t::draw_text_t(draw_text_t&& that) : draw_text_t() {
-	if (this != &that) {
-		std::swap(write, that.write);
-		std::swap(font, that.font);
-		std::swap(position, that.position);
-		std::swap(origin, that.origin);
-		std::swap(params, that.params);
-		std::swap(current, that.current);
-		std::swap(buffer, that.buffer);
-		std::swap(quads, that.quads);
-	}
-}
-
-draw_text_t& draw_text_t::operator=(draw_text_t&& that) {
-	if (this != &that) {
-		std::swap(write, that.write);
-		std::swap(font, that.font);
-		std::swap(position, that.position);
-		std::swap(origin, that.origin);
-		std::swap(params, that.params);
-		std::swap(current, that.current);
-		std::swap(buffer, that.buffer);
-		std::swap(quads, that.quads);
-	}
-	return *this;
-}*/
-
 void draw_text_t::force() const {
 	write = true;
 }
@@ -74,7 +47,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 		if (write) {
 			write = false;
 			list.begin(quads.size())
-				.vtx_pool_write(&quads)
+				.vtx_pool_write(quads)
 			.end();
 		} else {
 			list.skip(quads.size());
