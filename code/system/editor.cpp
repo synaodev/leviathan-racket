@@ -125,7 +125,7 @@ void editor_t::handle(input_t& input, renderer_t& renderer) {
 		}
 	}
 	ImGui::Render();
-	input.pressed.reset();
+	input.flush();
 }
 
 void editor_t::update(real64_t delta) {

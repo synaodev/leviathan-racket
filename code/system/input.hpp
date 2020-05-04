@@ -58,6 +58,7 @@ public:
 	bool init(const setup_file_t& config);
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
+	void flush();
 	bool get_button_pressed(btn_t btn) const;
 	bool get_button_held(btn_t btn) const;
 	glm::vec2 get_position() const;
@@ -77,6 +78,9 @@ private:
 	void all_joy_bindings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
+#ifdef SYNAO_DEBUG_BUILD
+	std::unordered_map<SDL_Scancode, bool_t> debug_scan;
+#endif // SYNAO_DEBUG_BUILD
 private:
 	std::unordered_map<sint_t, btn_t> key_bind, joy_bind;
 	sint_t recorder;

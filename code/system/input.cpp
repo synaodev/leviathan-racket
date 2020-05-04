@@ -12,6 +12,9 @@ static constexpr sint_t kRecordJoystick = -3;
 input_t::input_t() :
 	pressed(0),
 	holding(0),
+#ifdef SYNAO_DEBUG_BUILD
+	debug_scan(),
+#endif // SYNAO_DEBUG_BUILD
 	key_bind(),
 	joy_bind(),
 	recorder(kRecordNothings),
@@ -71,6 +74,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYDOWN: {
 			SDL_Scancode code = evt.key.keysym.scancode;
+#ifdef SYNAO_DEBUG_BUILD
+			debug_scan[code] = true;
+#endif // SYNAO_DEBUG_BUILD
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
@@ -234,6 +240,13 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 
 policy_t input_t::poll(policy_t policy) {
 	return this->poll(policy, nullptr);
+}
+
+void input_t::flush() {
+	pressed.reset();
+#ifdef SYNAO_DEBUG_BUILD
+	debug_scan.clear();
+#endif // SYNAO_DEBUG_BUILD
 }
 
 bool input_t::get_button_pressed(btn_t btn) const {

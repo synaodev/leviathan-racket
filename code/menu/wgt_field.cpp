@@ -95,7 +95,7 @@ void wgt_field_t::handle(setup_file_t&, input_t& input, video_t&, audio_t&, musi
 		active = false;
 	}
 	if (!active) {
-		input.pressed.reset();
+		input.flush();
 		if (!selection) {
 			kernel.unlock();
 		} else {

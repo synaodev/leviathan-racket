@@ -81,7 +81,7 @@ void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 		active = false;
 	}
 	if (!active) {
-		input.pressed.reset();
+		input.flush();
 		audio.play(res::sfx::Inven, 0);
 	}
 }

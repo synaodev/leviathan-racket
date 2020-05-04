@@ -99,7 +99,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
 			tilemap.handle(camera);
 		}
-		input.pressed.reset();
+		input.flush();
 		audio.flush();
 	}
 	return true;
