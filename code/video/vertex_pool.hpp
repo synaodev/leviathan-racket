@@ -2,7 +2,6 @@
 #define SYNAO_VIDEO_VERTEX_POOL_HPP
 
 #include <type_traits>
-#include <cassert>
 #include <vector>
 
 #include "./vertex.hpp"
@@ -23,7 +22,7 @@ public:
 	void setup(vertex_spec_t specify);
 	void clear();
 	void resize(arch_t length);
-	void copy(arch_t from, arch_t count, const vertex_pool_t* that);
+	void copy(arch_t from, arch_t count, const vertex_pool_t& that);
 	bool empty() const;
 	arch_t size() const;
 	vertex_t* operator[](size_t index);
@@ -38,14 +37,18 @@ private:
 
 template<typename V> 
 inline V* vertex_pool_t::at(arch_t index) {
-	assert(specify.detail != nullptr);
+	if (specify.detail == nullptr) {
+		return nullptr;
+	}
 	static_assert(std::is_base_of<vertex_t, V>::value);
 	return reinterpret_cast<V*>(&memory[index * specify.length]);
 }
 
 template<typename V> 
 inline const V* vertex_pool_t::at(arch_t index) const {
-	assert(specify.detail != nullptr);
+	if (specify.detail == nullptr) {
+		return nullptr;
+	}
 	static_assert(std::is_base_of<vertex_t, V>::value);
 	return reinterpret_cast<const V*>(&memory[index * specify.length]);
 }

@@ -64,7 +64,7 @@ void draw_text_t::increment() {
 
 void draw_text_t::render(renderer_t& renderer) const {
 	if (!quads.empty() and font != nullptr) {
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxMajorIndexed,
@@ -73,11 +73,11 @@ void draw_text_t::render(renderer_t& renderer) const {
 		);
 		if (write) {
 			write = false;
-			batch.begin(quads.size())
+			list.begin(quads.size())
 				.vtx_pool_write(&quads)
 			.end();
 		} else {
-			batch.skip(quads.size());
+			list.skip(quads.size());
 		}
 	}
 }
@@ -201,7 +201,7 @@ void draw_text_t::generate() {
 			[](auto c) { return c == U'\n' or c == U'\t'; }
 		);
 		arch_t drawable_chars = buffer.size() - spaces_chars;
-		quads.resize(drawable_chars * quad_batch_t::SingleQuad);
+		quads.resize(drawable_chars * display_list_t::SingleQuad);
 		glm::vec2 start_pos = position - origin;
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
@@ -223,7 +223,7 @@ void draw_text_t::generate() {
 			}
 			default: {
 				const font_glyph_t& glyph = font->glyph(c);
-				vtx_major_t* quad = quads.at<vtx_major_t>(qindex * quad_batch_t::SingleQuad);
+				vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
 
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;

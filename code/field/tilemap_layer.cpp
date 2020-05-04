@@ -5,7 +5,7 @@
 #include "../utility/tmx_convert.hpp"
 #include "../system/renderer.hpp"
 
-static constexpr arch_t kMinimumVerts = 21 * 13 * quad_batch_t::SingleQuad;
+static constexpr arch_t kMinimumVerts = 21 * 13 * display_list_t::SingleQuad;
 static constexpr real_t kRealTileSize = 16.0f;
 static constexpr sint_t kSintTileSize = 16;
 static constexpr sint_t kInvalidTiles = -1;
@@ -94,7 +94,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 			glm::ivec2 tile = tiles[index];
 			if (tile.x >= 0 and tile.y >= 0) {
 				uvs = glm::vec2(tile * kSintTileSize);
-				vtx_major_t* quad = quads.at<vtx_major_t>(indices * quad_batch_t::SingleQuad);
+				vtx_major_t* quad = quads.at<vtx_major_t>(indices * display_list_t::SingleQuad);
 				quad[0].position = pos;
 				quad[0].uvcoords = uvs * inverse_dimensions;
 				quad[0].table = 0.0f;
@@ -124,7 +124,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 }
 
 void tilemap_layer_t::render(renderer_t& renderer, bool_t write, const texture_t* texture, const palette_t* palette) const {
-	auto& batch = renderer.get_normal_quads(
+	auto& list = renderer.get_normal_quads(
 		priority,
 		blend_mode_t::Alpha,
 		palette != nullptr ? pipeline_t::VtxMajorIndexed : pipeline_t::VtxMajorSprites,
@@ -132,10 +132,10 @@ void tilemap_layer_t::render(renderer_t& renderer, bool_t write, const texture_t
 		palette
 	);
 	if (write) {
-		batch.begin(indices * quad_batch_t::SingleQuad)
-			.vtx_pool_write(&quads)
+		list.begin(indices * display_list_t::SingleQuad)
+			.vtx_pool_write(quads)
 		.end();
 	} else {
-		batch.skip(indices * quad_batch_t::SingleQuad);
+		list.skip(indices * display_list_t::SingleQuad);
 	}
 }

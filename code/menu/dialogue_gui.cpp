@@ -119,19 +119,19 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 			arrow.force();
 		}
 		text.render(renderer);
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors
 		);
 		if (write) {
 			write = false;
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(rect, glm::vec4(0.0f, 0.0f, 0.0f, 0.5f))
 				.vtx_transform_write(rect.left_top())
 			.end();
 		} else {
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 	}
 }

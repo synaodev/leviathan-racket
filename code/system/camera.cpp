@@ -2,7 +2,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "../video/quad_batch.hpp"
+#include "../video/display_list.hpp"
 #include "../actor/naomi.hpp"
 
 static const glm::vec2 kDefaultSpeed  = glm::vec2(16.0f, 8.0f);
@@ -118,7 +118,7 @@ rect_t camera_t::get_viewport() const {
 
 arch_t camera_t::get_tile_range(glm::ivec2 first, glm::ivec2 last) const {
 	glm::ivec2 result = last - first;
-	return static_cast<arch_t>(result.x) * static_cast<arch_t>(result.y) * quad_batch_t::SingleQuad;
+	return static_cast<arch_t>(result.x) * static_cast<arch_t>(result.y) * display_list_t::SingleQuad;
 }
 
 glm::mat4 camera_t::get_matrix() const {

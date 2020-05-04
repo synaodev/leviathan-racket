@@ -168,7 +168,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 		for (auto&& element : elements) {
 			element.render(renderer);
 		}
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors
@@ -178,7 +178,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 			glm::vec2 cursor_position = 2.0f + glm::vec2(
 				glm::ivec2(49, 21) * kernel.get_cursor()
 			);
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
 					rect_t(0.0f, 0.0f, 32.0f, 16.0f), 
 					glm::vec4(0.0f, 0.0f, 1.0f, 0.5f)
@@ -186,7 +186,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 				.vtx_transform_write(cursor_position)
 			.end();
 		} else {
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 		arch_t item_index = kernel.get_item_ptr_index();
 		if (item_index < kTotalItem) {
@@ -196,7 +196,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 					static_cast<real_t>((item_index % 6) * 49),
 					static_cast<real_t>((item_index / 6) * 21)
 				);
-				batch.begin(quad_batch_t::SingleQuad)
+				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(
 						rect_t(0.0f, 0.0f, 32.0f, 16.0f), 
 						glm::vec4(1.0f, 0.0f, 0.0f, 0.5f)
@@ -204,7 +204,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 					.vtx_transform_write(cursor_position)
 				.end();
 			} else {
-				batch.skip(quad_batch_t::SingleQuad);
+				list.skip(display_list_t::SingleQuad);
 			}
 		}
 	}

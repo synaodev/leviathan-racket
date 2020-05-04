@@ -1,16 +1,16 @@
-#ifndef SYNAO_VIDEO_QUAD_LIST_HPP
-#define SYNAO_VIDEO_QUAD_LIST_HPP
+#ifndef SYNAO_VIDEO_INDEXED_QUADS_HPP
+#define SYNAO_VIDEO_INDEXED_QUADS_HPP
 
 #include <vector>
 
 #include "./vertex_buffer.hpp"
 
-struct quad_list_t : public not_copyable_t {
+struct indexed_quads_t : public not_copyable_t {
 public:
-	quad_list_t();
-	quad_list_t(quad_list_t&& that) noexcept;
-	quad_list_t& operator=(quad_list_t&& that) noexcept;
-	~quad_list_t();
+	indexed_quads_t();
+	indexed_quads_t(indexed_quads_t&& that) noexcept;
+	indexed_quads_t& operator=(indexed_quads_t&& that) noexcept;
+	~indexed_quads_t();
 public:
 	static bool allocate_indexer(arch_t length, primitive_t primitive);
 	static bool release_indexer();
@@ -43,4 +43,4 @@ private:
 	arch_t length;
 };
 
-#endif // SYNAO_VIDEO_QUAD_LIST_HPP
+#endif // SYNAO_VIDEO_INDEXED_QUADS_HPP

@@ -132,7 +132,9 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 			));
 
 			glCheck(placmt = glGetAttribLocation(program_handle, buffer));
-			assert(placmt != GL_INVALID_INDEX);
+			if (placmt == GL_INVALID_INDEX) {
+				SYNAO_LOG("Warning! Shader attribute location is invalid!\n");
+			}
 			
 			typeslist[placmt] = vltype;
 		}

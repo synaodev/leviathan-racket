@@ -125,12 +125,12 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 	title_view.render(renderer);
 	headsup.render(renderer, kernel);
 	if (!headsup.is_fade_done()) {
-		rect_t viewport = camera.get_viewport();
+		const rect_t viewport = camera.get_viewport();
 		kontext.render(renderer, viewport);
 		tilemap.render(renderer, viewport);
 	}
 	renderer.flush(video, camera.get_matrix());
-	video.flip();
+	video.flush();
 }
 
 bool runtime_t::viable() const {
@@ -262,8 +262,8 @@ void runtime_t::setup_save() {
 
 #ifdef SYNAO_DEBUG_BUILD
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
-	if (input.pressed[btn_t::Editor]) {
-		if (!input.holding[btn_t::Inventory]) {
+	if (input.debug_pressed[SDL_SCANCODE_GRAVE]) {
+		if (!input.debug_holding[SDL_SCANCODE_LSHIFT]) {
 			SYNAO_LOG(
 				"Draw Calls : %d\n",
 				static_cast<uint_t>(renderer.get_draw_calls())

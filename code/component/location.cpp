@@ -68,15 +68,15 @@ void location_t::vert(direction_t bits) {
 
 void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
 	const glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	auto& batch = renderer.get_normal_quads(
+	auto& list = renderer.get_normal_quads(
 		layer_value::HeadsUp,
 		blend_mode_t::Add,
 		pipeline_t::VtxBlankColors
 	);
-	kontext.slice<location_t>().each([&batch, &viewport, &color](entt::entity, const location_t& location) {
+	kontext.slice<location_t>().each([&list, &viewport, &color](entt::entity, const location_t& location) {
 		rect_t hitbox = location.hitbox();
 		if (hitbox.overlaps(viewport)) {
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(hitbox, color)
 				.vtx_transform_write(hitbox.left_top())
 			.end();

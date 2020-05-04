@@ -26,15 +26,15 @@ renderer_t::renderer_t() :
 }
 
 renderer_t::~renderer_t() {
-	bool result = quad_list_t::release_indexer();
+	bool result = indexed_quads_t::release_indexer();
 	if (!result) {
-		SYNAO_LOG("Couldn't release quad_list_t indexer!\n");
+		SYNAO_LOG("Couldn't release indexed_quads_t indexer!\n");
 	}
 } 
 
 bool renderer_t::init(glm::ivec2 version) {
-	if (!quad_list_t::allocate_indexer(kMaxIndices, primitive_t::Triangles)) {
-		SYNAO_LOG("Couldn't allocate quad_list_t indexer!\n");
+	if (!indexed_quads_t::allocate_indexer(kMaxIndices, primitive_t::Triangles)) {
+		SYNAO_LOG("Couldn't allocate indexed_quads_t indexer!\n");
 		return false;
 	}
 	if (projection_buffer.valid() or viewport_buffer.valid()) {
@@ -141,13 +141,13 @@ void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
 	// Draw Normal Quads
 	frame_buffer_t::clear(video.get_integral_dimensions());
 	graphics_state.set_buffer(&viewport_buffer, 0);
-	for (auto&& batch : normal_quads) {
-		batch.flush(&graphics_state);
+	for (auto&& list : normal_quads) {
+		list.flush(graphics_state);
 	}
 	// Draw Overlay Quads
 	graphics_state.set_buffer(&projection_buffer, 0);
-	for (auto&& batch : overlay_quads) {
-		batch.flush(&graphics_state);
+	for (auto&& list : overlay_quads) {
+		list.flush(graphics_state);
 	}
 }
 
@@ -155,8 +155,8 @@ void renderer_t::flush(const glm::ivec2& dimensions) {
 	// Draw Overlay Quads (Only)
 	frame_buffer_t::clear(dimensions);
 	graphics_state.set_buffer(&projection_buffer, 0);
-	for (auto&& batch : overlay_quads) {
-		batch.flush(&graphics_state);
+	for (auto&& list : overlay_quads) {
+		list.flush(graphics_state);
 	}
 }
 
@@ -187,23 +187,23 @@ void renderer_t::ortho(glm::ivec2 integral_dimensions) {
 
 arch_t renderer_t::get_draw_calls() const {
 	arch_t result = 0;
-	for (auto&& batch : overlay_quads) {
-		if (batch.visible()) {
+	for (auto&& list : overlay_quads) {
+		if (list.visible()) {
 			result++;
 		}
 	}
-	for (auto&& batch : normal_quads) {
-		if (batch.visible()) {
+	for (auto&& list : normal_quads) {
+		if (list.visible()) {
 			result++;
 		}
 	}
 	return result;
 }
 
-quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
-	for (auto&& batch : overlay_quads) {
-		if (batch.matches(layer, blend_mode, texture, palette, program)) {
-			return batch;
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
+	for (auto&& list : overlay_quads) {
+		if (list.matches(layer, blend_mode, texture, palette, program)) {
+			return list;
 		}
 	}
 	overlay_quads.emplace_back(
@@ -219,7 +219,7 @@ quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mo
 	);
 }
 
-quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_overlay_quads(
 		layer, blend_mode,
 		&programs[pipeline],
@@ -227,7 +227,7 @@ quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mo
 	);
 }
 
-quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
 	return this->get_overlay_quads(
 		layer, blend_mode,
 		pipeline,
@@ -235,10 +235,10 @@ quad_batch_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mo
 	);
 }
 
-quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
-	for (auto&& batch : normal_quads) {
-		if (batch.matches(layer, blend_mode, texture, palette, program)) {
-			return batch;
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
+	for (auto&& list : normal_quads) {
+		if (list.matches(layer, blend_mode, texture, palette, program)) {
+			return list;
 		}
 	}
 	normal_quads.emplace_back(
@@ -254,7 +254,7 @@ quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mod
 	);
 }
 
-quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_normal_quads(
 		layer, blend_mode,
 		&programs[pipeline],
@@ -262,20 +262,10 @@ quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mod
 	);
 }
 
-quad_batch_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
 	return this->get_normal_quads(
 		layer, blend_mode,
 		pipeline,
 		nullptr, nullptr	
 	);
 }
-
-/*program_t renderer_t::generate(pipeline_t pass) {
-	std::ostringstream os;
-	sint_t major = 0;
-	sint_t minor = 0;
-	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major);
-	SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor);
-	os << "#version " << major << minor << "0 core\n";
-}
-*/

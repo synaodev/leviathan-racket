@@ -119,12 +119,12 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 	if (write) {
 		write = false;
 		if (select and flash) {
-			auto& batch = renderer.get_overlay_quads(
+			auto& list = renderer.get_overlay_quads(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				pipeline_t::VtxBlankColors
 			);
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
 					rect_t(glm::zero<glm::vec2>(), cursor.dimensions()), 
 					glm::one<glm::vec4>()
@@ -133,14 +133,14 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			.end();
 		}
 		if (texture != nullptr) {
-			auto& batch = renderer.get_overlay_quads(
+			auto& list = renderer.get_overlay_quads(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				pipeline_t::VtxMajorSprites,
 				texture,
 				nullptr
 			);
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(
 					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()), 
 					texture->get_dimensions(), 
@@ -152,22 +152,22 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 		}
 	} else {
 		if (select and flash) {
-			auto& batch = renderer.get_overlay_quads(
+			auto& list = renderer.get_overlay_quads(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				pipeline_t::VtxBlankColors
 			);
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 		if (texture != nullptr) {
-			auto& batch = renderer.get_overlay_quads(
+			auto& list = renderer.get_overlay_quads(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				pipeline_t::VtxMajorSprites,
 				texture,
 				nullptr
 			);
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 	}
 }

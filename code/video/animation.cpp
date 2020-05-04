@@ -61,7 +61,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			pipeline = pipeline_t::VtxMajorIndexed;
 			index = palette->convert(index);
 		}
-		auto& batch = renderer.get_normal_quads(
+		auto& list = renderer.get_normal_quads(
 			layer, 
 			blend_mode_t::Alpha,
 			pipeline,
@@ -70,12 +70,12 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		);
 		if (write or panic) {
 			write = false;
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
 				.vtx_transform_write(position - sequorig, scale, pivot, angle)
 			.end();
 		} else {
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 	}
 }
@@ -91,7 +91,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			pipeline = pipeline_t::VtxMajorIndexed;
 			index = palette->convert(index);
 		}
-		auto& batch = renderer.get_normal_quads(
+		auto& list = renderer.get_normal_quads(
 			layer,
 			blend_mode_t::Alpha,
 			pipeline,
@@ -100,12 +100,12 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		);
 		if (write or panic) {
 			write = false;
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
 				.vtx_transform_write(position - sequorig, scale)
 			.end();
 		} else {
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 	}
 }
@@ -117,7 +117,7 @@ void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch
 		pipeline = pipeline_t::VtxMajorIndexed;
 		index = palette->convert(index);
 	}
-	auto& batch = renderer.get_overlay_quads(
+	auto& list = renderer.get_overlay_quads(
 		layer_value::HeadsUp, 
 		blend_mode_t::Alpha,
 		pipeline,
@@ -129,12 +129,12 @@ void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch
 		glm::vec2 sequsize = sequences[state].get_dimensions();
 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
 		rect_t seququads   = sequences[state].get_quad(inverts, frame, variation);
-		batch.begin(quad_batch_t::SingleQuad)
+		list.begin(display_list_t::SingleQuad)
 			.vtx_major_write(seququads, sequsize, index, 1.0f, mirroring_t::None)
 			.vtx_transform_write(position - sequorig)
 		.end();
 	} else {
-		batch.skip(quad_batch_t::SingleQuad);
+		list.skip(display_list_t::SingleQuad);
 	}
 }
 

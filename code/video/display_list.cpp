@@ -1,9 +1,9 @@
-#include "./quad_batch.hpp"
+#include "./display_list.hpp"
 #include "./program.hpp"
 
 #include "../utility/rect.hpp"
 
-quad_batch_t::quad_batch_t(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) :
 	layer(layer),
 	blend_mode(blend_mode),
 	texture(texture),
@@ -24,7 +24,7 @@ quad_batch_t::quad_batch_t(layer_t layer, blend_mode_t blend_mode, const texture
 	quad_list.setup(buffer_usage_t::Dynamic, specify);
 }
 
-quad_batch_t::quad_batch_t() : 
+display_list_t::display_list_t() : 
 	layer(layer_value::Automatic),
 	blend_mode(blend_mode_t::None),
 	texture(nullptr),
@@ -40,7 +40,7 @@ quad_batch_t::quad_batch_t() :
 
 }
 
-quad_batch_t::quad_batch_t(quad_batch_t&& that) noexcept : quad_batch_t() {
+display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t() {
 	if (this != &that) {
 		std::swap(layer, that.layer);
 		std::swap(blend_mode, that.blend_mode);
@@ -56,7 +56,7 @@ quad_batch_t::quad_batch_t(quad_batch_t&& that) noexcept : quad_batch_t() {
 	}
 }
 
-quad_batch_t& quad_batch_t::operator=(quad_batch_t&& that) noexcept {
+display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(layer, that.layer);
 		std::swap(blend_mode, that.blend_mode);
@@ -73,7 +73,7 @@ quad_batch_t& quad_batch_t::operator=(quad_batch_t&& that) noexcept {
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::begin(arch_t count) {
+display_list_t& display_list_t::begin(arch_t count) {
 	if ((current + count) > quad_pool.size()) {
 		quad_pool.resize(current + count);
 	}
@@ -81,15 +81,12 @@ quad_batch_t& quad_batch_t::begin(arch_t count) {
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_pool_write(const vertex_pool_t* that_pool) {
-#ifdef SYNAO_DEBUG_BUILD
-	assert(that_pool != nullptr);
-#endif // SYNAO_DEBUG_BUILD
+display_list_t& display_list_t::vtx_pool_write(const vertex_pool_t& that_pool) {
 	quad_pool.copy(current, account, that_pool);
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring) {
+display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring) {
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].uvcoords = texture_rect.left_top();
@@ -126,7 +123,7 @@ quad_batch_t& quad_batch_t::vtx_major_write(rect_t texture_rect, glm::vec2 raste
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
+display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
 	auto vtx = quad_pool.at<vtx_blank_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].color 	= vtx_color;
@@ -139,7 +136,7 @@ quad_batch_t& quad_batch_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_co
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale, glm::vec2 axis, real_t rotation) {
+display_list_t& display_list_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale, glm::vec2 axis, real_t rotation) {
 	auto vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current]);
 	glm::vec2 left_top = position + (scale * vtx->position);
 	real_t cos = rotation != 0.0f ? glm::cos(rotation) : 1.0f;
@@ -156,12 +153,12 @@ quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 sc
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 axis, real_t rotation) {
+display_list_t& display_list_t::vtx_transform_write(glm::vec2 position, glm::vec2 axis, real_t rotation) {
 	glm::vec2 scale = glm::one<glm::vec2>();
 	return this->vtx_transform_write(position, scale, axis, rotation);
 }
 
-quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale) {
+display_list_t& display_list_t::vtx_transform_write(glm::vec2 position, glm::vec2 scale) {
 	vtx_minor_t* vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current]);
 	for (arch_t it = 0; it < account; ++it) {
 		vtx = reinterpret_cast<vtx_minor_t*>(quad_pool[current + it]);
@@ -171,35 +168,34 @@ quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position, glm::vec2 sc
 	return *this;
 }
 
-quad_batch_t& quad_batch_t::vtx_transform_write(glm::vec2 position) {
+display_list_t& display_list_t::vtx_transform_write(glm::vec2 position) {
 	glm::vec2 scale = glm::one<glm::vec2>();
 	return this->vtx_transform_write(position, scale);
 }
 
-quad_batch_t& quad_batch_t::vtx_transform_write(real_t x, real_t y) {
+display_list_t& display_list_t::vtx_transform_write(real_t x, real_t y) {
 	glm::vec2 position = glm::vec2(x, y);
 	return this->vtx_transform_write(position);
 }
 
-void quad_batch_t::end() {
+void display_list_t::end() {
 	write = true;
 	current += account;
 	account = 0;
 }
 
-void quad_batch_t::skip(arch_t count) {
+void display_list_t::skip(arch_t count) {
 	current += count;
 	account = 0;
 }
 
-void quad_batch_t::skip() {
+void display_list_t::skip() {
 	current += account;
 	account = 0;
 }
 
-void quad_batch_t::flush(gfx_t* gfx) {
+void display_list_t::flush(gfx_t& gfx) {
 #ifdef SYNAO_DEBUG_BUILD
-	assert(gfx != nullptr);
 	drawn = current != 0;
 #endif // SYNAO_DEBUG_BUILD
 	if (current != 0) {
@@ -210,16 +206,16 @@ void quad_batch_t::flush(gfx_t* gfx) {
 			}
 			quad_list.update(quad_pool[0], current);
 		}
-		gfx->set_blend_mode(blend_mode);
-		gfx->set_program(program);
-		gfx->set_sampler(texture, 0);
-		gfx->set_sampler(palette, 1);
+		gfx.set_blend_mode(blend_mode);
+		gfx.set_program(program);
+		gfx.set_sampler(texture, 0);
+		gfx.set_sampler(palette, 1);
 		quad_list.draw(current);
 	}
 	current = 0;
 }
 
-bool quad_batch_t::matches(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) const {
+bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) const {
 	return (
 		layer_value::equal(this->layer, layer) and
 		this->blend_mode == blend_mode and
@@ -229,11 +225,11 @@ bool quad_batch_t::matches(layer_t layer, blend_mode_t blend_mode, const texture
 	);
 }
 
-bool quad_batch_t::visible() const {
+bool display_list_t::visible() const {
 	return drawn;
 }
 
-bool operator<(const quad_batch_t& lhv, const quad_batch_t& rhv) {
+bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 	if (layer_value::equal(lhv.layer, rhv.layer)) {
 		if (lhv.blend_mode == rhv.blend_mode) {
 			if (lhv.texture == rhv.texture) {

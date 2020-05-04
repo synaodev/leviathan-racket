@@ -13,7 +13,8 @@ input_t::input_t() :
 	pressed(0),
 	holding(0),
 #ifdef SYNAO_DEBUG_BUILD
-	debug_scan(),
+	debug_pressed(),
+	debug_holding(),
 #endif // SYNAO_DEBUG_BUILD
 	key_bind(),
 	joy_bind(),
@@ -68,6 +69,10 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 					policy = policy_t::Stop;
 					pressed.reset();
 					holding.reset();
+#ifdef SYNAO_DEBUG_BUILD
+					debug_pressed.clear();
+					debug_holding.clear();
+#endif // SYNAO_DEBUG_BUILD
 				}
 			}
 			break;
@@ -75,7 +80,8 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		case SDL_KEYDOWN: {
 			SDL_Scancode code = evt.key.keysym.scancode;
 #ifdef SYNAO_DEBUG_BUILD
-			debug_scan[code] = true;
+			debug_pressed[code] = !debug_holding[code];
+			debug_holding[code] = true;
 #endif // SYNAO_DEBUG_BUILD
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
@@ -90,6 +96,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYUP: {
 			SDL_Scancode code = evt.key.keysym.scancode;
+#ifdef SYNAO_DEBUG_BUILD
+			debug_holding[code] = false;
+#endif // SYNAO_DEBUG_BUILD
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
@@ -245,7 +254,7 @@ policy_t input_t::poll(policy_t policy) {
 void input_t::flush() {
 	pressed.reset();
 #ifdef SYNAO_DEBUG_BUILD
-	debug_scan.clear();
+	debug_pressed.clear();
 #endif // SYNAO_DEBUG_BUILD
 }
 
@@ -397,7 +406,6 @@ void input_t::all_key_bindings(const setup_file_t& config) {
 	sint_t down		= SDL_SCANCODE_DOWN;
 	sint_t left		= SDL_SCANCODE_LEFT;
 	sint_t right	= SDL_SCANCODE_RIGHT;
-	sint_t editor	= SDL_SCANCODE_GRAVE;
 
 	config.get("Input", "KeyJump",		jump);
 	config.get("Input", "KeyHammer",	hammer);
@@ -424,7 +432,6 @@ void input_t::all_key_bindings(const setup_file_t& config) {
 	key_bind[down]		= btn_t::Down;
 	key_bind[left]		= btn_t::Left;
 	key_bind[right]		= btn_t::Right;
-	key_bind[editor]	= btn_t::Editor;
 }
 
 void input_t::all_joy_bindings(const setup_file_t& config) {

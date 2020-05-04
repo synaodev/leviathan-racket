@@ -49,19 +49,19 @@ void draw_fade_t::handle() {
 }
 
 void draw_fade_t::render(renderer_t& renderer) const {
-	auto& batch = renderer.get_overlay_quads(
+	auto& list = renderer.get_overlay_quads(
 		layer_value::HeadsUp,
 		blend_mode_t::Alpha, 
 		pipeline_t::VtxBlankColors
 	);
 	if (write) {
 		write = false;
-		batch.begin(quad_batch_t::SingleQuad)
+		list.begin(display_list_t::SingleQuad)
 			.vtx_blank_write(bounding, glm::vec4(0.0f, 0.0f, 0.125f, 1.0f))
 		.end();
 	}
 	else {
-		batch.skip(quad_batch_t::SingleQuad);
+		list.skip(display_list_t::SingleQuad);
 	}
 }
 

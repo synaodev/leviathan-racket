@@ -1,16 +1,18 @@
-#include "./quad_list.hpp"
+#include "./indexed_quads.hpp"
 #include "./glcheck.hpp"
 
-primitive_t quad_list_t::primitive = primitive_t::Triangles;
-uint_t quad_list_t::elemts = 0;
+primitive_t indexed_quads_t::primitive = primitive_t::Triangles;
+uint_t indexed_quads_t::elemts = 0;
 
-bool quad_list_t::allocate_indexer(arch_t length, primitive_t primitive) {
-	assert(primitive == primitive_t::Triangles or primitive == primitive_t::TriangleStrip);
-	if (!quad_list_t::elemts and length != 0) {
-		quad_list_t::primitive = primitive;
-		auto indices = quad_list_t::generate(length, 0, primitive);
-		glCheck(glGenBuffers(1, &quad_list_t::elemts));
-		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_list_t::elemts));
+bool indexed_quads_t::allocate_indexer(arch_t length, primitive_t primitive) {
+	if (primitive != primitive_t::Triangles and primitive != primitive_t::TriangleStrip) {
+		return false;
+	}
+	if (!indexed_quads_t::elemts and length != 0) {
+		indexed_quads_t::primitive = primitive;
+		auto indices = indexed_quads_t::generate(length, 0, primitive);
+		glCheck(glGenBuffers(1, &indexed_quads_t::elemts));
+		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexed_quads_t::elemts));
 		if (const_buffer_t::has_immutable_storage()) {
 			glCheck(glBufferStorage(
 				GL_ELEMENT_ARRAY_BUFFER,
@@ -31,18 +33,18 @@ bool quad_list_t::allocate_indexer(arch_t length, primitive_t primitive) {
 	return false;
 }
 
-bool quad_list_t::release_indexer() {
-	if (quad_list_t::elemts != 0) {
+bool indexed_quads_t::release_indexer() {
+	if (indexed_quads_t::elemts != 0) {
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-		glCheck(glDeleteBuffers(1, &quad_list_t::elemts));
-		quad_list_t::elemts = 0;
-		quad_list_t::primitive = primitive_t::Triangles;
+		glCheck(glDeleteBuffers(1, &indexed_quads_t::elemts));
+		indexed_quads_t::elemts = 0;
+		indexed_quads_t::primitive = primitive_t::Triangles;
 		return true;
 	}
 	return false;
 }
 
-quad_list_t::quad_list_t() :
+indexed_quads_t::indexed_quads_t() :
 	usage(buffer_usage_t::Static),
 	specify(),
 	arrays(0),
@@ -52,7 +54,7 @@ quad_list_t::quad_list_t() :
 
 }
 
-quad_list_t::quad_list_t(quad_list_t&& that) noexcept : quad_list_t() {
+indexed_quads_t::indexed_quads_t(indexed_quads_t&& that) noexcept : indexed_quads_t() {
 	if (this != &that) {
 		std::swap(usage, that.usage);
 		std::swap(specify, that.specify);
@@ -62,7 +64,7 @@ quad_list_t::quad_list_t(quad_list_t&& that) noexcept : quad_list_t() {
 	}
 }
 
-quad_list_t& quad_list_t::operator=(quad_list_t&& that) noexcept {
+indexed_quads_t& indexed_quads_t::operator=(indexed_quads_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(usage, that.usage);
 		std::swap(specify, that.specify);
@@ -73,12 +75,12 @@ quad_list_t& quad_list_t::operator=(quad_list_t&& that) noexcept {
 	return *this;
 }
 
-quad_list_t::~quad_list_t() {
+indexed_quads_t::~indexed_quads_t() {
 	this->destroy();
 }
 
-void quad_list_t::setup(buffer_usage_t usage, vertex_spec_t specify) {
-	if (quad_list_t::elemts != 0) {
+void indexed_quads_t::setup(buffer_usage_t usage, vertex_spec_t specify) {
+	if (indexed_quads_t::elemts != 0) {
 		this->destroy();
 		this->usage = usage;
 		this->specify = specify;
@@ -91,7 +93,7 @@ void quad_list_t::setup(buffer_usage_t usage, vertex_spec_t specify) {
 			glCheck(glGenBuffers(1, &buffer));
 		}
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_list_t::elemts));
+		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexed_quads_t::elemts));
 
 		if (specify.detail != nullptr) {
 			specify.detail();
@@ -102,8 +104,8 @@ void quad_list_t::setup(buffer_usage_t usage, vertex_spec_t specify) {
 	}
 }
 
-void quad_list_t::create(arch_t length) {
-	if (quad_list_t::elemts != 0 and arrays != 0) {
+void indexed_quads_t::create(arch_t length) {
+	if (indexed_quads_t::elemts != 0 and arrays != 0) {
 		this->length = length;
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, buffer));
 		glCheck(glBufferData(GL_ARRAY_BUFFER, specify.length * length, nullptr, usage));
@@ -111,7 +113,7 @@ void quad_list_t::create(arch_t length) {
 	}
 }
 
-void quad_list_t::destroy() {
+void indexed_quads_t::destroy() {
 	if (arrays != 0) {
 		glCheck(glBindVertexArray(0));
 		glCheck(glDeleteVertexArrays(1, &arrays));
@@ -125,8 +127,8 @@ void quad_list_t::destroy() {
 	length = 0;
 }
 
-bool quad_list_t::update(const vertex_t* vertices, arch_t count, arch_t offset) {
-	if (!quad_list_t::elemts or !arrays) {
+bool indexed_quads_t::update(const vertex_t* vertices, arch_t count, arch_t offset) {
+	if (!indexed_quads_t::elemts or !arrays) {
 		return false;
 	} else if (!vertices) {
 		return false;
@@ -141,41 +143,41 @@ bool quad_list_t::update(const vertex_t* vertices, arch_t count, arch_t offset) 
 	return true;
 }
 
-bool quad_list_t::update(const vertex_t* vertices, arch_t count) {
+bool indexed_quads_t::update(const vertex_t* vertices, arch_t count) {
 	return this->update(vertices, count, 0);
 }
 
-bool quad_list_t::update(const vertex_t* vertices) {
+bool indexed_quads_t::update(const vertex_t* vertices) {
 	return this->update(vertices, length, 0);
 }
 
-void quad_list_t::draw(arch_t count) const {
-	if (quad_list_t::elemts != 0 and arrays != 0) {
-		count = quad_list_t::convert(count);
+void indexed_quads_t::draw(arch_t count) const {
+	if (indexed_quads_t::elemts != 0 and arrays != 0) {
+		count = indexed_quads_t::convert(count);
 		glCheck(glBindVertexArray(arrays));
-		glCheck(glDrawElements(quad_list_t::primitive, static_cast<uint_t>(count), GL_UNSIGNED_SHORT, nullptr));
+		glCheck(glDrawElements(indexed_quads_t::primitive, static_cast<uint_t>(count), GL_UNSIGNED_SHORT, nullptr));
 		glCheck(glBindVertexArray(0));
 	}
 }
 
-void quad_list_t::draw() const {
+void indexed_quads_t::draw() const {
 	this->draw(length);
 }
 
-buffer_usage_t quad_list_t::get_usage() const {
+buffer_usage_t indexed_quads_t::get_usage() const {
 	return usage;
 }
 
-arch_t quad_list_t::get_length() const {
+arch_t indexed_quads_t::get_length() const {
 	return length;
 }
 
-arch_t quad_list_t::convert(arch_t length) {
+arch_t indexed_quads_t::convert(arch_t length) {
 	return (length * 6) / 4;
 }
 
-std::vector<uint16_t> quad_list_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
-	std::vector<uint16_t> result(quad_list_t::convert(length));
+std::vector<uint16_t> indexed_quads_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
+	std::vector<uint16_t> result(indexed_quads_t::convert(length));
 	arch_t it = 0; 
 	uint16_t ut = static_cast<uint16_t>(offset);
 	while (it < result.size()) {

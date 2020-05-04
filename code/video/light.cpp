@@ -43,7 +43,9 @@ light_t& light_t::operator=(light_t&& that) noexcept {
 }
 
 bool light_t::query(arch_t* count) {
-	assert(count != nullptr);
+	if (count == nullptr) {
+		return false;
+	}
 	if (drawn) {
 		drawn = false;
 		if (write) {

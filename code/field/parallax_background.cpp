@@ -95,7 +95,7 @@ void parallax_background_t::handle(rect_t viewport) {
 }
 
 void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const texture_t* texture) const {
-	auto& batch = renderer.get_normal_quads(
+	auto& list = renderer.get_normal_quads(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
 		pipeline_t::VtxMajorSprites,
@@ -105,14 +105,14 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 	if (indices == 0) {
 		for (real_t y = position.y - dimensions.y; y < viewport.h; y += dimensions.y) {
 			for (real_t x = position.x - dimensions.x; x < viewport.w; x += dimensions.x) {
-				batch.begin(quad_batch_t::SingleQuad)
+				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(bounding, dimensions, 0.0f, 1.0f, mirroring_t::None)
 					.vtx_transform_write(x, y)
 				.end();
-				indices += quad_batch_t::SingleQuad;
+				indices += display_list_t::SingleQuad;
 			}
 		}	
 	} else {
-		batch.skip(indices);
+		list.skip(indices);
 	}
 }

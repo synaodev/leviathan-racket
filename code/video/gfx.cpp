@@ -80,63 +80,68 @@ void gfx_t::set_program(const program_t* program) {
 }
 
 void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
-	assert(index < kSmpUnits);
-	if (this->samplers[index] != texture) {
-		this->samplers[index] = texture;
-		glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-		if (texture != nullptr) {
-			texture->assure();
-			if (texture->layers > 1) {
-				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, texture->handle));
-			} else {
-				glCheck(glBindTexture(GL_TEXTURE_2D, texture->handle));
+	if (index < kSmpUnits) {
+		if (this->samplers[index] != texture) {
+			this->samplers[index] = texture;
+			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
+			if (texture != nullptr) {
+				texture->assure();
+				if (texture->layers > 1) {
+					glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, texture->handle));
+				} else {
+					glCheck(glBindTexture(GL_TEXTURE_2D, texture->handle));
+				}
 			}
 		}
 	}
 }
 
 void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
-	assert(index < kSmpUnits);
-	if (this->samplers[index] != palette) {
-		this->samplers[index] = palette;
-		glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-		if (palette != nullptr) {
-			palette->assure();
-			glCheck(glBindTexture(GL_TEXTURE_2D, palette->handle));
+	if (index < kSmpUnits) {
+		if (this->samplers[index] != palette) {
+			this->samplers[index] = palette;
+			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
+			if (palette != nullptr) {
+				palette->assure();
+				glCheck(glBindTexture(GL_TEXTURE_2D, palette->handle));
+			}
 		}
 	}
 }
 
 void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
-	assert(index < kSmpUnits);
-	if (this->samplers[index] != depth_buffer) {
-		this->samplers[index] = depth_buffer;
-		glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-		if (depth_buffer != nullptr and !depth_buffer->compress) {
-			glCheck(glBindTexture(GL_TEXTURE_2D, depth_buffer->handle));
+	if (index < kSmpUnits) {
+		if (this->samplers[index] != depth_buffer) {
+			this->samplers[index] = depth_buffer;
+			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
+			if (depth_buffer != nullptr and !depth_buffer->compress) {
+				glCheck(glBindTexture(GL_TEXTURE_2D, depth_buffer->handle));
+			}
 		}
 	}
 }
 
 void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
-	assert(index < kSmpUnits);
-	if (this->samplers[index] != nullptr) {
-		this->samplers[index] = nullptr;
-		glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+	if (index < kSmpUnits) {
+		if (this->samplers[index] != nullptr) {
+			this->samplers[index] = nullptr;
+			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
+			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+		}
 	}
 }
 
 void gfx_t::set_buffer(const const_buffer_t* buffer, arch_t index) {
-	assert(index < kBufUnits);
-	if (this->buffers[index] != buffer) {
-		this->buffers[index] = buffer;
-		if (buffer != nullptr) {
-			glCheck(glBindBufferBase(
-				GL_UNIFORM_BUFFER,
-				static_cast<uint_t>(index),
-				buffer->handle
-			));
+	if (index < kBufUnits) {
+		if (this->buffers[index] != buffer) {
+			this->buffers[index] = buffer;
+			if (buffer != nullptr) {
+				glCheck(glBindBufferBase(
+					GL_UNIFORM_BUFFER,
+					static_cast<uint_t>(index),
+					buffer->handle
+				));
+			}
 		}
 	}
 }

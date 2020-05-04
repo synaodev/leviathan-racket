@@ -41,7 +41,7 @@ void draw_meter_t::force() const {
 void draw_meter_t::render(renderer_t& renderer) const {
 	if (current != 0) {
 		graphed.render(renderer);
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors,
@@ -50,12 +50,12 @@ void draw_meter_t::render(renderer_t& renderer) const {
 		);
 		if (write) {
 			write = false;
-			batch.begin(quad_batch_t::SingleQuad)
+			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(varying, glm::one<glm::vec4>())
 				.vtx_transform_write(varying.left_top())
 			.end();
 		} else {
-			batch.skip(quad_batch_t::SingleQuad);
+			list.skip(display_list_t::SingleQuad);
 		}
 	}
 }

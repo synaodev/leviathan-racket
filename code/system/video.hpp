@@ -44,7 +44,7 @@ public:
 public:
 	bool init(const setup_file_t& config, bool start_imgui = false);
 	void submit(const frame_buffer_t* frame_buffer, arch_t index) const;
-	void flip() const;
+	void flush() const;
 	void set_parameters(screen_params_t params);
 	screen_params_t get_parameters() const;
 	glm::vec2 get_dimensions() const;

@@ -24,7 +24,7 @@ void draw_units_t::force() const {
 
 void draw_units_t::render(renderer_t& renderer) const {
 	if (!quads.empty()) {
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha, 
 			pipeline_t::VtxMajorIndexed,
@@ -33,11 +33,11 @@ void draw_units_t::render(renderer_t& renderer) const {
 		);
 		if (write) {
 			write = false;
-			batch.begin(quads.size())
-				.vtx_pool_write(&quads)
+			list.begin(quads.size())
+				.vtx_pool_write(quads)
 			.end();
 		} else {
-			batch.skip(quads.size());
+			list.skip(quads.size());
 		}
 	}
 }
@@ -108,12 +108,12 @@ glm::vec2 draw_units_t::get_position() const {
 void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 	write = true;
 	if (resize) {
-		quads.resize(maximum * quad_batch_t::SingleQuad);
+		quads.resize(maximum * display_list_t::SingleQuad);
 	}
 	glm::vec2 pos = position;
 	glm::vec2 inv = texture->get_inverse_dimensions();
 	for (arch_t it = 0, qindex = 0; it < maximum; ++it, ++qindex) {
-		vtx_major_t* quad = quads.at<vtx_major_t>(qindex * quad_batch_t::SingleQuad);
+		vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
 
 		glm::vec2 uvs = bounding.left_top();
 		if (current > 0 and it <= current - 1) {

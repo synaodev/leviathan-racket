@@ -1,6 +1,8 @@
 #include "./vertex.hpp"
 #include "./glcheck.hpp"
 
+#include "../utility/logger.hpp"
+
 #include <utility>
 #include <glm/gtc/vec1.hpp>
 
@@ -42,7 +44,10 @@ vertex_spec_t& vertex_spec_t::operator=(vertex_spec_t&& that) noexcept {
 }
 
 bool vertex_spec_t::compare(const uint_t* lhv, const uint_t* rhv) {
-	assert(lhv != nullptr and rhv != nullptr);
+	if (lhv == nullptr or rhv == nullptr) {
+		SYNAO_LOG("Warning! vertex_spec_t::compare has null inputs!\n");
+		return false;
+	}
 	while (*lhv) {
 		if (*lhv != *rhv) {
 			break;
@@ -94,7 +99,9 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 			glCheck(glVertexAttribPointer(2, glm::vec1::length(), GL_FLOAT, GL_FALSE, sizeof(vtx_major_t), (const void*)offsetof(vtx_major_t, alpha)));
 		};
 	}
-	assert(result.length > 0);
+	if (result.length == 0) {
+		SYNAO_LOG("Warning! vertex_spec_t result has a length of zero!\n");
+	}
 	return result;
 }
 

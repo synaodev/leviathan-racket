@@ -137,7 +137,7 @@ void editor_t::render(const video_t& video, renderer_t& renderer) const {
 	tileset_viewer.render(renderer);
 	renderer.flush(video.get_imgui_dimensions());
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	video.flip();
+	video.flush();
 }
 
 bool editor_t::viable() const {

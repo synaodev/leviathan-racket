@@ -203,9 +203,10 @@ void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
 	}
 }
 
-void video_t::flip() const {
-	assert(window != nullptr and context != nullptr);
-	SDL_GL_SwapWindow(window);
+void video_t::flush() const {
+	if (window != nullptr and context != nullptr) {
+		SDL_GL_SwapWindow(window);
+	}
 }
 
 void video_t::set_parameters(screen_params_t params) {

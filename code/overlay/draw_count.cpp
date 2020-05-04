@@ -32,7 +32,7 @@ void draw_count_t::force() const {
 
 void draw_count_t::render(renderer_t& renderer) const {
 	if (visible and !quads.empty()) {
-		auto& batch = renderer.get_overlay_quads(
+		auto& list = renderer.get_overlay_quads(
 			layer,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxMajorIndexed,
@@ -41,11 +41,11 @@ void draw_count_t::render(renderer_t& renderer) const {
 		);
 		if (write) {
 			write = false;
-			batch.begin(quads.size())
-				.vtx_pool_write(&quads)
+			list.begin(quads.size())
+				.vtx_pool_write(quads)
 			.end();
 		} else {
-			batch.skip(quads.size());
+			list.skip(quads.size());
 		}
 	}
 }
@@ -176,8 +176,8 @@ sint_t draw_count_t::quick_power_of_10(arch_t exponent) {
 
 void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	write = true;
-	if (buffer.size() != quads.size() / quad_batch_t::SingleQuad) {
-		quads.resize(buffer.size() * quad_batch_t::SingleQuad);
+	if (buffer.size() != quads.size() / display_list_t::SingleQuad) {
+		quads.resize(buffer.size() * display_list_t::SingleQuad);
 	}
 	glm::vec2 pos = position;
 	glm::vec2 inv = texture->get_inverse_dimensions();
@@ -189,7 +189,7 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 				bounding.y
 			);
 			this->generate_one(
-				quads.at<vtx_major_t>(qindex * quad_batch_t::SingleQuad), 
+				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad), 
 				pos, txcd, inv
 			);
 			pos.x -= (*it == kPoint) ? 
@@ -203,7 +203,7 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 				bounding.y
 			);
 			this->generate_one(
-				quads.at<vtx_major_t>(qindex * quad_batch_t::SingleQuad), 
+				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad), 
 				pos, txcd, inv
 			);
 			pos.x += (*it == kPoint) ? 

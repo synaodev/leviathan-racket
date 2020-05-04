@@ -1,5 +1,7 @@
 #include "./vertex_pool.hpp"
 
+#include "../utility/logger.hpp"
+
 vertex_pool_t::vertex_pool_t() :
 	specify(),
 	memory()
@@ -46,13 +48,16 @@ void vertex_pool_t::resize(arch_t length) {
 	memory.resize(length * specify.length);
 }
 
-void vertex_pool_t::copy(arch_t from, arch_t count, const vertex_pool_t* that) {
-	assert(this->specify == that->specify);
-	count *= this->specify.length;
-	byte_t* this_vtx = &this->memory[from * this->specify.length];
-	const byte_t* that_vtx = &that->memory[0];
-	for (arch_t it = 0; it < count; ++it) {
-		this_vtx[it] = that_vtx[it];
+void vertex_pool_t::copy(arch_t from, arch_t count, const vertex_pool_t& that) {
+	if (this->specify == that.specify) {
+		count *= this->specify.length;
+		byte_t* this_vtx = &this->memory[from * this->specify.length];
+		const byte_t* that_vtx = &that.memory[0];
+		for (arch_t it = 0; it < count; ++it) {
+			this_vtx[it] = that_vtx[it];
+		}
+	} else {
+		SYNAO_LOG("Warning! Source and Destination vertex pools have different callbacks! Cannot complete copying operation!\n");
 	}
 }
 

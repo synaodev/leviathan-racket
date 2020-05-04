@@ -50,22 +50,22 @@ void liquid::handle(audio_t& audio, kontext_t& kontext) {
 void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
 	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
-		auto& batch = renderer.get_normal_quads(
+		auto& list = renderer.get_normal_quads(
 			layer_value::TileFront,
 			blend_mode_t::Add,
 			pipeline_t::VtxBlankColors
 		);
-		view.each([&batch, &viewport](entt::entity, const liquid_body_t& instance) {
+		view.each([&list, &viewport](entt::entity, const liquid_body_t& instance) {
 			if (!instance.hitbox.overlaps(viewport)) {
 				instance.write = true;
 			} else if (instance.write) {
 				instance.write = false;
-				batch.begin(quad_batch_t::SingleQuad)
+				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(instance.hitbox, glm::vec4(0.0f, 0.25f, 0.5f, 0.5f))
 					.vtx_transform_write(instance.hitbox.left_top())
 				.end();
 			} else {
-				batch.skip(quad_batch_t::SingleQuad);
+				list.skip(display_list_t::SingleQuad);
 			}
 		});
 	}

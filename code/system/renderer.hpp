@@ -6,7 +6,7 @@
 #include "../utility/enums.hpp"
 #include "../resource/pipeline.hpp"
 #include "../video/const_buffer.hpp"
-#include "../video/quad_batch.hpp"
+#include "../video/display_list.hpp"
 
 struct setup_file_t;
 struct video_t;
@@ -24,14 +24,14 @@ public:
 	void flush(const glm::ivec2& dimensions);
 	void ortho(glm::ivec2 integral_dimensions);
 	arch_t get_draw_calls() const;
-	quad_batch_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
-	quad_batch_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
-	quad_batch_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
-	quad_batch_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
-	quad_batch_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
-	quad_batch_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
 private:
-	std::vector<quad_batch_t> overlay_quads, normal_quads;
+	std::vector<display_list_t> overlay_quads, normal_quads;
 	std::vector<program_t> programs;
 	const_buffer_t projection_buffer, viewport_buffer;
 	gfx_t graphics_state;

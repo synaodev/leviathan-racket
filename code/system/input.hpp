@@ -3,8 +3,7 @@
 
 #include <bitset>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
+#include <map>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
@@ -39,7 +38,6 @@ namespace __enum_btn {
 		Down, 
 		Left, 
 		Right,
-		Editor,
 		ClickL,
 		ClickR,
 		Total
@@ -79,10 +77,10 @@ private:
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 #ifdef SYNAO_DEBUG_BUILD
-	std::unordered_map<SDL_Scancode, bool_t> debug_scan;
+	std::map<SDL_Scancode, bool_t> debug_pressed, debug_holding;
 #endif // SYNAO_DEBUG_BUILD
 private:
-	std::unordered_map<sint_t, btn_t> key_bind, joy_bind;
+	std::map<sint_t, btn_t> key_bind, joy_bind;
 	sint_t recorder;
 	glm::vec2 position;
 	SDL_Joystick* joystick;
