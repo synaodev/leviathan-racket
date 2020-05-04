@@ -5,8 +5,8 @@ import os, sys, shutil, git
 def get_repository_directory() -> str:
 	try:
 		repository = git.Repo(path='.', search_parent_directories=True)
-		print(repository.git_dir)
-		return repository.git_dir
+		directory: str = repository.git_dir
+		return os.path.abspath(os.path.join(directory, os.path.pardir))
 	except git.InvalidGitRepositoryError:
 		return ''
 
