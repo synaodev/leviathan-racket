@@ -72,27 +72,27 @@ bool renderer_t::init(glm::ivec2 version) {
 
 	const shader_t* blank = vfs::shader(
 		"blank", 
-		pipelines::blank_vert(version), 
+		pipeline::blank_vert(version), 
 		shader_stage_t::Vertex
 	);
 	const shader_t* major = vfs::shader(
 		"major",
-		pipelines::major_vert(version),
+		pipeline::major_vert(version),
 		shader_stage_t::Vertex
 	);
 	const shader_t* colors = vfs::shader(
 		"colors",
-		pipelines::colors_frag(version),
+		pipeline::colors_frag(version),
 		shader_stage_t::Fragment
 	);
 	const shader_t* sprites = vfs::shader(
 		"sprites",
-		pipelines::sprites_frag(version),
+		pipeline::sprites_frag(version),
 		shader_stage_t::Fragment
 	);
 	const shader_t* indexed = vfs::shader(
 		"indexed",
-		pipelines::indexed_frag(version),
+		pipeline::indexed_frag(version),
 		shader_stage_t::Fragment
 	);
 	bool result = programs[pipeline_t::VtxBlankColors].create(blank, colors);
