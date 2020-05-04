@@ -16,7 +16,7 @@ def regenerate_transparency(font_image_path: str):
 
 def main():
 	argc: int = len(sys.argv)
-	if argc >= 1:
+	if argc > 1:
 		for i in range(1, argc):
 			font_image_path: str = sys.argv[i]
 			regenerate_transparency(font_image_path)

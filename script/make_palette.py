@@ -58,7 +58,7 @@ def make_indexed_image(initial_path: str, pixels: list, colors: list, size: tupl
 
 def main():
 	argc: int = len(sys.argv)
-	if argc >= 1:
+	if argc > 1:
 		for i in range(1, argc):
 			initial_path: str = sys.argv[i]
 			initial_image: None = Image.open(initial_path)
@@ -67,7 +67,7 @@ def main():
 			make_palette_image(initial_path, color_list)
 			make_indexed_image(initial_path, pixel_list, color_list, initial_image.size)
 	else:
-		print('Error! No paths given!')
+		print('Error! No image paths given!')
 
 if __name__ == '__main__':
 	main()

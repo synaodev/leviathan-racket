@@ -1,8 +1,16 @@
 #!/usr/bin/env python3
 
-import os, sys, shutil
+import os, sys, shutil, git
 
-def determine_package_directories() -> list:
+def get_repository_directory() -> str:
+	try:
+		repository = git.Repo(path='.', search_parent_directories=True)
+		print(repository.git_dir)
+		return repository.git_dir
+	except git.InvalidGitRepositoryError:
+		return ''
+
+def get_package_directories() -> list:
 	platform: str = sys.platform
 	if platform == 'linux':
 		return ['installed/x64-linux']
@@ -13,18 +21,12 @@ def determine_package_directories() -> list:
 	return []
 
 def get_cmake_files() -> list:
-	script_directory = os.getcwd()
-	if script_directory != 'script':
-		print('Error! Place this python script in the \"script\" directory of the repository!')
+	repository_directory: str = get_repository_directory()
+	if len(repository_directory) == 0:
+		print('Error! This script is not located in the \"leviathan-racket\" git repository!')
 		return []
-	cmake_directory: str = os.path.abspath(
-		os.path.join(
-			script_directory, 
-			os.pardir, 
-			'cmake'
-		)
-	)
-	if not os.path.exists(cmake_directory) or not os.path.isdir(cmake_directory):
+	cmake_directory: str = os.path.join(repository_directory, 'cmake')
+	if not os.path.isdir(cmake_directory):
 		print('Error! Cannot find valid cmake directory in repository!')
 		return []
 	cmake_files: list = [
@@ -36,7 +38,7 @@ def get_cmake_files() -> list:
 	]
 	error_exists: bool = False
 	for file in cmake_files:
-		if not os.path.exists(file) or not os.path.isfile(file):
+		if not os.path.isfile(file):
 			error_exists = True
 			print(f'Error! Cannot locate necessary file: {file}!')
 	if error_exists:
@@ -44,9 +46,9 @@ def get_cmake_files() -> list:
 	return cmake_files
 
 def main():
-	vcpkg_directory: str = '~/vcpkg'
+	vcpkg_directory: str = os.path.join(os.environ.get('HOME'), 'vcpkg')
 	vcpkg_was_input: bool = False
-	if len(sys.argv) >= 1:
+	if len(sys.argv) > 1:
 		vcpkg_was_input = True
 		vcpkg_directory = sys.argv[1]
 	if not os.path.exists(vcpkg_directory):
@@ -61,18 +63,19 @@ def main():
 	if not os.path.exists(os.path.join(vcpkg_directory, '.vcpkg-root')):
 		print('Error! Your vcpkg installation isn\'t valid!')
 		return
-	package_directories: list = determine_package_directories()
+	package_directories: list = get_package_directories()
 	if len(package_directories) == 0:
-		print('Error! Unsupported operating system! You can only build for desktop computers using Windows, MacOS, or Linux!')
+		print('Error! Unsupported operating system! You can only build for Windows, MacOS, or Linux!')
 		return
 	cmake_files = get_cmake_files()
 	if len(cmake_files) == 0:
 		print('Error! Couldn\'t find necessary tmxlite cmake files!')
 		return
 	for package_directory in package_directories:
-		tmxlite_directory: str = os.path.abspath(os.path.join(vcpkg_directory, package_directory, 'share/tmxlite'))
-		for cmake_file in cmake_files:
-			shutil.copy(cmake_file, tmxlite_directory)
+		tmxlite_directory: str = os.path.join(vcpkg_directory, package_directory, 'share/tmxlite')
+		if os.path.isdir(tmxlite_directory):
+			for cmake_file in cmake_files:
+				shutil.copy(cmake_file, tmxlite_directory)
 
 if __name__ == '__main__':
 	main()
