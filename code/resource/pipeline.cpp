@@ -14,6 +14,15 @@ void main() {
 	gl_Position = vec4(position, 0.0f, 1.0f);
 })";
 
+static constexpr byte_t kMinorVertGLES[] = R"("
+#version 300 es
+layout(location = 0) in vec2 position;
+layout(location = 0) out vec4 vs_color;
+void main() {
+	gl_Position = vec4(position, 0.0f, 1.0f);
+	vs_color = vec4(1.0f);
+})";
+
 std::string pipeline::minor_vert(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMinorVert420;
@@ -53,6 +62,21 @@ out STAGE {
 void main() {
 	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
 	vs.color = color;
+})";
+
+static constexpr byte_t kBlankVertGLES[] = R"(
+#version 300 es
+layout(binding = 0, std140) uniform transforms {
+	mat4 viewport;
+	vec2 dimensions;
+	vec2 resolution;
+};
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec4 color;
+layout(location = 0) out vec4 vs_color;
+void main() {
+	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	vs_color = color;
 })";
 
 std::string pipeline::blank_vert(glm::ivec2 version) {
@@ -102,6 +126,24 @@ void main() {
 	vs.alpha = alpha;
 })";
 
+static constexpr byte_t kMajorVertGLES[] = R"(
+#version 330 core
+layout(binding = 0, std140) uniform transforms {
+	mat4 viewport;
+	vec2 dimensions;
+	vec2 resolution;
+};
+layout(location = 0) in vec2 position;
+layout(location = 1) in vec3 uvcoords;
+layout(location = 2) in float alpha;
+layout(location = 0) out vec3 vs_uvcoords;
+layout(location = 1) out float vs_alpha;
+void main() {
+	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	vs_uvcoords = uvcoords;
+	vs_alpha = alpha;
+})";
+
 std::string pipeline::major_vert(glm::ivec2 version) {
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMajorVert420;
@@ -127,6 +169,14 @@ in STAGE {
 layout(location = 0) out vec4 fragment;
 void main() {
 	fragment = fs.color;
+})";
+
+static constexpr byte_t kColorsFragGLES[] = R"(
+#version 300 es
+layout(location = 0) in vec4 fs_color;
+layout(location = 0) out vec4 fragment;
+void main() {
+	fragment = fs_color;
 })";
 
 std::string pipeline::colors_frag(glm::ivec2 version) {
@@ -160,6 +210,17 @@ layout(location = 0) out vec4 fragment;
 void main() {
 	vec4 color = texture(diffuse_map, fs.uvcoords.xy);
 	fragment = vec4(color.rgb, color.a * fs.alpha);
+})";
+
+static constexpr byte_t kSpritesFragGLES[] = R"(
+#version 330 core
+layout(binding = 0) uniform sampler2D diffuse_map;
+layout(location = 0) in vec3 fs_uvcoords;
+layout(location = 1) in float fs_alpha;
+layout(location = 0) out vec4 fragment;
+void main() {
+	vec4 color = texture(diffuse_map, fs_uvcoords.xy);
+	fragment = vec4(color.rgb, color.a * fs_alpha);
 })";
 
 std::string pipeline::sprites_frag(glm::ivec2 version) {
@@ -197,6 +258,19 @@ void main() {
 	vec4 index = texture(indexed_map, fs.uvcoords.xy);
 	vec4 color = texture(palette_map, vec2(index[0], fs.uvcoords.z));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
+})";
+
+static constexpr byte_t kIndexedFragGLES[] = R"(
+#version 330 core
+layout(binding = 0) uniform sampler2D indexed_map;
+layout(binding = 1) uniform sampler2D palette_map;
+layout(location = 0) in vec3 fs_uvcoords;
+layout(location = 1) in float fs_alpha;
+layout(location = 0) out vec4 fragment;
+void main() {
+	vec4 index = texture(indexed_map, fs_uvcoords.xy);
+	vec4 color = texture(palette_map, vec2(index[0], fs_uvcoords.z));
+	fragment = vec4(color.rgb, color.a * fs_alpha);
 })";
 
 std::string pipeline::indexed_frag(glm::ivec2 version) {
