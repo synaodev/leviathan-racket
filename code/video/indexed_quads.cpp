@@ -1,4 +1,5 @@
 #include "./indexed_quads.hpp"
+#include "./const_buffer.hpp"
 #include "./glcheck.hpp"
 
 primitive_t indexed_quads_t::primitive = primitive_t::Triangles;

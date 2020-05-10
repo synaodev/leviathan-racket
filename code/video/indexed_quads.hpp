@@ -3,7 +3,8 @@
 
 #include <vector>
 
-#include "./vertex_buffer.hpp"
+#include "./gfx.hpp"
+#include "./vertex.hpp"
 
 struct indexed_quads_t : public not_copyable_t {
 public:

@@ -2,28 +2,7 @@
 #define SYNAO_VIDEO_VERTEX_BUFFER_HPP
 
 #include "./vertex.hpp"
-#include "./const_buffer.hpp"
-
-namespace __enum_primitive {
-	enum type : uint_t {
-		Points, 
-		Lines, 
-		LineLoop, 
-		LineStrip,
-		Triangles, 
-		TriangleStrip, 
-		TriangleFan,
-		Quads, 
-		QuadStrip, 
-		Polygon,
-		LinesAdjacency, 
-		LineStripAdjacency,
-		TrianglesAdjacency, 
-		TriangleStripAdjacency
-	};
-}
-
-using primitive_t = __enum_primitive::type;
+#include "./gfx.hpp"
 
 struct vertex_buffer_t : public not_copyable_t {
 public:

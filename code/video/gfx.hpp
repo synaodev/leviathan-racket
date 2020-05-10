@@ -32,6 +32,37 @@ namespace __enum_gfx_cmp_func {
 
 using gfx_cmp_func_t = __enum_gfx_cmp_func::type;
 
+namespace __enum_buffer_usage {
+	enum type : uint_t {
+		Stream  = 0x88E0,
+		Static  = 0x88E4,
+		Dynamic = 0x88E8
+	};
+}
+
+using buffer_usage_t = __enum_buffer_usage::type;
+
+namespace __enum_primitive {
+	enum type : uint_t {
+		Points, 
+		Lines, 
+		LineLoop, 
+		LineStrip,
+		Triangles, 
+		TriangleStrip, 
+		TriangleFan,
+		Quads, 
+		QuadStrip, 
+		Polygon,
+		LinesAdjacency, 
+		LineStripAdjacency,
+		TrianglesAdjacency, 
+		TriangleStripAdjacency
+	};
+}
+
+using primitive_t = __enum_primitive::type;
+
 struct sampler_t;
 struct texture_t;
 struct palette_t;

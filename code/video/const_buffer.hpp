@@ -1,17 +1,7 @@
 #ifndef SYNAO_VIDEO_CONST_BUFFER_HPP
 #define SYNAO_VIDEO_CONST_BUFFER_HPP
 
-#include "../types.hpp"
-
-namespace __enum_buffer_usage {
-	enum type : uint_t {
-		Stream  = 0x88E0,
-		Static  = 0x88E4,
-		Dynamic = 0x88E8
-	};
-}
-
-using buffer_usage_t = __enum_buffer_usage::type;
+#include "./gfx.hpp"
 
 struct const_buffer_t : public not_copyable_t {
 public:
