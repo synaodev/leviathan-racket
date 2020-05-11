@@ -9,7 +9,6 @@
 # CMake
 build/
 out/
-CMakeSettings.json
 
 # Game
 **/AS_DEBUG/

@@ -1,7 +1,7 @@
 #include "./image.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "../utility/stb_image.hpp"
+#include "../utility/stb_image.h"
 
 #include <cstring>
 
