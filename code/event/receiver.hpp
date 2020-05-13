@@ -12,6 +12,7 @@ class asIScriptEngine;
 class asIScriptContext;
 class asIScriptFunction;
 class asIScriptModule;
+class asIScriptGeneric;
 
 struct asSMessageInfo;
 

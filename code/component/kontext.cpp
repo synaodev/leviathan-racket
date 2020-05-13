@@ -148,19 +148,6 @@ bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t 
 	return false;
 }
 
-bool kontext_t::create(const std::string& name, real_t x, real_t y, direction_t direction, sint_t identity, arch_t flags, asIScriptFunction* function) {
-	arch_t type = SYNAO_HASH(name.c_str());
-	auto iter = ctor_table.find(type);
-	if (iter != ctor_table.end()) {
-		spawn_commands.emplace_back(type, glm::vec2(x, y), direction, identity, flags);
-		std::invoke(push_event, identity, function);
-		return true;
-	} else if (function != nullptr) {
-		function->Release();
-	}
-	return false;
-}
-
 bool kontext_t::create(const actor_spawn_t& spawn) {
 	auto iter = ctor_table.find(spawn.type);
 	if (iter != ctor_table.end()) {
@@ -187,6 +174,16 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		spawn.type
 	);
 #endif // SYNAO_MACHINE_x64
+	return false;
+}
+
+bool kontext_t::create_minimally(const std::string& name, real_t x, real_t y, sint_t identity) {
+	arch_t type = SYNAO_HASH(name.c_str());
+	auto iter = ctor_table.find(type);
+	if (iter != ctor_table.end()) {
+		spawn_commands.emplace_back(type, glm::vec2(x, y), direction_t::Right, identity, (arch_t)0);
+		return true;
+	}
 	return false;
 }
 

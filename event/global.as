@@ -11,7 +11,9 @@ enum input_t {
 
 void boot() {
 	pxt::exit();
-	msg::set_card("Leviathan Racket", font_t::One, true, false, 160.0f, 48.0f);
+	msg::push_card("Leviathan Racket", font_t::One);
+	msg::set_card_position(0, 160.0f, 48.0f);
+	msg::set_card_centered(0, true, false);
 	sys::wait(1.5);
 	msg::set_card();
 	msg::fade_in();

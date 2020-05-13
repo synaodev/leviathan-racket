@@ -41,9 +41,9 @@ public:
 	entt::entity search_id(sint_t identity) const;
 	void destroy_id(sint_t identity);
 	void kill_id(sint_t identity);
-	bool create(const std::string& name, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags);
-	bool create(const std::string& name, real_t x, real_t y, direction_t direction, sint_t identity, arch_t flags, asIScriptFunction* function);
 	bool create(const actor_spawn_t& spawn);
+	bool create(const std::string& name, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags);
+	bool create_minimally(const std::string& name, real_t x, real_t y, sint_t identity);
 	void setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kernel_t& kernel, receiver_t& receiver);
 	void smoke(glm::vec2 position, arch_t count);
 	void smoke(real_t x, real_t y, arch_t count);

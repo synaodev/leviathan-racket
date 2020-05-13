@@ -47,30 +47,37 @@ void draw_title_view_t::render(renderer_t& renderer) const {
 	}
 }
 
-void draw_title_view_t::set_card(const std::string& string, arch_t font, bool center_x, bool center_y, glm::vec2 position) {
+void draw_title_view_t::push(const std::string& string, arch_t font) {
 	auto& recent = cards.emplace_back();
-	recent.set_position(position);
 	recent.set_font(vfs::font(font));
 	recent.set_string(string);
-	rect_t bounds = recent.bounds();
-	
-	glm::vec2 origin = glm::zero<glm::vec2>();
-	if (center_x) {
-		origin.x = bounds.w / 2.0f;
-	}
-	if (center_y) {
-		origin.y = bounds.h / 2.0f;
-	}
-	recent.set_origin(origin);
 }
 
-void draw_title_view_t::set_card(const std::string& string, arch_t font, bool center_x, bool center_y, real_t x, real_t y) {
-	glm::vec2 position = glm::vec2(x, y);
-	this->set_card(string, font, center_x, center_y, position);
-}
-
-void draw_title_view_t::set_card() {
+void draw_title_view_t::clear() {
 	cards.clear();
+}
+
+void draw_title_view_t::set_position(arch_t index, glm::vec2 position) {
+	if (index < cards.size()) {
+		auto& card = cards[index];
+		card.set_position(position);
+	}
+}
+
+void draw_title_view_t::set_position(arch_t index, real_t x, real_t y) {
+	glm::vec2 position = glm::vec2(x, y);
+	this->set_position(index, position);
+}
+
+void draw_title_view_t::set_centered(arch_t index, bool x, bool y) {
+	if (index < cards.size()) {
+		auto& card = cards[index];
+		rect_t bounds = card.bounds();
+		card.set_origin(
+			x ? bounds.w / 2.0f : 0.0f,
+			y ? bounds.h / 2.0f : 0.0f
+		);
+	}
 }
 
 void draw_title_view_t::set_head(const std::string& string) {

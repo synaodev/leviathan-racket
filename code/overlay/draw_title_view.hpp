@@ -13,9 +13,11 @@ public:
 	bool init();
 	void handle();
 	void render(renderer_t& renderer) const;
-	void set_card(const std::string& string, arch_t font, bool center_x, bool center_y, glm::vec2 position);
-	void set_card(const std::string& string, arch_t font, bool center_x, bool center_y, real_t x, real_t y);
-	void set_card();
+	void push(const std::string& string, arch_t font);
+	void clear();
+	void set_position(arch_t index, glm::vec2 position);
+	void set_position(arch_t index, real_t x, real_t y);
+	void set_centered(arch_t index, bool horizontal, bool vertical);
 	void set_head(const std::string& string);
 	void set_head();
 	bool has_field() const;
