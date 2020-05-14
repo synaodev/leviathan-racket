@@ -1,3 +1,5 @@
+#ifndef __EMSCRIPTEN__
+
 #include "./input.hpp"
 #include "./video.hpp"
 #include "./audio.hpp"
@@ -91,34 +93,6 @@ static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audi
 	return config.save();
 }
 
-static bool run_edit(input_t& input, video_t& video, renderer_t& renderer) {
-	policy_t policy = policy_t::Run;
-	editor_t editor;
-	if (!editor.init(video, renderer)) {
-		return false;
-	}
-	watch_t sync_watch, head_watch;
-	while (policy != policy_t::Quit) {
-		policy = input.poll(policy, editor_t::get_event_callback());
-		if (policy != policy_t::Stop) {
-			editor.update(head_watch.restart());
-			if (editor.viable()) {
-				editor.handle(input, renderer);
-				editor.render(video, renderer);
-				real64_t waiting = misc::kIntervalMin - sync_watch.elapsed();
-				if (waiting > 0.0) {
-					uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
-					SDL_Delay(ticks);
-				}
-				sync_watch.restart();
-			}
-		} else {
-			SDL_Delay(kStopDelay);
-		}
-	}
-	return true;
-}
-
 static int proc_naomi(setup_file_t& config) {
 	// Global input/video/audio devices are generated here...
 	input_t input;
@@ -157,6 +131,34 @@ static int proc_naomi(setup_file_t& config) {
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
+}
+
+static bool run_edit(input_t& input, video_t& video, renderer_t& renderer) {
+	policy_t policy = policy_t::Run;
+	editor_t editor;
+	if (!editor.init(video, renderer)) {
+		return false;
+	}
+	watch_t sync_watch, head_watch;
+	while (policy != policy_t::Quit) {
+		policy = input.poll(policy, editor_t::get_event_callback());
+		if (policy != policy_t::Stop) {
+			editor.update(head_watch.restart());
+			if (editor.viable()) {
+				editor.handle(input, renderer);
+				editor.render(video, renderer);
+				real64_t waiting = misc::kIntervalMin - sync_watch.elapsed();
+				if (waiting > 0.0) {
+					uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
+					SDL_Delay(ticks);
+				}
+				sync_watch.restart();
+			}
+		} else {
+			SDL_Delay(kStopDelay);
+		}
+	}
+	return true;
 }
 
 static int proc_editor(setup_file_t& config) {
@@ -218,4 +220,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	return proc_naomi(config);
+	return EXIT_SUCCESS;
 }
+
+#endif // __EMSCRIPTEN__

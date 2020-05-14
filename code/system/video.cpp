@@ -1,10 +1,17 @@
 #include "./video.hpp"
 
-#include "../video/glad.hpp"
 #include "../video/frame_buffer.hpp"
 #include "../resource/icon.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
+
+#ifndef __EMSCRIPTEN__
+#include "../video/glad.hpp"
+#else // __EMSCRIPTEN__
+#include <SDL2/SDL_opengles2.h>
+#include <GLES3/gl3.h>
+#include <emscripten.h>
+#endif // __EMSCRIPTEN__
 
 static constexpr byte_t kWindowName[] = "Leviathan Racket";
 static constexpr sint_t kVideoWidths  = 320;
@@ -33,11 +40,12 @@ video_t::~video_t() {
 }
 
 bool video_t::init(const setup_file_t& config, bool start_imgui) {
-	bool_t use_opengl_4 = true;
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
+#ifndef __EMSCRIPTEN__
+	bool_t use_opengl_4 = true;
 	config.get("Video", "UseOpenGL4", use_opengl_4);
 	if (use_opengl_4) {
 		this->major = 4;
@@ -46,6 +54,10 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		this->major = 3;
 		this->minor = 3;
 	}
+#else // __EMSCRIPTEN__
+	this->major = 3;
+	this->minor = 2;
+#endif // __EMSCRIPTEN__
 	params.scaling = glm::clamp(
 		params.scaling, 
 		screen_params_t::kDefaultScaling, 
@@ -74,10 +86,17 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		return false;
 	}
 #endif // __APPLE__
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
-		SYNAO_LOG("Setting context profile mask failed! SDL Error: %s\n", SDL_GetError());
+#ifdef __EMSCRIPTEN__
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_EGL) < 0) {
+		SYNAO_LOG("Setting OpenGLES/WebGL profile failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+#else // __EMSCRIPTEN__
+	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
+		SYNAO_LOG("Setting OpenGL Core profile failed! SDL Error: %s\n", SDL_GetError());
+		return false;
+	}
+#endif // __EMSCRIPTEN__
 	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) < 0) {
 		SYNAO_LOG("Setting depth buffer size failed! SDL Error: %s\n", SDL_GetError());
 		return false;
@@ -129,7 +148,16 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		context = SDL_GL_CreateContext(window);
 		if (context != nullptr) {
 			break;
-		} else if (this->major == 4 and this->minor > 0) {
+		}
+#ifdef __EMSCRIPTEN__
+		else if (this->major == 3 and this->minor > 0) {
+			this->minor -= 1;
+		} else {
+			SYNAO_LOG("Error! OpenGL ES version must be at least 3.0!\n");
+			break;
+		}
+#else // __EMSCRIPTEN__
+		else if (this->major == 4 and this->minor > 0) {
 			this->minor -= 1;
 		} else if (this->major == 4 and this->minor == 0) {
 			this->major = 3;
@@ -138,6 +166,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			SYNAO_LOG("Error! OpenGL version must be at least 3.3!\n");
 			break;
 		}
+#endif // __EMSCRIPTEN__
 	}
 	if (context == nullptr) {
 		SYNAO_LOG("OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
@@ -152,10 +181,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		return false;
 	}
 	SYNAO_LOG("OpenGL Version is %d.%d!\n", this->major, this->minor);
+#ifndef __EMSCRIPTEN__
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		SYNAO_LOG("OpenGL Extension loading failed!\n");
 		return false;
 	}
+#endif // __EMSCRIPTEN__
 	if (start_imgui) {
 		frame_buffer_t::clear(
 			glm::ivec2(kImguiWidths),
@@ -167,14 +198,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
 		);
 	}
-
 	SDL_GL_SwapWindow(window);
-
+#ifndef __EMSCRIPTEN__
 	if (!start_imgui and SDL_GL_SetSwapInterval(params.vsync) < 0) {
 		SYNAO_LOG("Vertical sync after OpenGL context creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
 		icon::pixels(),
 		icon::width(),
@@ -190,6 +219,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	} else {
 		SYNAO_LOG("Icon surface creation failed! SDL Error: %s\n", SDL_GetError());
 	}
+#endif // __EMSCRIPTEN__
 	return true;
 }
 
@@ -210,6 +240,7 @@ void video_t::flush() const {
 }
 
 void video_t::set_parameters(screen_params_t params) {
+#ifdef __EMSCRIPTEN__
 	if (this->params.vsync != params.vsync) {
 		this->params.vsync = params.vsync;
 		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
@@ -252,6 +283,7 @@ void video_t::set_parameters(screen_params_t params) {
 			screen_params_t::kDefaultFramerate
 		);
 	}
+#endif // __EMSCRIPTEN__
 }
 
 screen_params_t video_t::get_parameters() const {
