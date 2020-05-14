@@ -1,0 +1,3 @@
+[submodule "webdev"]
+	path = webdev
+	url = https://github.com/synaodev/leviathan-webdev
