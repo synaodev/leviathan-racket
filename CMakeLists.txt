@@ -147,8 +147,8 @@ else ()
 		"${Angelscript_LIBRARIES}"
 		"${Tmxlite_LIBRARIES}"
 		"-lopenal"
+		"-o leviathan.html"
 	)
-
 	target_compile_options (leviathan PUBLIC "-O2")
 	target_link_libraries (leviathan "-O2")
 endif ()
