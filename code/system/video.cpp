@@ -6,11 +6,12 @@
 #include "../utility/logger.hpp"
 
 #ifndef __EMSCRIPTEN__
-#include "../video/glad.hpp"
+	#include "../video/glad.hpp"
 #else // __EMSCRIPTEN__
-#include <SDL2/SDL_opengles2.h>
-#include <GLES3/gl3.h>
-#include <emscripten.h>
+	#include <SDL/SDL.h>
+	#include <SDL/SDL_opengles2.h>
+	#include <GLES3/gl3.h>
+	#include <emscripten.h>
 #endif // __EMSCRIPTEN__
 
 static constexpr byte_t kWindowName[] = "Leviathan Racket";
@@ -75,22 +76,17 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("OpenGL context already created!\n");
 		return false;
 	}
-#ifndef __APPLE__
+#ifdef __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0) < 0) {
-		SYNAO_LOG("Setting context flags failed! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
-#else // __APPLE__
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
 		SYNAO_LOG("Setting context flags failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 #endif // __APPLE__
 #ifdef __EMSCRIPTEN__
-	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_EGL) < 0) {
-		SYNAO_LOG("Setting OpenGLES/WebGL profile failed! SDL Error: %s\n", SDL_GetError());
-		return false;
-	}
+	// if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES) < 0) {
+	// 	SYNAO_LOG("Setting OpenGLES/WebGL profile failed! SDL Error: %s\n", SDL_GetError());
+	// 	return false;
+	// }
 #else // __EMSCRIPTEN__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
 		SYNAO_LOG("Setting OpenGL Core profile failed! SDL Error: %s\n", SDL_GetError());
@@ -132,10 +128,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SYNAO_LOG("Window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+#ifndef __EMSCRIPTEN__
 	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
 		SYNAO_LOG("Fullscreen after window creation failed! SDL Error: %s\n", SDL_GetError());
 		return false;
 	}
+#endif // __EMSCRIPTEN__
 	while (1) {
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, this->major) < 0) {
 			SYNAO_LOG("Setting OpenGL major version failed! SDL Error: %s\n", SDL_GetError());
@@ -249,9 +247,12 @@ void video_t::set_parameters(screen_params_t params) {
 	}
 	if (this->params.full != params.full) {
 		this->params.full = params.full;
+#ifndef __EMSCRIPTEN__
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
 			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
-		} else {
+		} else 
+#endif // __EMSCRIPTEN__
+		{
 			SDL_SetWindowPosition(
 				window, 
 				SDL_WINDOWPOS_CENTERED, 

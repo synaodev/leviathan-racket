@@ -4,10 +4,10 @@
 #include "../types.hpp"
 
 #ifndef __EMSCRIPTEN__
-#include "./glad.hpp"
+	#include "./glad.hpp"
 #else // __EMSCRIPTEN__
-#include <SDL2/SDL_opengles2.h>
-#include <GLES3/gl3.h>
+	#include <SDL/SDL_opengles2.h>
+	#include <GLES3/gl3.h>
 #endif // __EMSCRIPTEN__
 
 #ifdef SYNAO_DEBUG_BUILD

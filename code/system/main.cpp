@@ -14,7 +14,12 @@
 #include "../utility/misc.hpp"
 
 #include <cstdlib>
-#include <SDL2/SDL.h>
+
+#ifndef __EMSCRIPTEN__
+	#include <SDL2/SDL.h>
+#else
+	#include <SDL/SDL.h>
+#endif // __EMSCRIPTEN__
 
 static constexpr byte_t kBootPath[]	= "./boot.cfg";
 static constexpr uint_t kStopDelay  = 40;

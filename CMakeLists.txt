@@ -9,109 +9,148 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package (Angelscript CONFIG REQUIRED)
-find_path (Angelscript_INCLUDE_DIR "angelscript.h")
+if (NOT EMSCRIPTEN)
 
-find_package (OpenGL REQUIRED)
-find_package (OpenAL CONFIG REQUIRED)
+	find_package (Angelscript CONFIG REQUIRED)
+	find_path (Angelscript_INCLUDE_DIR "angelscript.h")
 
-if (NOT DEFINED ${OPENAL_LIBRARIES})
-	set (OPENAL_LIBRARIES OpenAL::OpenAL)
-endif ()
+	find_package (OpenGL REQUIRED)
+	find_package (OpenAL CONFIG REQUIRED)
 
-find_package (SDL2 CONFIG REQUIRED)
-find_path (SDL2_INCLUDE_DIR "SDL2/SDL.h")
-
-find_package (Tmxlite CONFIG REQUIRED)
-find_path (Tmxlite_INCLUDE_DIR "tmxlite/Config.hpp")
-
-find_path (EnTT_INCLUDE_DIR "entt/entt.hpp")
-find_path (GLM_INCLUDE_DIR "glm/glm.hpp")
-
-add_executable (leviathan)
-
-if (WIN32)
-	target_compile_definitions (leviathan PRIVATE
-		"-DNOMINMAX"
-		"-DUNICODE"
-		"-D_UNICODE"
-		"-DWIN32_LEAN_AND_MEAN"
-		"-D_WIN32_WINNT=0x0602"
-		"-D_SCL_SECURE_NO_WARNINGS"
-		"-D_CRT_SECURE_NO_WARNINGS"
-		"-D_CRT_SECURE_NO_DEPRECATE"
-		"-D_CRT_NONSTDC_NO_WARNINGS"
-	)
-	if (MSVC)
-		# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
-		foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-			string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
-		endforeach ()
-		target_compile_options(leviathan PRIVATE
-			"/sdl"	  # Enable security checks
-			"/MP"	  # Multi-processor compilation
-			"/utf-8"  # UTF-8 source files
-			"/WX"	  # Treat linker warnings as errors
-			"/wd4201" # nonstandard extension used : nameless struct/union
-			"/wd4127" # conditional expression is constant
-			"/wd4100" # 'identifier' : unreferenced formal parameter
-			"/wd4200" # InputCommon fix temp.
-			"/wd4244" # 'conversion' conversion from 'type1' to 'type2', possible loss of data
-			"/wd4121" # 'symbol' : alignment of a member was sensitive to packing
-			"/wd4324" # Padding was added at the end of a structure because you specified a __declspec(align) value.
-			"/wd4714" # function 'function' marked as __forceinline not inlined
-			"/wd4351" # new behavior: elements of array 'array' will be default initialized
-			"/wd4245" # conversion from 'type1' to 'type2', signed/unsigned mismatch
-			"/wd4458" # declaration of 'identifier' hides class member
-			"/wd4706" # assignment within conditional expression
-			"/wd26812"# Prefer 'enum class' over 'enum' 
-			"/w44263" # Non-virtual member function hides base class virtual function
-			"/w44265" # Class has virtual functions, but destructor is not virtual
-		)
-		if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-			set_target_properties (leviathan PROPERTIES 
-				LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL"
-				COMPILE_PDB_NAME "leviathan"
-				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
-			)
-		elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-			set_target_properties(leviathan PROPERTIES 
-				LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
-				COMPILE_PDB_NAME "leviathan"
-				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
-			)
-		else ()
-			set_target_properties(leviathan PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
-		endif ()
-	elseif (MINGW)
-		message (FATAL_ERROR "Error! MinGW is not supported!")
+	if (NOT DEFINED ${OPENAL_LIBRARIES})
+		set (OPENAL_LIBRARIES OpenAL::OpenAL)
 	endif ()
-elseif (UNIX)
 
-endif ()
+	find_package (SDL2 CONFIG REQUIRED)
+	find_path (SDL2_INCLUDE_DIR "SDL2/SDL.h")
 
-target_include_directories (leviathan PRIVATE
-	${Angelscript_INCLUDE_DIR}
-	${OPENAL_INCLUDE_DIR}
-	${OPENGL_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-	${Tmxlite_INCLUDE_DIR}
-	${EnTT_INCLUDE_DIR}
-	${GLM_INCLUDE_DIR}
-)
+	find_package (Tmxlite CONFIG REQUIRED)
+	find_path (Tmxlite_INCLUDE_DIR "tmxlite/Config.hpp")
 
-target_link_libraries (leviathan PRIVATE
-	Angelscript::angelscript
-	${OPENAL_LIBRARIES}
-	${OPENGL_LIBRARIES}
-	SDL2::SDL2
-	SDL2::SDL2main
-	Tmxlite::tmxlite
-)
+	find_path (EnTT_INCLUDE_DIR "entt/entt.hpp")
+	find_path (GLM_INCLUDE_DIR "glm/glm.hpp")
 
-if (UNIX)
-	find_package (Threads REQUIRED)
-	target_link_libraries (leviathan PRIVATE Threads::Threads)
+	add_executable (leviathan)
+
+	if (WIN32)
+		target_compile_definitions (leviathan PRIVATE
+			"-DNOMINMAX"
+			"-DUNICODE"
+			"-D_UNICODE"
+			"-DWIN32_LEAN_AND_MEAN"
+			"-D_WIN32_WINNT=0x0602"
+			"-D_SCL_SECURE_NO_WARNINGS"
+			"-D_CRT_SECURE_NO_WARNINGS"
+			"-D_CRT_SECURE_NO_DEPRECATE"
+			"-D_CRT_NONSTDC_NO_WARNINGS"
+		)
+		if (MSVC)
+			# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
+			foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
+				string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
+			endforeach ()
+			target_compile_options(leviathan PRIVATE
+				"/sdl"	  # Enable security checks
+				"/MP"	  # Multi-processor compilation
+				"/utf-8"  # UTF-8 source files
+				"/WX"	  # Treat linker warnings as errors
+				"/wd4201" # nonstandard extension used : nameless struct/union
+				"/wd4127" # conditional expression is constant
+				"/wd4100" # 'identifier' : unreferenced formal parameter
+				"/wd4200" # InputCommon fix temp.
+				"/wd4244" # 'conversion' conversion from 'type1' to 'type2', possible loss of data
+				"/wd4121" # 'symbol' : alignment of a member was sensitive to packing
+				"/wd4324" # Padding was added at the end of a structure because you specified a __declspec(align) value.
+				"/wd4714" # function 'function' marked as __forceinline not inlined
+				"/wd4351" # new behavior: elements of array 'array' will be default initialized
+				"/wd4245" # conversion from 'type1' to 'type2', signed/unsigned mismatch
+				"/wd4458" # declaration of 'identifier' hides class member
+				"/wd4706" # assignment within conditional expression
+				"/wd26812"# Prefer 'enum class' over 'enum' 
+				"/w44263" # Non-virtual member function hides base class virtual function
+				"/w44265" # Class has virtual functions, but destructor is not virtual
+			)
+			if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+				set_target_properties (leviathan PROPERTIES 
+					LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL"
+					COMPILE_PDB_NAME "leviathan"
+					COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
+				)
+			elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+				set_target_properties(leviathan PROPERTIES 
+					LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
+					COMPILE_PDB_NAME "leviathan"
+					COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
+				)
+			else ()
+				set_target_properties(leviathan PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+			endif ()
+		elseif (MINGW)
+			message (FATAL_ERROR "Error! MinGW is not supported!")
+		endif ()
+	elseif (UNIX)
+
+	endif ()
+
+	target_include_directories (leviathan PRIVATE
+		${Angelscript_INCLUDE_DIR}
+		${OPENAL_INCLUDE_DIR}
+		${OPENGL_INCLUDE_DIR}
+		${SDL2_INCLUDE_DIR}
+		${Tmxlite_INCLUDE_DIR}
+		${EnTT_INCLUDE_DIR}
+		${GLM_INCLUDE_DIR}
+	)
+
+	target_link_libraries (leviathan PRIVATE
+		Angelscript::angelscript
+		${OPENAL_LIBRARIES}
+		${OPENGL_LIBRARIES}
+		SDL2::SDL2
+		SDL2::SDL2main
+		Tmxlite::tmxlite
+	)
+
+	if (UNIX)
+		find_package (Threads REQUIRED)
+		target_link_libraries (leviathan PRIVATE Threads::Threads)
+	endif ()
+
+else ()
+	add_executable (leviathan)
+
+	if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+		set (Angelscript_LIBRARIES "${CMAKE_SOURCE_DIR}/webdev/lib/libangelscript-d.a")
+		set (Tmxlite_LIBRARIES "${CMAKE_SOURCE_DIR}/webdev/lib/libtmxlite-d.a")
+	else ()
+		set (Angelscript_LIBRARIES "${CMAKE_SOURCE_DIR}/webdev/lib/libangelscript.a")
+		set (Tmxlite_LIBRARIES "${CMAKE_SOURCE_DIR}/webdev/lib/libtmxlite.a")
+	endif ()
+
+	target_include_directories (leviathan PRIVATE
+		"${CMAKE_SOURCE_DIR}/webdev/include"
+	)
+
+	target_link_libraries (leviathan 
+		"-s USE_SDL=2"
+		"-s FULL_ES3=1"
+		"--preload-file ${CMAKE_SOURCE_DIR}/event"
+		"--preload-file ${CMAKE_SOURCE_DIR}/field"
+		"--preload-file ${CMAKE_SOURCE_DIR}/font"
+		"--preload-file ${CMAKE_SOURCE_DIR}/i18n"
+		"--preload-file ${CMAKE_SOURCE_DIR}/image"
+		"--preload-file ${CMAKE_SOURCE_DIR}/noise"
+		"--preload-file ${CMAKE_SOURCE_DIR}/palette"
+		"--preload-file ${CMAKE_SOURCE_DIR}/pxtone"
+		"--preload-file ${CMAKE_SOURCE_DIR}/sprite"
+		"--preload-file ${CMAKE_SOURCE_DIR}/tilekey"
+		"${Angelscript_LIBRARIES}"
+		"${Tmxlite_LIBRARIES}"
+		"-lopenal"
+	)
+
+	target_compile_options (leviathan PUBLIC "-O2")
+	target_link_libraries (leviathan "-O2")
 endif ()
 
 add_subdirectory(code)

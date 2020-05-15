@@ -1,8 +1,13 @@
 #ifndef SYNAO_SYSTEM_EDITOR_HPP
 #define SYNAO_SYSTEM_EDITOR_HPP
 
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_events.h>
+#ifndef __EMSCRIPTEN__
+	#include <SDL2/SDL_video.h>
+	#include <SDL2/SDL_events.h>
+#else
+	#include <SDL/SDL_video.h>
+	#include <SDL/SDL_events.h>
+#endif // __EMSCRIPTEN__
 
 #include "../field/tileset_viewer.hpp"
 #include "../menu/attribute_gui.hpp"

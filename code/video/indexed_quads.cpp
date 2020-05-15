@@ -15,11 +15,13 @@ bool indexed_quads_t::allocate_indexer(arch_t length, primitive_t primitive) {
 		glCheck(glGenBuffers(1, &indexed_quads_t::elemts));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexed_quads_t::elemts));
 		if (const_buffer_t::has_immutable_storage()) {
+#ifndef __EMSCRIPTEN__
 			glCheck(glBufferStorage(
 				GL_ELEMENT_ARRAY_BUFFER,
 				sizeof(decltype(indices)::value_type) * indices.size(),
 				indices.data(), 0
 			));
+#endif // __EMSCRIPTEN__
 		} else {
 			glCheck(glBufferData(
 				GL_ELEMENT_ARRAY_BUFFER,

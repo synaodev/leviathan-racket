@@ -131,7 +131,9 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_bindi
 			write = frame_buffer;
 			if (frame_buffer != nullptr and frame_buffer->ready) {
 				glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame_buffer->handle));
+#ifndef __EMSCRIPTEN__
 				glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
+#endif // __EMSCRIPTEN__
 			}
 			else {
 				glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0));

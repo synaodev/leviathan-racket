@@ -5,7 +5,11 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
-#include <SDL2/SDL.h>
+#ifndef __EMSCRIPTEN__
+	#include <SDL2/SDL.h>
+#else
+	#include <SDL/SDL.h>
+#endif // __EMSCRIPTEN__
 
 noise_t::noise_t() :
 	ready(false),

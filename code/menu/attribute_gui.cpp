@@ -1,3 +1,5 @@
+#ifndef __EMSCRIPTEN__
+
 #include "./attribute_gui.hpp"
 
 #include "../imgui/imgui.h"
@@ -83,3 +85,5 @@ void attribute_gui_t::handle(tileset_viewer_t& tileset_viewer, renderer_t& rende
 bool attribute_gui_t::active() const {
 	return bitmask[attrgui_bits_t::Load] or bitmask[attrgui_bits_t::Save];
 }
+
+#endif // __EMSCRIPTEN__

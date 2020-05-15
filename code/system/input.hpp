@@ -4,9 +4,16 @@
 #include <bitset>
 #include <string>
 #include <map>
-#include <SDL2/SDL_scancode.h>
-#include <SDL2/SDL_joystick.h>
-#include <SDL2/SDL_events.h>
+
+#ifndef __EMSCRIPTEN__
+	#include <SDL2/SDL_scancode.h>
+	#include <SDL2/SDL_joystick.h>
+	#include <SDL2/SDL_events.h>
+#else
+	#include <SDL/SDL_scancode.h>
+	#include <SDL/SDL_joystick.h>
+	#include <SDL/SDL_events.h>
+#endif // __EMSCRIPTEN__
 
 #include "../utility/enums.hpp"
 

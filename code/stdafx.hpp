@@ -56,7 +56,12 @@
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
 #include <angelscript.h>
-#include <SDL2/SDL.h>
+
+#ifndef __EMSCRIPTEN__
+	#include <SDL2/SDL.h>
+#else
+	#include <SDL/SDL.h>
+#endif // __EMSCRIPTEN__
 
 // Etc...
 #include "./types.hpp"

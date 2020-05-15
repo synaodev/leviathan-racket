@@ -4,7 +4,7 @@ target_sources (leviathan PRIVATE
 	"types.cpp" "types.hpp"
 )
 
-if (${CMAKE_VERSION} VERSION_GREATER "3.15")
+if (${CMAKE_VERSION} VERSION_GREATER "3.15" AND NOT EMSCRIPTEN)
 	target_precompile_headers (leviathan PRIVATE "stdafx.hpp")
 endif ()
 

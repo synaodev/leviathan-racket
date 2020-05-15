@@ -35,6 +35,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 		this->stage = stage;
 		
 		const byte_t* source_pointer = source.c_str();
+#ifndef __EMSCRIPTEN__
 		if (program_t::has_separable()) {
 			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
@@ -47,7 +48,9 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 				this->destroy();
 				return false;
 			}
-		} else {
+		} else
+#endif // __EMSCRIPTEN__
+		{
 			glCheck(handle = glCreateShader(stage));
 			glCheck(glShaderSource(handle, 1, &source_pointer, NULL));
 			glCheck(glCompileShader(handle));
@@ -171,6 +174,7 @@ program_t::~program_t() {
 
 bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
 	if (!handle) {
+#ifndef __EMSCRIPTEN__
 		if (program_t::has_separable()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
@@ -199,7 +203,9 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 				this->destroy();
 				return false;
 			}
-		} else {
+		} else 
+#endif // __EMSCRIPTEN__ 
+		{
 			sint_t success = 0;
 			glCheck(handle = glCreateProgram());
 
@@ -237,10 +243,13 @@ bool program_t::create(const shader_t* vert, const shader_t* frag) {
 
 void program_t::destroy() {
 	if (handle != 0) {
+#ifndef __EMSCRIPTEN__
 		if (program_t::has_separable()) {
 			glCheck(glBindProgramPipeline(0));
 			glCheck(glDeleteProgramPipelines(1, &handle));
-		} else {
+		} else
+#endif // __EMSCRIPTEN__
+		{
 			glCheck(glUseProgram(0));
 			glCheck(glDeleteProgram(handle));
 		}
@@ -286,9 +295,11 @@ const vertex_spec_t& program_t::get_specify() const {
 }
 
 bool program_t::has_separable() {
-#ifndef __APPLE__
+#if defined(__EMSCRIPTEN__)
+	return false;
+#elif !defined(__APPLE__)
 	return glBindProgramPipeline != nullptr;
-#else // __APPLE__
+#else // __APPLE__ __EMSCRIPTEN__
 	return glTexStorage2D != nullptr;
-#endif // __APPLE__	
+#endif // __APPLE__	__EMSCRIPTEN__
 }

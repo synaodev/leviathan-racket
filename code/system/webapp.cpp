@@ -15,7 +15,7 @@
 
 #include <emscripten.h>
 #include <cstdlib>
-#include <SDL2/SDL.h>
+#include <SDL/SDL.h>
 
 static constexpr byte_t kBootPath[]	= "./boot.cfg";
 static constexpr sint_t kFrameRate	= 60;

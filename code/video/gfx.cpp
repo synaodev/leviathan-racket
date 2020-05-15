@@ -70,11 +70,14 @@ void gfx_t::set_program(const program_t* program) {
 	if (this->program != program) {
 		this->program = program;
 		if (program != nullptr) {
+#ifndef __EMSCRIPTEN__
 			if (program_t::has_separable()) {
 				glCheck(glBindProgramPipeline(program->handle));
-			} else {
+			} else 
+#endif // __EMSCRIPTEN__
+			{
 				glCheck(glUseProgram(program->handle));
-			}			
+			}		
 		}
 	}
 }
