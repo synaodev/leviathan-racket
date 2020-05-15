@@ -3,7 +3,7 @@ This is the current official repository for Leviathan Racket.
 It's a computer game inspired by my love for Cave Story, Linguistics, and Geopolitics.
 I hope to release in Winter 2020.
 ## Building From Source
-- The only supported desktop platforms are Windows, MacOS, Linux.
+- Currently, Windows, MacOS, and Linux are all supported.
 - Minimum required CMake version is 3.15.
 - C++ compiler must have C++17 support.
 - [vcpkg](https://github.com/microsoft/vcpkg) is recommended to manage dependencies (Not required).
