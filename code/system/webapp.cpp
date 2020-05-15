@@ -17,7 +17,7 @@
 #include <cstdlib>
 #include <SDL/SDL.h>
 
-static constexpr byte_t kBootPath[]	= "./boot.cfg";
+static constexpr byte_t kBootPath[]	= "init/boot.cfg";
 static constexpr sint_t kFrameRate	= 60;
 
 struct webapp_t : public not_copyable_t {

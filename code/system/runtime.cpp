@@ -14,8 +14,8 @@
 #include "../utility/setup_file.hpp"
 #include "../utility/vfs.hpp"
 
-static const byte_t kFieldPath[] 	= "./field/";
-static const byte_t kSavesPath[] 	= "./saves/";
+static const byte_t kFieldPath[] 	= "field/";
+static const byte_t kSavesPath[] 	= "saves/";
 static const byte_t kStatProgPath[] = "_prog.cfg";
 static const byte_t kStatCpntPath[] = "_check.cfg";
 

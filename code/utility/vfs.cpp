@@ -18,16 +18,16 @@
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
 
-static const byte_t kEventPath[]	= "./event/";
-static const byte_t kFieldPath[]	= "./field/";
-static const byte_t kFontPath[]		= "./font/";
-static const byte_t kI18NPath[]		= "./i18n/";
-static const byte_t kImagePath[]	= "./image/";
-static const byte_t kTileKeyPath[]	= "./tilekey/";
-static const byte_t kNoisePath[]	= "./noise/";
-static const byte_t kPalettePath[]	= "./palette/";
-static const byte_t kPxtonePath[]	= "./pxtone/";
-static const byte_t kSpritePath[]	= "./sprite/";
+static const byte_t kEventPath[]	= "event/";
+static const byte_t kFieldPath[]	= "field/";
+static const byte_t kFontPath[]		= "font/";
+static const byte_t kI18NPath[]		= "i18n/";
+static const byte_t kImagePath[]	= "image/";
+static const byte_t kTileKeyPath[]	= "tilekey/";
+static const byte_t kNoisePath[]	= "noise/";
+static const byte_t kPalettePath[]	= "palette/";
+static const byte_t kPxtonePath[]	= "pxtone/";
+static const byte_t kSpritePath[]	= "sprite/";
 
 static constexpr byte_t kDefaultLang[] = "english";
 static constexpr arch_t kTotalThreads  = 4;

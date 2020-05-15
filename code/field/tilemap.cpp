@@ -7,7 +7,7 @@
 #include "../system/renderer.hpp"
 #include "../utility/vfs.hpp"
 
-static constexpr byte_t kTileKeyPath[] = "./tilekey/";
+static constexpr byte_t kTileKeyPath[] = "tilekey/";
 static constexpr sint_t kScreenWidth   = 21;
 static constexpr sint_t kScreenHeight  = 12;
 static constexpr sint_t kSintTileSize  = 16;

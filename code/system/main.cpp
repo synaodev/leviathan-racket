@@ -21,7 +21,7 @@
 	#include <SDL/SDL.h>
 #endif // __EMSCRIPTEN__
 
-static constexpr byte_t kBootPath[]	= "./boot.cfg";
+static constexpr byte_t kBootPath[]	= "boot.cfg";
 static constexpr uint_t kStopDelay  = 40;
 static constexpr uint_t kNormDelay  = 10;
 
