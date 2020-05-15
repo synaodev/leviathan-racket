@@ -527,10 +527,10 @@ void receiver_t::generate_properties() {
 }
 
 void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
-	asECallConvTypes cdecl = kUseGenericCall ? 
+	asECallConvTypes call_cdecl = kUseGenericCall ? 
 		asCALL_GENERIC : 
 		asCALL_CDECL;
-	asECallConvTypes gthis = kUseGenericCall ? 
+	asECallConvTypes call_gthis = kUseGenericCall ? 
 		asCALL_GENERIC : 
 		asCALL_THISCALL_ASGLOBAL;
 	sint_t r = 0;
@@ -538,313 +538,313 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->SetDefaultNamespace("sys");
 	assert(r >= 0);
 	// Print Statement (Debug Only)
-	r = engine->RegisterGlobalFunction("void print(const std::string &in statement)", WRAP_FN(receiver_t::print_message), cdecl);
+	r = engine->RegisterGlobalFunction("void print(const std::string &in statement)", WRAP_FN(receiver_t::print_message), call_cdecl);
 	assert(r >= 0);
 	// Stall For Script
-	r = engine->RegisterGlobalFunction("void wait()", WRAP_MFN(receiver_t, set_stalled_period), gthis, this);
+	r = engine->RegisterGlobalFunction("void wait()", WRAP_MFN(receiver_t, set_stalled_period), call_gthis, this);
 	assert(r >= 0);
 	// Wait For Script
-	r = engine->RegisterGlobalFunction("void wait(real64_t seconds)", WRAP_MFN(receiver_t, set_waiting_period), gthis, this);
+	r = engine->RegisterGlobalFunction("void wait(real64_t seconds)", WRAP_MFN(receiver_t, set_waiting_period), call_gthis, this);
 	assert(r >= 0);
 	// Suspend Current Script
-	r = engine->RegisterGlobalFunction("void suspend()", WRAP_MFN(receiver_t, suspend), gthis, this);
+	r = engine->RegisterGlobalFunction("void suspend()", WRAP_MFN(receiver_t, suspend), call_gthis, this);
 	assert(r >= 0);
 	// Getting Flags
-	r = engine->RegisterGlobalFunction("bool get_flag(arch_t index)", WRAP_MFN(kernel_t, get_flag), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("bool get_flag(arch_t index)", WRAP_MFN(kernel_t, get_flag), call_gthis, &kernel);
 	assert(r >= 0);
 	// Setting Flags
-	r = engine->RegisterGlobalFunction("void set_flag(arch_t index, bool value)", WRAP_MFN(kernel_t, set_flag), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_flag(arch_t index, bool value)", WRAP_MFN(kernel_t, set_flag), call_gthis, &kernel);
 	assert(r >= 0);
 	// Setting Items
-	r = engine->RegisterGlobalFunction("void set_item(sint32_t type, sint32_t count, sint32_t limit, sint32_t optor)", WRAP_MFN(kernel_t, set_item), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item(sint32_t type, sint32_t count, sint32_t limit, sint32_t optor)", WRAP_MFN(kernel_t, set_item), call_gthis, &kernel);
 	assert(r >= 0);
 	// Setting Item Limit
-	r = engine->RegisterGlobalFunction("void set_item_limit(sint32_t type, sint32_t limit)", WRAP_MFN(kernel_t, set_item_limit), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_limit(sint32_t type, sint32_t limit)", WRAP_MFN(kernel_t, set_item_limit), call_gthis, &kernel);
 	assert(r >= 0);
 	// Setting Item Optor
-	r = engine->RegisterGlobalFunction("void set_item_optor(sint32_t type, sint32_t optor)", WRAP_MFN(kernel_t, set_item_optor), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_optor(sint32_t type, sint32_t optor)", WRAP_MFN(kernel_t, set_item_optor), call_gthis, &kernel);
 	assert(r >= 0);
 	// Adding Items
-	r = engine->RegisterGlobalFunction("void add_item(sint32_t type, sint32_t count, sint32_t limit)", WRAP_MFN(kernel_t, add_item), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void add_item(sint32_t type, sint32_t count, sint32_t limit)", WRAP_MFN(kernel_t, add_item), call_gthis, &kernel);
 	assert(r >= 0);
 	// Sutracting Items
-	r = engine->RegisterGlobalFunction("void sub_item(sint32_t type, sint32_t count)", WRAP_MFN(kernel_t, sub_item), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void sub_item(sint32_t type, sint32_t count)", WRAP_MFN(kernel_t, sub_item), call_gthis, &kernel);
 	assert(r >= 0);
 	// Ridding Items
-	r = engine->RegisterGlobalFunction("void rid_item(sint32_t type)", WRAP_MFN(kernel_t, rid_item), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void rid_item(sint32_t type)", WRAP_MFN(kernel_t, rid_item), call_gthis, &kernel);
 	assert(r >= 0);
 	// Polling Items
-	r = engine->RegisterGlobalFunction("sint32_t get_item_count(sint32_t type)", WRAP_MFN(kernel_t, get_item_count), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("sint32_t get_item_count(sint32_t type)", WRAP_MFN(kernel_t, get_item_count), call_gthis, &kernel);
 	assert(r >= 0);
 	// Set ItmPtr Index
-	r = engine->RegisterGlobalFunction("void set_item_ptr_index(arch_t index)", WRAP_MFN_PR(kernel_t, set_item_ptr_index, (arch_t), void), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_ptr_index(arch_t index)", WRAP_MFN_PR(kernel_t, set_item_ptr_index, (arch_t), void), call_gthis, &kernel);
 	assert(r >= 0);
 	// Set ItmPtr Index
-	r = engine->RegisterGlobalFunction("void set_item_ptr_index()", WRAP_MFN_PR(kernel_t, set_item_ptr_index, (void), void), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item_ptr_index()", WRAP_MFN_PR(kernel_t, set_item_ptr_index, (void), void), call_gthis, &kernel);
 	assert(r >= 0);
 	// Get ItmPtr Index
-	r = engine->RegisterGlobalFunction("arch_t get_item_ptr_index()", WRAP_MFN(kernel_t, get_item_ptr_index), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_item_ptr_index()", WRAP_MFN(kernel_t, get_item_ptr_index), call_gthis, &kernel);
 	assert(r >= 0);
 	// Get Max Items
-	r = engine->RegisterGlobalFunction("arch_t get_max_items()", WRAP_MFN(kernel_t, get_max_items), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_max_items()", WRAP_MFN(kernel_t, get_max_items), call_gthis, &kernel);
 	assert(r >= 0);
 	// Lock Keys
-	r = engine->RegisterGlobalFunction("void lock()", WRAP_MFN(kernel_t, lock), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void lock()", WRAP_MFN(kernel_t, lock), call_gthis, &kernel);
 	assert(r >= 0);
 	// Freeze Keys
-	r = engine->RegisterGlobalFunction("void freeze()", WRAP_MFN(kernel_t, freeze), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void freeze()", WRAP_MFN(kernel_t, freeze), call_gthis, &kernel);
 	assert(r >= 0);
 	// Unlock Keys
-	r = engine->RegisterGlobalFunction("void unlock()", WRAP_MFN(kernel_t, unlock), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void unlock()", WRAP_MFN(kernel_t, unlock), call_gthis, &kernel);
 	assert(r >= 0);
 	// Restart Game
-	r = engine->RegisterGlobalFunction("void reset()", WRAP_MFN(kernel_t, boot), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void reset()", WRAP_MFN(kernel_t, boot), call_gthis, &kernel);
 	assert(r >= 0);
 	// Quit Game
-	r = engine->RegisterGlobalFunction("void quit()", WRAP_MFN(kernel_t, quit), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void quit()", WRAP_MFN(kernel_t, quit), call_gthis, &kernel);
 	assert(r >= 0);
 	// Set Room Default Function
-	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t), void), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t), void), call_gthis, &kernel);
 	assert(r >= 0);
 	// Set Room Special Function
-	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id, std::event@ event)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t, asIScriptFunction*), void), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id, std::event@ event)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t, asIScriptFunction*), void), call_gthis, &kernel);
 	assert(r >= 0);
 	// Load Progress
-	r = engine->RegisterGlobalFunction("void load_progress()", WRAP_MFN(kernel_t, load_progress), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void load_progress()", WRAP_MFN(kernel_t, load_progress), call_gthis, &kernel);
 	assert(r >= 0);
 	// Save Progress
-	r = engine->RegisterGlobalFunction("void save_progress()", WRAP_MFN(kernel_t, save_progress), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void save_progress()", WRAP_MFN(kernel_t, save_progress), call_gthis, &kernel);
 	assert(r >= 0);
 	// Load CheckPoint
-	r = engine->RegisterGlobalFunction("void load_checkpoint()", WRAP_MFN(kernel_t, load_checkpoint), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void load_checkpoint()", WRAP_MFN(kernel_t, load_checkpoint), call_gthis, &kernel);
 	assert(r >= 0);
 	// Save CheckPoint
-	r = engine->RegisterGlobalFunction("void save_checkpoint()", WRAP_MFN(kernel_t, save_checkpoint), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void save_checkpoint()", WRAP_MFN(kernel_t, save_checkpoint), call_gthis, &kernel);
 	assert(r >= 0);
 	// Set FileIndex
-	r = engine->RegisterGlobalFunction("void set_file_index(arch_t index)", WRAP_MFN(kernel_t, set_file_index), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void set_file_index(arch_t index)", WRAP_MFN(kernel_t, set_file_index), call_gthis, &kernel);
 	assert(r >= 0);
 	// Get FileIndex
-	r = engine->RegisterGlobalFunction("arch_t get_file_index()", WRAP_MFN(kernel_t, get_file_index), gthis, &kernel);
+	r = engine->RegisterGlobalFunction("arch_t get_file_index()", WRAP_MFN(kernel_t, get_file_index), call_gthis, &kernel);
 	assert(r >= 0);
 	// Random Int
-	r = engine->RegisterGlobalFunction("sint32_t get_rand(sint32_t lowest, sint32_t highest)", WRAP_FN_PR(rng::next, (sint_t, sint_t), sint_t), cdecl);
+	r = engine->RegisterGlobalFunction("sint32_t get_rand(sint32_t lowest, sint32_t highest)", WRAP_FN_PR(rng::next, (sint_t, sint_t), sint_t), call_cdecl);
 	assert(r >= 0);
 	// Random Float
-	r = engine->RegisterGlobalFunction("real32_t get_rand(real32_t lowest, real32_t highest)", WRAP_FN_PR(rng::next, (real_t, real_t), real_t), cdecl);
+	r = engine->RegisterGlobalFunction("real32_t get_rand(real32_t lowest, real32_t highest)", WRAP_FN_PR(rng::next, (real_t, real_t), real_t), call_cdecl);
 	assert(r >= 0);
 	// Get Input Press
-	r = engine->RegisterGlobalFunction("bool get_key_press(arch_t action)", WRAP_MFN(input_t, get_button_pressed), gthis, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_press(arch_t action)", WRAP_MFN(input_t, get_button_pressed), call_gthis, &input);
 	assert(r >= 0);
 	// Get Input Held
-	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", WRAP_MFN(input_t, get_button_held), gthis, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", WRAP_MFN(input_t, get_button_held), call_gthis, &input);
 	assert(r >= 0);
 	// Get Locale String
-	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t), std::string), cdecl);
+	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t), std::string), call_cdecl);
 	assert(r >= 0);
 	// Get Locale String
-	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t first, arch_t last)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t, arch_t), std::string), gthis);
+	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t first, arch_t last)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t, arch_t), std::string), call_cdecl);
 	assert(r >= 0);
 	// Get Locale Size
-	r = engine->RegisterGlobalFunction("arch_t locale(const std::string &in key)", WRAP_FN_PR(vfs::i18n_size, (const std::string&), arch_t), cdecl);
+	r = engine->RegisterGlobalFunction("arch_t locale(const std::string &in key)", WRAP_FN_PR(vfs::i18n_size, (const std::string&), arch_t), call_cdecl);
 	assert(r >= 0);
 	// Push Menu
-	r = engine->RegisterGlobalFunction("void push_widget(arch_t type, arch_t flags)", WRAP_MFN(stack_gui_t, push), gthis, &stack_gui);
+	r = engine->RegisterGlobalFunction("void push_widget(arch_t type, arch_t flags)", WRAP_MFN(stack_gui_t, push), call_gthis, &stack_gui);
 	assert(r >= 0);
 	// Pop Menu
-	r = engine->RegisterGlobalFunction("void pop_widget()", WRAP_MFN(stack_gui_t, pop), gthis, &stack_gui);
+	r = engine->RegisterGlobalFunction("void pop_widget()", WRAP_MFN(stack_gui_t, pop), call_gthis, &stack_gui);
 	assert(r >= 0);
 	
 	// Set Namespace
 	r = engine->SetDefaultNamespace("msg");
 	assert(r >= 0);
 	// Fade In
-	r = engine->RegisterGlobalFunction("void fade_in()", WRAP_MFN(draw_headsup_t, fade_in), gthis, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_in()", WRAP_MFN(draw_headsup_t, fade_in), call_gthis, &headsup);
 	assert(r >= 0);
 	// Fade Out
-	r = engine->RegisterGlobalFunction("void fade_out()", WRAP_MFN(draw_headsup_t, fade_out), gthis, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_out()", WRAP_MFN(draw_headsup_t, fade_out), call_gthis, &headsup);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(draw_title_view_t, set_head, (const std::string&), void), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(draw_title_view_t, set_head, (const std::string&), void), call_gthis, &title_view);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void set_field_text()", WRAP_MFN_PR(draw_title_view_t, set_head, (void), void), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void set_field_text()", WRAP_MFN_PR(draw_title_view_t, set_head, (void), void), call_gthis, &title_view);
 	assert(r >= 0);
 	// Set Facebox
-	r = engine->RegisterGlobalFunction("void set_face(arch_t index, arch_t type)", WRAP_MFN_PR(dialogue_gui_t, set_face, (arch_t, direction_t), void), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void set_face(arch_t index, arch_t type)", WRAP_MFN_PR(dialogue_gui_t, set_face, (arch_t, direction_t), void), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Set No Facebox
-	r = engine->RegisterGlobalFunction("void set_face()", WRAP_MFN_PR(dialogue_gui_t, set_face, (void), void), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void set_face()", WRAP_MFN_PR(dialogue_gui_t, set_face, (void), void), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Push Titlecard
-	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_title_view_t, push), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_title_view_t, push), call_gthis, &title_view);
 	assert(r >= 0);
 	// Clear Titlecard
-	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(draw_title_view_t, clear), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(draw_title_view_t, clear), call_gthis, &title_view);
 	assert(r >= 0);
 	// Set Titlecard Position
-	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(draw_title_view_t, set_position, (arch_t, real_t, real_t), void), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(draw_title_view_t, set_position, (arch_t, real_t, real_t), void), call_gthis, &title_view);
 	assert(r >= 0);
 	// Set Titlecard Centered
-	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(draw_title_view_t, set_centered), gthis, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(draw_title_view_t, set_centered), call_gthis, &title_view);
 	assert(r >= 0);
 	// Open Textbox Top
-	r = engine->RegisterGlobalFunction("void top_box()", WRAP_MFN(dialogue_gui_t, open_textbox_high), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void top_box()", WRAP_MFN(dialogue_gui_t, open_textbox_high), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Open Textbox Bottom
-	r = engine->RegisterGlobalFunction("void low_box()", WRAP_MFN(dialogue_gui_t, open_textbox_low), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void low_box()", WRAP_MFN(dialogue_gui_t, open_textbox_low), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Set Textbox Text
-	r = engine->RegisterGlobalFunction("void say(const std::string &in words)", WRAP_MFN(dialogue_gui_t, write_textbox), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void say(const std::string &in words)", WRAP_MFN(dialogue_gui_t, write_textbox), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Clear Textbox
-	r = engine->RegisterGlobalFunction("void clear()", WRAP_MFN(dialogue_gui_t, clear_textbox), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void clear()", WRAP_MFN(dialogue_gui_t, clear_textbox), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Close Textbox
-	r = engine->RegisterGlobalFunction("void close()", WRAP_MFN(dialogue_gui_t, close_textbox), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void close()", WRAP_MFN(dialogue_gui_t, close_textbox), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Ask Question
-	r = engine->RegisterGlobalFunction("void ask(const std::array<std::string> &in question)", WRAP_MFN_PR(dialogue_gui_t, ask_question, (const CScriptArray*), void), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("void ask(const std::array<std::string> &in question)", WRAP_MFN_PR(dialogue_gui_t, ask_question, (const CScriptArray*), void), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Get Answer
-	r = engine->RegisterGlobalFunction("arch_t get_answer()", WRAP_MFN(dialogue_gui_t, get_answer), gthis, &dialogue_gui);
+	r = engine->RegisterGlobalFunction("arch_t get_answer()", WRAP_MFN(dialogue_gui_t, get_answer), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("aud");
 	assert(r >= 0);
 	// Sound Play Channel
-	r = engine->RegisterGlobalFunction("void play(const std::string &in id, arch_t channel)", WRAP_MFN_PR(audio_t, play, (const std::string&, arch_t), void), gthis, &audio);
+	r = engine->RegisterGlobalFunction("void play(const std::string &in id, arch_t channel)", WRAP_MFN_PR(audio_t, play, (const std::string&, arch_t), void), call_gthis, &audio);
 	assert(r >= 0);
 	// Sound Play
-	r = engine->RegisterGlobalFunction("void play(const std::string &in id)", WRAP_MFN_PR(audio_t, play, (const std::string&), void), gthis, &audio);
+	r = engine->RegisterGlobalFunction("void play(const std::string &in id)", WRAP_MFN_PR(audio_t, play, (const std::string&), void), call_gthis, &audio);
 	assert(r >= 0);
 	// Sound Pause Channel
-	r = engine->RegisterGlobalFunction("void pause(arch_t channel)", WRAP_MFN_PR(audio_t, pause, (arch_t), void), gthis, &audio);
+	r = engine->RegisterGlobalFunction("void pause(arch_t channel)", WRAP_MFN_PR(audio_t, pause, (arch_t), void), call_gthis, &audio);
 	assert(r >= 0);
 	// Sound Resume Channel
-	r = engine->RegisterGlobalFunction("void resume(arch_t channel)", WRAP_MFN_PR(audio_t, resume, (arch_t), void), gthis, &audio);
+	r = engine->RegisterGlobalFunction("void resume(arch_t channel)", WRAP_MFN_PR(audio_t, resume, (arch_t), void), call_gthis, &audio);
 	assert(r >= 0);
 	// Sound Set Volume
-	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", WRAP_MFN(audio_t, set_volume), gthis, &audio);
+	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", WRAP_MFN(audio_t, set_volume), call_gthis, &audio);
 	assert(r >= 0);
 	// Sound Get Volume
-	r = engine->RegisterGlobalFunction("real32_t get_volume()", WRAP_MFN(audio_t, get_volume), gthis, &audio);
+	r = engine->RegisterGlobalFunction("real32_t get_volume()", WRAP_MFN(audio_t, get_volume), call_gthis, &audio);
 	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("pxt");
 	assert(r >= 0);
 	// Pxtone Load Tune
-	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune)", WRAP_MFN_PR(music_t, load, (const std::string&), bool), gthis, &music);
+	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune)", WRAP_MFN_PR(music_t, load, (const std::string&), bool), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Load Tune
-	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune, real32_t start, real32_t fade)", WRAP_MFN_PR(music_t, load, (const std::string&, real_t, real_t), bool), gthis, &music);
+	r = engine->RegisterGlobalFunction("bool load(const std::string &in tune, real32_t start, real32_t fade)", WRAP_MFN_PR(music_t, load, (const std::string&, real_t, real_t), bool), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Exit Tune
-	r = engine->RegisterGlobalFunction("void exit()", WRAP_MFN(music_t, clear), gthis, &music);
+	r = engine->RegisterGlobalFunction("void exit()", WRAP_MFN(music_t, clear), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Play Tune
-	r = engine->RegisterGlobalFunction("void play(real32_t start, real32_t fade)", WRAP_MFN(music_t, play), gthis, &music);
+	r = engine->RegisterGlobalFunction("void play(real32_t start, real32_t fade)", WRAP_MFN(music_t, play), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Stop Tune
-	r = engine->RegisterGlobalFunction("void pause()", WRAP_MFN(music_t, pause), gthis, &music);
+	r = engine->RegisterGlobalFunction("void pause()", WRAP_MFN(music_t, pause), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Fade Tune
-	r = engine->RegisterGlobalFunction("void fade(real32_t seconds)", WRAP_MFN(music_t, fade_out), gthis, &music);
+	r = engine->RegisterGlobalFunction("void fade(real32_t seconds)", WRAP_MFN(music_t, fade_out), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Redo Tune
-	r = engine->RegisterGlobalFunction("void redo(real32_t seconds)", WRAP_MFN(music_t, resume), gthis, &music);
+	r = engine->RegisterGlobalFunction("void redo(real32_t seconds)", WRAP_MFN(music_t, resume), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Loop Tune
-	r = engine->RegisterGlobalFunction("void loop(bool state)", WRAP_MFN(music_t, set_looping), gthis, &music);
+	r = engine->RegisterGlobalFunction("void loop(bool state)", WRAP_MFN(music_t, set_looping), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Get Playing
-	r = engine->RegisterGlobalFunction("bool playing()", WRAP_MFN(music_t, running), gthis, &music);
+	r = engine->RegisterGlobalFunction("bool playing()", WRAP_MFN(music_t, running), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Set Volume
-	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", WRAP_MFN(music_t, set_volume), gthis, &music);
+	r = engine->RegisterGlobalFunction("void set_volume(real32_t volume)", WRAP_MFN(music_t, set_volume), call_gthis, &music);
 	assert(r >= 0);
 	// Pxtone Get Volume
-	r = engine->RegisterGlobalFunction("real32_t get_volume()", WRAP_MFN(music_t, get_volume), gthis, &music);
+	r = engine->RegisterGlobalFunction("real32_t get_volume()", WRAP_MFN(music_t, get_volume), call_gthis, &music);
 	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("ktx");
 	assert(r >= 0);
 	// Spawn Actor
-	r = engine->RegisterGlobalFunction("bool spawn(const std::string &in name, real32_t x, real32_t y, sint32_t id)", WRAP_MFN(kontext_t, create_minimally), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("bool spawn(const std::string &in name, real32_t x, real32_t y, sint32_t id)", WRAP_MFN(kontext_t, create_minimally), call_gthis, &kontext);
 	assert(r >= 0);
 	// Generate Smoke
-	r = engine->RegisterGlobalFunction("void smoke(real32_t x, real32_t y, arch_t count)", WRAP_MFN_PR(kontext_t, smoke, (real_t, real_t, arch_t), void), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void smoke(real32_t x, real32_t y, arch_t count)", WRAP_MFN_PR(kontext_t, smoke, (real_t, real_t, arch_t), void), call_gthis, &kontext);
 	assert(r >= 0);
 	// Generate Shrapnel
-	r = engine->RegisterGlobalFunction("void shrapnel(real32_t x, real32_t y, arch_t count)", WRAP_MFN_PR(kontext_t, shrapnel, (real_t, real_t, arch_t), void), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void shrapnel(real32_t x, real32_t y, arch_t count)", WRAP_MFN_PR(kontext_t, shrapnel, (real_t, real_t, arch_t), void), call_gthis, &kontext);
 	assert(r >= 0);
 	// Kill Actor
-	r = engine->RegisterGlobalFunction("void kill(sint32_t id)", WRAP_MFN(kontext_t, kill_id), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void kill(sint32_t id)", WRAP_MFN(kontext_t, kill_id), call_gthis, &kontext);
 	assert(r >= 0);
 	// Destroy Actor
-	r = engine->RegisterGlobalFunction("void destroy(sint32_t id)", WRAP_MFN(kontext_t, destroy_id), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void destroy(sint32_t id)", WRAP_MFN(kontext_t, destroy_id), call_gthis, &kontext);
 	assert(r >= 0);
 	// Bump Actor
-	r = engine->RegisterGlobalFunction("void move(sint32_t id, real32_t velocity_x, real32_t velocity_y)", WRAP_MFN(kontext_t, bump), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void move(sint32_t id, real32_t velocity_x, real32_t velocity_y)", WRAP_MFN(kontext_t, bump), call_gthis, &kontext);
 	assert(r >= 0);
 	// Animate Actor
-	r = engine->RegisterGlobalFunction("void animate(sint32_t id, arch_t state, arch_t variation)", WRAP_MFN(kontext_t, animate), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void animate(sint32_t id, arch_t state, arch_t variation)", WRAP_MFN(kontext_t, animate), call_gthis, &kontext);
 	assert(r >= 0);
 	// Set Actor State
-	r = engine->RegisterGlobalFunction("void set_state(sint32_t id, arch_t state)", WRAP_MFN(kontext_t, set_state), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void set_state(sint32_t id, arch_t state)", WRAP_MFN(kontext_t, set_state), call_gthis, &kontext);
 	assert(r >= 0);
 	// Set Actor Flag
-	r = engine->RegisterGlobalFunction("void set_flag(sint32_t id, arch_t flag, bool value)", WRAP_MFN(kontext_t, set_mask), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void set_flag(sint32_t id, arch_t flag, bool value)", WRAP_MFN(kontext_t, set_mask), call_gthis, &kontext);
 	assert(r >= 0);
 	// Set Actor Event
-	r = engine->RegisterGlobalFunction("void set_event(sint32_t id, std::event@ event)", WRAP_MFN(kontext_t, set_event), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void set_event(sint32_t id, std::event@ event)", WRAP_MFN(kontext_t, set_event), call_gthis, &kontext);
 	assert(r >= 0);
 	// Set Actor Major Fight
-	r = engine->RegisterGlobalFunction("void set_fight(sint32_t id, std::event@ event)", WRAP_MFN(kontext_t, set_fight), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("void set_fight(sint32_t id, std::event@ event)", WRAP_MFN(kontext_t, set_fight), call_gthis, &kontext);
 	assert(r >= 0);
 	// Is Actor Still
-	r = engine->RegisterGlobalFunction("bool still(sint32_t id)", WRAP_MFN(kontext_t, still), gthis, &kontext);
+	r = engine->RegisterGlobalFunction("bool still(sint32_t id)", WRAP_MFN(kontext_t, still), call_gthis, &kontext);
 	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("nao");
 	assert(r >= 0);
 	// Visible Naomi
-	r = engine->RegisterGlobalFunction("void visible(bool state)", WRAP_MFN(naomi_state_t, set_visible), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void visible(bool state)", WRAP_MFN(naomi_state_t, set_visible), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Animate Naomi
-	r = engine->RegisterGlobalFunction("void animate(arch_t state, arch_t direction)", WRAP_MFN(naomi_state_t, set_sprite_animation), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void animate(arch_t state, arch_t direction)", WRAP_MFN(naomi_state_t, set_sprite_animation), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Teleport Naomi
-	r = engine->RegisterGlobalFunction("void teleport(real32_t x, real32_t y)", WRAP_MFN(naomi_state_t, set_teleport_location), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void teleport(real32_t x, real32_t y)", WRAP_MFN(naomi_state_t, set_teleport_location), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Heal Naomi
-	r = engine->RegisterGlobalFunction("void life_up(sint32_t amount)", WRAP_MFN(naomi_state_t, boost_current_barrier), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void life_up(sint32_t amount)", WRAP_MFN(naomi_state_t, boost_current_barrier), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Boost Life Naomi
-	r = engine->RegisterGlobalFunction("void life_boost(sint32_t amount)", WRAP_MFN(naomi_state_t, boost_maximum_barrer), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void life_boost(sint32_t amount)", WRAP_MFN(naomi_state_t, boost_maximum_barrer), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Modify Corruption Naomi
-	r = engine->RegisterGlobalFunction("void mut_leviathan(sint32_t amount)", WRAP_MFN(naomi_state_t, mut_leviathan_power), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void mut_leviathan(sint32_t amount)", WRAP_MFN(naomi_state_t, mut_leviathan_power), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Set Equip Naomi
-	r = engine->RegisterGlobalFunction("void equip(arch_t flag, bool value)", WRAP_MFN(naomi_state_t, set_equips), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void equip(arch_t flag, bool value)", WRAP_MFN(naomi_state_t, set_equips), call_gthis, &naomi_state);
 	assert(r >= 0);
 	// Bump Naomi
-	r = engine->RegisterGlobalFunction("void bump(arch_t dir)", WRAP_MFN(naomi_state_t, bump_kinematics), gthis, &naomi_state);
+	r = engine->RegisterGlobalFunction("void bump(arch_t dir)", WRAP_MFN(naomi_state_t, bump_kinematics), call_gthis, &naomi_state);
 	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("cam");
 	assert(r >= 0);
 	// Infinite Quake
-	r = engine->RegisterGlobalFunction("void quake(real32_t factor)", WRAP_MFN_PR(camera_t, quake, (real_t), void), gthis, &camera);
+	r = engine->RegisterGlobalFunction("void quake(real32_t factor)", WRAP_MFN_PR(camera_t, quake, (real_t), void), call_gthis, &camera);
 	assert(r >= 0);
 	// Timed Quake
-	r = engine->RegisterGlobalFunction("void quake(real32_t factor, real64_t seconds)", WRAP_MFN_PR(camera_t, quake, (real_t, real64_t), void), gthis, &camera);
+	r = engine->RegisterGlobalFunction("void quake(real32_t factor, real64_t seconds)", WRAP_MFN_PR(camera_t, quake, (real_t, real64_t), void), call_gthis, &camera);
 	assert(r >= 0);
 
 	// Set Namespace
