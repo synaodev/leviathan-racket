@@ -186,7 +186,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			}
 			break;
 		}
-		case SDL_JOYBUTTONUP: {
+		case SDL_JOYBUTTONDOWN: {
 			if (evt.jbutton.which == 0) {
 				sint_t code = static_cast<sint_t>(evt.jbutton.button);
 				auto it = joy_bind.find(code);
@@ -198,7 +198,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			}
 			break;
 		}
-		case SDL_JOYBUTTONDOWN: {
+		case SDL_JOYBUTTONUP: {
 			if (evt.jbutton.which == 0) {
 				sint_t code = static_cast<sint_t>(evt.jbutton.button);
 				if (recorder == kRecordJoystick) {
