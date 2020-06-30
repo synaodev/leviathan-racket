@@ -24,12 +24,14 @@ void main() {
 })";
 
 std::string pipeline::minor_vert(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMinorVert420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kMinorVert330;
 	}
+	return kMinorVert330;
+#else // __EMSCRIPTEN__
 	return kMinorVertGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kBlankVert420[] = R"(
@@ -82,12 +84,14 @@ void main() {
 })";
 
 std::string pipeline::blank_vert(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kBlankVert420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kBlankVert330;
 	}
+	return kBlankVert330;
+#else // __EMSCRIPTEN__
 	return kBlankVertGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kMajorVert420[] = R"(
@@ -149,12 +153,14 @@ void main() {
 })";
 
 std::string pipeline::major_vert(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kMajorVert420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kMajorVert330;
 	}
+	return kMajorVert330;
+#else // __EMSCRIPTEN__
 	return kMajorVertGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kColorsFrag420[] = R"(
@@ -186,12 +192,14 @@ void main() {
 })";
 
 std::string pipeline::colors_frag(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kColorsFrag420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kColorsFrag330;
 	}
+	return kColorsFrag330;
+#else // __EMSCRIPTEN__
 	return kColorsFragGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kSpritesFrag420[] = R"(
@@ -232,12 +240,14 @@ void main() {
 })";
 
 std::string pipeline::sprites_frag(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kSpritesFrag420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kSpritesFrag330;
 	}
+	return kSpritesFrag330;
+#else // __EMSCRIPTEN__
 	return kSpritesFragGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kIndexedFrag420[] = R"(
@@ -284,12 +294,14 @@ void main() {
 })";
 
 std::string pipeline::indexed_frag(glm::ivec2 version) {
+#ifndef __EMSCRIPTEN__
 	if (version[0] == 4 and version[1] >= 2) {
 		return kIndexedFrag420;
-	} else if (version[0] == 3 and version[1] >= 3) {
-		return kIndexedFrag330;
 	}
+	return kIndexedFrag330;
+#else // __EMSCRIPTEN__
 	return kIndexedFragGLES;
+#endif // __EMSCRIPTEN__
 }
 
 static constexpr byte_t kLightingFrag420[] = R"({
