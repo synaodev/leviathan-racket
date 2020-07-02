@@ -172,7 +172,7 @@ inline void kontext_t::assign(entt::entity actor, Args&& ...args) {
 
 template<typename Component, typename ...Args>
 inline decltype(auto) kontext_t::assign_if(entt::entity actor, Args&& ...args) {
-	return registry.get_or_assign<Component>(actor, std::forward<Args>(args)...);
+	return registry.get_or_emplace<Component>(actor, std::forward<Args>(args)...);
 }
 
 template<typename Component, typename Compare, typename... Args>

@@ -136,10 +136,10 @@ bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t 
 	auto iter = ctor_table.find(type);
 	if (iter != ctor_table.end()) {
 		entt::entity actor = registry.create();
-		registry.assign<actor_header_t>(actor, type);
-		registry.assign<location_t>(actor, position, direction);
+		registry.emplace<actor_header_t>(actor, type);
+		registry.emplace<location_t>(actor, position, direction);
 		if (identity != 0) {
-			registry.assign<actor_trigger_t>(actor, identity, flags);
+			registry.emplace<actor_trigger_t>(actor, identity, flags);
 		}
 		iter->second(actor, *this);
 		return true;
@@ -152,13 +152,13 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 	auto iter = ctor_table.find(spawn.type);
 	if (iter != ctor_table.end()) {
 		entt::entity actor = registry.create();
-		registry.assign<actor_header_t>(actor, spawn.type);
-		registry.assign<location_t>(actor, spawn.position, spawn.direction);
+		registry.emplace<actor_header_t>(actor, spawn.type);
+		registry.emplace<location_t>(actor, spawn.position, spawn.direction);
 		if (spawn.velocity != glm::zero<glm::vec2>()) {
-			registry.assign<kinematics_t>(actor, spawn.velocity);
+			registry.emplace<kinematics_t>(actor, spawn.velocity);
 		}
 		if (spawn.identity != 0) {
-			registry.assign<actor_trigger_t>(actor, spawn.identity, spawn.bitmask);
+			registry.emplace<actor_trigger_t>(actor, spawn.identity, spawn.bitmask);
 		}
 		iter->second(actor, *this);
 		return true;
@@ -216,8 +216,8 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 			liquid_flag = true;
 			rect_t hitbox = tmx_convert::rect_to_rect(object.getAABB());
 			entt::entity actor = registry.create();
-			registry.assign<actor_header_t>(actor);
-			registry.assign<liquid_body_t>(actor, hitbox);
+			registry.emplace<actor_header_t>(actor);
+			registry.emplace<liquid_body_t>(actor, hitbox);
 		}
 	}
 }

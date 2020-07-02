@@ -62,12 +62,12 @@ bool naomi_state_t::init(kontext_t& kontext) {
 		SYNAO_LOG("Couldn't generate naomi actor!\n");
 		return false;
 	}
-	backend->assign<location_t>(actor);
-	backend->assign<kinematics_t>(actor);
-	backend->assign<sprite_t>(actor, res::anim::Naomi);
-	backend->assign<health_t>(actor);
-	backend->assign<blinker_t>(actor);
-	backend->assign<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
+	backend->emplace<location_t>(actor);
+	backend->emplace<kinematics_t>(actor);
+	backend->emplace<sprite_t>(actor, res::anim::Naomi);
+	backend->emplace<health_t>(actor);
+	backend->emplace<blinker_t>(actor);
+	backend->emplace<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
 
 	auto& location = kontext.get<location_t>(actor);
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
