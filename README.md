@@ -34,13 +34,4 @@ The dependencies required to run the python scripts are in 'requirements.txt'.
 - If you use vcpkg: 
   - After installing Tmxlite, you should run the 'fix_tmxlite.py' script to fix the default installation.
   - When running the cmake build script, set the toolchain file to `<vcpkg_root>/scripts/buildsystems/vcpkg.cmake`.
-## Emscripten Port (Experimental)
-- This build process is only guaranteed to work on Linux, but the port itself is not ready for prime time.
-- Run the 'make_config.py' script like this: `./make_config.py --force init`.
-- After cloning this repository, run `git submodule update --init --recursive`.
-- This retrieves dependencies pre-built with emscripten so they can be linked without too much trouble.
-- Clone the [SDK](https://github.com/emscripten-core/emsdk), activate it and set your environment variables like this: `source <emsdk_root>/emsdk_env.sh`.
-- Make a build directory at the project root called 'build' and move into it.
-- Now run the cmake build script like this: `emcmake cmake .. -DEMSCRIPTEN=TRUE`.
-- If everything goes as planned, can run the generate Makefile like this: `emmake make`.
-- This will generates an HTML file, a WebAssembly file, a Javascript file, and virtual filesystem data.
+
