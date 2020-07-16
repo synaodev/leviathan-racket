@@ -14,5 +14,3 @@ out/
 **/AS_DEBUG/
 **/saves/
 **/init/
-boot.cfg
-imgui.cfg

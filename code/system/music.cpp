@@ -26,7 +26,7 @@ static constexpr sint_t kTotalChannel = 2;
 static constexpr sint_t kSamplingRate = 44100;
 static constexpr real_t kBufferedTime = 0.1f;
 static constexpr real_t kWaitConstant = 750.0f;
-static constexpr byte_t kPxtonePath[] = "pxtone/";
+static constexpr byte_t kTunePath[]   = "./vfs/tune/";
 
 music_t::music_t() :
 	service(nullptr),
@@ -88,7 +88,7 @@ bool music_t::load(const std::string& title) {
 		return false;
 	}
 	this->clear();
-	std::vector<byte_t> buffer = vfs::byte_buffer(kPxtonePath + title + ".ptcop");
+	std::vector<byte_t> buffer = vfs::byte_buffer(kTunePath + title + ".ptcop");
 	arch_t length = buffer.size();
 	if (!length) {
 		SYNAO_LOG("Pxtone file loading failed!\n");

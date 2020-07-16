@@ -8,7 +8,7 @@
 
 #include <fstream>
 
-static constexpr byte_t kTileKeyPath[] = "tilekey/";
+static constexpr byte_t kTileKeyPath[] = "./vfs/tilekey/";
 static constexpr arch_t kMaskLength = 256;
 
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);

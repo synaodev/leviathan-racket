@@ -18,16 +18,16 @@
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
 
-static const byte_t kEventPath[]	= "event/";
-static const byte_t kFieldPath[]	= "field/";
-static const byte_t kFontPath[]		= "font/";
-static const byte_t kI18NPath[]		= "i18n/";
-static const byte_t kImagePath[]	= "image/";
-static const byte_t kTileKeyPath[]	= "tilekey/";
-static const byte_t kNoisePath[]	= "noise/";
-static const byte_t kPalettePath[]	= "palette/";
-static const byte_t kPxtonePath[]	= "pxtone/";
-static const byte_t kSpritePath[]	= "sprite/";
+static const byte_t kEventPath[]	= "./vfs/event/";
+static const byte_t kFieldPath[]	= "./vfs/field/";
+static const byte_t kFontPath[]		= "./vfs/font/";
+static const byte_t kI18NPath[]		= "./vfs/i18n/";
+static const byte_t kImagePath[]	= "./vfs/image/";
+static const byte_t kNoisePath[]	= "./vfs/noise/";
+static const byte_t kPalettePath[]	= "./vfs/palette/";
+static const byte_t kSpritePath[]	= "./vfs/sprite/";
+static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
+static const byte_t kTunePath[]		= "./vfs/tune/";
 
 static constexpr byte_t kDefaultLang[] = "english";
 static constexpr arch_t kTotalThreads  = 4;
@@ -166,11 +166,11 @@ bool vfs::create_directory(const std::string& name) {
 
 bool vfs::verify_structure() {
 	const byte_t* kDirList[] = {
-		kEventPath, kFieldPath, 
-		kFontPath, kI18NPath, 
-		kImagePath, kTileKeyPath,
-		kNoisePath, kPalettePath, 
-		kPxtonePath, kSpritePath
+		kEventPath, kFieldPath,
+		kFontPath, kI18NPath,
+		kImagePath, kNoisePath,
+		kPalettePath, kSpritePath,
+		kTileKeyPath, kTunePath
 	};
 	bool result = true;
 	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {

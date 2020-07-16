@@ -22,7 +22,6 @@
       "cmakeCommandArgs": "",
       "buildCommandArgs": "-v",
       "ctestCommandArgs": "",
-
       "variables": []
     }
   ]

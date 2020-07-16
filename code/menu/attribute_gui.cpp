@@ -6,7 +6,7 @@
 #include "../field/tileset_viewer.hpp"
 #include "../utility/vfs.hpp"
 
-static constexpr byte_t kTileKeyPath[]	= "tilekey/";
+static constexpr byte_t kTileKeyPath[]	= "./vfs/tilekey/";
 
 attribute_gui_t::attribute_gui_t() :
 	bitmask(0),
