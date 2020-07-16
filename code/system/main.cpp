@@ -21,12 +21,16 @@
 	#include <SDL/SDL.h>
 #endif // __EMSCRIPTEN__
 
-static constexpr byte_t kBootPath[]	= "./vfs/init/boot.cfg";
 static constexpr uint_t kStopDelay  = 40;
 static constexpr uint_t kNormDelay  = 10;
 
-static void generate_default_config(setup_file_t& config) {
-	config.clear(kBootPath);
+static std::string get_boot_path() {
+	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
+	return init_path + "boot.cfg";
+}
+
+static void write_default_config(setup_file_t& config, const std::string& boot_path) {
+	config.clear(boot_path);
 	config.set("Setup", "Language", std::string("english"));
 	// config.set("Setup", "Field", std::string("naomi"));
 	// config.set("Setup", "Actor", 200);
@@ -60,6 +64,15 @@ static void generate_default_config(setup_file_t& config) {
 	config.set("Input", "JoyStrafe", 5);
 	config.set("Input", "JoyInventory",	6);
 	config.set("Input", "JoyOptions", 7);
+}
+
+static void load_config_file(setup_file_t& config) {
+	const std::string boot_path = get_boot_path();
+	if (!config.load(boot_path)) {
+		SYNAO_LOG("Couldn't find main configuration file at \"%s\"!\n", boot_path.c_str());
+		SYNAO_LOG("Generating new config file...\n");
+		write_default_config(config, boot_path);
+	}
 }
 
 static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
@@ -210,10 +223,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	setup_file_t config;
-	if (!config.load(kBootPath)) {
-		SYNAO_LOG("Couldn't find main configuration file! Generating new config file...\n");
-		generate_default_config(config);
-	}
+	load_config_file(config);
 	if (argc > 1) {
 		const byte_t* option = argv[1];
 		if (std::strcmp(option, "--editor") == 0) {

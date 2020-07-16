@@ -8,7 +8,6 @@
 
 #include <fstream>
 
-static constexpr byte_t kTileKeyPath[] = "./vfs/tilekey/";
 static constexpr arch_t kMaskLength = 256;
 
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
@@ -180,7 +179,8 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 		if (texture == nullptr) {
 			return false;
 		}
-		bitmasks = vfs::sint_buffer(kTileKeyPath + path + ".atr");
+		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
+		bitmasks = vfs::sint_buffer(tilekey_path + path + ".atr");
 		if (bitmasks.empty()) {
 			return false;
 		}
@@ -195,7 +195,8 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 bool tileset_viewer_t::save() {
 	select = false;
 	if (!file.empty()) {
-		std::ofstream ofs(kTileKeyPath + file + ".atr", std::ofstream::binary);
+		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
+		std::ofstream ofs(tilekey_path + file + ".atr", std::ofstream::binary);
 		if (ofs.is_open()) {
 			ofs.write(
 				reinterpret_cast<byte_t*>(&bitmasks[0]), 

@@ -6,8 +6,6 @@
 #include "../field/tileset_viewer.hpp"
 #include "../utility/vfs.hpp"
 
-static constexpr byte_t kTileKeyPath[]	= "./vfs/tilekey/";
-
 attribute_gui_t::attribute_gui_t() :
 	bitmask(0),
 	index(0),
@@ -52,7 +50,8 @@ void attribute_gui_t::handle(tileset_viewer_t& tileset_viewer, renderer_t& rende
 	if (bitmask[attrgui_bits_t::Load]) {
 		ImGui::Begin("File Dialogue");
 		if (files.empty()) {
-			files = vfs::file_list(kTileKeyPath);
+			const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
+			files = vfs::file_list(tilekey_path);
 		}
 		ImGui::ListBox(
 			"Files", &index,

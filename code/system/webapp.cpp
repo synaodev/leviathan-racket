@@ -17,8 +17,12 @@
 #include <cstdlib>
 #include <SDL/SDL.h>
 
-static constexpr byte_t kBootPath[]	= "./vfs/init/boot.cfg";
 static constexpr sint_t kFrameRate	= 60;
+
+static std::string get_boot_path() {
+	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
+	return init_path + "boot.cfg";
+}
 
 struct webapp_t : public not_copyable_t {
 public:
@@ -37,6 +41,11 @@ public:
 	webapp_t(webapp_t&&) = delete;
 	webapp_t& operator=(webapp_t&&) = delete;
 	~webapp_t() = default;
+public:
+	bool load_config() {
+		const std::string boot_path = get_boot_path();
+		return config.load(boot_path);
+	}
 public:
 	setup_file_t config;
 	input_t input;
@@ -79,7 +88,7 @@ int main(int, char**) {
 		return EXIT_FAILURE;
 	}
 	webapp_t webapp;
-	if (!webapp.config.load(kBootPath)) {
+	if (!webapp.load_config()) {
 		SYNAO_LOG("Couldn't find main configuration file!\n");
 		SYNAO_LOG("Shutting down...\n");
 		return EXIT_SUCCESS;

@@ -15,7 +15,7 @@ def main():
 			force_generate = True
 		elif i > 1 and len(sys.argv[i]) != 0:
 			into_directory = sys.argv[i]
-	config_path: str = os.path.abspath(os.path.join(os.path.curdir, os.path.pardir))
+	config_path: str = os.path.abspath(os.path.join(os.path.curdir, os.path.pardir, 'vfs', 'init'))
 	if len(into_directory) != 0:
 		config_path = os.path.join(config_path, into_directory)
 	config_file: str = os.path.join(config_path, 'boot.cfg')

@@ -7,7 +7,6 @@
 #include "../system/renderer.hpp"
 #include "../utility/vfs.hpp"
 
-static constexpr byte_t kTileKeyPath[] = "./vfs/tilekey/";
 static constexpr sint_t kScreenWidth   = 21;
 static constexpr sint_t kScreenHeight  = 12;
 static constexpr sint_t kSintTileSize  = 16;
@@ -104,7 +103,8 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 			}
 		}
 		tilemap_layer_texture = vfs::texture(tileset.getName());
-		attribute_key = vfs::sint_buffer(kTileKeyPath + tileset.getName() + ".atr");
+		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
+		attribute_key = vfs::sint_buffer(tilekey_path + tileset.getName() + ".atr");
 	}
 	if (tilesets.size() > 1) {
 		parallax_texture = vfs::texture(tilesets[1].getName());

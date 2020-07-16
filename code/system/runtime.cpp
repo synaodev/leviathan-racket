@@ -14,8 +14,6 @@
 #include "../utility/setup_file.hpp"
 #include "../utility/vfs.hpp"
 
-static const byte_t kFieldPath[] 	= "./vfs/field/";
-static const byte_t kSavesPath[] 	= "./vfs/saves/";
 static const byte_t kStatProgPath[] = "_prog.cfg";
 static const byte_t kStatCpntPath[] = "_check.cfg";
 
@@ -150,7 +148,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 		return false;
 	}
 	receiver.run_field(kernel);
-	std::string full_path = kFieldPath + kernel.get_field() + ".tmx";
+	const std::string full_path = vfs::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
 		SYNAO_LOG("Map file loading failed! Map Path: %s\n", full_path.c_str());
@@ -191,10 +189,11 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 }
 
 void runtime_t::setup_load() {
-	if (vfs::create_directory(kSavesPath)) {
+	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
+	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
-		if (file.load(kSavesPath + std::to_string(kernel.get_file_index()) + path_type)) {
+		if (file.load(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
 			arch_t maximum = 2;
 			arch_t current = 2;
 			arch_t leviathan = 1;
@@ -222,7 +221,7 @@ void runtime_t::setup_load() {
 				static_cast<arch_t>(std::stoi(equips, nullptr, 0))
 			);
 			kernel.read_data(file);
-			if (!kernel.read_stream(kSavesPath)) {
+			if (!kernel.read_stream(save_path)) {
 				SYNAO_LOG("Couldn't load current flags!\n");
 			}
 		} else {
@@ -235,7 +234,8 @@ void runtime_t::setup_load() {
 }
 
 void runtime_t::setup_save() {
-	if (vfs::create_directory(kSavesPath)) {
+	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
+	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
 		auto& location = kontext.get<location_t>(naomi_state.actor);
@@ -248,10 +248,10 @@ void runtime_t::setup_save() {
 		file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
 		file.set("Status", "Equips", naomi_state.hexadecimal_equips());
 		kernel.write_data(file);
-		if (!kernel.write_stream(kSavesPath)) {
+		if (!kernel.write_stream(save_path)) {
 			SYNAO_LOG("Couldn't save current flags!\n");
 		}
-		if (!file.save(kSavesPath + std::to_string(kernel.get_file_index()) + path_type)) {
+		if (!file.save(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
 			SYNAO_LOG("Couldn't save current state!\n");
 		}
 	} else {
