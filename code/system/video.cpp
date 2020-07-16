@@ -238,7 +238,7 @@ void video_t::flush() const {
 }
 
 void video_t::set_parameters(screen_params_t params) {
-#ifdef __EMSCRIPTEN__
+#ifndef __EMSCRIPTEN__
 	if (this->params.vsync != params.vsync) {
 		this->params.vsync = params.vsync;
 		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
@@ -247,11 +247,9 @@ void video_t::set_parameters(screen_params_t params) {
 	}
 	if (this->params.full != params.full) {
 		this->params.full = params.full;
-#ifndef __EMSCRIPTEN__
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
 			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
 		} else 
-#endif // __EMSCRIPTEN__
 		{
 			SDL_SetWindowPosition(
 				window, 
