@@ -17,6 +17,25 @@
 struct setup_file_t;
 struct vfs_t;
 
+namespace __enum_vfs_resource_path {
+	enum type : arch_t {
+		Event,
+		Field,
+		Font,
+		I18N,
+		Image,
+		Init,
+		Noise,
+		Palette,
+		Save,
+		Sprite,
+		TileKey,
+		Tune
+	};
+}
+
+using vfs_resource_path_t = __enum_vfs_resource_path::type;
+
 namespace vfs {
 	static vfs_t* device = nullptr;
 	std::back_insert_iterator<std::u32string> to_utf32(
@@ -24,9 +43,10 @@ namespace vfs {
 		std::string::const_iterator end, 
 		std::back_insert_iterator<std::u32string> output
 	);
+	bool verify_structure();
 	bool directory_exists(const std::string& name);
 	bool create_directory(const std::string& name);
-	bool verify_structure();
+	std::string resource_path(vfs_resource_path_t path);
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);

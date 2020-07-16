@@ -23,8 +23,10 @@ static const byte_t kFieldPath[]	= "./vfs/field/";
 static const byte_t kFontPath[]		= "./vfs/font/";
 static const byte_t kI18NPath[]		= "./vfs/i18n/";
 static const byte_t kImagePath[]	= "./vfs/image/";
+static const byte_t kInitPath[]		= "./vfs/init/";
 static const byte_t kNoisePath[]	= "./vfs/noise/";
 static const byte_t kPalettePath[]	= "./vfs/palette/";
+static const byte_t kSavePath[]		= "./vfs/save/";
 static const byte_t kSpritePath[]	= "./vfs/sprite/";
 static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
 static const byte_t kTunePath[]		= "./vfs/tune/";
@@ -129,6 +131,23 @@ std::back_insert_iterator<std::u32string> vfs::to_utf32(
 	return output;
 }
 
+bool vfs::verify_structure() {
+	const byte_t* kDirList[] = {
+		kEventPath, kFieldPath,
+		kFontPath, kI18NPath,
+		kImagePath, kNoisePath,
+		kPalettePath, kSpritePath,
+		kTileKeyPath, kTunePath
+	};
+	bool result = true;
+	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
+		if (!vfs::directory_exists(kDirList[it])) {
+			result = false;
+		}
+	}
+	return result;
+}
+
 bool vfs::directory_exists(const std::string& name) {
 #if !defined(__APPLE__) && !defined(__GNUC__)
 	if (!std::filesystem::exists(name)) {
@@ -164,21 +183,36 @@ bool vfs::create_directory(const std::string& name) {
 #endif // __APPLE__ __GNUC__
 }
 
-bool vfs::verify_structure() {
-	const byte_t* kDirList[] = {
-		kEventPath, kFieldPath,
-		kFontPath, kI18NPath,
-		kImagePath, kNoisePath,
-		kPalettePath, kSpritePath,
-		kTileKeyPath, kTunePath
-	};
-	bool result = true;
-	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
-		if (!vfs::directory_exists(kDirList[it])) {
-			result = false;
-		}
+std::string vfs::resource_path(vfs_resource_path_t path) {
+	switch (path) {
+	case vfs_resource_path_t::Event:
+		return kEventPath;
+	case vfs_resource_path_t::Field:
+		return kFieldPath;
+	case vfs_resource_path_t::Font:
+		return kFontPath;
+	case vfs_resource_path_t::I18N:
+		return kI18NPath;
+	case vfs_resource_path_t::Image:
+		return kImagePath;
+	case vfs_resource_path_t::Init:
+		return kInitPath;
+	case vfs_resource_path_t::Noise:
+		return kNoisePath;
+	case vfs_resource_path_t::Palette:
+		return kPalettePath;
+	case vfs_resource_path_t::Save:
+		return kSavePath;
+	case vfs_resource_path_t::Sprite:
+		return kSpritePath;
+	case vfs_resource_path_t::TileKey:
+		return kTileKeyPath;
+	case vfs_resource_path_t::Tune:
+		return kTunePath;
+	default:
+		break;
 	}
-	return result;
+	return std::string();
 }
 
 std::vector<std::string> vfs::file_list(const std::string& path) {

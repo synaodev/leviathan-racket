@@ -26,7 +26,7 @@ void ai::kyoko::ctor(entt::entity s, kontext_t& ktx) {
 	location.bounding = rect_t(4.0f, -2.0f, 8.0f, 18.0f);
 
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Kyoko);
-	sprite.table = 1.0f;
+	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
@@ -41,7 +41,7 @@ void ai::nauzika::ctor(entt::entity s, kontext_t& ktx) {
 	location.bounding = rect_t(5.0f, 0.0f, 8.0f, 16.0f);
 
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Nauzika);
-	sprite.table = 1.0f;
+	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
@@ -56,7 +56,7 @@ void ai::senma::ctor(entt::entity s, kontext_t& ktx) {
 	location.bounding = rect_t(4.0f, -8.0f, 8.0f, 24.0f);
 
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Senma);
-	sprite.table = 1.0f;
+	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
@@ -71,7 +71,7 @@ void ai::fox::ctor(entt::entity s, kontext_t& ktx) {
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
 
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Foxie);
-	sprite.table = 1.0f;
+	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
@@ -86,7 +86,7 @@ void ai::gyo::ctor(entt::entity s, kontext_t& ktx) {
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
 
 	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::GyoShin);
-	sprite.table = 1.0f;
+	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 

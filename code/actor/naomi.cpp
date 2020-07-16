@@ -8,6 +8,7 @@
 
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
+#include "../component/modulator.hpp"
 #include "../component/kinematics.hpp"
 #include "../component/sprite.hpp"
 #include "../component/health.hpp"
@@ -62,21 +63,18 @@ bool naomi_state_t::init(kontext_t& kontext) {
 		SYNAO_LOG("Couldn't generate naomi actor!\n");
 		return false;
 	}
-	backend->emplace<location_t>(actor);
+	auto& location = backend->emplace<location_t>(actor);
 	backend->emplace<kinematics_t>(actor);
-	backend->emplace<sprite_t>(actor, res::anim::Naomi);
+	auto& sprite = backend->emplace<sprite_t>(actor, res::anim::Naomi);
 	backend->emplace<health_t>(actor);
-	backend->emplace<blinker_t>(actor);
+	auto& blinker = backend->emplace<blinker_t>(actor);
 	backend->emplace<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
-
-	auto& location = kontext.get<location_t>(actor);
+	auto& modulator = backend->emplace<modulator_t>(actor, &sprite);
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
-	auto& sprite = kontext.get<sprite_t>(actor);
-	sprite.table = 1.0f;
 	sprite.layer = 0.35f;
-	auto& blinker = kontext.get<blinker_t>(actor);
 	blinker.blink_state = naomi_anim_t::Blinking;
 	blinker.first_state = naomi_anim_t::Idle;
+	modulator.reset(0.0f, 0.0f);
 	return true;
 }
 
@@ -86,6 +84,7 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
+	auto& modulator = kontext.get<modulator_t>(actor);
 	location.direction = direction_t::Right;
 	kinematics.reset();
 	kinematics.flags[phy_t::Bottom] = true;
@@ -93,6 +92,7 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	sprite.layer = 0.35f;
 	health.reset(2, 2, 0, 0);
 	listener.liquid = entt::null;
+	modulator.reset(0.0f, 0.0f);
 	chroniker = {
 		0,				// Hammered
 		180,			// Leviathan
@@ -120,6 +120,7 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
+	auto& modulator = kontext.get<modulator_t>(actor);
 	location.position = position;
 	location.direction = direction;
 	kinematics.reset();
@@ -128,6 +129,7 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	sprite.layer = 0.35f;
 	health.reset(current_barrier, maximum_barrier, leviathan, 0);
 	listener.liquid = entt::null;
+	modulator.reset(0.0f, 0.0f);
 	chroniker = {
 		0,				// Hammered
 		180,			// Leviathan
