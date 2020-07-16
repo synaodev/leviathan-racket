@@ -111,7 +111,10 @@ target_link_libraries (leviathan PRIVATE
 
 if (UNIX)
 	find_package (Threads REQUIRED)
-	target_link_libraries (leviathan PRIVATE Threads::Threads)
+	target_link_libraries (leviathan PRIVATE 
+		Threads::Threads
+		${CMAKE_DL_LIBS}
+	)
 endif ()
 
 add_subdirectory(code)
