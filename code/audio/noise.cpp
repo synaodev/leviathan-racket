@@ -67,50 +67,64 @@ static ALenum get_format_enum(const SDL_AudioSpec* audio_spec) {
 	return type;
 }
 
-bool noise_t::load(const std::string& full_path) {
-	if (!handle) {
-		alCheck(alGenBuffers(1, &handle));
+void noise_t::load(const std::string& full_path) {
+	if (this->create()) {
+		SDL_AudioSpec audio_spec;
+		uint8_t* audio_data = nullptr;
+		uint_t length = 0;
+		if (!SDL_LoadWAV(full_path.c_str(), &audio_spec, &audio_data, &length)) {
+			SYNAO_LOG("Error! Couldn't load %s!\n", full_path.c_str());
+			SYNAO_LOG("%s\n", SDL_GetError());
+			return;
+		}
+		alCheck(alBufferData(
+			handle, 
+			get_format_enum(&audio_spec), 
+			audio_data, 
+			length, 
+			audio_spec.freq
+		));
+		SDL_FreeWAV(audio_data);
+		ready = true;
 	}
-	SDL_AudioSpec audio_spec;
-	uint8_t* audio_data = nullptr;
-	uint_t length = 0;
-
-	if (!SDL_LoadWAV(full_path.c_str(), &audio_spec, &audio_data, &length)) {
-		SYNAO_LOG("Error! Couldn't load %s!\n", full_path.c_str());
-		SYNAO_LOG("%s\n", SDL_GetError());
-		return false;
-	}
-	alCheck(alBufferData(
-		handle, 
-		get_format_enum(&audio_spec), 
-		audio_data, 
-		length, 
-		audio_spec.freq
-	));
-	SDL_FreeWAV(audio_data);
-	ready = true;
-	return true;
 }
 
-bool noise_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
-	if (!ready) {
-		future = thread_pool.push([this](const std::string& full_path) -> void {
-			this->load(full_path);
-		}, full_path);
+void noise_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
+	assert(!ready);
+	this->future = thread_pool.push([this](const std::string& full_path) -> void {
+		this->load(full_path);
+	}, full_path);
+}
+
+bool noise_t::create() {
+	if (!handle) {
+		alCheck(alGenBuffers(1, &handle));
 		return true;
 	}
+	SYNAO_LOG("Warning! Tried to overwrite existing noise!\n");
 	return false;
 }
 
 void noise_t::destroy() {
+	if (future.valid()) {
+		future.wait();
+	}
 	ready = false;
-	std::set<channel_t*> channels;
-	channels.swap(binder);
-	for (auto&& channel : channels) {
-		channel->attach();
+	if (binder.size() > 0) {
+		std::set<channel_t*> channels;
+		channels.swap(binder);
+		for (auto&& channel : channels) {
+			channel->attach();
+		}
 	}
 	if (handle != 0) {
 		alCheck(alDeleteBuffers(1, &handle));
 		handle = 0;
+	}
+}
+
+void noise_t::assure() const {
+	if (!ready and future.valid()) {
+		future.wait();
 	}
 }

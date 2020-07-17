@@ -10,6 +10,7 @@ struct thread_pool_t;
 
 namespace __enum_pixel_format {
 	enum type : uint_t {
+		Invalid  = 0,
 		R3G3B2A0 = 0x2A10,
 		R8G8B8A0 = 0x8051,
 		R2G2B2A2 = 0x8055,
@@ -35,7 +36,7 @@ public:
 	texture_t& operator=(texture_t&& that) noexcept;
 	~texture_t();
 public:
-	bool load(const std::vector<std::string>& full_paths, pixel_format_t format, thread_pool_t& thread_pool);
+	void load(const std::vector<std::string>& full_paths, pixel_format_t format, thread_pool_t& thread_pool);
 	bool create(glm::ivec2 dimensions, arch_t layers, pixel_format_t format);
 	bool color_buffer(glm::ivec2 dimensions, arch_t layers, pixel_format_t format);
 	bool color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, arch_t offset);

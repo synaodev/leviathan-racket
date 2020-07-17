@@ -1,4 +1,5 @@
 #include "./image.hpp"
+#include "../utility/logger.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "../utility/stb_image.h"
@@ -39,7 +40,6 @@ image_t image_t::generate(const std::string& full_path) {
 		&channels,
 		STBI_rgb_alpha
 	);
-
 	if (data != nullptr) {
 		image.dimensions = glm::ivec2(width, height);
 		image.pixels.resize(
@@ -47,12 +47,10 @@ image_t image_t::generate(const std::string& full_path) {
 			static_cast<arch_t>(height) * 
 			sizeof(uint_t)
 		);
-		std::memcpy(
-			&image.pixels[0],
-			data,
-			image.pixels.size()
-		);
+		std::memcpy(&image.pixels[0], data, image.pixels.size());
 		stbi_image_free(data);
+	} else {
+		SYNAO_LOG("Failed to load image from %s!\n", full_path.c_str());
 	}
 	return image;
 }
@@ -62,7 +60,7 @@ std::vector<image_t> image_t::generate(const std::vector<std::string>& full_path
 	for (auto&& full_path : full_paths) {
 		image_t image = image_t::generate(full_path);
 		if (image.empty()) {
-			return {};
+			break;
 		}
 		images.push_back(std::move(image));
 	}

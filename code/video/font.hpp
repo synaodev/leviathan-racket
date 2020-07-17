@@ -37,7 +37,7 @@ public:
 	font_t& operator=(font_t&& that) noexcept;
 	~font_t() = default;
 public:
-	bool load(const std::string& directory, const std::string& full_path);
+	void load(const std::string& directory, const std::string& full_path);
 	const font_glyph_t& glyph(char32_t code_point) const;
 	const texture_t* get_texture() const;
 	const palette_t* get_palette() const;

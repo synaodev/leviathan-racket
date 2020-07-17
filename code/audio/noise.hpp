@@ -18,9 +18,11 @@ public:
 	noise_t& operator=(noise_t&& that) noexcept;
 	~noise_t();
 public:
-	bool load(const std::string& full_path);
-	bool load(const std::string& full_path, thread_pool_t& thread_pool);
+	void load(const std::string& full_path);
+	void load(const std::string& full_path, thread_pool_t& thread_pool);
+	bool create();
 	void destroy();
+	void assure() const;
 private:
 	friend struct channel_t;
 	std::atomic<bool> ready;

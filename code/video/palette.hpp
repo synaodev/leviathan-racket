@@ -10,10 +10,11 @@ public:
 	palette_t& operator=(palette_t&& that) noexcept;
 	~palette_t();
 public:
-	bool load(const std::string& full_path, pixel_format_t format, thread_pool_t& thread_pool);
+	void load(const std::string& full_path, pixel_format_t format, thread_pool_t& thread_pool);
+	bool create(glm::ivec2 dimensions, pixel_format_t format);
+	void destroy();
 	void assure();
 	void assure() const;
-	void destroy();
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_inverse_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;

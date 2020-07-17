@@ -367,10 +367,7 @@ bool vfs::try_language(const std::string& language) {
 		vfs::device->fonts.clear();
 		return true;
 	}
-	SYNAO_LOG(
-		"Error! Couldn't load language file: %s\n", 
-		full_path.c_str()
-	);
+	SYNAO_LOG("Error! Couldn't load language file: %s\n", full_path.c_str());
 	return false;
 }
 
@@ -395,10 +392,7 @@ const noise_t* vfs::noise(const std::string& name) {
 	auto it = vfs::device->search_safely(name, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->allocate_safely(name, vfs::device->noises);
-		const std::string full_path = kNoisePath + name + ".wav";
-		if (!ref.load(full_path, *vfs::device->thread_pool)) {
-			SYNAO_LOG("Failed to load noise from %s!\n", full_path.c_str());
-		}
+		ref.load(kNoisePath + name + ".wav", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
@@ -411,7 +405,8 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 	if (names.size() == 0 or names.size() > 4) {
 		return nullptr;
 	}
-	auto it = vfs::device->textures.find(names[0]);
+	// auto it = vfs::device->textures.find(names[0]);
+	auto it = vfs::device->search_safely(names[0], vfs::device->textures);
 	if (it == vfs::device->textures.end()) {
 		texture_t& ref = vfs::device->allocate_safely(names[0], vfs::device->textures);
 		auto generate_full_paths = [&directory](std::vector<std::string> names) {
@@ -420,14 +415,11 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 			}
 			return names;
 		};
-		std::vector<std::string> full_paths = generate_full_paths(names);
-		if (!ref.load(full_paths, pixel_format_t::R8G8B8A8, *vfs::device->thread_pool)) {
-#ifdef SYNAO_DEBUG_BUILD
-			std::for_each(full_paths.begin(), full_paths.end(), [](const std::string& full_path) {
-				SYNAO_LOG("Failed to load texture from %s!\n", full_path.c_str());
-			});
-#endif // SYNAO_DEBUG_BUILD
-		}
+		ref.load(
+			std::invoke(generate_full_paths, names), 
+			pixel_format_t::R8G8B8A8, 
+			*vfs::device->thread_pool
+		);
 		return &ref;
 	}
 	return &it->second;
@@ -446,16 +438,15 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->palettes.find(name);
+	// auto it = vfs::device->palettes.find(name);
+	auto it = vfs::device->search_safely(name, vfs::device->palettes);
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->allocate_safely(name, vfs::device->palettes);
-		const std::string full_path = directory + name + ".png";
-		if (!ref.load(full_path, pixel_format_t::R2G2B2A2, *vfs::device->thread_pool)) {
-			SYNAO_LOG(
-				"Failed to load palette from %s!\n", 
-				full_path.c_str()
-			);
-		}
+		ref.load(
+			directory + name + ".png", 
+			pixel_format_t::R2G2B2A2, 
+			*vfs::device->thread_pool
+		);
 		return &ref;
 	}
 	return &it->second;
@@ -471,25 +462,16 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	}
 	auto it = vfs::device->shaders.find(name);
 	if (it == vfs::device->shaders.end()) {
-		shader_t& ref = vfs::device->allocate_safely(name, vfs::device->shaders);
+		shader_t& ref = vfs::device->shaders[name];
 		if (!ref.from(source, stage)) {
-			SYNAO_LOG(
-				"Failed to create shader from %s!\n", 
-				name.c_str()
-			);
+			SYNAO_LOG("Failed to create shader from %s!\n", name.c_str());
 		}
 		return &ref;
 	} else if (!it->second.matches(stage)) {
-		SYNAO_LOG(
-			"Found shader %s should have different stage!\n", 
-			name.c_str()
-		);
+		SYNAO_LOG("Found shader %s should have different stage!\n", name.c_str());
 		return nullptr;
 	}
-	SYNAO_LOG(
-		"Tried to create shader twice from source named %s!\n", 
-		name.c_str()
-	);
+	SYNAO_LOG("Tried to create shader twice from source named %s!\n", name.c_str());
 	return &it->second;
 }
 
@@ -499,14 +481,8 @@ const font_t* vfs::font(const std::string& name) {
 	}
 	auto it = vfs::device->fonts.find(name);
 	if (it == vfs::device->fonts.end()) {
-		const std::string full_path = kFontPath + name + ".fnt";
-		font_t& ref = vfs::device->allocate_safely(name, vfs::device->fonts);
-		if (!ref.load(kFontPath, full_path)) {
-			SYNAO_LOG(
-				"Failed to load font from %s!\n", 
-				full_path.c_str()
-			);
-		}
+		font_t& ref = vfs::device->fonts[name];
+		ref.load(kFontPath, name + ".fnt");
 		return &ref;
 	}
 	return &it->second;
@@ -527,16 +503,11 @@ const animation_t* vfs::animation(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->animations.find(name);
+	// auto it = vfs::device->animations.find(name);
+	auto it = vfs::device->search_safely(name, vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
-		const std::string full_path = kSpritePath + name + ".cfg";
 		animation_t& ref = vfs::device->allocate_safely(name, vfs::device->animations);
-		if (!ref.load(full_path, *vfs::device->thread_pool)) {
-			SYNAO_LOG(
-				"Failed to load animation from %s!\n", 
-				full_path.c_str()
-			);
-		}
+		ref.load(kSpritePath + name + ".cfg", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;

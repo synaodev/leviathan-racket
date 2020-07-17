@@ -1,6 +1,7 @@
 #include "./palette.hpp"
 #include "./glcheck.hpp"
 
+#include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
 palette_t::palette_t() :
@@ -8,7 +9,7 @@ palette_t::palette_t() :
 	future(),
 	handle(0),
 	dimensions(0),
-	format(pixel_format_t::R2G2B2A2)
+	format(pixel_format_t::Invalid)
 {
 
 }
@@ -44,37 +45,63 @@ palette_t::~palette_t() {
 	this->destroy();
 }
 
-bool palette_t::load(const std::string& full_path, pixel_format_t format, thread_pool_t& thread_pool) {
-	if (!ready) {
+void palette_t::load(const std::string& full_path, pixel_format_t format, thread_pool_t& thread_pool) {
+	assert(!ready);
+	this->format = format;
+	this->future = thread_pool.push([](const std::string& full_path) -> image_t {
+		return image_t::generate(full_path);
+	}, full_path);
+}
+
+bool palette_t::create(glm::ivec2 dimensions, pixel_format_t format) {
+	if (!handle) {
+		this->dimensions = dimensions;
 		this->format = format;
-		future = thread_pool.push([](const std::string& full_path) {
-			return image_t::generate(full_path);
-		}, full_path);
+		glCheck(glGenTextures(1, &handle));
+		glCheck(glBindTexture(GL_TEXTURE_2D, handle));
+
+		if (sampler_t::has_immutable_storage()) {
+			glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, format, dimensions.x, dimensions.y));
+		} else {
+			glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+		}
+		
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 		return true;
 	}
+	SYNAO_LOG("Warning! Tried to overwrite existing palette!\n");
 	return false;
 }
 
+void palette_t::destroy() {
+	if (future.valid()) {
+		auto& result = future.get();
+	}
+	ready = false;
+	if (handle != 0) {
+		glCheck(glDeleteTextures(1, &handle));
+		handle = 0;
+	}
+	dimensions	= glm::zero<glm::ivec2>();
+	format		= pixel_format_t::Invalid;
+}
+
 void palette_t::assure() {
-	if (!ready) {
+	if (!ready and future.valid()) {
+		// Do palette loading now
 		const image_t image = future.get();
 		if (!image.empty()) {
-			this->dimensions = image.get_dimensions();
-			glCheck(glGenTextures(1, &handle));
-			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
-
-			if (sampler_t::has_immutable_storage()) {
-				glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, format, dimensions.x, dimensions.y));
-			} else {
-				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			if (this->create(image.get_dimensions(), format)) {
+				glCheck(glTexSubImage2D(
+					GL_TEXTURE_2D, 0, 0, 0, 
+					dimensions.x, dimensions.y, 
+					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
+				));
+				glCheck(glGenerateMipmap(GL_TEXTURE_2D));
 			}
-			
-			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
-			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
-			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-			glCheck(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, dimensions.x, dimensions.y, GL_RGBA, GL_UNSIGNED_BYTE, &image[0]));
-			glCheck(glGenerateMipmap(GL_TEXTURE_2D));
 			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 		ready = true;
@@ -85,17 +112,6 @@ void palette_t::assure() const {
 	if (!ready) {
 		const_cast<palette_t*>(this)->assure();
 	}
-}
-
-void palette_t::destroy() {
-	this->assure();
-	ready = false;
-	if (handle != 0) {
-		glCheck(glDeleteTextures(1, &handle));
-		handle = 0;
-	}
-	dimensions	= glm::zero<glm::ivec2>();
-	format		= pixel_format_t::R2G2B2A2;
 }
 
 glm::vec2 palette_t::get_dimensions() const {

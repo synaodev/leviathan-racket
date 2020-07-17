@@ -3,6 +3,7 @@
 #include "./palette.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../utility/json.hpp"
 
 #include <fstream>
@@ -13,7 +14,7 @@ font_t::font_t() :
 	texture(nullptr),
 	palette(nullptr)
 {
-
+	
 }
 
 font_t::font_t(font_t&& that) noexcept : font_t() {
@@ -35,7 +36,12 @@ font_t& font_t::operator=(font_t&& that) noexcept {
 	return *this;
 }
 
-bool font_t::load(const std::string& directory, const std::string& full_path) {
+void font_t::load(const std::string& directory, const std::string& name) {
+	if (glyphs.size() > 0) {
+		SYNAO_LOG("Warning! Tried to overwrite font!\n");
+		return;
+	}
+	const std::string full_path = directory + name;
 	std::ifstream ifs(full_path, std::ios::binary);
 	if (ifs.is_open()) {
 		nlohmann::json file = nlohmann::json::parse(ifs);
@@ -56,15 +62,16 @@ bool font_t::load(const std::string& directory, const std::string& full_path) {
 			);
 			glyphs[id] = glyph;
 		}
-		return texture != nullptr and palette != nullptr;
+	} else {
+		SYNAO_LOG("Failed to load font from %s!\n", full_path.c_str());
 	}
-	return false;
 }
 
 const font_glyph_t& font_t::glyph(char32_t code_point) const {
+	static const font_glyph_t kInvalidGlyph = font_glyph_t();
 	auto it = glyphs.find(code_point);
 	if (it == glyphs.end()) {
-		return glyphs.at(0);
+		return kInvalidGlyph;
 	}
 	return it->second;
 }

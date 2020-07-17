@@ -2,6 +2,7 @@
 
 #include "../utility/thread_pool.hpp"
 #include "../utility/setup_file.hpp"
+#include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 #include "../system/renderer.hpp"
 
@@ -138,7 +139,11 @@ void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch
 	}
 }
 
-bool animation_t::load(const std::string& full_path) {
+void animation_t::load(const std::string& full_path) {
+	if (sequences.size() > 0) {
+		SYNAO_LOG("Warning! Tried to overwrite animation!\n");
+		return;
+	}
 	setup_file_t setup;
 	if (setup.load(full_path)) {
 		std::vector<std::string> matfile;
@@ -196,22 +201,20 @@ bool animation_t::load(const std::string& full_path) {
 			}
 		}
 		ready = true;
+	} else {
+		SYNAO_LOG("Failed to load animation from %s!\n", full_path.c_str());
 	}
-	return ready;
 }
 
-bool animation_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
-	if (!ready) {
-		future = thread_pool.push([this](const std::string& full_path) -> void {
-			this->load(full_path);
-		}, full_path);
-		return true;
-	}
-	return false;
+void animation_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
+	assert(!ready);
+	future = thread_pool.push([this](const std::string& full_path) -> void {
+		this->load(full_path);
+	}, full_path);
 }
 
 void animation_t::assure() const {
-	if (!ready) {
+	if (!ready and future.valid()) {
 		future.wait();
 	}
 }

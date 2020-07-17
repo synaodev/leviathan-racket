@@ -1,6 +1,7 @@
 #include "./texture.hpp"
 #include "./glcheck.hpp"
 
+#include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
 bool sampler_t::has_immutable_storage() {
@@ -17,7 +18,7 @@ texture_t::texture_t() :
 	handle(0),
 	dimensions(0),
 	layers(0),
-	format(pixel_format_t::R3G3B2A0)
+	format(pixel_format_t::Invalid)
 {
 	
 }
@@ -55,15 +56,12 @@ texture_t::~texture_t() {
 	this->destroy();
 }
 
-bool texture_t::load(const std::vector<std::string>& full_paths, pixel_format_t format, thread_pool_t& thread_pool) {
-	if (!ready) {
-		this->format = format;
-		future = thread_pool.push([](const std::vector<std::string>& full_paths) {
-			return image_t::generate(full_paths);
-		}, full_paths);
-		return true;
-	}
-	return false;
+void texture_t::load(const std::vector<std::string>& full_paths, pixel_format_t format, thread_pool_t& thread_pool) {
+	assert(!ready);
+	this->format = format;
+	this->future = thread_pool.push([](const std::vector<std::string>& full_paths) -> std::vector<image_t> {
+		return image_t::generate(full_paths);
+	}, full_paths);
 }
 
 bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t format) {
@@ -98,6 +96,7 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		}
 		return true;
 	}
+	SYNAO_LOG("Warning! Tried to overwrite existing texture!\n");
 	return false;
 }
 
@@ -134,7 +133,9 @@ bool texture_t::color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, ar
 }
 
 void texture_t::destroy() {
-	this->assure();
+	if (future.valid()) {
+		auto& result = future.get();
+	}
 	ready = false;
 	if (handle != 0) {
 		glCheck(glDeleteTextures(1, &handle));
@@ -142,11 +143,12 @@ void texture_t::destroy() {
 	}
 	dimensions	= glm::zero<glm::ivec2>();
 	layers		= 0;
-	format		= pixel_format_t::R3G3B2A0;
+	format		= pixel_format_t::Invalid;
 }
 
 void texture_t::assure() {
-	if (!ready) {
+	if (!ready and future.valid()) {
+		// Do texture loading now
 		const std::vector<image_t> images = future.get();
 		if (images.size() > 1) {
 			if (this->create(images[0].get_dimensions(), images.size(), format)) {
