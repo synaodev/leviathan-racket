@@ -57,6 +57,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 		return false;
 	}
 	this->setup_boot(renderer);
+	SYNAO_LOG("Runtime subsystems initialized.\n");
 	return true;
 }
 
@@ -176,6 +177,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	}
 	naomi_state.setup(audio, kernel, camera, kontext);
 	kernel.finish_field();
+	SYNAO_LOG("Field loading successful.\n");
 	return true;
 }
 
@@ -186,6 +188,7 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 	dialogue_gui.reset();
 	headsup.reset();
 	naomi_state.reset(kontext);
+	SYNAO_LOG("Boot successful.\n");
 }
 
 void runtime_t::setup_load() {
@@ -231,6 +234,7 @@ void runtime_t::setup_load() {
 		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
+	SYNAO_LOG("Load successful.\n");
 }
 
 void runtime_t::setup_save() {
@@ -258,6 +262,7 @@ void runtime_t::setup_save() {
 		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
+	SYNAO_LOG("Save successful.\n");
 }
 
 #ifdef SYNAO_DEBUG_BUILD

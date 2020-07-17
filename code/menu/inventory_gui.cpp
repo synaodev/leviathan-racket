@@ -3,6 +3,7 @@
 #include "./dialogue_gui.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../event/receiver.hpp"
 #include "../overlay/draw_title_view.hpp"
 #include "../system/input.hpp"
@@ -85,6 +86,7 @@ bool inventory_gui_t::init() {
 	const palette_t* palette = vfs::palette(res::pal::Heads);
 	const animation_t* animation = vfs::animation(res::anim::Items);
 	if (texture == nullptr or palette == nullptr or animation == nullptr) {
+		SYNAO_LOG("Inventory GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
 	arch_t index = 0;
@@ -92,6 +94,7 @@ bool inventory_gui_t::init() {
 		element.init(texture, palette, animation, index);
 		++index;
 	}
+	SYNAO_LOG("Inventory GUI is ready.\n");
 	return true;
 }
 

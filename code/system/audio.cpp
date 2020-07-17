@@ -63,6 +63,7 @@ bool audio_t::init(const setup_file_t& config) {
 	for (auto&& channel : channels) {
 		channel.create(volume);
 	}
+	SYNAO_LOG("Audio system initialized.\n");
 	return true;
 }
 

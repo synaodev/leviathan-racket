@@ -1,6 +1,7 @@
 #include "./dialogue_gui.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../event/receiver.hpp"
 #include "../event/array.hpp"
 #include "../system/input.hpp"
@@ -37,6 +38,10 @@ dialogue_gui_t::dialogue_gui_t() :
 bool dialogue_gui_t::init(receiver_t& receiver) {
 	const font_t* font = vfs::font(0);
 	const animation_t* animation = vfs::animation(res::anim::Heads);
+	if (font == nullptr or animation == nullptr) {
+		SYNAO_LOG("Dialogue GUI is missing resources and cannot be rendered!\n");
+		return false;
+	}
 	text.set_font(font);
 	faces.set_file(animation);
 	arrow.set_file(animation);
@@ -44,7 +49,8 @@ bool dialogue_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
-	return font != nullptr and animation != nullptr;
+	SYNAO_LOG("Dialogue GUI is ready.\n");
+	return true;
 }
 
 void dialogue_gui_t::reset() {

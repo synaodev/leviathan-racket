@@ -118,6 +118,7 @@ bool renderer_t::init(glm::ivec2 version) {
 		programs[pipeline_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
 		programs[pipeline_t::VtxMajorIndexed].set_sampler("palette_map", 1);
 	}
+	SYNAO_LOG("Rendering service is ready.\n");
 	return true;
 }
 

@@ -215,9 +215,10 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SDL_FreeSurface(surface);
 		surface = nullptr;
 	} else {
-		SYNAO_LOG("Icon surface creation failed! SDL Error: %s\n", SDL_GetError());
+		SYNAO_LOG("Icon surface creation failed!\nSDL Error: %s\n", SDL_GetError());
 	}
 #endif // __EMSCRIPTEN__
+	SYNAO_LOG("Video system initialized.\n");
 	return true;
 }
 

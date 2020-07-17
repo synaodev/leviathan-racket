@@ -43,7 +43,12 @@ bool kontext_t::init(receiver_t& receiver, draw_headsup_t& headsup) {
 	push_meter = [&headsup](sint_t current, sint_t maximum) {
 		headsup.set_fight_values(current, maximum);
 	};
-	return routine_generator_t::init(ctor_table);
+	if (!routine_generator_t::init(ctor_table)) {
+		SYNAO_LOG("Actor constructor table generation failed!\n");
+		return false;
+	}
+	SYNAO_LOG("Kontext system is ready.\n");
+	return true;
 }
 
 void kontext_t::reset() {

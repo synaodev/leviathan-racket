@@ -46,6 +46,7 @@ bool input_t::init(const setup_file_t& config) {
 			return false;
 		}
 	}
+	SYNAO_LOG("Input system initialized.\n");
 	return true;
 }
 

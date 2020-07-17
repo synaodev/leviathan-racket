@@ -78,6 +78,7 @@ bool vfs_t::mount(const setup_file_t& config) {
 		SYNAO_LOG("Error! Couldn't create thread pool!\n");
 		return false;
 	}
+	SYNAO_LOG("Virtual filesystem mounted.\n");
 	return true;
 }
 

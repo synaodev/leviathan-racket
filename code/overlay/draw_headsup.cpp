@@ -2,6 +2,7 @@
 
 #include "../utility/misc.hpp"
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../event/receiver.hpp"
 #include "../event/array.hpp"
 #include "../system/kernel.hpp"
@@ -24,19 +25,11 @@ draw_headsup_t::draw_headsup_t() :
 
 bool draw_headsup_t::init(receiver_t& receiver) {
 	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
-	if (!heads_animation) {
-		return false;
-	}
 	const animation_t* items_animation = vfs::animation(res::anim::Items);
-	if (!items_animation) {
-		return false;
-	}
 	const texture_t* texture = vfs::texture(res::img::Heads);
-	if (!texture) {
-		return false;
-	}
 	const palette_t* palette = vfs::palette(res::pal::Heads);
-	if (!palette) {
+	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr) {
+		SYNAO_LOG("HeadsUp overlay is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
 	main_scheme.set_file(heads_animation);
@@ -70,6 +63,7 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
+	SYNAO_LOG("HeadsUp overlay is ready.\n");
 	return true;
 }
 

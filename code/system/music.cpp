@@ -76,6 +76,7 @@ bool music_t::init(const setup_file_t& config) {
 		SYNAO_LOG("Pxtone quality setting failed!\n");
 		return false;
 	}
+	SYNAO_LOG("Music service is ready.\n");
 	return true;
 }
 

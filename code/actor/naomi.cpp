@@ -60,7 +60,7 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	backend = kontext.backend();
 	actor = backend->create();
 	if (actor == entt::null) {
-		SYNAO_LOG("Couldn't generate naomi actor!\n");
+		SYNAO_LOG("First actor allocation failed!\n");
 		return false;
 	}
 	auto& location = backend->emplace<location_t>(actor);
@@ -75,6 +75,7 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	blinker.blink_state = naomi_anim_t::Blinking;
 	blinker.first_state = naomi_anim_t::Idle;
 	modulator.reset(0.0f, 0.0f);
+	SYNAO_LOG("Naomi is ready.\n");
 	return true;
 }
 

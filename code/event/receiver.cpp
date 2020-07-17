@@ -99,6 +99,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 		return false;
 	}
 	boot->AddRef();
+	SYNAO_LOG("Receiver subsystem initialized.\n");
 	return true;
 }
 

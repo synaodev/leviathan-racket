@@ -83,6 +83,7 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 	}
 	context = std::get<SDL_GLContext>(device);
 	renderer.ortho(video.get_imgui_dimensions());
+	SYNAO_LOG("Editor subsystems initialized.\n");
 	return true;
 }
 

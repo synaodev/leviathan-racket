@@ -1,6 +1,8 @@
 #include "./routine.hpp"
 #include "./kontext.hpp"
 
+#include "../utility/logger.hpp"
+
 static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)>& get_callback_list() {
 	static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)> callback_list;
 	return callback_list;
@@ -12,18 +14,25 @@ routine_generator_t::routine_generator_t(void(*callback)(std::unordered_map<arch
 }
 
 bool routine_generator_t::init(std::unordered_map<arch_t, routine_ctor_fn>& ctor_table) {
+	bool result = true;
 	auto& callback_list = get_callback_list();
-	if (callback_list.empty()) {
-		return false;
-	}
-	for (auto&& callback : callback_list) {
-		if (callback != nullptr) {
-			std::invoke(callback, ctor_table);
+	if (!callback_list.empty()) {
+		for (auto&& callback : callback_list) {
+			if (callback != nullptr) {
+				std::invoke(callback, ctor_table);
+			} else {
+				SYNAO_LOG("Constructor table should not have null entries!\n");
+				result = false;
+				break;
+			}
 		}
+	} else {
+		SYNAO_LOG("Constructor callback list is empty!\n");
+		result = false;
 	}
 	callback_list.clear();
 	callback_list.shrink_to_fit();
-	return true;
+	return result;
 }
 
 routine_t::routine_t(routine_tick_fn tick) :

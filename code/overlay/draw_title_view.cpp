@@ -1,6 +1,7 @@
 #include "./draw_title_view.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../utility/misc.hpp"
 
 static constexpr real64_t kFadeTime = 0.048;
@@ -16,12 +17,17 @@ draw_title_view_t::draw_title_view_t() :
 
 bool draw_title_view_t::init() {
 	const font_t* font = vfs::font(2);
+	if (font == nullptr) {
+		SYNAO_LOG("Title-View overlay is missing resources and cannot be rendered!\n");
+		return false;
+	}
 	head.set_font(font);
 	head.set_position(160.0f, 24.0f);
 	lite.set_font(font);
 	lite.set_position(160.0f, 24.0f);
 	lite.set_params(1.0f);
-	return font != nullptr;
+	SYNAO_LOG("Title-View overlay is ready.\n");
+	return true;
 }
 
 void draw_title_view_t::handle() {

@@ -77,8 +77,10 @@ static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audi
 	policy_t policy = policy_t::Run;
 	runtime_t runtime;
 	if (!runtime.init(input, audio, music, renderer)) {
+		SYNAO_LOG("Runtime initialization failed!\n");
 		return false;
 	}
+	SYNAO_LOG("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
 		policy = input.poll(policy);
@@ -153,8 +155,10 @@ static bool run_editor(input_t& input, video_t& video, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	editor_t editor;
 	if (!editor.init(video, renderer)) {
+		SYNAO_LOG("Editor initialization failed!\n");
 		return false;
 	}
+	SYNAO_LOG("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
 		policy = input.poll(policy, editor_t::get_event_callback());
@@ -216,14 +220,16 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
-		SYNAO_LOG("SDL Initialization failed! SDL Error: %s\n", SDL_GetError());
+		SYNAO_LOG("SDL Initialization failed!\nSDL Error: %s\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 	setup_file_t config;
 	load_config_file(config);
+	// Check arguments
 	if (argc > 1) {
 		const byte_t* option = argv[1];
 		if (std::strcmp(option, "--editor") == 0) {
+			SYNAO_LOG("Editor requested...\n");
 			return proc_editor(config);
 		} else if (std::strcmp(option, "--version") == 0) {
 			print_version();
