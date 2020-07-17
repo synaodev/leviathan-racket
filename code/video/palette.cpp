@@ -78,7 +78,7 @@ bool palette_t::create(glm::ivec2 dimensions, pixel_format_t format) {
 
 void palette_t::destroy() {
 	if (future.valid()) {
-		auto& result = future.get();
+		auto result = future.get();
 	}
 	ready = false;
 	if (handle != 0) {

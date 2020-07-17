@@ -134,7 +134,7 @@ bool texture_t::color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, ar
 
 void texture_t::destroy() {
 	if (future.valid()) {
-		auto& result = future.get();
+		auto result = future.get();
 	}
 	ready = false;
 	if (handle != 0) {
