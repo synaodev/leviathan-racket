@@ -3,6 +3,7 @@
 #include "./kontext.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/logger.hpp"
 #include "../utility/misc.hpp"
 
 sprite_t::sprite_t(const std::string& name) :
@@ -102,11 +103,11 @@ void sprite_t::update(kontext_t& kontext, real64_t delta) {
 				sprite.position = location.position;
 			}
 			if (sprite.shake != 0.0f) {
+				real_t amount = static_cast<real_t>(delta / 2.0f);
 				sprite.write = true;
-				real_t amount = static_cast<real_t>(delta * misc::kIntervalMin);
-				sprite.shake = (sprite.shake > 0.0f) ?
-					glm::max(0.0f, sprite.shake - static_cast<real_t>(delta * misc::kIntervalMin)) :
-					glm::min(0.0f, sprite.shake + static_cast<real_t>(delta * misc::kIntervalMin));
+				sprite.shake = sprite.shake > 0.0f ?
+					sprite.shake = -glm::max(0.0f, sprite.shake - amount) :
+					sprite.shake = -glm::min(0.0f, sprite.shake + amount);
 			}
 		}
 	});

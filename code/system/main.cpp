@@ -17,7 +17,7 @@
 
 #ifndef __EMSCRIPTEN__
 	#include <SDL2/SDL.h>
-#else
+#else // __EMSCRIPTEN__
 	#include <SDL/SDL.h>
 #endif // __EMSCRIPTEN__
 
@@ -32,8 +32,6 @@ static std::string get_boot_path() {
 static void write_default_config(setup_file_t& config, const std::string& boot_path) {
 	config.clear(boot_path);
 	config.set("Setup", "Language", std::string("english"));
-	// config.set("Setup", "Field", std::string("naomi"));
-	// config.set("Setup", "Actor", 200);
 	config.set("Video", "VerticalSync", 0);
 	config.set("Video", "Fullscreen", 0);
 	config.set("Video", "ScaleFactor", 3);
@@ -151,7 +149,7 @@ static int proc_naomi(setup_file_t& config) {
 	return EXIT_SUCCESS;
 }
 
-static bool run_edit(input_t& input, video_t& video, renderer_t& renderer) {
+static bool run_editor(input_t& input, video_t& video, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	editor_t editor;
 	if (!editor.init(video, renderer)) {
@@ -198,15 +196,14 @@ static int proc_editor(setup_file_t& config) {
 	if (!renderer.init(version)) {
 		return EXIT_FAILURE;
 	}
-	if (!run_edit(input, video, renderer)) {
+	if (!run_editor(input, video, renderer)) {
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
 }
 
-static int proc_version(const setup_file_t&) {
-	SYNAO_LOG("0.0.0.0\n");
-	return EXIT_SUCCESS;
+static void print_version() {
+	SYNAO_LOG("Leviathan Racket Version: 0.0.0.0\n");
 }
 
 int main(int argc, char** argv) {
@@ -229,13 +226,13 @@ int main(int argc, char** argv) {
 		if (std::strcmp(option, "--editor") == 0) {
 			return proc_editor(config);
 		} else if (std::strcmp(option, "--version") == 0) {
-			return proc_version(config);
+			print_version();
+		} else {
+			SYNAO_LOG("Error! Unknown command option!\n");
+			return EXIT_FAILURE;
 		}
-		SYNAO_LOG("Error! Unknown command option!\n");
-		return EXIT_FAILURE;
 	}
 	return proc_naomi(config);
-	return EXIT_SUCCESS;
 }
 
 #endif // __EMSCRIPTEN__
