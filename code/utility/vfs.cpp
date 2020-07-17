@@ -32,7 +32,7 @@ static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
 static const byte_t kTunePath[]		= "./vfs/tune/";
 
 static constexpr byte_t kDefaultLang[] = "english";
-static constexpr arch_t kTotalThreads  = 5;
+static constexpr arch_t kTotalThreads  = 4;
 
 vfs_t::vfs_t() : 
 	thread_pool(),

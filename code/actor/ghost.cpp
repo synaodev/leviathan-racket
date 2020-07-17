@@ -19,6 +19,7 @@ void ai::ghost::ctor(entt::entity s, kontext_t& ktx) {
 	sprite.layer = layer_value::Automatic;
 	sprite.pivot = glm::vec2(8.0f, 16.0f);
 	sprite.position = location.position;
+
 	if (location.direction & direction_t::Left) {
 		sprite.mirroring = mirroring_t::Horizontal;
 	}
@@ -32,15 +33,21 @@ void ai::ghost::ctor(entt::entity s, kontext_t& ktx) {
 
 
 void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
+	auto& sprite = rtp.ktx.get<sprite_t>(s);
+	if (sprite.state == 1 and sprite.finished()) {
+		sprite.new_state(0);
+	}
 	auto& health = rtp.ktx.get<health_t>(s);
 	if (health.current <= 0) {
 		auto& location = rtp.ktx.get<location_t>(s);
 		rtp.ktx.smoke(location.center(), 5);
+		rtp.ktx.shrapnel(location.center(), 1);
 	} else if (health.flags[health_flags_t::Hurt]) {
 		health.flags[health_flags_t::Hurt] = false;
+
 		auto& location = rtp.ktx.get<location_t>(s);
 		rtp.ktx.shrapnel(location.center(), 2);
-		auto& sprite = rtp.ktx.get<sprite_t>(s);
+
 		sprite.shake = 0.3f;
 		sprite.new_state(1);
 	}
