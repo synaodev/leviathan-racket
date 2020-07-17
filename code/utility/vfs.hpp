@@ -80,7 +80,8 @@ public:
 	template<typename K, typename T>
 	T& allocate_safely(const K& key, std::unordered_map<K, T>& map) {
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
-		return map[key];
+		auto result = map.try_emplace(key);
+		return result.first->second;
 	}
 	// template<typename K, typename T>
 	// auto search_safely(const K& key, const std::unordered_map<K, T>& map) {
