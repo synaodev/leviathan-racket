@@ -70,7 +70,8 @@ bool channel_t::attach(const noise_t* noise) {
 			current->binder.erase(this);
 			current = nullptr;
 		}
-		if (noise != nullptr and noise->ready) {
+		if (noise != nullptr) {
+			noise->assure();
 			ready = true;
 			current = noise;
 			noise->binder.insert(this);

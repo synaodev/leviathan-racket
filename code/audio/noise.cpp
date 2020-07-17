@@ -5,14 +5,11 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
-#ifndef __EMSCRIPTEN__
-	#include <SDL2/SDL.h>
-#else
-	#include <SDL/SDL.h>
-#endif // __EMSCRIPTEN__
+#include <cstring>
 
 noise_t::noise_t() :
 	ready(false),
+	spec(),
 	future(),
 	handle(0),
 	binder()
@@ -26,6 +23,7 @@ noise_t::noise_t(noise_t&& that) noexcept : noise_t() {
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
 		
+		std::swap(spec, that.spec);
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(binder, that.binder);
@@ -38,6 +36,7 @@ noise_t& noise_t::operator=(noise_t&& that) noexcept {
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
 		
+		std::swap(spec, that.spec);
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(binder, that.binder);
@@ -50,6 +49,7 @@ noise_t::~noise_t() {
 }
 
 static ALenum get_format_enum(const SDL_AudioSpec* audio_spec) {
+	assert(audio_spec != nullptr);
 	ALenum type;
 	if (audio_spec->channels == 1) {
 		if (audio_spec->format == AUDIO_U8 or audio_spec->format == AUDIO_S8) {
@@ -67,32 +67,42 @@ static ALenum get_format_enum(const SDL_AudioSpec* audio_spec) {
 	return type;
 }
 
-void noise_t::load(const std::string& full_path) {
+/*void noise_t::load(const std::string& full_path) {
 	if (this->create()) {
-		SDL_AudioSpec audio_spec;
-		uint8_t* audio_data = nullptr;
+		uint8_t* data = nullptr;
 		uint_t length = 0;
-		if (!SDL_LoadWAV(full_path.c_str(), &audio_spec, &audio_data, &length)) {
+		if (!SDL_LoadWAV(full_path.c_str(), &spec, &data, &length)) {
 			SYNAO_LOG("Error! Couldn't load %s!\n", full_path.c_str());
 			SYNAO_LOG("%s\n", SDL_GetError());
 			return;
 		}
 		alCheck(alBufferData(
 			handle, 
-			get_format_enum(&audio_spec), 
-			audio_data, 
+			get_format_enum(&spec), 
+			data, 
 			length, 
-			audio_spec.freq
+			spec.freq
 		));
-		SDL_FreeWAV(audio_data);
+		SDL_FreeWAV(data);
 		ready = true;
 	}
-}
+}*/
 
 void noise_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
 	assert(!ready);
-	this->future = thread_pool.push([this](const std::string& full_path) -> void {
-		this->load(full_path);
+	this->future = thread_pool.push([this](const std::string& full_path) -> std::vector<uint8_t> {
+		std::vector<uint8_t> result;
+		uint8_t* data = nullptr;
+		uint_t length = 0;
+		if (SDL_LoadWAV(full_path.c_str(), &spec, &data, &length)) {
+			result.resize(length);
+			std::memcpy(&result[0], data, result.size());
+			SDL_FreeWAV(data);
+		} else {
+			SYNAO_LOG("Failed to load noise from %s!\n", full_path.c_str());
+			SYNAO_LOG("SDL Error: %s\n", SDL_GetError());
+		}
+		return result;
 	}, full_path);
 }
 
@@ -107,9 +117,10 @@ bool noise_t::create() {
 
 void noise_t::destroy() {
 	if (future.valid()) {
-		future.wait();
+		auto& result = future.get();
 	}
 	ready = false;
+	std::memset(&spec, 0, sizeof(spec));
 	if (binder.size() > 0) {
 		std::set<channel_t*> channels;
 		channels.swap(binder);
@@ -123,8 +134,27 @@ void noise_t::destroy() {
 	}
 }
 
-void noise_t::assure() const {
+void noise_t::assure() {
 	if (!ready and future.valid()) {
-		future.wait();
+		// Do noise loading now
+		std::vector<uint8_t> buffer = future.get();
+		if (this->create()) {
+			uint_t length = static_cast<uint_t>(buffer.size());
+			sint_t format = get_format_enum(&spec);
+			alCheck(alBufferData(
+				handle, 
+				format, 
+				buffer.data(),
+				length, 
+				spec.freq
+			));
+		}
+		ready = true;
+	}
+}
+
+void noise_t::assure() const {
+	if (!ready) {
+		const_cast<noise_t*>(this)->assure();
 	}
 }
