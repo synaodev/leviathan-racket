@@ -34,7 +34,7 @@ void ai::smoke::ctor(entt::entity s, kontext_t& ktx) {
 	location.position -= 8.0f;
 	location.bounding = rect_t(6.0f, 6.0f, 4.0f, 4.0f);
 
-	auto& kinematics = ktx.get<kinematics_t>(s);
+	auto& kinematics = ktx.assign_if<kinematics_t>(s);
 	kinematics.accel_angle(
 		rng::next(0.0f, glm::two_pi<real_t>()), 
 		rng::next(0.3f, 3.0f)
@@ -87,12 +87,12 @@ void ai::shrapnel::ctor(entt::entity s, kontext_t& ktx) {
 }
 
 void ai::shrapnel::tick(entt::entity s, routine_tuple_t& rtp) {
-	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
 	auto& timer = rtp.ktx.get<actor_timer_t>(s);
 	if (timer[0] <= 0) {
 		rtp.ktx.dispose(s);
 	} else {
-		kinematics.accel_angle(0.2f, 6.0f);
+		auto& kinematics = rtp.ktx.get<kinematics_t>(s);
+		kinematics.accel_y(0.2f, 6.0f);
 	}
 }
 

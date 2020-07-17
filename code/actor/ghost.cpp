@@ -33,9 +33,13 @@ void ai::ghost::ctor(entt::entity s, kontext_t& ktx) {
 
 void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& health = rtp.ktx.get<health_t>(s);
-	if (health.flags[health_flags_t::Hurt]) {
+	if (health.current <= 0) {
+		auto& location = rtp.ktx.get<location_t>(s);
+		rtp.ktx.smoke(location.center(), 5);
+	} else if (health.flags[health_flags_t::Hurt]) {
 		health.flags[health_flags_t::Hurt] = false;
-
+		auto& location = rtp.ktx.get<location_t>(s);
+		rtp.ktx.shrapnel(location.center(), 2);
 		auto& sprite = rtp.ktx.get<sprite_t>(s);
 		sprite.shake = 0.3f;
 		sprite.new_state(1);

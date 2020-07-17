@@ -32,7 +32,7 @@ static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
 static const byte_t kTunePath[]		= "./vfs/tune/";
 
 static constexpr byte_t kDefaultLang[] = "english";
-static constexpr arch_t kTotalThreads  = 4;
+static constexpr arch_t kTotalThreads  = 5;
 
 vfs_t::vfs_t() : 
 	thread_pool(),
@@ -392,7 +392,7 @@ const noise_t* vfs::noise(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->noises.find(name);
+	auto it = vfs::device->search_safely(name, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->allocate_safely(name, vfs::device->noises);
 		const std::string full_path = kNoisePath + name + ".wav";

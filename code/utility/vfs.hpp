@@ -82,6 +82,11 @@ public:
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
 		return map[key];
 	}
+	template<typename K, typename T>
+	auto search_safely(const K& key, const std::unordered_map<K, T>& map) {
+		std::lock_guard<std::mutex> lock{this->storage_mutex};
+		return map.find(key);
+	}
 public:
 	std::unique_ptr<thread_pool_t> thread_pool;
 	std::mutex storage_mutex;
@@ -94,5 +99,17 @@ public:
 	std::unordered_map<std::string, font_t> fonts;
 	std::unordered_map<std::string, animation_t> animations;
 };
+
+// template<>
+// noise_t& vfs_t::allocate_safely(const std::string& key, std::unordered_map<std::string, noise_t>& map) {
+// 	std::lock_guard<std::mutex> lock{this->audio_mutex};
+// 	return map[key];
+// }
+
+// template<>
+// auto vfs_t::search_safely(const std::string& key, const std::unordered_map<std::string, noise_t>& map) {
+// 	std::lock_guard<std::mutex> lock{this->audio_mutex};
+// 	return map.find(key);
+// }
 
 #endif // SYNAO_UTILITY_VFS_HPP
