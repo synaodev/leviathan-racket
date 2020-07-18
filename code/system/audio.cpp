@@ -77,12 +77,7 @@ void audio_t::flush() {
 			}
 		}
 		tasks.erase(
-			std::remove_if(
-				tasks.begin(), 
-				tasks.end(),
-				[](auto& task) { 
-					return task.second == nullptr; 
-				}),
+			std::remove_if(tasks.begin(), tasks.end(), [](auto& task) { return task.second == nullptr; }),
 			tasks.end()
 		);
 	}

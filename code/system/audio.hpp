@@ -8,6 +8,8 @@
 
 struct setup_file_t;
 
+using audio_task_t = std::pair<arch_t, const noise_t*>;
+
 struct audio_t : public not_copyable_t {
 public:
 	audio_t();
@@ -24,7 +26,7 @@ public:
 	void set_volume(real_t volume);
 	real_t get_volume() const;
 private:
-	std::vector<std::pair<arch_t, const noise_t*> > tasks;
+	std::vector<audio_task_t> tasks;
 	std::vector<channel_t> channels;
 	optr_t engine, context;
 };
