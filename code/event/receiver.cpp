@@ -441,16 +441,16 @@ void receiver_t::set_waiting_period(real64_t seconds) {
 	state->Suspend();
 }
 
-#ifdef __EMSCRIPTEN__
+#ifdef SYNAO_GENERIC_CALLING_CONV
 	#include "./wrapper.hpp"
 	static constexpr bool kUseGenericCall = true;
-#else // __EMSCRIPTEN__
+#else // SYNAO_GENERIC_CALLING_CONV
 	static constexpr bool kUseGenericCall = false;
 	#define WRAP_FN(name) 											asFUNCTION(name)
 	#define WRAP_FN_PR(name, Parameters, ReturnType) 				asFUNCTIONPR(name, Parameters, ReturnType)
 	#define WRAP_MFN(ClassType, name) 								asMETHOD(ClassType, name)
 	#define WRAP_MFN_PR(ClassType, name, Parameters, ReturnType) 	asMETHODPR(ClassType, name, Parameters, ReturnType)
-#endif // __EMSCRIPTEN__
+#endif // SYNAO_GENERIC_CALLING_CONV
 
 void receiver_t::generate_properties() {
 	sint_t r = 0;

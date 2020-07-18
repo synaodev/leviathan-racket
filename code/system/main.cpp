@@ -1,5 +1,3 @@
-#ifndef __EMSCRIPTEN__
-
 #include "./input.hpp"
 #include "./video.hpp"
 #include "./audio.hpp"
@@ -14,12 +12,7 @@
 #include "../utility/misc.hpp"
 
 #include <cstdlib>
-
-#ifndef __EMSCRIPTEN__
-	#include <SDL2/SDL.h>
-#else // __EMSCRIPTEN__
-	#include <SDL/SDL.h>
-#endif // __EMSCRIPTEN__
+#include <SDL2/SDL.h>
 
 static constexpr uint_t kStopDelay  = 40;
 static constexpr uint_t kNormDelay  = 10;
@@ -240,5 +233,3 @@ int main(int argc, char** argv) {
 	}
 	return proc_naomi(config);
 }
-
-#endif // __EMSCRIPTEN__

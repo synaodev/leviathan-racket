@@ -95,8 +95,5 @@ arch_t const_buffer_t::get_length() const {
 }
 
 bool const_buffer_t::has_immutable_storage() {
-#ifndef __EMSCRIPTEN__
 	return glBufferStorage != nullptr;
-#endif // __EMSCRIPTEN__
-	return false;
 }

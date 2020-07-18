@@ -13,11 +13,7 @@
 #include "../pxtone/pxtnService.h"
 #include "../pxtone/pxtnError.h"
 
-#ifndef __EMSCRIPTEN__
-	#include <SDL2/SDL.h>
-#else
-	#include <SDL/SDL.h>
-#endif // __EMSCRIPTEN__
+#include <SDL2/SDL.h>
 
 static constexpr arch_t kHeightLength = 10485760;
 static constexpr arch_t kAudioBuffers = 3;

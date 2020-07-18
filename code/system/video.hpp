@@ -2,12 +2,7 @@
 #define SYNAO_SYSTEM_VIDEO_HPP
 
 #include <tuple>
-
-#ifndef __EMSCRIPTEN__
-	#include <SDL2/SDL_video.h>
-#else
-	#include <SDL/SDL_video.h>
-#endif // __EMSCRIPTEN__
+#include <SDL2/SDL_video.h>
 
 #include "../utility/watch.hpp"
 

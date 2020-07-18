@@ -5,11 +5,7 @@
 #include "../utility/thread_pool.hpp"
 
 bool sampler_t::has_immutable_storage() {
-#ifndef __EMSCRIPTEN__
 	return glTexStorage2D != nullptr;
-#else // __EMSCRIPTEN__
-	return true;
-#endif // 
 }
 
 texture_t::texture_t() :

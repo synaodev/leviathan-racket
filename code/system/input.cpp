@@ -213,7 +213,6 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			}
 			break;
 		}
-#ifndef __EMSCRIPTEN__
 		case SDL_JOYDEVICEADDED: {
 			if (evt.jdevice.which == 0 and joystick == nullptr) {
 				joystick = SDL_JoystickOpen(0);
@@ -235,7 +234,6 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			}
 			break;
 		}
-#endif // __EMSCRIPTEN__
 		default: {
 			break;
 		}

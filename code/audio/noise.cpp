@@ -5,13 +5,8 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
-#ifndef __EMSCRIPTEN__
-	#include <SDL2/SDL_audio.h>
-#else
-	#include <SDL/SDL_audio.h>
-#endif // __EMSCRIPTEN__
-
 #include <cstring>
+#include <SDL2/SDL_audio.h>
 
 noise_t::noise_t() :
 	ready(false),

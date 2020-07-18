@@ -1,5 +1,3 @@
-#ifndef __EMSCRIPTEN__
-
 #include "./editor.hpp"
 #include "./input.hpp"
 #include "./video.hpp"
@@ -150,5 +148,3 @@ bool editor_t::viable() const {
 editor_t::event_callback_t editor_t::get_event_callback() {
 	return ImGui_ImplSDL2_ProcessEvent;
 }
-
-#endif // __EMSCRIPTEN__

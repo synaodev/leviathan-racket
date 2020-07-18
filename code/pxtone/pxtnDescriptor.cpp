@@ -27,7 +27,6 @@ bool pxtnDescriptor::set_memory_r( void *p_mem, int size )
 
 bool pxtnDescriptor::set_file_r  ( FILE *fd )
 {
-#ifndef __EMSCRIPTEN__
 	if( !fd ) return false;
 
 	fpos_t sz;
@@ -48,9 +47,6 @@ bool pxtnDescriptor::set_file_r  ( FILE *fd )
 	_b_read = true;
 	_cur    =    0;
 	return true;
-#else // __EMSCRIPTEN__
-	return false;
-#endif // __EMSCRIPTEN__
 }
 
 bool pxtnDescriptor::set_file_w  ( FILE *fd )
