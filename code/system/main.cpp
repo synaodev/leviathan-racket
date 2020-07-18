@@ -14,8 +14,8 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 
-static constexpr uint_t kStopDelay  = 40;
-static constexpr uint_t kNormDelay  = 10;
+static constexpr uint_t kStopDelay = 40;
+static constexpr uint_t kNormDelay = 10;
 
 static std::string get_boot_path() {
 	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
@@ -55,6 +55,10 @@ static void write_default_config(setup_file_t& config, const std::string& boot_p
 	config.set("Input", "JoyStrafe", 5);
 	config.set("Input", "JoyInventory",	6);
 	config.set("Input", "JoyOptions", 7);
+	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
+	if (!vfs::create_directory(init_path)) {
+		SYNAO_LOG("Warning! Will not be able to save newly generated config file!\n");
+	}
 }
 
 static void load_config_file(setup_file_t& config) {

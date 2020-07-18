@@ -233,10 +233,10 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 	struct dirent* ent;
 	if ((dir = opendir(path.c_str())) != nullptr) {
 		while ((ent = readdir(dir)) != nullptr) {
-			const std::string fname = ent->d_name;
-			const std::string fstrn = fname.substr(0, fname.find_last_of("."));
-			if (fstrn.size() > 1) {
-				result.push_back(fstrn);
+			const std::string file = ent->d_name;
+			const std::string name = file.substr(0, file.find_last_of("."));
+			if (name.size() > 1) {
+				result.push_back(name);
 			}
 		}
 		closedir(dir);
