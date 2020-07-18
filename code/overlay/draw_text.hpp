@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../utility/rect.hpp"
+#include "../utility/enums.hpp"
 #include "../video/vertex_pool.hpp"
 #include "../video/gfx.hpp"
 
@@ -29,12 +30,14 @@ public:
 	void set_position(real_t x, real_t y);
 	void set_origin(glm::vec2 origin);
 	void set_origin(real_t x, real_t y);
+	void set_layer(layer_t layer);
 	bool finished() const;
 	bool empty() const;
 	rect_t bounds() const;
 	const font_t* get_font() const;
 	glm::vec2 get_position() const;
 	glm::vec2 get_origin() const;
+	layer_t get_layer() const;
 	glm::vec2 get_font_size() const;
 private:
 	void generate();
@@ -42,6 +45,7 @@ private:
 	mutable bool_t write;
 	const font_t* font;
 	glm::vec2 position, origin;
+	layer_t layer;
 	real_t params;
 	arch_t current;
 	std::u32string buffer;

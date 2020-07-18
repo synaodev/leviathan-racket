@@ -10,6 +10,7 @@
 #include "../resource/id.hpp"
 
 draw_headsup_t::draw_headsup_t() :
+	suspender(),
 	main_scheme(),
 	leviathan_count(),
 	barrier_units(),
@@ -17,15 +18,15 @@ draw_headsup_t::draw_headsup_t() :
 	item_view(),
 	fight_meter(),
 	fade(),
-#ifdef SYNAO_DEBUG_BUILD
-	framerate(),
-#endif // SYNAO_DEBUG_BUILD
-	suspender()
+	hidden()
 {
 
 }
 
 bool draw_headsup_t::init(receiver_t& receiver) {
+	suspender = [&receiver] {
+		receiver.suspend();
+	};
 	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
 	const animation_t* items_animation = vfs::animation(res::anim::Items);
 	const texture_t* texture = vfs::texture(res::img::Heads);
@@ -62,11 +63,13 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	fight_meter.init(heads_animation);
 	fade.init();
 #ifdef SYNAO_DEBUG_BUILD
-	framerate.init(texture, palette);
+	const font_t* font = vfs::debug_font();
+	if (font == nullptr) {
+		SYNAO_LOG("Could not load debug font!\n");
+		return false;
+	}
+	hidden.init(texture, palette, font);
 #endif // SYNAO_DEBUG_BUILD
-	suspender = [&receiver] {
-		receiver.suspend();
-	};
 	SYNAO_LOG("HeadsUp overlay is ready.\n");
 	return true;
 }
@@ -87,9 +90,7 @@ void draw_headsup_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
 #ifdef SYNAO_DEBUG_BUILD
-	if (debug::Framerate) {
-		framerate.update(delta);
-	}
+	hidden.update(delta);
 #endif // SYNAO_DEBUG_BUILD
 }
 
@@ -109,18 +110,14 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		item_view.force();
 		fight_meter.force();
 #ifdef SYNAO_DEBUG_BUILD
-		if (debug::Framerate) {
-			framerate.force();
-		}
+		hidden.force();
 #endif // SYNAO_DEBUG_BUILD
 	}
 	if (fade.is_visible()) {
 		fade.render(renderer);
 	}
 #ifdef SYNAO_DEBUG_BUILD
-	if (debug::Framerate) {
-		framerate.render(renderer);
-	}
+	hidden.render(renderer);
 #endif // SYNAO_DEBUG_BUILD
 }
 
@@ -136,6 +133,14 @@ void draw_headsup_t::set_parameters(headsup_params_t params) {
 void draw_headsup_t::set_fight_values(sint_t current, sint_t maximum) {
 	fight_meter.set_values(current, maximum);
 }
+
+#ifdef SYNAO_DEBUG_BUILD
+
+void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
+	hidden.set_state(state, radio);
+}
+
+#endif // SYNAO_DEBUG_BUILD
 
 void draw_headsup_t::fade_in() {
 	fade.fade_in();

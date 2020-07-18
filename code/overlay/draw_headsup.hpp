@@ -9,7 +9,7 @@
 #include "./draw_fade.hpp"
 #include "./draw_item_view.hpp"
 #include "./draw_meter.hpp"
-#include "./draw_framerate.hpp"
+#include "./draw_hidden.hpp"
 
 struct input_t;
 struct audio_t;
@@ -52,12 +52,16 @@ public:
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	void set_parameters(headsup_params_t params);
 	void set_fight_values(sint_t current, sint_t maximum);
+#ifdef SYNAO_DEBUG_BUILD
+	void set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio);
+#endif // SYNAO_DEBUG_BUILD
 	void fade_in();
 	void fade_out();
 	bool is_fade_done() const;
 	bool is_fade_moving() const;
 	real_t get_main_index() const;
 private:
+	std::function<void(void)> suspender;
 	draw_scheme_t main_scheme;
 	draw_count_t leviathan_count;
 	draw_units_t barrier_units;
@@ -65,10 +69,7 @@ private:
 	draw_item_view_t item_view;
 	draw_meter_t fight_meter;
 	draw_fade_t fade;
-#ifdef SYNAO_DEBUG_BUILD
-	draw_framerate_t framerate;
-#endif // SYNAO_DEBUG_BUILD
-	std::function<void(void)> suspender;
+	draw_hidden_t hidden;
 };
 
 #endif // SYNAO_OVERLAY_DRAW_HEADSUP_HPP

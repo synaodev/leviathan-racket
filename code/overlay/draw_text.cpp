@@ -11,6 +11,7 @@ draw_text_t::draw_text_t() :
 	font(nullptr),
 	position(0.0f),
 	origin(0.0f),
+	layer(layer_value::HeadsUp),
 	params(0.0f),
 	current(0),
 	buffer(),
@@ -38,7 +39,7 @@ void draw_text_t::increment() {
 void draw_text_t::render(renderer_t& renderer) const {
 	if (!quads.empty() and font != nullptr) {
 		auto& list = renderer.get_overlay_quads(
-			layer_value::HeadsUp,
+			layer,
 			blend_mode_t::Alpha,
 			pipeline_t::VtxMajorIndexed,
 			font->get_texture(),
@@ -108,6 +109,11 @@ void draw_text_t::set_origin(real_t x, real_t y) {
 	this->set_origin(glm::vec2(x, y));
 }
 
+void draw_text_t::set_layer(layer_t layer) {
+	write = true;
+	this->layer = layer;
+}
+
 bool draw_text_t::finished() const {
 	return current >= buffer.size();
 }
@@ -155,6 +161,10 @@ glm::vec2 draw_text_t::get_position() const {
 
 glm::vec2 draw_text_t::get_origin() const {
 	return origin;
+}
+
+layer_t draw_text_t::get_layer() const {
+	return layer;
 }
 
 glm::vec2 draw_text_t::get_font_size() const {

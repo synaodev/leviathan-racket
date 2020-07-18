@@ -276,20 +276,33 @@ void runtime_t::setup_save() {
 
 #ifdef SYNAO_DEBUG_BUILD
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
-	// if (input.debug_pressed[SDL_SCANCODE_BACKSPACE]) {
-	// 	if (!input.debug_holding[SDL_SCANCODE_LSHIFT]) {
-	// 		sint_t draw_calls = static_cast<sint_t>(renderer.get_draw_calls());
-	// 		sint_t actor_count = static_cast<sint_t>(kontext.active());
-	// 		std::printf("Draw Calls: %d\n", draw_calls);
-	// 		std::printf("Actor Count: %d\n", actor_count);
-	// 	} else if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
-	// 		stack_gui.push(menu_t::Field, 0);
-	// 	}
-	// }
-	if (input.debug_pressed[SDL_SCANCODE_KP_0]) {
-		debug::Framerate = !debug::Framerate;
-	} else if (input.debug_pressed[SDL_SCANCODE_KP_1]) {
-		debug::Hitboxes = !debug::Hitboxes;
+	if (input.debug_holding[SDL_SCANCODE_BACKSPACE]) {
+		if (input.debug_pressed[SDL_SCANCODE_1]) {
+			debug::Framerate = false;
+			headsup.set_hidden_state(draw_hidden_state_t::None, nullptr);
+		} else if (input.debug_pressed[SDL_SCANCODE_2]) {
+			debug::Framerate = !debug::Framerate;
+			headsup.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
+		} else if (input.debug_pressed[SDL_SCANCODE_3]) {
+			debug::Framerate = false;
+			headsup.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
+				sint_t total_calls = static_cast<sint_t>(renderer.get_draw_calls());
+				// rendering hidden debug stuff takes two draw calls,
+				// so subtract 2 from the total
+				return total_calls - 2;
+			});
+		} else if (input.debug_pressed[SDL_SCANCODE_4]) {
+			debug::Framerate = false;
+			headsup.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
+				return static_cast<sint_t>(kontext.active());
+			});
+		} else if (input.debug_pressed[SDL_SCANCODE_MINUS]) {
+			debug::Hitboxes = !debug::Hitboxes;
+		} else if (input.debug_pressed[SDL_SCANCODE_EQUALS]) {
+			if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
+				stack_gui.push(menu_t::Field, 0);
+			}
+		}
 	}
 }
 #endif // SYNAO_DEBUG_BUILD

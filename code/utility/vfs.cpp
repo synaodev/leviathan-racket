@@ -33,8 +33,9 @@ static const byte_t kSpritePath[]	= "./vfs/sprite/";
 static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
 static const byte_t kTunePath[]		= "./vfs/tune/";
 
-static constexpr byte_t kDefaultLang[] = "english";
-static constexpr arch_t kTotalThreads  = 4;
+static constexpr byte_t kDefaultLang[] 	= "english";
+static constexpr arch_t kTotalThreads 	= 4;
+static constexpr arch_t kDebugFontIndex = 4;
 
 vfs_t::vfs_t() : 
 	thread_pool(),
@@ -525,4 +526,8 @@ const font_t* vfs::font(arch_t index) {
 		return vfs::font(i18n_fonts[index]);
 	}
 	return nullptr;
+}
+
+const font_t* vfs::debug_font() {
+	return vfs::font(kDebugFontIndex);
 }

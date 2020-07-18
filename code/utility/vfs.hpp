@@ -71,6 +71,7 @@ namespace vfs {
 	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
+	const font_t* debug_font();
 }
 
 struct vfs_t : public not_copyable_t {
