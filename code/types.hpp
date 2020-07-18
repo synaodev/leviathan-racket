@@ -70,4 +70,9 @@ namespace rng {
 	real_t next(real_t low, real_t high);
 }
 
+namespace interval {
+	constexpr real64_t kMin = 1.0 / 60.0;
+	constexpr real64_t kMax = 1.0 / 62.0;
+}
+
 #endif // SYNAO_TYPES_HPP

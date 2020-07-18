@@ -4,7 +4,6 @@
 #include "./renderer.hpp"
 
 #include "../utility/logger.hpp"
-#include "../utility/misc.hpp"
 
 // Needed in order to quell annoying warnings...
 #if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
@@ -142,7 +141,7 @@ void editor_t::render(const video_t& video, renderer_t& renderer) const {
 }
 
 bool editor_t::viable() const {
-	return accum >= misc::kIntervalMax;
+	return accum >= interval::kMax;
 }
 
 editor_t::event_callback_t editor_t::get_event_callback() {

@@ -4,7 +4,6 @@
 #include <fstream>
 #include <angelscript.h>
 
-#include "../utility/misc.hpp"
 #include "../utility/setup_file.hpp"
 
 static const byte_t kFlagProgsName[] = "_prog.bin";

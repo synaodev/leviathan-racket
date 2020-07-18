@@ -15,7 +15,7 @@
 #include "../system/kernel.hpp"
 #include "../event/receiver.hpp"
 #include "../overlay/draw_headsup.hpp"
-#include "../utility/misc.hpp"
+#include "../utility/debug.hpp"
 #include "../utility/hash.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/tmx_convert.hpp"
@@ -86,9 +86,11 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 	if (liquid_flag) {
 		liquid::render(*this, renderer, viewport);
 	}
-	if constexpr (misc::kHitboxes) {
+#ifdef SYNAO_DEBUG_BUILD
+	if (debug::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
+#endif // SYNAO_DEBUG_BUILD
 	panic_draw = false;
 }
 

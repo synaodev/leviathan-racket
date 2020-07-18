@@ -4,7 +4,6 @@
 
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/misc.hpp"
 
 sprite_t::sprite_t(const resource_entry_t& entry) :
 	file(nullptr),

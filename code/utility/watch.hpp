@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_CLOCK_HPP
-#define SYNAO_UTILITY_CLOCK_HPP
+#ifndef SYNAO_UTILITY_WATCH_HPP
+#define SYNAO_UTILITY_WATCH_HPP
 
 #include <chrono>
 
@@ -20,4 +20,4 @@ private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> point;
 };
 
-#endif // SYNAO_UTILITY_CLOCK_HPP
+#endif // SYNAO_UTILITY_WATCH_HPP

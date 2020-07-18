@@ -65,7 +65,9 @@ private:
 	draw_item_view_t item_view;
 	draw_meter_t fight_meter;
 	draw_fade_t fade;
+#ifdef SYNAO_DEBUG_BUILD
 	draw_framerate_t framerate;
+#endif // SYNAO_DEBUG_BUILD
 	std::function<void(void)> suspender;
 };
 

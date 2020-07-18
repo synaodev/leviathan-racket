@@ -11,7 +11,6 @@
 #include "../system/camera.hpp"
 
 #include "../utility/logger.hpp"
-#include "../utility/misc.hpp"
 #include "../utility/vfs.hpp"
 
 #include "../overlay/draw_headsup.hpp"
@@ -126,7 +125,7 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					timer = 0.0;
 				}
 			} else if (bitmask[rec_bits_t::Waiting]) {
-				timer -= misc::kIntervalMin;
+				timer -= interval::kMin;
 				if (timer <= 0.0) {
 					bitmask[rec_bits_t::Running] = true;
 					bitmask[rec_bits_t::Waiting] = false;

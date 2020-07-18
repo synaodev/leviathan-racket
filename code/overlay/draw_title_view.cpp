@@ -2,7 +2,6 @@
 
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/misc.hpp"
 
 static constexpr real64_t kFadeTime = 0.048;
 
@@ -32,7 +31,7 @@ bool draw_title_view_t::init() {
 
 void draw_title_view_t::handle() {
 	if (!head.empty()) {
-		timer -= misc::kIntervalMin;
+		timer -= interval::kMin;
 		if (timer <= 0.0) {
 			this->set_head();
 		}

@@ -5,7 +5,7 @@ target_sources (leviathan PRIVATE
 	"hash.hpp"
 	"json.hpp"
 	"logger.hpp"
-	"misc.hpp"
+	"debug.hpp" "debug.cpp"
 	"rect.cpp" "rect.hpp"
 	"setup_file.cpp" "setup_file.hpp"
 	"stb_image.h"

@@ -1,6 +1,6 @@
 #include "./draw_headsup.hpp"
 
-#include "../utility/misc.hpp"
+#include "../utility/debug.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 #include "../event/receiver.hpp"
@@ -17,7 +17,9 @@ draw_headsup_t::draw_headsup_t() :
 	item_view(),
 	fight_meter(),
 	fade(),
+#ifdef SYNAO_DEBUG_BUILD
 	framerate(),
+#endif // SYNAO_DEBUG_BUILD
 	suspender()
 {
 
@@ -59,7 +61,9 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	item_view.init(texture, palette, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
+#ifdef SYNAO_DEBUG_BUILD
 	framerate.init(texture, palette);
+#endif // SYNAO_DEBUG_BUILD
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
@@ -82,9 +86,11 @@ void draw_headsup_t::handle(const kernel_t& kernel) {
 void draw_headsup_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
-	if constexpr (misc::kFramerate) {
+#ifdef SYNAO_DEBUG_BUILD
+	if (debug::Framerate) {
 		framerate.update(delta);
 	}
+#endif // SYNAO_DEBUG_BUILD
 }
 
 void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const {
@@ -102,16 +108,20 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		oxygen_count.force();
 		item_view.force();
 		fight_meter.force();
-		if constexpr (misc::kFramerate) {
+#ifdef SYNAO_DEBUG_BUILD
+		if (debug::Framerate) {
 			framerate.force();
 		}
+#endif // SYNAO_DEBUG_BUILD
 	}
 	if (fade.is_visible()) {
 		fade.render(renderer);
 	}
-	if constexpr (misc::kFramerate) {
+#ifdef SYNAO_DEBUG_BUILD
+	if (debug::Framerate) {
 		framerate.render(renderer);
 	}
+#endif // SYNAO_DEBUG_BUILD
 }
 
 void draw_headsup_t::set_parameters(headsup_params_t params) {

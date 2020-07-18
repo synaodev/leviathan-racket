@@ -8,7 +8,7 @@
 #include "../system/audio.hpp"
 #include "../system/video.hpp"
 #include "../system/renderer.hpp"
-#include "../utility/misc.hpp"
+#include "../utility/debug.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/tmx_convert.hpp"
 #include "../utility/setup_file.hpp"
@@ -63,7 +63,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 
 bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	while (this->viable()) {
-		accum = glm::max(accum - misc::kIntervalMin, 0.0);
+		accum = glm::max(accum - interval::kMin, 0.0);
 		if (headsup.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
 				this->setup_boot(renderer);
@@ -133,7 +133,7 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 }
 
 bool runtime_t::viable() const {
-	return accum >= misc::kIntervalMax;
+	return accum >= interval::kMax;
 }
 
 bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
@@ -276,15 +276,20 @@ void runtime_t::setup_save() {
 
 #ifdef SYNAO_DEBUG_BUILD
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
-	if (input.debug_pressed[SDL_SCANCODE_GRAVE]) {
-		if (!input.debug_holding[SDL_SCANCODE_LSHIFT]) {
-			uint_t draw_calls = static_cast<uint_t>(renderer.get_draw_calls());
-			uint_t actor_count = static_cast<uint_t>(kontext.active());
-			SYNAO_LOG("Draw Calls : %d\n", draw_calls);
-			SYNAO_LOG("Actor Count : %d\n", actor_count);
-		} else if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
-			stack_gui.push(menu_t::Field, 0);
-		}
+	// if (input.debug_pressed[SDL_SCANCODE_BACKSPACE]) {
+	// 	if (!input.debug_holding[SDL_SCANCODE_LSHIFT]) {
+	// 		sint_t draw_calls = static_cast<sint_t>(renderer.get_draw_calls());
+	// 		sint_t actor_count = static_cast<sint_t>(kontext.active());
+	// 		std::printf("Draw Calls: %d\n", draw_calls);
+	// 		std::printf("Actor Count: %d\n", actor_count);
+	// 	} else if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
+	// 		stack_gui.push(menu_t::Field, 0);
+	// 	}
+	// }
+	if (input.debug_pressed[SDL_SCANCODE_KP_0]) {
+		debug::Framerate = !debug::Framerate;
+	} else if (input.debug_pressed[SDL_SCANCODE_KP_1]) {
+		debug::Hitboxes = !debug::Hitboxes;
 	}
 }
 #endif // SYNAO_DEBUG_BUILD
