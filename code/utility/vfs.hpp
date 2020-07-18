@@ -86,11 +86,6 @@ public:
 		auto result = map.try_emplace(key);
 		return result.first->second;
 	}
-	// template<typename K, typename T>
-	// auto search_safely(const K& key, const std::unordered_map<K, T>& map) {
-	// 	std::lock_guard<std::mutex> lock{this->storage_mutex};
-	// 	return map.find(key);
-	// }
 public:
 	std::unique_ptr<thread_pool_t> thread_pool;
 	std::mutex storage_mutex;
