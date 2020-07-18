@@ -407,6 +407,25 @@ const noise_t* vfs::noise(const resource_entry_t& entry) {
 	return &it->second;
 }
 
+const animation_t* vfs::animation(const resource_entry_t& entry) {
+	if (vfs::device == nullptr) {
+		return nullptr;
+	}
+	auto it = vfs::device->animations.find(entry.hash);
+	// auto it = vfs::device->search_safely(name, vfs::device->animations);
+	if (it == vfs::device->animations.end()) {
+		animation_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->animations);
+		ref.load(kSpritePath + std::string(entry.filename) + ".cfg", *vfs::device->thread_pool);
+		return &ref;
+	}
+	return &it->second;
+}
+
+const animation_t* vfs::animation(const std::string& name) {
+	const resource_entry_t entry = resource_entry_t(name.c_str());
+	return vfs::animation(entry);
+}
+
 const texture_t* vfs::texture(const std::vector<std::string>& names, const std::string& directory) {
 	if (vfs::device == nullptr) {
 		return nullptr;
@@ -506,18 +525,4 @@ const font_t* vfs::font(arch_t index) {
 		return vfs::font(i18n_fonts[index]);
 	}
 	return nullptr;
-}
-
-const animation_t* vfs::animation(const std::string& name) {
-	if (vfs::device == nullptr) {
-		return nullptr;
-	}
-	auto it = vfs::device->animations.find(name);
-	// auto it = vfs::device->search_safely(name, vfs::device->animations);
-	if (it == vfs::device->animations.end()) {
-		animation_t& ref = vfs::device->allocate_safely(name, vfs::device->animations);
-		ref.load(kSpritePath + name + ".cfg", *vfs::device->thread_pool);
-		return &ref;
-	}
-	return &it->second;
 }

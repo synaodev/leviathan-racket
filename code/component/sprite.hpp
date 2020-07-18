@@ -1,20 +1,17 @@
 #ifndef SYNAO_COMPONENT_SPRITE_HPP
 #define SYNAO_COMPONENT_SPRITE_HPP
 
-#include <string>
-
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
 
-#include "../resource/id.hpp"
-
+struct resource_entry_t;
 struct animation_t;
 struct renderer_t;
 struct kontext_t;
 
 struct sprite_t {
 public:
-	sprite_t(const std::string& name);
+	sprite_t(const resource_entry_t& entry);
 	sprite_t();
 	sprite_t(const sprite_t&) = default;
 	sprite_t& operator=(const sprite_t&) = default;

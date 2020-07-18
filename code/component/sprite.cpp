@@ -6,7 +6,7 @@
 #include "../utility/logger.hpp"
 #include "../utility/misc.hpp"
 
-sprite_t::sprite_t(const std::string& name) :
+sprite_t::sprite_t(const resource_entry_t& entry) :
 	file(nullptr),
 	write(false),
 	timer(0.0),
@@ -23,7 +23,7 @@ sprite_t::sprite_t(const std::string& name) :
 	angle(0.0f),
 	shake(0.0f)
 {
-	file = vfs::animation(name);
+	file = vfs::animation(entry);
 }
 
 sprite_t::sprite_t() :
