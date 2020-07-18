@@ -4,6 +4,7 @@
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
+#include "../resource/entry.hpp"
 
 static constexpr arch_t kSoundChannels = 12;
 
@@ -83,22 +84,32 @@ void audio_t::flush() {
 	}
 }
 
-void audio_t::play(const std::string& id, arch_t index) {
+void audio_t::play(const resource_entry_t& entry, arch_t index) {
 	if (index < channels.size()) {
-		tasks.emplace_back(index, vfs::noise(id));
+		tasks.emplace_back(index, vfs::noise(entry));
 	}
 }
 
-void audio_t::play(const std::string& id) {
+void audio_t::play(const resource_entry_t& entry) {
 	for (auto&& channel : channels) {
 		if (!channel.playing()) {
 			tasks.emplace_back(
 				std::distance(&channels[0], &channel),
-				vfs::noise(id)
+				vfs::noise(entry)
 			);
 			break;
 		}
 	}
+}
+
+void audio_t::play(const std::string& id, arch_t index) {
+	const resource_entry_t entry = resource_entry_t(id.c_str());
+	this->play(entry, index);
+}
+
+void audio_t::play(const std::string& id) {
+	const resource_entry_t entry = resource_entry_t(id.c_str());
+	this->play(entry);
 }
 
 void audio_t::pause(arch_t index) {

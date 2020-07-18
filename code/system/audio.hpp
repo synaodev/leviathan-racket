@@ -6,6 +6,7 @@
 
 #include "../audio/channel.hpp"
 
+struct resource_entry_t;
 struct setup_file_t;
 
 using audio_task_t = std::pair<arch_t, const noise_t*>;
@@ -19,6 +20,8 @@ public:
 public:
 	bool init(const setup_file_t& config);
 	void flush();
+	void play(const resource_entry_t& entry, arch_t index);
+	void play(const resource_entry_t& entry);
 	void play(const std::string& id, arch_t index);
 	void play(const std::string& id);
 	void pause(arch_t index);

@@ -4,6 +4,8 @@
 #include "./thread_pool.hpp"
 #include "./json.hpp"
 
+#include "../resource/entry.hpp"
+
 #include <fstream>
 #include <sstream>
 #include <streambuf>
@@ -387,14 +389,19 @@ std::string vfs::global_script(const std::string& name) {
 }
 
 const noise_t* vfs::noise(const std::string& name) {
+	const resource_entry_t entry = resource_entry_t(name.c_str());
+	return vfs::noise(entry);
+}
+
+const noise_t* vfs::noise(const resource_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->noises.find(name);
+	auto it = vfs::device->noises.find(entry.hash);
 	// auto it = vfs::device->search_safely(name, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
-		noise_t& ref = vfs::device->allocate_safely(name, vfs::device->noises);
-		ref.load(kNoisePath + name + ".wav", *vfs::device->thread_pool);
+		noise_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->noises);
+		ref.load(kNoisePath + std::string(entry.filename) + ".wav", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;

@@ -12,8 +12,8 @@ void liquid::handle(audio_t& audio, kontext_t& kontext, const location_t& locati
 		}
 	};
 	auto spawner = [&audio, &kontext](const location_t& location, const liquid_listener_t& listener, rect_t bounds) {
-		if (listener.sound_name != nullptr) {
-			audio.play(listener.sound_name, 11);
+		if (listener.sound != nullptr) {
+			audio.play(*listener.sound, 11);
 		}
 		kontext.spawn(
 			listener.particle_type,

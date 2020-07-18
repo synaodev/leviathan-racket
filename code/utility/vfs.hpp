@@ -14,6 +14,7 @@
 #include "../event/receiver.hpp"
 #include "./thread_pool.hpp"
 
+struct resource_entry_t;
 struct setup_file_t;
 struct vfs_t;
 
@@ -59,6 +60,7 @@ namespace vfs {
 	std::string local_script(const std::string& name);
 	std::string global_script(const std::string& name);
 	const noise_t* noise(const std::string& name);
+	const noise_t* noise(const resource_entry_t& entry);
 	const texture_t* texture(const std::vector<std::string>& names, const std::string& directory);
 	const texture_t* texture(const std::vector<std::string>& names);
 	const texture_t* texture(const std::string& name);
@@ -93,7 +95,7 @@ public:
 	std::mutex storage_mutex;
 	std::string language;
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
-	std::unordered_map<std::string, noise_t> noises;
+	std::unordered_map<arch_t, noise_t> noises;
 	std::unordered_map<std::string, texture_t> textures;
 	std::unordered_map<std::string, palette_t> palettes;
 	std::unordered_map<std::string, shader_t> shaders;

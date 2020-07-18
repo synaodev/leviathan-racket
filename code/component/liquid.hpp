@@ -10,6 +10,7 @@ struct audio_t;
 struct renderer_t;
 struct kontext_t;
 struct location_t;
+struct resource_entry_t;
 
 struct liquid_body_t {
 public:
@@ -31,14 +32,14 @@ public:
 
 struct liquid_listener_t {
 public:
-	liquid_listener_t(arch_t particle_type, const byte_t* sound_name) :
+	liquid_listener_t(arch_t particle_type, const resource_entry_t& entry) :
 		liquid(entt::null),
 		particle_type(particle_type),
-		sound_name(sound_name) {}
+		sound(&entry) {}
 	liquid_listener_t() :
 		liquid(entt::null),
 		particle_type(0),
-		sound_name(nullptr) {}
+		sound(nullptr) {}
 	liquid_listener_t(const liquid_listener_t&) = default;
 	liquid_listener_t& operator=(const liquid_listener_t&) = default;
 	liquid_listener_t(liquid_listener_t&&) = default;
@@ -47,7 +48,7 @@ public:
 public:
 	entt::entity liquid;
 	arch_t particle_type;
-	const byte_t* sound_name;
+	const resource_entry_t* sound;
 };
 
 namespace liquid {
