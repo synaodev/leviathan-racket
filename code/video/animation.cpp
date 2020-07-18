@@ -208,7 +208,7 @@ void animation_t::load(const std::string& full_path) {
 
 void animation_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
 	assert(!ready);
-	future = thread_pool.push([this](const std::string& full_path) -> void {
+	this->future = thread_pool.push([this](const std::string& full_path) -> void {
 		this->load(full_path);
 	}, full_path);
 }

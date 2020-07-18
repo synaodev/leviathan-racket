@@ -397,8 +397,8 @@ const noise_t* vfs::noise(const resource_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->noises.find(entry.hash);
-	// auto it = vfs::device->search_safely(name, vfs::device->noises);
+	// auto it = vfs::device->noises.find(entry.hash);
+	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->noises);
 		ref.load(kNoisePath + std::string(entry.filename) + ".wav", *vfs::device->thread_pool);
@@ -411,8 +411,8 @@ const animation_t* vfs::animation(const resource_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->animations.find(entry.hash);
-	// auto it = vfs::device->search_safely(name, vfs::device->animations);
+	// auto it = vfs::device->animations.find(entry.hash);
+	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
 		animation_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->animations);
 		ref.load(kSpritePath + std::string(entry.filename) + ".cfg", *vfs::device->thread_pool);
@@ -433,8 +433,8 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 	if (names.size() == 0 or names.size() > 4) {
 		return nullptr;
 	}
-	auto it = vfs::device->textures.find(names[0]);
-	// auto it = vfs::device->search_safely(names[0], vfs::device->textures);
+	// auto it = vfs::device->textures.find(names[0]);
+	auto it = vfs::device->search_safely(names[0], vfs::device->textures);
 	if (it == vfs::device->textures.end()) {
 		texture_t& ref = vfs::device->allocate_safely(names[0], vfs::device->textures);
 		auto generate_full_paths = [&directory](std::vector<std::string> names) {
@@ -466,8 +466,8 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	auto it = vfs::device->palettes.find(name);
-	// auto it = vfs::device->search_safely(name, vfs::device->palettes);
+	// auto it = vfs::device->palettes.find(name);
+	auto it = vfs::device->search_safely(name, vfs::device->palettes);
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->allocate_safely(name, vfs::device->palettes);
 		ref.load(
