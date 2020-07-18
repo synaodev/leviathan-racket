@@ -37,7 +37,7 @@ public:
 private:
 	bool setup_field(audio_t& audio, renderer_t& renderer);
 	void setup_boot(renderer_t& renderer);
-	void setup_load();
+	void setup_load(renderer_t& renderer);
 	void setup_save();
 #ifdef SYNAO_DEBUG_BUILD
 	void setup_debug(input_t& input, const renderer_t& renderer);

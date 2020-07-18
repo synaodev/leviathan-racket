@@ -69,7 +69,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 				this->setup_boot(renderer);
 			}
 			if (kernel.has(kernel_state_t::Load)) {
-				this->setup_load();
+				this->setup_load(renderer);
 			}
 			if (kernel.has(kernel_state_t::Field)) {
 				if (!this->setup_field(audio, renderer)) {
@@ -191,7 +191,9 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 	SYNAO_LOG("Boot successful.\n");
 }
 
-void runtime_t::setup_load() {
+// If loading fails, run setup_boot() to make sure the game doesn't get stuck.
+void runtime_t::setup_load(renderer_t& renderer) {
+	bool failure = false;
 	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
 	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
@@ -225,16 +227,23 @@ void runtime_t::setup_load() {
 			);
 			kernel.read_data(file);
 			if (!kernel.read_stream(save_path)) {
+				failure = true;
 				SYNAO_LOG("Couldn't load current flags!\n");
+			} else {
+				SYNAO_LOG("Load successful.\n");
 			}
 		} else {
+			failure = true;
 			SYNAO_LOG("Couldn't load current state!\n");
 		}
 	} else {
+		failure = true;
 		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
-	SYNAO_LOG("Load successful.\n");
+	if (failure) {
+		this->setup_boot(renderer);
+	}
 }
 
 void runtime_t::setup_save() {
@@ -254,15 +263,15 @@ void runtime_t::setup_save() {
 		kernel.write_data(file);
 		if (!kernel.write_stream(save_path)) {
 			SYNAO_LOG("Couldn't save current flags!\n");
-		}
-		if (!file.save(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
+		} else if (!file.save(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
 			SYNAO_LOG("Couldn't save current state!\n");
+		} else {
+			SYNAO_LOG("Save successful.\n");
 		}
 	} else {
 		SYNAO_LOG("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
-	SYNAO_LOG("Save successful.\n");
 }
 
 #ifdef SYNAO_DEBUG_BUILD
