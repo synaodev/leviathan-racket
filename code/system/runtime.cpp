@@ -278,14 +278,10 @@ void runtime_t::setup_save() {
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 	if (input.debug_pressed[SDL_SCANCODE_GRAVE]) {
 		if (!input.debug_holding[SDL_SCANCODE_LSHIFT]) {
-			SYNAO_LOG(
-				"Draw Calls : %d\n",
-				static_cast<uint_t>(renderer.get_draw_calls())
-			);
-			SYNAO_LOG(
-				"Actor Count : %d\n",
-				static_cast<uint_t>(kontext.active())
-			);
+			uint_t draw_calls = static_cast<uint_t>(renderer.get_draw_calls());
+			uint_t actor_count = static_cast<uint_t>(kontext.active());
+			SYNAO_LOG("Draw Calls : %d\n", draw_calls);
+			SYNAO_LOG("Actor Count : %d\n", actor_count);
 		} else if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
 			stack_gui.push(menu_t::Field, 0);
 		}

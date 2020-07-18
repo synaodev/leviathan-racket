@@ -136,7 +136,7 @@ void death(arch_t type) /* Naomi Dies */ {
 			pxt::fade(2.0f);
 			sys::wait(2.0);
 			pxt::exit();
-			sys::reset();
+			sys::boot();
 		}
 	} else {
 		msg::close();
@@ -144,7 +144,7 @@ void death(arch_t type) /* Naomi Dies */ {
 		pxt::fade(2.0f);
 		sys::wait(2.0);
 		pxt::exit();
-		sys::reset();
+		sys::boot();
 	}
 }
 

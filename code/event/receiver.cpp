@@ -220,7 +220,7 @@ void receiver_t::run_field(const kernel_t& kernel) {
 		asIScriptFunction* kernel_function = kernel.get_function();
 		if (kernel_function != nullptr) {
 			this->execute_function(kernel_function);
-		} else if (kernel.has(kernel_state_t::Boot)) {
+		} else if (kernel.has(kernel_state_t::Zero)) {
 			this->execute_function(boot);
 		} else {
 			const std::string field = kernel.get_field();
@@ -599,7 +599,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void unlock()", WRAP_MFN(kernel_t, unlock), call_gthis, &kernel);
 	assert(r >= 0);
 	// Restart Game
-	r = engine->RegisterGlobalFunction("void reset()", WRAP_MFN(kernel_t, boot), call_gthis, &kernel);
+	r = engine->RegisterGlobalFunction("void boot()", WRAP_MFN(kernel_t, boot), call_gthis, &kernel);
 	assert(r >= 0);
 	// Quit Game
 	r = engine->RegisterGlobalFunction("void quit()", WRAP_MFN(kernel_t, quit), call_gthis, &kernel);

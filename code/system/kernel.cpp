@@ -40,7 +40,7 @@ kernel_t::~kernel_t() {
 
 void kernel_t::reset() {
 	bitmask.reset();
-	bitmask[kernel_state_t::Boot] = true;
+	bitmask[kernel_state_t::Zero] = true;
 	bitmask[kernel_state_t::Field] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
@@ -143,9 +143,7 @@ void kernel_t::freeze() {
 }
 
 void kernel_t::unlock() {
-	if (!bitmask[kernel_state_t::Field] and 
-		!bitmask[kernel_state_t::Boot] and 
-		!bitmask[kernel_state_t::Load]) {
+	if (!bitmask[kernel_state_t::Field] and !bitmask[kernel_state_t::Boot] and !bitmask[kernel_state_t::Load]) {
 		bitmask[kernel_state_t::Lock] = false;
 		bitmask[kernel_state_t::Freeze] = false;
 	}
@@ -173,6 +171,7 @@ void kernel_t::save_checkpoint() {
 
 void kernel_t::finish_file_operation() {
 	bitmask[kernel_state_t::Boot] = false;
+	bitmask[kernel_state_t::Zero] = false;
 	bitmask[kernel_state_t::Load] = false;
 	bitmask[kernel_state_t::Save] = false;
 	bitmask[kernel_state_t::Check] = false;
@@ -196,6 +195,7 @@ void kernel_t::buffer_field(const std::string& field, sint_t identity, asIScript
 
 void kernel_t::finish_field() {
 	bitmask[kernel_state_t::Boot] = false;
+	bitmask[kernel_state_t::Zero] = false;
 	bitmask[kernel_state_t::Field] = false;
 	if (function != nullptr) {
 		function->Release();

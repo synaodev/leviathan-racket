@@ -10,8 +10,9 @@
 class asIScriptFunction;
 
 namespace __enum_kernel_state {
-	enum type : arch_t {
+	enum type : arch_t { 
 		Boot,
+		Zero,
 		Quit,
 		Field,
 		Menu,

@@ -28,7 +28,8 @@ wgt_field_t::wgt_field_t(arch_t flags) :
 
 void wgt_field_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t& kernel) {
 	ready = true;
-	fields = vfs::file_list("./field/");
+	const std::string field_path = vfs::resource_path(vfs_resource_path_t::Field);
+	fields = vfs::file_list(field_path);
 	kernel.freeze();
 	text_listing.set_font(vfs::font(0));
 	text_listing.set_position(kDefaultPosition);
