@@ -13,6 +13,7 @@ draw_units_t::draw_units_t() :
 	maximum_value(0),
 	table(0.0f),
 	texture(nullptr),
+	palette(nullptr),
 	quads()
 {
 	quads.setup<vtx_major_t>();

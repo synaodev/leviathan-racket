@@ -24,7 +24,7 @@ parallax_background_t::parallax_background_t() :
 	
 }
 
-parallax_background_t::parallax_background_t(parallax_background_t&& that) : parallax_background_t() {
+parallax_background_t::parallax_background_t(parallax_background_t&& that) noexcept : parallax_background_t() {
 	if (this != &that) {
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);
@@ -36,7 +36,7 @@ parallax_background_t::parallax_background_t(parallax_background_t&& that) : par
 	}
 }
 
-parallax_background_t& parallax_background_t::operator=(parallax_background_t&& that) {
+parallax_background_t& parallax_background_t::operator=(parallax_background_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);

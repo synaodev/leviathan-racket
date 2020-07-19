@@ -31,7 +31,7 @@ tilemap_layer_t::tilemap_layer_t() :
 	quads.setup<vtx_major_t>();
 }
 
-tilemap_layer_t::tilemap_layer_t(tilemap_layer_t&& that) : tilemap_layer_t() {
+tilemap_layer_t::tilemap_layer_t(tilemap_layer_t&& that) noexcept : tilemap_layer_t() {
 	if (this != &that) {
 		std::swap(priority, that.priority);
 		std::swap(indices, that.indices);
@@ -41,7 +41,7 @@ tilemap_layer_t::tilemap_layer_t(tilemap_layer_t&& that) : tilemap_layer_t() {
 	}
 }
 
-tilemap_layer_t& tilemap_layer_t::operator=(tilemap_layer_t&& that) {
+tilemap_layer_t& tilemap_layer_t::operator=(tilemap_layer_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(priority, that.priority);
 		std::swap(indices, that.indices);

@@ -29,7 +29,7 @@ void draw_item_view_t::handle(const kernel_t& kernel) {
 	const glm::ivec4* item_ptr = kernel.get_item_ptr();
 	if (item_ptr != nullptr) {
 		scheme.set_direction(
-			static_cast<direction_t>(item_ptr->x - 1)
+			static_cast<direction_t>(item_ptr->x - 1) // TODO: Static anaylsis doesn't like this
 		);
 		if ((item_ptr->y > 1 and !item_ptr->w) or (item_ptr->w != 0)) {
 			ammo.set_value(item_ptr->y);

@@ -12,8 +12,8 @@ struct renderer_t;
 struct parallax_background_t : public not_copyable_t {
 public:
 	parallax_background_t();
-	parallax_background_t(parallax_background_t&&);
-	parallax_background_t& operator=(parallax_background_t&&);
+	parallax_background_t(parallax_background_t&& that) noexcept;
+	parallax_background_t& operator=(parallax_background_t&& that) noexcept;
 	~parallax_background_t() = default;
 public:
 	void init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 dimensions);

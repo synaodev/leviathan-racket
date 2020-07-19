@@ -135,13 +135,13 @@ public:
 		bitmask(0) {}
 	actor_trigger_t(const actor_trigger_t&) = default;
 	actor_trigger_t& operator=(const actor_trigger_t&) = default;
-	actor_trigger_t(actor_trigger_t&& that) : actor_trigger_t() {
+	actor_trigger_t(actor_trigger_t&& that) noexcept : actor_trigger_t() {
 		if (this != &that) {
 			std::swap(bitmask, that.bitmask);
 			std::swap(identity, that.identity);
 		}
 	}
-	actor_trigger_t& operator=(actor_trigger_t&& that) {
+	actor_trigger_t& operator=(actor_trigger_t&& that) noexcept {
 		if (this != &that) {
 			std::swap(bitmask, that.bitmask);
 			std::swap(identity, that.identity);

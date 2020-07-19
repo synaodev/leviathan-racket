@@ -44,7 +44,7 @@ void inventory_gui_element_t::reset(glm::ivec4 item) {
 	if (item.x != 0) {
 		visible = true;
 		scheme.set_direction(
-			static_cast<direction_t>(item.x - 1)
+			static_cast<direction_t>(item.x - 1) // TODO: Static anaylsis doesn't like this
 		);
 		scheme.invalidate();
 		if ((item.y > 1 and !item.w) or (item.w != 0)) {
