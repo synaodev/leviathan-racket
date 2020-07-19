@@ -26,7 +26,7 @@ public:
 	sampler_t() = default;
 	~sampler_t() = default;
 public:
-	static bool has_immutable_storage();
+	static bool has_immutable_option();
 };
 
 struct texture_t : public not_copyable_t, public sampler_t {

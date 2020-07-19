@@ -60,7 +60,7 @@ bool palette_t::create(glm::ivec2 dimensions, pixel_format_t format) {
 		glCheck(glGenTextures(1, &handle));
 		glCheck(glBindTexture(GL_TEXTURE_2D, handle));
 
-		if (sampler_t::has_immutable_storage()) {
+		if (sampler_t::has_immutable_option()) {
 			glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, format, dimensions.x, dimensions.y));
 		} else {
 			glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));

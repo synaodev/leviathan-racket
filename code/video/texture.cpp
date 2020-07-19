@@ -4,7 +4,7 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
-bool sampler_t::has_immutable_storage() {
+bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
 }
 
@@ -68,7 +68,7 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		glCheck(glGenTextures(1, &handle));
 		if (layers > 1) {
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-			if (sampler_t::has_immutable_storage()) {
+			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
 			} else {
 				glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
@@ -80,7 +80,7 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 		} else {
 			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
-			if (sampler_t::has_immutable_storage()) {
+			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, format, dimensions.x, dimensions.y));
 			} else {
 				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));

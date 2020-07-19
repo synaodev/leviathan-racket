@@ -14,7 +14,7 @@ bool indexed_quads_t::allocate_indexer(arch_t length, primitive_t primitive) {
 		auto indices = indexed_quads_t::generate(length, 0, primitive);
 		glCheck(glGenBuffers(1, &indexed_quads_t::elemts));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexed_quads_t::elemts));
-		if (const_buffer_t::has_immutable_storage()) {
+		if (const_buffer_t::has_immutable_option()) {
 			glCheck(glBufferStorage(
 				GL_ELEMENT_ARRAY_BUFFER,
 				sizeof(decltype(indices)::value_type) * indices.size(),

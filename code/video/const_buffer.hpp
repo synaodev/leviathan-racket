@@ -12,17 +12,20 @@ public:
 public:
 	void setup(buffer_usage_t usage);
 	void create(arch_t length);
+	void create_immutable(arch_t length);
 	void destroy();
 	bool update(const optr_t pointer);
 	bool update(const optr_t pointer, arch_t count);
 	bool update(const optr_t pointer, arch_t count, arch_t offset);
 	bool valid() const;
+	bool immutable() const;
 	buffer_usage_t get_usage() const;
 	arch_t get_length() const;
-	static bool has_immutable_storage();
+	static bool has_immutable_option();
 private:
 	friend struct gfx_t;
 	buffer_usage_t usage;
+	bool_t immuts;
 	uint_t handle;
 	arch_t length;
 };

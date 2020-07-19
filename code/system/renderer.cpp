@@ -42,11 +42,19 @@ bool renderer_t::init(glm::ivec2 version) {
 		return false;
 	}
 	projection_buffer.setup(buffer_usage_t::Static);
-	projection_buffer.create(
-		sizeof(glm::mat4) + 
-		sizeof(glm::vec2) + 
-		sizeof(glm::vec2)
-	);
+	if (const_buffer_t::has_immutable_option()) {
+		projection_buffer.create_immutable(
+			sizeof(glm::mat4) + 
+			sizeof(glm::vec2) + 
+			sizeof(glm::vec2)
+		);
+	} else {
+		projection_buffer.create(
+			sizeof(glm::mat4) + 
+			sizeof(glm::vec2) + 
+			sizeof(glm::vec2)
+		);
+	}
 	projection_buffer.update(
 		&gk_projection_matrix,
 		sizeof(glm::mat4)
@@ -57,11 +65,19 @@ bool renderer_t::init(glm::ivec2 version) {
 		sizeof(glm::mat4)
 	);
 	viewport_buffer.setup(buffer_usage_t::Dynamic);
-	viewport_buffer.create(
-		sizeof(glm::mat4) + 
-		sizeof(glm::vec2) + 
-		sizeof(glm::vec2)
-	);
+	if (const_buffer_t::has_immutable_option()) {
+		viewport_buffer.create_immutable(
+			sizeof(glm::mat4) + 
+			sizeof(glm::vec2) + 
+			sizeof(glm::vec2)
+		);
+	} else {
+		viewport_buffer.create(
+			sizeof(glm::mat4) + 
+			sizeof(glm::vec2) + 
+			sizeof(glm::vec2)
+		);
+	}
 	viewport_buffer.update(
 		&gk_viewport_matrix,
 		sizeof(glm::mat4) + 

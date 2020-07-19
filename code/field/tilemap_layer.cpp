@@ -9,8 +9,8 @@ static constexpr arch_t kMinimumVerts = 21 * 13 * display_list_t::SingleQuad;
 static constexpr real_t kRealTileSize = 16.0f;
 static constexpr sint_t kSintTileSize = 16;
 static constexpr sint_t kInvalidTiles = -1;
-static const byte_t kCollideLayer[] = "collide";
-static const byte_t kPriorityType[] = "priority";
+static constexpr byte_t kCollideLayer[] = "collide";
+static constexpr byte_t kPriorityType[] = "priority";
 
 tilemap_layer_t::tilemap_layer_t(glm::ivec2 map_size) : tilemap_layer_t() {
 	tiles.resize(
