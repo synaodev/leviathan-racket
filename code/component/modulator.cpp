@@ -37,7 +37,7 @@ void modulator_t::update() {
 		real_t table = current + offset;
 		if (sprite_ptr->table != table) {
 			sprite_ptr->table = table;
-			sprite_ptr->write = true;
+			sprite_ptr->amend = true;
 		}
 	}
 }

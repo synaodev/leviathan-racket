@@ -99,10 +99,10 @@ void wgt_audio_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_audio_t::force() const {
+void wgt_audio_t::invalidate() const {
 	if (ready and active) {
-		text.force();
-		arrow.force();
+		text.invalidate();
+		arrow.invalidate();
 	}
 }
 

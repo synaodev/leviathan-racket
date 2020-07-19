@@ -142,7 +142,7 @@ void ai::dust::ctor(entt::entity s, kontext_t& ktx) {
 
 void ai::dust::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	sprite.write = true;
+	sprite.amend = true;
 	sprite.alpha -= 0.02f;
 	if (sprite.alpha <= 0.0f) {
 		rtp.ktx.dispose(s);

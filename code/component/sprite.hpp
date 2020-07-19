@@ -33,7 +33,7 @@ private:
 	const animation_t* file;
 public:
 	static constexpr arch_t NonState = (arch_t)-1;
-	mutable bool_t write;
+	mutable bool_t amend;
 	real64_t timer;
 	real_t alpha, table;
 	arch_t state;

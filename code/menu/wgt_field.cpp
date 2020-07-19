@@ -120,11 +120,11 @@ void wgt_field_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_field_t::force() const {
+void wgt_field_t::invalidate() const {
 	if (ready and active) {
-		text_listing.force();
-		text_identity.force();
-		arrow.force();
+		text_listing.invalidate();
+		text_identity.invalidate();
+		arrow.invalidate();
 	}
 }
 

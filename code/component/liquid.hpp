@@ -15,10 +15,10 @@ struct resource_entry_t;
 struct liquid_body_t {
 public:
 	liquid_body_t(rect_t hitbox) :
-		write(true),
+		amend(true),
 		hitbox(hitbox) {}
 	liquid_body_t() : 
-		write(true),
+		amend(true),
 		hitbox() {}
 	liquid_body_t(const liquid_body_t&) = default;
 	liquid_body_t& operator=(const liquid_body_t&) = default;
@@ -26,7 +26,7 @@ public:
 	liquid_body_t& operator=(liquid_body_t&&) = default;
 	~liquid_body_t() = default;
 public:	
-	mutable bool_t write;
+	mutable bool_t amend;
 	rect_t hitbox;
 };
 

@@ -126,12 +126,12 @@ glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t m
 	return glm::zero<glm::vec2>();
 }
 
-void animation_sequence_t::update(real64_t delta, bool_t& write, real64_t& timer, arch_t& frame) const {
+void animation_sequence_t::update(real64_t delta, bool_t& amend, real64_t& timer, arch_t& frame) const {
 	if (total > 1) {
 		if (repeat) {
 			timer += delta;
 			if (timer >= delay) {
-				write = true;
+				amend = true;
 				timer = glm::mod(timer, delay);
 				frame++;
 				frame %= total;
@@ -140,7 +140,7 @@ void animation_sequence_t::update(real64_t delta, bool_t& write, real64_t& timer
 			if (frame != total - 1) {
 				timer += delta;
 				if (timer >= delay) {
-					write = true;
+					amend = true;
 					timer = glm::mod(timer, delay);
 					frame++;
 				}

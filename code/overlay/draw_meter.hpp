@@ -15,11 +15,11 @@ public:
 	void init(const animation_t* animation);
 	void reset();
 	void update(real64_t delta);
-	void force() const;
+	void invalidate() const;
 	void render(renderer_t& renderer) const;
 	void set_values(sint_t current, sint_t maximum);
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	sint_t current;
 	rect_t varying;
 	draw_scheme_t graphed;

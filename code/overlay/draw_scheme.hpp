@@ -15,7 +15,7 @@ public:
 public:
 	void update(real64_t delta);
 	void render(renderer_t& renderer) const;
-	void force() const;
+	void invalidate() const;
 	void set_file(const animation_t* file);
 	void set_visible(bool_t visible);
 	void set_state(arch_t state);
@@ -36,7 +36,7 @@ public:
 public:
 	static constexpr arch_t NonState = (arch_t)-1;
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	const animation_t* file;
 	bool_t visible;
 	real64_t timer;

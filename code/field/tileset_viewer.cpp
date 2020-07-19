@@ -13,7 +13,7 @@ static constexpr arch_t kMaskLength = 256;
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
 
 tileset_viewer_t::tileset_viewer_t() : 
-	write(false),
+	amend(false),
 	select(false),
 	flash(false),
 	cursor(0.0f, 0.0f, 16.0f, 16.0f),
@@ -27,7 +27,7 @@ tileset_viewer_t::tileset_viewer_t() :
 }
 
 void tileset_viewer_t::reset() {
-	write = true;
+	amend = true;
 	select = false;
 	index = 0;
 	for (auto&& mask : bitmasks) {
@@ -54,7 +54,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				pressed = true;
 			}
 			if (pressed) {
-				write = true;
+				amend = true;
 				index = glm::clamp(index, (arch_t)0, (arch_t)255);
 				glm::vec2 position = glm::vec2(
 					static_cast<real_t>(index % 16) * cursor.w,
@@ -85,19 +85,19 @@ void tileset_viewer_t::handle(const input_t& input) {
 					integral_coordinates.x, 
 					integral_coordinates.y
 				);
-				write = true;
+				amend = true;
 				select = true;
 				index = static_cast<arch_t>(integral_coordinates.x) + static_cast<arch_t>(integral_coordinates.y) * 16;
 				cursor.x = real_coordinates.x + kDefaultPosition.x;
 				cursor.y = real_coordinates.y + kDefaultPosition.y;
 			}
 		} else if (input.pressed[btn_t::ClickR]) {
-			write = true;
+			amend = true;
 			select = false;
 			index = 0;
 		}
 	} else {
-		write = true;
+		amend = true;
 		select = false;
 		index = 0;
 	}
@@ -107,7 +107,7 @@ void tileset_viewer_t::update(real64_t delta) {
 	if (select) {
 		timer -= delta;
 		if (timer <= 0.0) {
-			write = true;
+			amend = true;
 			timer = 0.048;
 			flash = !flash;
 		}
@@ -115,8 +115,8 @@ void tileset_viewer_t::update(real64_t delta) {
 }
 
 void tileset_viewer_t::render(renderer_t& renderer) const {
-	if (write) {
-		write = false;
+	if (amend) {
+		amend = false;
 		if (select and flash) {
 			auto& list = renderer.get_overlay_quads(
 				layer_value::HeadsUp,
@@ -172,7 +172,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 }
 
 bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
-	write = true;
+	amend = true;
 	select = false;
 	if (file != path) {
 		texture = vfs::texture(path);

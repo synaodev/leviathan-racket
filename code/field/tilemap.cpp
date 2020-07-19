@@ -13,7 +13,7 @@ static constexpr sint_t kSintTileSize  = 16;
 static constexpr real_t kRealTileSize  = 16.0f;
 
 tilemap_t::tilemap_t() :
-	write(false),
+	amend(false),
 	dimensions(0),
 	attributes(),
 	attribute_key(),
@@ -28,7 +28,7 @@ tilemap_t::tilemap_t() :
 }
 
 void tilemap_t::reset() {
-	write = true;
+	amend = true;
 	dimensions = glm::zero<glm::ivec2>();
 	attributes.clear();
 	previous_viewport = rect_t(-kRealTileSize, -kRealTileSize, 320.0f, 180.0f);
@@ -46,7 +46,7 @@ void tilemap_t::handle(const camera_t& camera) {
 	}
 	if (!previous_viewport.cmp_round(viewport)) {
 		previous_viewport = viewport;
-		write = true;
+		amend = true;
 		glm::ivec2 first = glm::ivec2(
 			glm::max(tilemap_t::floor(viewport.x), 0),
 			glm::max(tilemap_t::floor(viewport.y), 0)
@@ -73,12 +73,12 @@ void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
 	for (auto&& tilemap_layer : tilemap_layers) {
 		tilemap_layer.render(
 			renderer, 
-			write, 
+			amend, 
 			tilemap_layer_texture, 
 			tilemap_layer_palette
 		);
 	}
-	write = false;
+	amend = false;
 }
 
 static const byte_t kPaletteProperty[] = "indexed";
@@ -112,7 +112,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 }
 
 void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
-	write = true;
+	amend = true;
 	if (!attribute_key.empty()) {
 		glm::vec2 inverse = tilemap_layer_texture != nullptr ? 
 			tilemap_layer_texture->get_inverse_dimensions() :
@@ -128,7 +128,7 @@ void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
 }
 
 void tilemap_t::push_parallax_background(const std::unique_ptr<tmx::Layer>& layer) {
-	write = true;
+	amend = true;
 	glm::vec2 parallax_dimensions = parallax_texture != nullptr ?
 		parallax_texture->get_dimensions() :
 		glm::zero<glm::vec2>();

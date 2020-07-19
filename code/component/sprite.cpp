@@ -7,7 +7,7 @@
 
 sprite_t::sprite_t(const resource_entry_t& entry) :
 	file(nullptr),
-	write(false),
+	amend(false),
 	timer(0.0),
 	alpha(1.0f),
 	table(0.0f),
@@ -27,7 +27,7 @@ sprite_t::sprite_t(const resource_entry_t& entry) :
 
 sprite_t::sprite_t() :
 	file(nullptr),
-	write(false),
+	amend(false),
 	timer(0.0),
 	alpha(1.0f),
 	table(0.0f),
@@ -46,7 +46,7 @@ sprite_t::sprite_t() :
 }
 
 void sprite_t::reset() {
-	write = true;
+	amend = true;
 	timer = 0.0;
 	alpha = 1.0f;
 	table = 0.0f;
@@ -65,7 +65,7 @@ void sprite_t::reset() {
 void sprite_t::new_state(arch_t state) {
 	if (state != NonState) {
 		if (this->state != state) {
-			this->write = true;
+			this->amend = true;
 			this->timer = 0.0;
 			this->state = state;
 			this->frame = 0;
@@ -92,18 +92,18 @@ void sprite_t::update(kontext_t& kontext, real64_t delta) {
 		if (sprite.file != nullptr) {
 			sprite.file->update(
 				delta,
-				sprite.write,
+				sprite.amend,
 				sprite.state,
 				sprite.timer,
 				sprite.frame
 			);
 			if (sprite.position != location.position) {
-				sprite.write = true;
+				sprite.amend = true;
 				sprite.position = location.position;
 			}
 			if (sprite.shake != 0.0f) {
 				real_t amount = static_cast<real_t>(delta / 2.0f);
-				sprite.write = true;
+				sprite.amend = true;
 				sprite.shake = sprite.shake > 0.0f ?
 					sprite.shake = -glm::max(0.0f, sprite.shake - amount) :
 					sprite.shake = -glm::min(0.0f, sprite.shake + amount);
@@ -142,7 +142,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					renderer,
 					viewport,
 					panic,
-					sprite.write,
+					sprite.amend,
 					sprite.state,
 					sprite.frame,
 					sprite.variation,
@@ -160,7 +160,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					renderer, 
 					viewport, 
 					panic, 
-					sprite.write,
+					sprite.amend,
 					sprite.state,
 					sprite.frame,
 					sprite.variation,

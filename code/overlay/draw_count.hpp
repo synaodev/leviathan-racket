@@ -16,7 +16,7 @@ public:
 	draw_count_t& operator=(draw_count_t&&) = default;
 	~draw_count_t() = default;
 public:
-	void force() const;
+	void invalidate() const;
 	void render(renderer_t& renderer) const;
 	void set_layer(layer_t layer);
 	void set_backwards(bool_t backwards);
@@ -42,7 +42,7 @@ private:
 	void generate_all(const std::vector<sint_t>& buffer);
 	void generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv);
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	layer_t layer;
 	bool_t backwards, visible;
 	real_t table;

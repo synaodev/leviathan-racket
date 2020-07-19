@@ -57,9 +57,9 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 		);
 		view.each([&list, &viewport](entt::entity, const liquid_body_t& instance) {
 			if (!instance.hitbox.overlaps(viewport)) {
-				instance.write = true;
-			} else if (instance.write) {
-				instance.write = false;
+				instance.amend = true;
+			} else if (instance.amend) {
+				instance.amend = false;
 				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(instance.hitbox, glm::vec4(0.0f, 0.25f, 0.5f, 0.5f))
 					.vtx_transform_write(instance.hitbox.left_top())

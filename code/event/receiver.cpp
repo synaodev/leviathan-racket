@@ -380,7 +380,7 @@ void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_g
 	if (stack_gui.empty() and !inventory_gui.open()) {
 		kernel.unlock();
 	}
-	stack_gui.force();
+	stack_gui.invalidate();
 	dialogue_gui.close_textbox();
 }
 

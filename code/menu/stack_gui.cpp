@@ -17,7 +17,7 @@
 #include "../overlay/draw_title_view.hpp"
 
 stack_gui_t::stack_gui_t() :
-	write(true),
+	amend(true),
 	release(false),
 	widgets()
 {
@@ -25,7 +25,7 @@ stack_gui_t::stack_gui_t() :
 }
 
 void stack_gui_t::reset() {
-	write = true;
+	amend = true;
 	release = false;
 	widgets.clear();
 }
@@ -48,7 +48,7 @@ void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 		} else if (!widgets.back()->is_active()) {
 			widgets.pop_back();
 			if (!widgets.empty()) {
-				widgets.back()->force();
+				widgets.back()->invalidate();
 			}
 		}
 	} else if (!kernel.has(kernel_state_t::Lock)) {
@@ -74,8 +74,8 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
 					rect_t(0.0f, 0.0f, 320.0f, 180.0f), 
@@ -88,12 +88,12 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 	}
 }
 
-void stack_gui_t::force() const {
-	write = true;
+void stack_gui_t::invalidate() const {
+	amend = true;
 }
 
 void stack_gui_t::push(menu_t type, arch_t flags) {
-	write = true;
+	amend = true;
 	switch (type) {
 	case menu_t::Option:
 		widgets.emplace_back(std::make_unique<wgt_option_t>(flags));

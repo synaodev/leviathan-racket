@@ -16,7 +16,7 @@ public:
 	draw_units_t& operator=(draw_units_t&&) = default;
 	~draw_units_t() = default;
 public:
-	void force() const;
+	void invalidate() const;
 	void render(renderer_t& renderer) const;
 	void set_position(real_t x, real_t y);
 	void set_position(glm::vec2 position);
@@ -30,7 +30,7 @@ public:
 private:
 	void generate(arch_t current, arch_t maximum, bool_t resize);
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	glm::vec2 position;
 	rect_t bounding;
 	sint_t current_value, maximum_value;

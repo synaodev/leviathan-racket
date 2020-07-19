@@ -266,7 +266,7 @@ void kontext_t::animate(sint_t identity, arch_t state, arch_t variation) {
 	if (actor != entt::null) {
 		if (registry.has<sprite_t>(actor)) {
 			auto& sprite = registry.get<sprite_t>(actor);
-			sprite.write = true;
+			sprite.amend = true;
 			sprite.variation = variation;
 			sprite.new_state(state);
 		}

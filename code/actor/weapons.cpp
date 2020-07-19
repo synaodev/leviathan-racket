@@ -150,7 +150,7 @@ void ai::frontier::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.ktx.dispose(s);
 	} else {
 		auto& sprite = rtp.ktx.get<sprite_t>(s);	
-		sprite.write = true;
+		sprite.amend = true;
 		sprite.angle = glm::mod(sprite.angle + 0.035f, glm::two_pi<real_t>());
 	}
 }
@@ -197,7 +197,7 @@ void ai::toxitier::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.ktx.dispose(s);
 	} else {
 		kinematics.accel_y(-0.3f, 0.6f);
-		sprite.write = true;
+		sprite.amend = true;
 		sprite.alpha = glm::clamp(sprite.alpha - 0.016f, 0.0f, 1.0f);
 	}
 }
@@ -417,7 +417,7 @@ void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 			naomi_center.x - actor_center.x
 		);
 		location.position = naomi_center;
-		sprite.write = true;
+		sprite.amend = true;
 		sprite.angle = angle;
 		sprite.scale = glm::vec2(
 			glm::distance(naomi_center, actor_center), 1.0f
@@ -579,7 +579,7 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 			rtp.map, 320.0f, 
 			location.position, angle
 		);
-		sprite.write = true;
+		sprite.amend = true;
 		sprite.scale = glm::vec2(
 			glm::distance(location.position, end_point), 1.0f
 		);

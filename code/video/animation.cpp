@@ -46,96 +46,104 @@ animation_t& animation_t::operator=(animation_t&& that) noexcept {
 	return *this;
 }
 
-void animation_t::update(real64_t delta, bool_t& write, arch_t state, real64_t& timer, arch_t& frame) const {
+void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& timer, arch_t& frame) const {
 	this->assure();
-	sequences[state].update(delta, write, timer, frame);
-}
-
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
-	this->assure();
-	glm::vec2 sequsize = sequences[state].get_dimensions();
-	glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
-	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-		rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
-		if (palette != nullptr) {
-			pipeline = pipeline_t::VtxMajorIndexed;
-			index = palette->convert(index);
-		}
-		auto& list = renderer.get_normal_quads(
-			layer, 
-			blend_mode_t::Alpha,
-			pipeline,
-			texture,
-			palette
-		);
-		if (write or panic) {
-			write = false;
-			list.begin(display_list_t::SingleQuad)
-				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
-				.vtx_transform_write(position - sequorig, scale, pivot, angle)
-			.end();
-		} else {
-			list.skip(display_list_t::SingleQuad);
-		}
+	if (state < sequences.size()) {
+		sequences[state].update(delta, amend, timer, frame);
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& write, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
-	const glm::vec2& sequsize = sequences[state].get_dimensions();
-	const glm::vec2& sequorig = sequences[state].get_origin(frame, variation, mirroring);
-	if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-		rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
-		if (palette != nullptr) {
-			pipeline = pipeline_t::VtxMajorIndexed;
-			index = palette->convert(index);
-		}
-		auto& list = renderer.get_normal_quads(
-			layer,
-			blend_mode_t::Alpha,
-			pipeline,
-			texture,
-			palette
-		);
-		if (write or panic) {
-			write = false;
-			list.begin(display_list_t::SingleQuad)
-				.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
-				.vtx_transform_write(position - sequorig, scale)
-			.end();
-		} else {
-			list.skip(display_list_t::SingleQuad);
-		}
-	}
-}
-
-void animation_t::render(renderer_t& renderer, bool_t& write, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const {
-	this->assure();
-	pipeline_t pipeline = pipeline_t::VtxMajorSprites;
-	if (palette != nullptr) {
-		pipeline = pipeline_t::VtxMajorIndexed;
-		index = palette->convert(index);
-	}
-	auto& list = renderer.get_overlay_quads(
-		layer_value::HeadsUp, 
-		blend_mode_t::Alpha,
-		pipeline,
-		texture,
-		palette
-	);
-	if (write) {
-		write = false;
+	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
-		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
-		rect_t seququads   = sequences[state].get_quad(inverts, frame, variation);
-		list.begin(display_list_t::SingleQuad)
-			.vtx_major_write(seququads, sequsize, index, 1.0f, mirroring_t::None)
-			.vtx_transform_write(position - sequorig)
-		.end();
-	} else {
-		list.skip(display_list_t::SingleQuad);
+		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
+		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
+			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
+			pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+			if (palette != nullptr) {
+				pipeline = pipeline_t::VtxMajorIndexed;
+				index = palette->convert(index);
+			}
+			auto& list = renderer.get_normal_quads(
+				layer, 
+				blend_mode_t::Alpha,
+				pipeline,
+				texture,
+				palette
+			);
+			if (amend or panic) {
+				amend = false;
+				list.begin(display_list_t::SingleQuad)
+					.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
+					.vtx_transform_write(position - sequorig, scale, pivot, angle)
+				.end();
+			} else {
+				list.skip(display_list_t::SingleQuad);
+			}
+		}
+	}
+}
+
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const {
+	this->assure();
+	if (state < sequences.size()) {
+		glm::vec2 sequsize = sequences[state].get_dimensions();
+		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
+		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
+			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
+			pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+			if (palette != nullptr) {
+				pipeline = pipeline_t::VtxMajorIndexed;
+				index = palette->convert(index);
+			}
+			auto& list = renderer.get_normal_quads(
+				layer,
+				blend_mode_t::Alpha,
+				pipeline,
+				texture,
+				palette
+			);
+			if (amend or panic) {
+				amend = false;
+				list.begin(display_list_t::SingleQuad)
+					.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
+					.vtx_transform_write(position - sequorig, scale)
+				.end();
+			} else {
+				list.skip(display_list_t::SingleQuad);
+			}
+		}
+	}
+}
+
+void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const {
+	this->assure();
+	if (state < sequences.size()) {
+		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+		if (palette != nullptr) {
+			pipeline = pipeline_t::VtxMajorIndexed;
+			index = palette->convert(index);
+		}
+		auto& list = renderer.get_overlay_quads(
+			layer_value::HeadsUp, 
+			blend_mode_t::Alpha,
+			pipeline,
+			texture,
+			palette
+		);
+		if (amend) {
+			amend = false;
+			glm::vec2 sequsize = sequences[state].get_dimensions();
+			glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
+			rect_t seququads   = sequences[state].get_quad(inverts, frame, variation);
+			list.begin(display_list_t::SingleQuad)
+				.vtx_major_write(seququads, sequsize, index, 1.0f, mirroring_t::None)
+				.vtx_transform_write(position - sequorig)
+			.end();
+		} else {
+			list.skip(display_list_t::SingleQuad);
+		}
 	}
 }
 
@@ -224,22 +232,34 @@ bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, ar
 		return false;
 	}
 	this->assure();
-	glm::vec2 sequsize = sequences[state].get_dimensions();
-	glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
-	return viewport.overlaps(position - sequorig, sequsize * scale);
+	if (state < sequences.size()) {
+		glm::vec2 sequsize = sequences[state].get_dimensions();
+		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
+		return viewport.overlaps(position - sequorig, sequsize * scale);
+	}
+	return false;
 }
 
 bool animation_t::is_finished(arch_t state, arch_t frame, real64_t timer) const {
 	this->assure();
-	return sequences[state].is_finished(frame, timer);
+	if (state < sequences.size()) {
+		return sequences[state].is_finished(frame, timer);
+	}
+	return false;
 }
 
 glm::vec2 animation_t::get_origin(arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring) const {
 	this->assure();
-	return sequences[state].get_origin(frame, variation, mirroring);
+	if (state < sequences.size()) {
+		return sequences[state].get_origin(frame, variation, mirroring);
+	}
+	return glm::zero<glm::vec2>();
 }
 
 glm::vec2 animation_t::get_action_point(arch_t state, arch_t variation, mirroring_t mirroring) const {
 	this->assure();
-	return sequences[state].get_action_point(variation, mirroring);
+	if (state < sequences.size()) {
+		return sequences[state].get_action_point(variation, mirroring);
+	}
+	return glm::zero<glm::vec2>();
 }

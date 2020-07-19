@@ -49,7 +49,7 @@ public:
 	bool get_flag(dialogue_flag_t flag) const;
 	arch_t get_answer() const;
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	std::bitset<dialogue_flag_t::Total> flags;
 	arch_t cursor_index, cursor_total;
 	real64_t timer, delay;

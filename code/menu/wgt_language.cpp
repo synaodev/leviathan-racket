@@ -106,10 +106,10 @@ void wgt_language_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_language_t::force() const {
+void wgt_language_t::invalidate() const {
 	if (ready and active) {
-		text.force();
-		arrow.force();
+		text.invalidate();
+		arrow.invalidate();
 	}
 }
 

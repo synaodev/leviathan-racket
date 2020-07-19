@@ -18,7 +18,7 @@ public:
 	draw_text_t& operator=(draw_text_t&&) = default;
 	~draw_text_t() = default;
 public:
-	void force() const;
+	void invalidate() const;
 	void clear();
 	void increment();
 	void render(renderer_t& renderer) const;
@@ -42,7 +42,7 @@ public:
 private:
 	void generate();
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	const font_t* font;
 	glm::vec2 position, origin;
 	layer_t layer;

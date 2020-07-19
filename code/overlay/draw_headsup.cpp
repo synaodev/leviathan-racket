@@ -103,14 +103,14 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		item_view.render(renderer);
 		fight_meter.render(renderer);
 	} else {
-		main_scheme.force();
-		leviathan_count.force();
-		barrier_units.force();
-		oxygen_count.force();
-		item_view.force();
-		fight_meter.force();
+		main_scheme.invalidate();
+		leviathan_count.invalidate();
+		barrier_units.invalidate();
+		oxygen_count.invalidate();
+		item_view.invalidate();
+		fight_meter.invalidate();
 #ifdef SYNAO_DEBUG_BUILD
-		hidden.force();
+		hidden.invalidate();
 #endif // SYNAO_DEBUG_BUILD
 	}
 	if (fade.is_visible()) {

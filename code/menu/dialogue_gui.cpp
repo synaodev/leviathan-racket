@@ -20,7 +20,7 @@ static constexpr arch_t kFacesAnimState = 4;
 static constexpr real64_t kDefaultDelay = 0.04;
 
 dialogue_gui_t::dialogue_gui_t() :
-	write(true),
+	amend(true),
 	flags(0),
 	cursor_index(0),
 	cursor_total(0),
@@ -117,12 +117,12 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 		if (flags[dialogue_flag_t::Facebox]) {
 			faces.render(renderer);
 		} else {
-			faces.force();
+			faces.invalidate();
 		}
 		if (flags[dialogue_flag_t::Question]) {
 			arrow.render(renderer);
 		} else {
-			arrow.force();
+			arrow.invalidate();
 		}
 		text.render(renderer);
 		auto& list = renderer.get_overlay_quads(
@@ -130,8 +130,8 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(rect, glm::vec4(0.0f, 0.0f, 0.0f, 0.5f))
 				.vtx_transform_write(rect.left_top())
@@ -143,7 +143,7 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 }
 
 void dialogue_gui_t::open_textbox_high() {
-	write = true;
+	amend = true;
 	flags[dialogue_flag_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
@@ -158,7 +158,7 @@ void dialogue_gui_t::open_textbox_high() {
 }
 
 void dialogue_gui_t::open_textbox_low() {
-	write = true;
+	amend = true;
 	flags[dialogue_flag_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
@@ -181,7 +181,7 @@ void dialogue_gui_t::clear_textbox() {
 }
 
 void dialogue_gui_t::close_textbox() {
-	write = true;
+	amend = true;
 	cursor_index = 0;
 	cursor_total = 0;
 	delay = kDefaultDelay;

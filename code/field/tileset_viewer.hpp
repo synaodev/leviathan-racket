@@ -28,7 +28,7 @@ public:
 	void set_bitmask(sint_t mask);
 	sint_t get_bitmask() const;
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	bool_t select, flash;
 	rect_t cursor;
 	arch_t index;

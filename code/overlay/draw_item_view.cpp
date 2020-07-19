@@ -50,8 +50,8 @@ void draw_item_view_t::render(renderer_t& renderer) const {
 	}
 }
 
-void draw_item_view_t::force() const {
-	rect.force();
-	scheme.force();
-	ammo.force();
+void draw_item_view_t::invalidate() const {
+	rect.invalidate();
+	scheme.invalidate();
+	ammo.invalidate();
 }

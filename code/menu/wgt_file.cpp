@@ -103,9 +103,9 @@ void wgt_file_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_file_t::force() const {
+void wgt_file_t::invalidate() const {
 	if (ready and active) {
-		text.force();
-		arrow.force();
+		text.invalidate();
+		arrow.invalidate();
 	}
 }

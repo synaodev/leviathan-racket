@@ -27,7 +27,7 @@ public:
 	static sint_t floor(real_t value);
 	static real_t extend(sint_t value);
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	glm::ivec2 dimensions;
 	std::vector<sint_t> attributes, attribute_key;
 	rect_t previous_viewport;

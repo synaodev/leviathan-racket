@@ -148,7 +148,7 @@ void wgt_input_t::render(renderer_t& renderer) const {
 		right_text.render(renderer);
 		if (waiting) {
 			if (flashed) {
-				arrow.force();
+				arrow.invalidate();
 			} else {
 				arrow.render(renderer);
 			}
@@ -158,12 +158,12 @@ void wgt_input_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_input_t::force() const {
+void wgt_input_t::invalidate() const {
 	if (ready and active) {
-		header.force();
-		left_text.force();
-		right_text.force();
-		arrow.force();
+		header.invalidate();
+		left_text.invalidate();
+		right_text.invalidate();
+		arrow.invalidate();
 	}
 }
 

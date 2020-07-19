@@ -59,10 +59,10 @@ void draw_hidden_t::render(renderer_t& renderer) const {
 	}
 }
 
-void draw_hidden_t::force() const {
+void draw_hidden_t::invalidate() const {
 	if (state != draw_hidden_state_t::None) {
-		count.force();
-		text.force();
+		count.invalidate();
+		text.invalidate();
 	}
 }
 

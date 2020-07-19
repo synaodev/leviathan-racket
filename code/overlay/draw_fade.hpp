@@ -33,7 +33,7 @@ public:
 	bool is_moving() const;
 	bool is_visible() const;
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	fade_state_t state;
 	rect_t bounding;
 };

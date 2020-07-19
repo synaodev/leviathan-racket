@@ -10,7 +10,7 @@ static constexpr sint_t kMinus = 10;
 static constexpr sint_t kPoint = 12;
 
 draw_count_t::draw_count_t() :
-	write(false),
+	amend(false),
 	layer(layer_value::HeadsUp),
 	backwards(false),
 	visible(false),
@@ -26,8 +26,8 @@ draw_count_t::draw_count_t() :
 	quads.setup<vtx_major_t>();
 }
 
-void draw_count_t::force() const {
-	write = true;
+void draw_count_t::invalidate() const {
+	amend = true;
 }
 
 void draw_count_t::render(renderer_t& renderer) const {
@@ -39,8 +39,8 @@ void draw_count_t::render(renderer_t& renderer) const {
 			texture,
 			palette
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			list.begin(quads.size())
 				.vtx_pool_write(quads)
 			.end();
@@ -51,56 +51,56 @@ void draw_count_t::render(renderer_t& renderer) const {
 }
 
 void draw_count_t::set_layer(layer_t layer) {
-	write = true;
+	amend = true;
 	this->layer = layer;
 }
 
 void draw_count_t::set_backwards(bool_t backwards) {
-	write = true;
+	amend = true;
 	this->backwards = backwards;
 }
 
 void draw_count_t::set_visible(bool_t visible) {
-	write = true;
+	amend = true;
 	this->visible = visible;
 }
 
 void draw_count_t::set_table(real_t table) {
 	if (this->table != table) {
-		write = true;
+		amend = true;
 		this->table = table;
 		this->new_value(value);
 	}
 }
 
 void draw_count_t::set_position(real_t x, real_t y) {
-	write = true;
+	amend = true;
 	this->position = glm::vec2(x, y);
 }
 
 void draw_count_t::set_position(glm::vec2 position) {
-	write = true;
+	amend = true;
 	this->position = position;
 }
 
 void draw_count_t::mut_position(real_t x, real_t y) {
-	write = true;
+	amend = true;
 	this->position.x += x;
 	this->position.y += y;
 }
 
 void draw_count_t::mut_position(glm::vec2 offset) {
-	write = true;
+	amend = true;
 	this->position += offset;
 }
 
 void draw_count_t::set_bounding(real_t x, real_t y, real_t w, real_t h) {
-	write = true;
+	amend = true;
 	this->bounding = rect_t(x, y, w, h);
 }
 
 void draw_count_t::set_bounding(rect_t bounding) {
-	write = true;
+	amend = true;
 	this->bounding = bounding;
 }
 
@@ -136,17 +136,17 @@ void draw_count_t::add_value(sint_t number) {
 }
 
 void draw_count_t::set_minimum_zeroes(arch_t minimum_zeroes) {
-	write = true;
+	amend = true;
 	this->minimum_zeroes = minimum_zeroes;
 }
 
 void draw_count_t::set_texture(const texture_t* texture) {
-	write = true;
+	amend = true;
 	this->texture = texture;
 }
 
 void draw_count_t::set_palette(const palette_t* palette) {
-	write = true;
+	amend = true;
 	this->palette = palette;
 }
 
@@ -175,7 +175,7 @@ sint_t draw_count_t::quick_power_of_10(arch_t exponent) {
 }
 
 void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
-	write = true;
+	amend = true;
 	if (buffer.size() != quads.size() / display_list_t::SingleQuad) {
 		quads.resize(buffer.size() * display_list_t::SingleQuad);
 	}

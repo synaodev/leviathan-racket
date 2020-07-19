@@ -16,7 +16,7 @@ public:
 	void init(const texture_t* texture, const palette_t* palette, const animation_t* heads_animation, const animation_t* items_animation);
 	void handle(const kernel_t& kernel);
 	void render(renderer_t& renderer) const;
-	void force() const;
+	void invalidate() const;
 private:
 	draw_scheme_t rect, scheme;
 	draw_count_t ammo;

@@ -48,7 +48,7 @@ void ai::shoshi_normal::tick(entt::entity s, routine_tuple_t& rtp) {
 		if (kinematics.velocity.x != 0.0f) {
 			location.direction = kinematics.velocity.x > 0.0f ? direction_t::Right : direction_t::Left;
 			if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
-				sprite.write = true;
+				sprite.amend = true;
 				if (location.direction & direction_t::Left) {
 					sprite.mirroring = mirroring_t::Horizontal;
 				} else {
@@ -92,7 +92,7 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& naomi_sprite = rtp.ktx.get<sprite_t>(rtp.nao.actor);
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
 	if (sprite.mirroring != naomi_sprite.mirroring) {
-		sprite.write = true;
+		sprite.amend = true;
 		sprite.mirroring = naomi_sprite.mirroring;
 	}
 }
@@ -200,7 +200,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	}
 	kinematics.accel_y(kGravSp, kMaxVsp);
 	if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
-		sprite.write = true;
+		sprite.amend = true;
 		if (location.direction & direction_t::Left) {
 			sprite.mirroring = mirroring_t::Horizontal;
 		} else {

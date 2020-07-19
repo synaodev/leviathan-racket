@@ -27,7 +27,7 @@ public:
 	void init(const texture_t* texture, const palette_t* palette, const font_t* font);
 	void update(real64_t delta);
 	void render(renderer_t& renderer) const;
-	void force() const;
+	void invalidate() const;
 	void set_state(draw_hidden_state_t state, std::function<sint_t()> radio);
 private:
 	draw_hidden_state_t state;

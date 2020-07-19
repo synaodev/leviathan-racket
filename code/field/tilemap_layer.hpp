@@ -21,7 +21,7 @@ public:
 public:
 	void init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<sint_t>& attributes, const std::vector<sint_t>& attribute_key);
 	void handle(arch_t range, glm::ivec2 first, glm::ivec2 last, glm::ivec2 map_size);
-	void render(renderer_t& renderer, bool_t write, const texture_t* texture, const palette_t* palette) const;
+	void render(renderer_t& renderer, bool_t amend, const texture_t* texture, const palette_t* palette) const;
 private:
 	layer_t priority;
 	arch_t indices;

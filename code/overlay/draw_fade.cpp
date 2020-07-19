@@ -4,7 +4,7 @@
 static constexpr real_t kChange = 8.0f;
 
 draw_fade_t::draw_fade_t() : 
-	write(true),
+	amend(true),
 	state(fade_state_t::DoneOut),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f)
 {
@@ -16,7 +16,7 @@ void draw_fade_t::init() {
 }
 
 void draw_fade_t::reset() {
-	write = true;
+	amend = true;
 	state = fade_state_t::DoneOut;
 	bounding = rect_t(0.0f, 0.0f, 320.0f, 180.0f);
 }
@@ -28,7 +28,7 @@ void draw_fade_t::handle() {
 			break;
 		}
 		case fade_state_t::FadingIn: {
-			write = true;
+			amend = true;
 			bounding.h -= kChange;
 			if (bounding.h < 0.0f) {
 				state = fade_state_t::DoneIn;
@@ -37,7 +37,7 @@ void draw_fade_t::handle() {
 			break;
 		}
 		case fade_state_t::FadingOut: {
-			write = true;
+			amend = true;
 			bounding.h += kChange;
 			if (bounding.h > 180.0f) {
 				state = fade_state_t::DoneOut;
@@ -54,8 +54,8 @@ void draw_fade_t::render(renderer_t& renderer) const {
 		blend_mode_t::Alpha, 
 		pipeline_t::VtxBlankColors
 	);
-	if (write) {
-		write = false;
+	if (amend) {
+		amend = false;
 		list.begin(display_list_t::SingleQuad)
 			.vtx_blank_write(bounding, glm::vec4(0.0f, 0.0f, 0.125f, 1.0f))
 		.end();

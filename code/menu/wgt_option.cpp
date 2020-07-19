@@ -111,9 +111,9 @@ void wgt_option_t::render(renderer_t& renderer) const {
 	}
 }
 
-void wgt_option_t::force() const {
+void wgt_option_t::invalidate() const {
 	if (ready and active) {
-		text.force();
-		arrow.force();
+		text.invalidate();
+		arrow.invalidate();
 	}
 }

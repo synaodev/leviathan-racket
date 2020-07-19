@@ -42,7 +42,7 @@ public:
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	bool open() const;
 private:
-	mutable bool_t write;
+	mutable bool_t amend;
 	mutable arch_t current;
 	bool_t ready;
 	std::vector<inventory_gui_element_t> elements;

@@ -7,7 +7,7 @@
 #include <algorithm>
 
 draw_text_t::draw_text_t() :
-	write(false),
+	amend(false),
 	font(nullptr),
 	position(0.0f),
 	origin(0.0f),
@@ -20,12 +20,12 @@ draw_text_t::draw_text_t() :
 	quads.setup<vtx_major_t>();
 }
 
-void draw_text_t::force() const {
-	write = true;
+void draw_text_t::invalidate() const {
+	amend = true;
 }
 
 void draw_text_t::clear() {
-	write = true;
+	amend = true;
 	current = 0;
 	buffer.clear();
 	quads.clear();
@@ -45,8 +45,8 @@ void draw_text_t::render(renderer_t& renderer) const {
 			font->get_texture(),
 			font->get_palette()
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			list.begin(quads.size())
 				.vtx_pool_write(quads)
 			.end();
@@ -57,7 +57,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 }
 
 void draw_text_t::set_font(const font_t* font) {
-	write = true;
+	amend = true;
 	this->font = font;
 }
 
@@ -110,7 +110,7 @@ void draw_text_t::set_origin(real_t x, real_t y) {
 }
 
 void draw_text_t::set_layer(layer_t layer) {
-	write = true;
+	amend = true;
 	this->layer = layer;
 }
 
@@ -175,7 +175,7 @@ glm::vec2 draw_text_t::get_font_size() const {
 }
 
 void draw_text_t::generate() {
-	write = true;
+	amend = true;
 	quads.clear();
 	if (font != nullptr and !buffer.empty()) {
 		arch_t spaces_chars = std::count_if(

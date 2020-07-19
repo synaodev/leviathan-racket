@@ -46,14 +46,14 @@ void inventory_gui_element_t::reset(glm::ivec4 item) {
 		scheme.set_direction(
 			static_cast<direction_t>(item.x - 1)
 		);
-		scheme.force();
+		scheme.invalidate();
 		if ((item.y > 1 and !item.w) or (item.w != 0)) {
 			count.set_visible(true);
 			count.set_value(item.y);
 		} else {
 			count.set_visible(false);
 		}
-		count.force();
+		count.invalidate();
 	} else {
 		visible = false;
 	}
@@ -73,7 +73,7 @@ void inventory_gui_element_t::render(renderer_t& renderer) const {
 }
 
 inventory_gui_t::inventory_gui_t() :
-	write(true),
+	amend(true),
 	current(kWrongItem),
 	ready(false),
 	elements(kTotalItem)
@@ -102,7 +102,7 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 	if (stack_gui.empty()) {
 		if (!ready) {
 			if (input.pressed[btn_t::Inventory] and !receiver.running()) {
-				write = true;
+				amend = true;
 				ready = true;
 				audio.play(res::sfx::Inven, 0);
 				kernel.freeze();
@@ -113,7 +113,7 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 			}
 		} else if (input.pressed[btn_t::Inventory]) {
 			if (!receiver.running()) {
-				write = true;
+				amend = true;
 				ready = false;
 				audio.play(res::sfx::Inven, 0);
 				kernel.unlock();
@@ -130,25 +130,25 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 				}
 			} else if (input.pressed[btn_t::Right]) {
 				if (cursor.x < kMaxInvenX) {
-					write = true;
+					amend = true;
 					++cursor.x;
 					audio.play(res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Left]) {
 				if (cursor.x > 0) {
-					write = true;
+					amend = true;
 					--cursor.x;
 					audio.play(res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Up]) {
 				if (cursor.y > 0) {
-					write = true;
+					amend = true;
 					--cursor.y;
 					audio.play(res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Down]) {
 				if (cursor.y < kMaxInvenY) {
-					write = true;
+					amend = true;
 					++cursor.y;
 					audio.play(res::sfx::Select, 0);
 				}
@@ -176,8 +176,8 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 			blend_mode_t::Alpha,
 			pipeline_t::VtxBlankColors
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			glm::vec2 cursor_position = 2.0f + glm::vec2(
 				glm::ivec2(49, 21) * kernel.get_cursor()
 			);

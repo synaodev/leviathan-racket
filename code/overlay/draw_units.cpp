@@ -6,7 +6,7 @@
 static constexpr arch_t kLoopPoint = 7;
 
 draw_units_t::draw_units_t() :
-	write(false),
+	amend(false),
 	position(0.0f),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f),
 	current_value(0),
@@ -18,8 +18,8 @@ draw_units_t::draw_units_t() :
 	quads.setup<vtx_major_t>();
 }
 
-void draw_units_t::force() const {
-	write = true;
+void draw_units_t::invalidate() const {
+	amend = true;
 }
 
 void draw_units_t::render(renderer_t& renderer) const {
@@ -31,8 +31,8 @@ void draw_units_t::render(renderer_t& renderer) const {
 			texture,
 			palette
 		);
-		if (write) {
-			write = false;
+		if (amend) {
+			amend = false;
 			list.begin(quads.size())
 				.vtx_pool_write(quads)
 			.end();
@@ -43,22 +43,22 @@ void draw_units_t::render(renderer_t& renderer) const {
 }
 
 void draw_units_t::set_position(real_t x, real_t y) {
-	write = true;
+	amend = true;
 	this->position = glm::vec2(x, y);
 }
 
 void draw_units_t::set_position(glm::vec2 position) {
-	write = true;
+	amend = true;
 	this->position = position;
 }
 
 void draw_units_t::set_bounding(real_t x, real_t y, real_t w, real_t h) {
-	write = true;
+	amend = true;
 	this->bounding = rect_t(x, y, w, h);
 }
 
 void draw_units_t::set_bounding(rect_t bounding) {
-	write = true;
+	amend = true;
 	this->bounding = bounding;
 }
 
@@ -85,19 +85,19 @@ void draw_units_t::set_values(sint_t current, sint_t maximum) {
 
 void draw_units_t::set_table(real_t table) {
 	if (this->table != table) {
-		write = true;
+		amend = true;
 		this->table = table;
 		this->set_values(current_value, maximum_value);
 	}	
 }
 
 void draw_units_t::set_texture(const texture_t* texture) {
-	write = true;
+	amend = true;
 	this->texture = texture;
 }
 
 void draw_units_t::set_palette(const palette_t* palette) {
-	write = true;
+	amend = true;
 	this->palette = palette;
 }
 
@@ -106,7 +106,7 @@ glm::vec2 draw_units_t::get_position() const {
 }
 
 void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
-	write = true;
+	amend = true;
 	if (resize) {
 		quads.resize(maximum * display_list_t::SingleQuad);
 	}

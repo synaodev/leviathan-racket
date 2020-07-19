@@ -27,7 +27,7 @@ public:
 	void handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) override;
 	void update(real64_t delta) override;
 	void render(renderer_t& renderer) const override;
-	void force() const override;
+	void invalidate() const override;
 private:
 	wgt_file_op_t file_op;
 	arch_t cursor;
