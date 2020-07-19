@@ -5,11 +5,7 @@
 
 #include "../types.hpp"
 
-struct vertex_t {
-public:
-	vertex_t() = default;
-	~vertex_t() = default;
-};
+struct vertex_t {};
 
 struct vtx_minor_t : public vertex_t {
 public:
@@ -19,28 +15,26 @@ public:
 		position(x, y) {}
 	vtx_minor_t() :
 		position(0.0f) {}
-	~vtx_minor_t() = default;
 };
 
-struct vtx_blank_t : public vtx_minor_t {
+struct vtx_blank_t : public vertex_t {
+	glm::vec2 position;
 	glm::vec4 color;
 public:
 	vtx_blank_t() : 
-		vtx_minor_t(),
+		position(0.0f),
 		color(1.0f) {}
-	~vtx_blank_t() = default;
 };
 
-struct vtx_major_t : public vtx_minor_t {
-	glm::vec2 uvcoords;
+struct vtx_major_t : public vertex_t {
+	glm::vec2 position, uvcoords;
 	real_t table, alpha;
 public:
 	vtx_major_t() : 
-		vtx_minor_t(), 
+		position(0.0f), 
 		uvcoords(0.0f), 
 		table(0.0f), 
 		alpha(0.0f) {}
-	~vtx_major_t() = default;
 };
 
 struct vertex_spec_t {

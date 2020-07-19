@@ -22,17 +22,17 @@ public:
 };
 
 using sint8_t  = signed char;
-// using uint8  = unsigned char;
+// using uint8_t  = unsigned char;
 using bool16_t = short;
 using sint16_t = signed short;
-// using uint16 = unsigned short;
+// using uint16_t = unsigned short;
 using bool32_t = int;
 using sint32_t = signed int;
-// using uint32 = unsigned int;
+// using uint32_t = unsigned int;
 using real32_t = float;
 using bool64_t = long long;
 using sint64_t = signed long long;
-// using uint64 = unsigned long long;
+// using uint64_t = unsigned long long;
 using real64_t = double;
 
 using byte_t = char;
@@ -51,9 +51,9 @@ using arch_t = uint32_t;
 using arch_t = uint64_t;
 #endif // _WIN32 _WIN64
 
-#ifndef NDEBUG
+#if !defined(NDEBUG) || defined(_DEBUG)
 #define SYNAO_DEBUG_BUILD
-#endif // NDEBUG
+#endif // NDEBUG _DEBUG
 
 #ifndef __GNUC__
 #ifndef and

@@ -1,11 +1,11 @@
 cmake_minimum_required (VERSION 3.15)
 
 target_sources (leviathan PRIVATE
+	"debug.hpp" "debug.cpp"
 	"enums.hpp"
 	"hash.hpp"
 	"json.hpp"
 	"logger.hpp"
-	"debug.hpp" "debug.cpp"
 	"rect.cpp" "rect.hpp"
 	"setup_file.cpp" "setup_file.hpp"
 	"stb_image.h"
