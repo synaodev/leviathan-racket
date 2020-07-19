@@ -42,12 +42,12 @@
 #include <mutex>
 #include <future>
 
-// C++ filesystem library is weird on Apple Clang and GCC
-#if !defined(__APPLE__) && !defined(__GNUC__)
+// C++ filesystem library is weird on Apple Clang
+#ifndef __APPLE__
 #include <filesystem>
 #else
 #include <dirent.h>
-#endif // __APPLE__ OR __GNUC__
+#endif // __APPLE__
 
 // Other libraries
 #include <glm/glm.hpp>

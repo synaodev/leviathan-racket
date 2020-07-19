@@ -115,6 +115,9 @@ if (UNIX)
 		Threads::Threads
 		${CMAKE_DL_LIBS}
 	)
+	if (NOT APPLE)
+		target_link_libraries (leviathan PRIVATE stdc++fs)
+	endif ()
 endif ()
 
 add_subdirectory(code)

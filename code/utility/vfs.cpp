@@ -10,13 +10,13 @@
 #include <sstream>
 #include <streambuf>
 
-#if !defined(__APPLE__) && !defined(__GNUC__)
+#ifndef __APPLE__
 #include <filesystem>
-#else // __APPLE__ __GNUC__
+#else // __APPLE__
 #include <dirent.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#endif // __APPLE__ __GNUC__
+#endif // __APPLE__
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
 
@@ -153,7 +153,7 @@ bool vfs::verify_structure() {
 }
 
 bool vfs::directory_exists(const std::string& name) {
-#if !defined(__APPLE__) && !defined(__GNUC__)
+#ifndef __APPLE__
 	if (!std::filesystem::exists(name)) {
 		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
 		return false;
@@ -162,7 +162,7 @@ bool vfs::directory_exists(const std::string& name) {
 		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
 		return false;
 	}
-#else // __APPLE__ __GNUC__
+#else // __APPLE__
 	struct stat sb;
 	if (stat(name.c_str(), &sb) != 0) {
 		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
@@ -172,7 +172,7 @@ bool vfs::directory_exists(const std::string& name) {
 		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
 		return false;
 	}
-#endif // __APPLE__ __GNUC__
+#endif // __APPLE__
 	return true;
 }
 
@@ -180,11 +180,11 @@ bool vfs::create_directory(const std::string& name) {
 	if (vfs::directory_exists(name)) {
 		return true;
 	}
-#if !defined(__APPLE__) && !defined(__GNUC__)
+#ifndef __APPLE__
 	return std::filesystem::create_directory(name);
-#else // __APPLE__ __GNUC__
+#else // __APPLE__
 	return mkdir(name.c_str(), 0755) == 0;
-#endif // __APPLE__ __GNUC__
+#endif // __APPLE__
 }
 
 std::string vfs::resource_path(vfs_resource_path_t path) {
@@ -221,7 +221,7 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 
 std::vector<std::string> vfs::file_list(const std::string& path) {
 	std::vector<std::string> result;
-#if !defined(__APPLE__) && !defined(__GNUC__)
+#ifndef __APPLE__
 	for (auto&& file : std::filesystem::directory_iterator(path)) {
 		if (!file.is_directory()) {
 			const std::string fname = file.path().filename().string();
@@ -229,7 +229,7 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 			result.push_back(fstrn);
 		}
 	}
-#else // __APPLE__ __GNUC__
+#else // __APPLE__
 	DIR* dir;
 	struct dirent* ent;
 	if ((dir = opendir(path.c_str())) != nullptr) {
@@ -242,7 +242,7 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 		}
 		closedir(dir);
 	}
-#endif // __APPLE__ __GNUC__
+#endif // __APPLE__
 	return result;
 }
 
