@@ -27,7 +27,6 @@ public:
 	bool from(const std::string& source, shader_stage_t stage);
 	void destroy();
 	bool matches(shader_stage_t _stage) const;
-	static const byte_t* extension(shader_stage_t stage);
 	static vertex_spec_t attributes(uint_t program_handle);
 private:
 	friend struct program_t;
@@ -49,6 +48,7 @@ public:
 	void set_sampler(const byte_t* name, arch_t sampler) const;
 	const vertex_spec_t& get_specify() const;
 	static bool has_separable();
+	static bool has_uniform_azdo();
 private:
 	friend struct gfx_t;
 	uint_t handle;
