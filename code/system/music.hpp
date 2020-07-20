@@ -42,6 +42,9 @@ private:
 	std::thread thread;
 	sint_t channels, sampling_rate;
 	real_t buffered_time, volume;
+private: // For playing
+	uint_t source;
+	std::array<uint_t, 3> buffers;
 };
 
 #endif // SYNAO_SYSTEM_MUSIC_HPP

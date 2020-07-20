@@ -16,7 +16,6 @@
 #include <SDL2/SDL.h>
 
 static constexpr arch_t kHeightLength = 10485760;
-static constexpr arch_t kAudioBuffers = 3;
 static constexpr sint_t kAudioBitrate = pxtnBITPERSAMPLE / 8;
 static constexpr sint_t kTotalChannel = 2;
 static constexpr sint_t kSamplingRate = 44100;
@@ -32,13 +31,27 @@ music_t::music_t() :
 	channels(kTotalChannel),
 	sampling_rate(kSamplingRate),
 	buffered_time(kBufferedTime),
-	volume(1.0f)
+	volume(1.0f),
+	source(0),
+	buffers{}
 {
-
+	for (auto&& buffer : buffers) {
+		buffer = 0;
+	}
 }
 
 music_t::~music_t() {
 	this->clear();
+	if (source != 0) {
+		sint_t state = 0;
+		alCheck(alGetSourcei(source, AL_SOURCE_STATE, &state));
+		if (state == AL_PLAYING) {
+			alCheck(alSourceStop(source));
+		}
+		alCheck(alSourcei(source, AL_BUFFER, 0));
+		alCheck(alDeleteBuffers(buffers.size(), &buffers[0]));
+		alCheck(alDeleteSources(1, &source));
+	}
 }
 
 bool music_t::init(const setup_file_t& config) {
@@ -70,6 +83,14 @@ bool music_t::init(const setup_file_t& config) {
 	}
 	if (!service->set_destination_quality(channels, sampling_rate)) {
 		SYNAO_LOG("Pxtone quality setting failed!\n");
+		return false;
+	}
+	// Setup OpenAL stuff
+	if (source == 0) {
+		alCheck(alGenSources(1, &source));
+		alCheck(alGenBuffers(buffers.size(), &buffers[0]));
+	} else {
+		SYNAO_LOG("Music OpenAL resources already exist!\n");
 		return false;
 	}
 	SYNAO_LOG("Music service is ready.\n");
@@ -201,6 +222,10 @@ real_t music_t::get_volume() const {
 }
 
 void music_t::process(music_t* music) {
+	if (music == nullptr) {
+		SYNAO_LOG("Music thread should not print this message.\n");
+		return;
+	}
 	// Initialize Necessary Data
 	sint_t amount = static_cast<sint_t>(music->buffered_time * static_cast<real_t>(music->channels * music->sampling_rate * kAudioBitrate));
 	uint_t waiter = static_cast<uint_t>(music->buffered_time * kWaitConstant);
@@ -209,35 +234,31 @@ void music_t::process(music_t* music) {
 	if (!vector.empty()) {
 		sint_t state = 0;
 		sint_t procs = 0;
-		uint_t source = 0;
-		alCheck(alGenSources(1, &source));
-		uint_t buffers[kAudioBuffers] = { 0, 0, 0 };
-		alCheck(alGenBuffers(kAudioBuffers, buffers));
 		// Queue Tune Beginning
-		for (arch_t it = 0; it < kAudioBuffers; ++it) {
+		for (auto&& buffer : music->buffers) {
 			if (music->service->Moo(&vector[0], amount)) {
 				alCheck(alBufferData(
-					buffers[it], 
+					buffer, 
 					music->channels != 2 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, 
 					&vector[0], 
 					amount, 
 					music->sampling_rate
 				));
-				alCheck(alSourceQueueBuffers(source, 1, &buffers[it]));
+				alCheck(alSourceQueueBuffers(music->source, 1, &buffer));
 			} else {
 				music->playing = false;
 			}
 		}
 		// Main Loop
 		while (music->playing) {
-			alCheck(alGetSourcei(source, AL_SOURCE_STATE, &state));
+			alCheck(alGetSourcei(music->source, AL_SOURCE_STATE, &state));
 			if (state != AL_PLAYING) {
-				alCheck(alSourcePlay(source));
+				alCheck(alSourcePlay(music->source));
 			}
-			alCheck(alGetSourcei(source, AL_BUFFERS_PROCESSED, &procs));
+			alCheck(alGetSourcei(music->source, AL_BUFFERS_PROCESSED, &procs));
 			while (procs > 0) {
 				uint_t buffer = 0;
-				alCheck(alSourceUnqueueBuffers(source, 1, &buffer));
+				alCheck(alSourceUnqueueBuffers(music->source, 1, &buffer));
 				if (music->service->Moo(&vector[0], amount)) {
 					alCheck(alBufferData(
 						buffer,
@@ -246,7 +267,7 @@ void music_t::process(music_t* music) {
 						amount, 
 						music->sampling_rate
 					));
-					alCheck(alSourceQueueBuffers(source, 1, &buffer));
+					alCheck(alSourceQueueBuffers(music->source, 1, &buffer));
 					procs--;
 				} else {
 					music->playing = false;
@@ -256,12 +277,10 @@ void music_t::process(music_t* music) {
 			SDL_Delay(waiter);
 		}
 		// Clean Up
-		alCheck(alGetSourcei(source, AL_SOURCE_STATE, &state));
+		alCheck(alGetSourcei(music->source, AL_SOURCE_STATE, &state));
 		if (state == AL_PLAYING) {
-			alCheck(alSourceStop(source));
+			alCheck(alSourceStop(music->source));
 		}
-		alCheck(alSourcei(source, AL_BUFFER, 0));
-		alCheck(alDeleteBuffers(kAudioBuffers, buffers));
-		alCheck(alDeleteSources(1, &source));
+		alCheck(alSourcei(music->source, AL_BUFFER, 0));
 	}
 }
