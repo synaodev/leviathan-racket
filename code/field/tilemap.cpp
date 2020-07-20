@@ -1,9 +1,9 @@
 #include "./tilemap.hpp"
 #include "./tile_flag.hpp"
+#include "./camera.hpp"
 
 #include <tmxlite/Map.hpp>
 
-#include "../system/camera.hpp"
 #include "../system/renderer.hpp"
 #include "../utility/vfs.hpp"
 

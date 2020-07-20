@@ -8,7 +8,6 @@ target_sources (leviathan PRIVATE
 	"kontext.cpp" "kontext.hpp"
 	"liquid.cpp" "liquid.hpp"
 	"location.cpp" "location.hpp"
-	"modulator.cpp" "modulator.hpp"
 	"routine.cpp" "routine.hpp"
 	"sprite.cpp" "sprite.hpp"
 )

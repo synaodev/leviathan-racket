@@ -8,7 +8,6 @@
 #include "../system/audio.hpp"
 #include "../system/music.hpp"
 #include "../system/kernel.hpp"
-#include "../system/camera.hpp"
 
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
@@ -20,6 +19,7 @@
 #include "../menu/dialogue_gui.hpp"
 #include "../menu/inventory_gui.hpp"
 
+#include "../field/camera.hpp"
 #include "../component/kontext.hpp"
 #include "../actor/naomi.hpp"
 

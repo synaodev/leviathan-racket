@@ -9,7 +9,7 @@
 #include "../component/health.hpp"
 #include "../component/liquid.hpp"
 #include "../system/audio.hpp"
-#include "../system/camera.hpp"
+#include "../field/camera.hpp"
 #include "../field/collision.hpp"
 
 #include "../resource/id.hpp"

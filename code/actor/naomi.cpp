@@ -8,7 +8,6 @@
 
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
-#include "../component/modulator.hpp"
 #include "../component/kinematics.hpp"
 #include "../component/sprite.hpp"
 #include "../component/health.hpp"
@@ -17,10 +16,10 @@
 #include "../overlay/draw_headsup.hpp"
 #include "../event/receiver.hpp"
 #include "../field/collision.hpp"
+#include "../field/camera.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../system/camera.hpp"
 #include "../utility/logger.hpp" 
 
 #include "../resource/id.hpp"
@@ -73,7 +72,6 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	sprite.layer = 0.35f;
 	blinker.blink_state = naomi_anim_t::Blinking;
 	blinker.first_state = naomi_anim_t::Idle;
-	modulator.reset(0.0f, 0.0f);
 	SYNAO_LOG("Naomi is ready.\n");
 	return true;
 }
@@ -91,7 +89,6 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	sprite.layer = 0.35f;
 	health.reset(2, 2, 0, 0);
 	listener.liquid = entt::null;
-	modulator.reset(0.0f, 0.0f);
 	chroniker = {
 		0,				// Hammered
 		180,			// Leviathan
@@ -127,7 +124,6 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	sprite.layer = 0.35f;
 	health.reset(current_barrier, maximum_barrier, leviathan, 0);
 	listener.liquid = entt::null;
-	modulator.reset(0.0f, 0.0f);
 	chroniker = {
 		0,				// Hammered
 		180,			// Leviathan
