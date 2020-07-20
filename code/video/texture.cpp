@@ -8,6 +8,10 @@ bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
 }
 
+bool sampler_t::has_azdo() {
+	
+}
+
 texture_t::texture_t() :
 	ready(false),
 	future(),
