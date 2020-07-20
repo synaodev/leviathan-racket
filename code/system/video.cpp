@@ -131,7 +131,14 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			break;
 		}
 	}
+	// If OpenGL 3.3 isn't available, it's worth telling the user.
 	if (context == nullptr) {
+		SDL_ShowSimpleMessageBox(
+			SDL_MESSAGEBOX_ERROR,
+			"OpenGL Error",
+			"Running Leviathan Racket requires at least OpenGL 3.3.\n",
+			nullptr
+		);
 		SYNAO_LOG("OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
