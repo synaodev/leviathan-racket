@@ -69,7 +69,6 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	backend->emplace<health_t>(actor);
 	auto& blinker = backend->emplace<blinker_t>(actor);
 	backend->emplace<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
-	auto& modulator = backend->emplace<modulator_t>(actor, &sprite);
 	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
 	sprite.layer = 0.35f;
 	blinker.blink_state = naomi_anim_t::Blinking;
@@ -85,7 +84,6 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
-	auto& modulator = kontext.get<modulator_t>(actor);
 	location.direction = direction_t::Right;
 	kinematics.reset();
 	kinematics.flags[phy_t::Bottom] = true;
@@ -121,7 +119,6 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
-	auto& modulator = kontext.get<modulator_t>(actor);
 	location.position = position;
 	location.direction = direction;
 	kinematics.reset();
