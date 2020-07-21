@@ -4,6 +4,15 @@
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
+/*
+	When separable programs are available:
+	- shader_t's handle is an OGL program object.
+	- program_t's handle is an OGL program pipeline object.
+	If separable programs are not available:
+	- shader_t's handle is an OGL shader object.
+	- program_t's handle is an OGL program object.
+*/
+
 shader_t::shader_t() :
 	handle(0),
 	stage(shader_stage_t::Vertex)
@@ -88,29 +97,6 @@ void shader_t::destroy() {
 
 bool shader_t::matches(shader_stage_t stage) const {
 	return this->stage == stage;
-}
-
-const byte_t* shader_t::extension(shader_stage_t stage) {
-	if (program_t::has_separable()) {
-		switch (stage) {
-		case shader_stage_t::Vertex:
-			return "_420.vert";
-		case shader_stage_t::Fragment:
-			return "_420.frag";
-		case shader_stage_t::Geometry:
-			return "_420.geom";
-		}
-		return "_420.glsl";
-	}
-	switch (stage) {
-	case shader_stage_t::Vertex:
-		return "_330.vert";
-	case shader_stage_t::Fragment:
-		return "_330.frag";
-	case shader_stage_t::Geometry:
-		return "_330.geom";
-	}
-	return "_330.glsl";
 }
 
 vertex_spec_t shader_t::attributes(uint_t program_handle) {
@@ -250,7 +236,7 @@ void program_t::destroy() {
 
 void program_t::set_block(const byte_t* name, arch_t binding) const {
 	if (program_t::has_separable()) {
-		SYNAO_LOG("Warning! OpenGL version is 4.2! Don't manually set constant buffer bindings!\n");
+		SYNAO_LOG("Warning! OpenGL version is 4.2^! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
 		uint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformBlockIndex(handle, name));
@@ -271,11 +257,20 @@ void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
 		sint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformLocation(handle, name));
 		if (index != GL_INVALID_INDEX) {
-			glCheck(glUseProgram(handle));
-			glCheck(glUniform1i(
-				index, static_cast<sint_t>(sampler)
-			));
-			glCheck(glUseProgram(0));
+			if (program_t::has_uniform_azdo()) {
+				glCheck(glProgramUniform1i(
+					handle,
+					index,
+					static_cast<sint_t>(sampler)
+				));
+			} else {
+				glCheck(glUseProgram(handle));
+				glCheck(glUniform1i(
+					index, 
+					static_cast<sint_t>(sampler)
+				));
+				glCheck(glUseProgram(0));
+			}
 		}
 	}
 }
@@ -290,4 +285,8 @@ bool program_t::has_separable() {
 #else // __APPLE__
 	return glTexStorage2D != nullptr;
 #endif // __APPLE__
+}
+
+bool program_t::has_uniform_azdo() {
+	return glProgramUniform1i != nullptr;
 }
