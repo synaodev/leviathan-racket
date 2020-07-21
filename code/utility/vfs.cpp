@@ -2,13 +2,12 @@
 #include "./logger.hpp"
 #include "./setup_file.hpp"
 #include "./thread_pool.hpp"
-#include "./json.hpp"
-
 #include "../resource/entry.hpp"
 
 #include <fstream>
 #include <sstream>
 #include <streambuf>
+#include <nlohmann/json.hpp>
 
 #ifndef __APPLE__
 #include <filesystem>

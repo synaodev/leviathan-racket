@@ -1,10 +1,10 @@
 #include "./image.hpp"
 #include "../utility/logger.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "../utility/stb_image.h"
-
 #include <cstring>
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 image_t::image_t() :
 	dimensions(0), 

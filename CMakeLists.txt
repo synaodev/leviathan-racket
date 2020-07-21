@@ -9,25 +9,6 @@ set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package (Angelscript CONFIG REQUIRED)
-find_path (Angelscript_INCLUDE_DIR "angelscript.h")
-
-find_package (OpenGL REQUIRED)
-find_package (OpenAL CONFIG REQUIRED)
-
-if (NOT DEFINED ${OPENAL_LIBRARIES})
-	set (OPENAL_LIBRARIES OpenAL::OpenAL)
-endif ()
-
-find_package (SDL2 CONFIG REQUIRED)
-find_path (SDL2_INCLUDE_DIR "SDL2/SDL.h")
-
-find_package (Tmxlite CONFIG REQUIRED)
-find_path (Tmxlite_INCLUDE_DIR "tmxlite/Config.hpp")
-
-find_path (EnTT_INCLUDE_DIR "entt/entt.hpp")
-find_path (GLM_INCLUDE_DIR "glm/glm.hpp")
-
 add_executable (leviathan)
 
 if (WIN32)
@@ -90,23 +71,46 @@ elseif (UNIX)
 
 endif ()
 
+find_package (Angelscript CONFIG REQUIRED)
+find_package (OpenGL REQUIRED)
+find_package (OpenAL CONFIG REQUIRED)
+find_package (SDL2 CONFIG REQUIRED)
+find_package (Tmxlite CONFIG REQUIRED)
+find_package (nlohmann_json CONFIG REQUIRED)
+find_package (glm CONFIG REQUIRED)
+find_package (EnTT CONFIG REQUIRED)
+
+# if (NOT DEFINED ${OPENAL_LIBRARIES})
+# 	set (OPENAL_LIBRARIES OpenAL::OpenAL)
+# endif ()
+
+# find_path (Angelscript_INCLUDE_DIR "angelscript.h")
+# find_path (SDL2_INCLUDE_DIR 		"SDL2/SDL.h")
+# find_path (Tmxlite_INCLUDE_DIR 	"tmxlite/Config.hpp")
+# find_path (EnTT_INCLUDE_DIR 		"entt/entt.hpp")
+# find_path (GLM_INCLUDE_DIR 		"glm/glm.hpp")
+find_path (STB_INCLUDE_DIR "stb.h")
+
 target_include_directories (leviathan PRIVATE
-	${Angelscript_INCLUDE_DIR}
-	${OPENAL_INCLUDE_DIR}
-	${OPENGL_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-	${Tmxlite_INCLUDE_DIR}
-	${EnTT_INCLUDE_DIR}
-	${GLM_INCLUDE_DIR}
+# 	${Angelscript_INCLUDE_DIR}
+# 	${OPENAL_INCLUDE_DIR}
+# 	${SDL2_INCLUDE_DIR}
+# 	${Tmxlite_INCLUDE_DIR}
+# 	${nlohmann_json_INCLUDE_DIR}
+# 	${EnTT_INCLUDE_DIR}
+# 	${GLM_INCLUDE_DIR}
+	${STB_INCLUDE_DIR}
 )
 
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
-	${OPENAL_LIBRARIES}
-	${OPENGL_LIBRARIES}
+	OpenAL::OpenAL
 	SDL2::SDL2
 	SDL2::SDL2main
 	Tmxlite::tmxlite
+	nlohmann_json::nlohmann_json
+	EnTT::EnTT
+	glm
 )
 
 if (UNIX)
