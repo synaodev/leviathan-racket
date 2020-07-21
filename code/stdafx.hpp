@@ -56,10 +56,9 @@
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
 #include <angelscript.h>
+#include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 
-// Etc...
 #include "./types.hpp"
-#include "./utility/json.hpp"
 
 #endif // SYNAO_PRECOMPILED_HEADER_HPP
