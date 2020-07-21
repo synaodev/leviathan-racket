@@ -89,9 +89,9 @@ find_package (EnTT CONFIG REQUIRED)
 # find_path (Tmxlite_INCLUDE_DIR 	"tmxlite/Config.hpp")
 # find_path (EnTT_INCLUDE_DIR 		"entt/entt.hpp")
 # find_path (GLM_INCLUDE_DIR 		"glm/glm.hpp")
-find_path (stb_INCLUDE_DIR 			"stb_image.h")
+find_path (STB_INCLUDE_DIR "stb.h")
 
-# target_include_directories (leviathan PRIVATE
+target_include_directories (leviathan PRIVATE
 # 	${Angelscript_INCLUDE_DIR}
 # 	${OPENAL_INCLUDE_DIR}
 # 	${SDL2_INCLUDE_DIR}
@@ -99,8 +99,8 @@ find_path (stb_INCLUDE_DIR 			"stb_image.h")
 # 	${nlohmann_json_INCLUDE_DIR}
 # 	${EnTT_INCLUDE_DIR}
 # 	${GLM_INCLUDE_DIR}
-# 	${stb_INCLUDE_DIR}
-# )
+	${STB_INCLUDE_DIR}
+)
 
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
