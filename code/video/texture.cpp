@@ -9,7 +9,7 @@ bool sampler_t::has_immutable_option() {
 }
 
 bool sampler_t::has_azdo() {
-	
+	return glCreateTextures != nullptr;
 }
 
 texture_t::texture_t() :
