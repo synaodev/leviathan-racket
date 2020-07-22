@@ -63,6 +63,7 @@ namespace res {
 		SYNAO_RES_ENTRY_DEF(Fan,			"fan");
 		SYNAO_RES_ENTRY_DEF(Blade,			"blade");
 		SYNAO_RES_ENTRY_DEF(Kannon,			"kanon");
+		SYNAO_RES_ENTRY_DEF(Explode0,		"explode_0");
 		SYNAO_RES_ENTRY_DEF(Explode1,		"explode_1");
 		SYNAO_RES_ENTRY_DEF(Explode2,		"explode_2");
 		SYNAO_RES_ENTRY_DEF(Beam,			"beam");
@@ -80,6 +81,7 @@ namespace res {
 		SYNAO_RES_ENTRY_DEF(Jump,			"jump");
 		SYNAO_RES_ENTRY_DEF(Projectile0,	"projectile_0");
 		SYNAO_RES_ENTRY_DEF(Razor,			"razor");
+		SYNAO_RES_ENTRY_DEF(NpcDeath0,		"npc_dth_0");
 	}
 }
 

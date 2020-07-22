@@ -1,9 +1,12 @@
 #include "./ghost.hpp"
+#include "./particles.hpp"
 
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
 #include "../component/health.hpp"
 #include "../component/sprite.hpp"
+
+#include "../system/audio.hpp"
 
 #include "../resource/id.hpp"
 
@@ -40,8 +43,10 @@ void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& health = rtp.ktx.get<health_t>(s);
 	if (health.current <= 0) {
 		auto& location = rtp.ktx.get<location_t>(s);
-		rtp.ktx.smoke(location.center(), 5);
+		rtp.ktx.spawn(ai::blast_medium::type, location.center());
+		rtp.ktx.smoke(location.center(), 3);
 		rtp.ktx.shrapnel(location.center(), 1);
+		rtp.aud.play(res::sfx::NpcDeath0, 6);
 	} else if (health.flags[health_flags_t::Hurt]) {
 		health.flags[health_flags_t::Hurt] = false;
 
