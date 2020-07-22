@@ -21,9 +21,9 @@ The dependencies required to run the python scripts are in 'requirements.txt'.
 - [EnTT v3.3.2](https://github.com/skypjack/entt)
 - [SDL v2.0.12](https://www.libsdl.org/download-2.0.php)
 - [Tmxlite v1.1.0](https://github.com/fallahn/tmxlite)
-## Included Dependencies
 - [Json For Modern C++ v3.7.3](https://github.com/nlohmann/json)
 - [Image Loading Header Library](https://github.com/nothings/stb)
+## Included Dependencies
 - [Glad OpenGL Loader Generator](https://glad.dav1d.de)
 - [Pxtone Source](https://pxtone.org/developer)
 ## Building From Source

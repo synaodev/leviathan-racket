@@ -12,6 +12,7 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable (leviathan)
 
 if (WIN32)
+	
 	target_compile_definitions (leviathan PRIVATE
 		"-DNOMINMAX"
 		"-DUNICODE"
@@ -23,7 +24,9 @@ if (WIN32)
 		"-D_CRT_SECURE_NO_DEPRECATE"
 		"-D_CRT_NONSTDC_NO_WARNINGS"
 	)
-	if (MSVC)
+	if (MINGW)
+		message (FATAL_ERROR "MinGW is not supported!")
+	elseif (MSVC)
 		# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
 		foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 			string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
@@ -64,43 +67,25 @@ if (WIN32)
 		else ()
 			set_target_properties(leviathan PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
 		endif ()
-	elseif (MINGW)
-		message (FATAL_ERROR "Error! MinGW is not supported!")
 	endif ()
 elseif (UNIX)
-
+	find_package (Threads REQUIRED)
+	target_link_libraries (leviathan PRIVATE 
+		Threads::Threads
+		${CMAKE_DL_LIBS}
+	)
+	if (NOT APPLE)
+		target_link_libraries (leviathan PRIVATE stdc++fs)
+	endif ()
 endif ()
 
 find_package (Angelscript CONFIG REQUIRED)
-find_package (OpenGL REQUIRED)
 find_package (OpenAL CONFIG REQUIRED)
 find_package (SDL2 CONFIG REQUIRED)
 find_package (Tmxlite CONFIG REQUIRED)
 find_package (nlohmann_json CONFIG REQUIRED)
 find_package (glm CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
-
-# if (NOT DEFINED ${OPENAL_LIBRARIES})
-# 	set (OPENAL_LIBRARIES OpenAL::OpenAL)
-# endif ()
-
-# find_path (Angelscript_INCLUDE_DIR "angelscript.h")
-# find_path (SDL2_INCLUDE_DIR 		"SDL2/SDL.h")
-# find_path (Tmxlite_INCLUDE_DIR 	"tmxlite/Config.hpp")
-# find_path (EnTT_INCLUDE_DIR 		"entt/entt.hpp")
-# find_path (GLM_INCLUDE_DIR 		"glm/glm.hpp")
-find_path (STB_INCLUDE_DIR "stb.h")
-
-target_include_directories (leviathan PRIVATE
-# 	${Angelscript_INCLUDE_DIR}
-# 	${OPENAL_INCLUDE_DIR}
-# 	${SDL2_INCLUDE_DIR}
-# 	${Tmxlite_INCLUDE_DIR}
-# 	${nlohmann_json_INCLUDE_DIR}
-# 	${EnTT_INCLUDE_DIR}
-# 	${GLM_INCLUDE_DIR}
-	${STB_INCLUDE_DIR}
-)
 
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
@@ -113,15 +98,8 @@ target_link_libraries (leviathan PRIVATE
 	glm
 )
 
-if (UNIX)
-	find_package (Threads REQUIRED)
-	target_link_libraries (leviathan PRIVATE 
-		Threads::Threads
-		${CMAKE_DL_LIBS}
-	)
-	if (NOT APPLE)
-		target_link_libraries (leviathan PRIVATE stdc++fs)
-	endif ()
-endif ()
+find_path (STB_INCLUDE_DIR "stb.h")
+
+target_include_directories (leviathan PRIVATE ${STB_INCLUDE_DIR})
 
 add_subdirectory(code)
