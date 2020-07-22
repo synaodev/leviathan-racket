@@ -93,7 +93,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		title_view.handle();
 		headsup.handle(kernel);
 		if (!kernel.has(kernel_state_t::Freeze)) {
-			camera.handle(naomi_state);
+			camera.handle(kontext, naomi_state);
 			naomi_state.handle(input, audio, kernel, receiver, headsup, kontext, tilemap);
 			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
 			tilemap.handle(camera);

@@ -102,4 +102,4 @@ find_path (STB_INCLUDE_DIR "stb.h")
 
 target_include_directories (leviathan PRIVATE ${STB_INCLUDE_DIR})
 
-add_subdirectory(code)
+add_subdirectory(source)

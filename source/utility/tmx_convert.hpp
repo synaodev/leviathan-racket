@@ -19,6 +19,7 @@ namespace tmx_convert {
 	glm::vec2 vec_to_vec(const tmx::Vector2f& position);
 	std::string prop_to_string(const tmx::Property& property);
 	std::string prop_to_path(const tmx::Property& property);
+	std::string path_to_name(const std::string& path);
 	rect_t rect_to_rect(const tmx::FloatRect& rect);
 }
 

@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "../video/display_list.hpp"
+#include "../component/kontext.hpp"
+#include "../component/location.hpp"
 #include "../actor/naomi.hpp"
 
 static const glm::vec2 kDefaultSpeed  = glm::vec2(16.0f, 8.0f);
@@ -11,6 +13,7 @@ static const glm::vec2 kDefaultLowest = glm::vec2(8.0f, 6.0f);
 static const glm::vec2 kDefaultCenter = (kDefaultSizes / 2.0f) + kDefaultLowest;
 
 camera_t::camera_t() :
+	identity(0),
 	cycling(false),
 	indefinite(false),
 	timer(0.0),
@@ -25,6 +28,7 @@ camera_t::camera_t() :
 }
 
 void camera_t::reset() {
+	identity = 0;
 	cycling = false;
 	indefinite = false;
 	timer = 0.0;
@@ -36,8 +40,19 @@ void camera_t::reset() {
 	view_angle = 0.0f;
 }
 
-void camera_t::handle(const naomi_state_t& naomi_state) {
-	glm::vec2 center = naomi_state.camera_placement();
+void camera_t::handle(const kontext_t& kontext, const naomi_state_t& naomi_state) {
+	glm::vec2 center = glm::zero<glm::vec2>();
+	if (identity != 0) {
+		entt::entity actor = kontext.search_id(identity);
+		if (actor != entt::null) {
+			auto& location = kontext.get<location_t>(actor);
+			center = location.center();
+		} else {
+			identity = 0;
+		}
+	} else {
+		center = naomi_state.camera_placement();
+	}
 	position += (center - position) / kDefaultSpeed;
 	view_limits.push_fix(&position, dimensions);
 }
@@ -81,6 +96,10 @@ void camera_t::set_view_limits(rect_t view_limits) {
 void camera_t::set_focus(glm::vec2 position) {
 	view_limits.push_fix(&position, dimensions);
 	this->position = position;
+}
+
+void camera_t::follow(sint_t identity) {
+	this->identity = identity;
 }
 
 void camera_t::quake(real_t power, real64_t seconds) {

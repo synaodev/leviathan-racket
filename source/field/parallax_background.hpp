@@ -21,7 +21,7 @@ public:
 	void render(renderer_t& renderer, rect_t viewport, const texture_t* texture) const;
 private:
 	mutable arch_t indices;
-	glm::vec2 position, scrolling, offsets, speed, dimensions;
+	glm::vec2 position, scrolling, dimensions;
 	rect_t bounding;
 };
 

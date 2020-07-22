@@ -3,9 +3,11 @@
 #include "./camera.hpp"
 
 #include <tmxlite/Map.hpp>
+#include <tmxlite/ImageLayer.hpp>
 
 #include "../system/renderer.hpp"
 #include "../utility/vfs.hpp"
+#include "../utility/tmx_convert.hpp"
 
 static constexpr sint_t kScreenWidth   = 21;
 static constexpr sint_t kScreenHeight  = 12;
@@ -102,12 +104,10 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 				tilemap_layer_palette = vfs::palette(tileset.getName());
 			}
 		}
-		tilemap_layer_texture = vfs::texture(tileset.getName());
+		const std::string& name = tmx_convert::path_to_name(tileset.getImagePath());
+		tilemap_layer_texture = vfs::texture(name);
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		attribute_key = vfs::sint_buffer(tilekey_path + tileset.getName() + ".atr");
-	}
-	if (tilesets.size() > 1) {
-		parallax_texture = vfs::texture(tilesets[1].getName());
+		attribute_key = vfs::sint_buffer(tilekey_path + name + ".atr");
 	}
 }
 
@@ -129,6 +129,8 @@ void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
 
 void tilemap_t::push_parallax_background(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
+	const std::string& path = dynamic_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
+	parallax_texture = vfs::texture(tmx_convert::path_to_name(path));
 	glm::vec2 parallax_dimensions = parallax_texture != nullptr ?
 		parallax_texture->get_dimensions() :
 		glm::zero<glm::vec2>();

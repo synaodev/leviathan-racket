@@ -846,6 +846,9 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Timed Quake
 	r = engine->RegisterGlobalFunction("void quake(real32_t factor, real64_t seconds)", WRAP_MFN_PR(camera_t, quake, (real_t, real64_t), void), call_gthis, &camera);
 	assert(r >= 0);
+	// Follow Actor
+	r = engine->RegisterGlobalFunction("void follow(sint32_t identity)", WRAP_MFN(camera_t, follow), call_gthis, &camera);
+	assert(r >= 0);
 
 	// Set Namespace
 	r = engine->SetDefaultNamespace("");

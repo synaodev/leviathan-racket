@@ -72,14 +72,14 @@ std::string tmx_convert::prop_to_string(const tmx::Property& property) {
 
 std::string tmx_convert::prop_to_path(const tmx::Property& property) {
 	if (property.getType() == tmx::Property::Type::File) {
-		std::string value = property.getFileValue();
-		arch_t position = value.find_last_of('/') + 1;
-		return value.substr(
-			position, 
-			value.find_last_of('.') - position
-		);
+		return tmx_convert::path_to_name(property.getFileValue());
 	}
 	return std::string();
+}
+
+std::string tmx_convert::path_to_name(const std::string& path) {
+	arch_t position = path.find_last_of('/') + 1;
+	return path.substr(position, path.find_last_of('.') - position);
 }
 
 rect_t tmx_convert::rect_to_rect(const tmx::FloatRect& rectangle) {

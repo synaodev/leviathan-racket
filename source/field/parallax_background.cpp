@@ -3,21 +3,17 @@
 #include "../utility/tmx_convert.hpp"
 #include "../system/renderer.hpp"
 
-static const byte_t kBoundsXProp[] = "bounds_x";
-static const byte_t kBoundsYProp[] = "bounds_y";
-static const byte_t kBoundsWProp[] = "bounds_w";
-static const byte_t kBoundsHProp[] = "bounds_h";
-static const byte_t kScrollXProp[] = "scroll_x";
-static const byte_t kScrollYProp[] = "scroll_y";
-static const byte_t kSpeedXProp[]  = "speed_x";
-static const byte_t kSpeedYProp[]  = "speed_y";
+static const byte_t kBoundsXProp[] = "rect.x";
+static const byte_t kBoundsYProp[] = "rect.y";
+static const byte_t kBoundsWProp[] = "rect.w";
+static const byte_t kBoundsHProp[] = "rect.h";
+static const byte_t kScrollXProp[] = "scroll.x";
+static const byte_t kScrollYProp[] = "scroll.y";
 
 parallax_background_t::parallax_background_t() :
 	indices(0),
 	position(0.0f),
 	scrolling(0.0f),
-	offsets(0.0f),
-	speed(0.0f),
 	dimensions(1.0f),
 	bounding()
 {
@@ -29,8 +25,6 @@ parallax_background_t::parallax_background_t(parallax_background_t&& that) noexc
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);
 		std::swap(scrolling, that.scrolling);
-		std::swap(offsets, that.offsets);
-		std::swap(speed, that.speed);
 		std::swap(dimensions, that.dimensions);
 		std::swap(bounding, that.bounding);
 	}
@@ -41,8 +35,6 @@ parallax_background_t& parallax_background_t::operator=(parallax_background_t&& 
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);
 		std::swap(scrolling, that.scrolling);
-		std::swap(offsets, that.offsets);
-		std::swap(speed, that.speed);
 		std::swap(dimensions, that.dimensions);
 		std::swap(bounding, that.bounding);
 	}
@@ -72,20 +64,13 @@ void parallax_background_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::
 			this->scrolling.x = tmx_convert::prop_to_real(property);
 		} else if (name == kScrollYProp) {
 			this->scrolling.y = tmx_convert::prop_to_real(property);
-		} else if (name == kSpeedXProp) {
-			this->speed.x = tmx_convert::prop_to_real(property);
-		} else if (name == kSpeedYProp) {
-			this->speed.y = tmx_convert::prop_to_real(property);
 		}
 	}
 }
 
 void parallax_background_t::handle(rect_t viewport) {
-	if (speed != glm::zero<glm::vec2>()) {
-		offsets = glm::mod(offsets + speed, dimensions);
-	}
 	glm::vec2 next = glm::mod(
-		(viewport.left_top() * -scrolling) - offsets,
+		viewport.left_top() * -scrolling,
 		dimensions
 	);
 	if (position != next) {
@@ -103,8 +88,8 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 		nullptr
 	);
 	if (indices == 0) {
-		for (real_t y = position.y - dimensions.y; y < viewport.h; y += dimensions.y) {
-			for (real_t x = position.x - dimensions.x; x < viewport.w; x += dimensions.x) {
+		for (real_t y = viewport.y + position.y - dimensions.y; y < viewport.bottom(); y += dimensions.y) {
+			for (real_t x = viewport.x + position.x - dimensions.x; x < viewport.right(); x += dimensions.x) {
 				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(bounding, dimensions, 0.0f, 1.0f, mirroring_t::None)
 					.vtx_transform_write(x, y)
