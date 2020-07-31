@@ -1,8 +1,13 @@
 #ifndef SYNAO_AUDIO_ALCHECK_HPP
 #define SYNAO_AUDIO_ALCHECK_HPP
 
-#include <AL/al.h>
-#include <AL/alc.h>
+#ifdef SYNAO_WITHOUT_VCPKG // FUCK
+	#include <al.h>
+	#include <alc.h>
+#else // SYNAO_WITHOUT_VCPKG
+	#include <AL/al.h>
+	#include <AL/alc.h>
+#endif // SYNAO_WITHOUT_VCPKG
 
 #include "../types.hpp"
 
