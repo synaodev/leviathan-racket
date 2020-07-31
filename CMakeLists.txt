@@ -79,20 +79,25 @@ elseif (UNIX)
 	endif ()
 endif ()
 
-find_package (Angelscript CONFIG REQUIRED)
-find_package (OpenAL CONFIG REQUIRED)
 find_package (SDL2 CONFIG REQUIRED)
-find_package (Tmxlite CONFIG REQUIRED)
+find_package (Angelscript CONFIG REQUIRED)
 find_package (nlohmann_json CONFIG REQUIRED)
 find_package (glm CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
 
+include (./cmake/FindOpenAL.cmake)
+if (NOT OPENAL_FOUND)
+	message (FATAL "Could not find OpenAL!")
+endif ()
+
+include (./cmake/FindTmxlite.cmake)
+
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
-	OpenAL::OpenAL
+	${OPENAL_LIBRARY}
 	SDL2::SDL2
 	SDL2::SDL2main
-	Tmxlite::tmxlite
+	${TMXLITE_LIBRARY}
 	nlohmann_json::nlohmann_json
 	EnTT::EnTT
 	glm
@@ -100,6 +105,11 @@ target_link_libraries (leviathan PRIVATE
 
 find_path (STB_INCLUDE_DIR "stb.h")
 
-target_include_directories (leviathan PRIVATE ${STB_INCLUDE_DIR})
+target_include_directories (leviathan PRIVATE 
+	${STB_INCLUDE_DIR} 
+	${OPENAL_INCLUDE_DIR} 
+	${TMXLITE_INCLUDE_DIR}
+	${SDL2_INCLUDE_DIR}
+)
 
 add_subdirectory(source)
