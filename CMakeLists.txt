@@ -79,37 +79,50 @@ elseif (UNIX)
 	endif ()
 endif ()
 
-find_package (SDL2 CONFIG REQUIRED)
 find_package (Angelscript CONFIG REQUIRED)
-find_package (nlohmann_json CONFIG REQUIRED)
 find_package (glm CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
 
 include (./cmake/FindOpenAL.cmake)
 if (NOT OPENAL_FOUND)
-	message (FATAL "Could not find OpenAL!")
+	message (FATAL_ERROR "Could not find OpenAL!")
+endif ()
+
+include (./cmake/FindSDL2.cmake)
+if (NOT SDL2_FOUND)
+	message (FATAL_ERROR "Could not find SDL2!")
+endif ()
+if (NOT SDL2MAIN_FOUND)
+	message (FATAL_ERROR "Could not find SDL2-Main!")
 endif ()
 
 include (./cmake/FindTmxlite.cmake)
+if (NOT TMXLITE_FOUND)
+	message (FATAL_ERROR "Could not find Tmxlite!")
+endif ()
+include (./cmake/FindNlohmannJson.cmake)
+if (NOT NLOHMANN_JSON_FOUND)
+	message (FATAL_ERROR "Could not find JSON library!")
+endif ()
+include (./cmake/FindStb.cmake)
+if (NOT STB_FOUND)
+	message (FATAL_ERROR "Could not find stb!")
+endif ()
 
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
 	${OPENAL_LIBRARY}
-	SDL2::SDL2
-	SDL2::SDL2main
+	${SDL2_LIBRARIES}
 	${TMXLITE_LIBRARY}
-	nlohmann_json::nlohmann_json
 	EnTT::EnTT
 	glm
 )
 
-find_path (STB_INCLUDE_DIR "stb.h")
-
 target_include_directories (leviathan PRIVATE 
 	${STB_INCLUDE_DIR} 
-	${OPENAL_INCLUDE_DIR} 
-	${TMXLITE_INCLUDE_DIR}
+	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
+	${TMXLITE_INCLUDE_DIR}
 )
 
 add_subdirectory(source)
