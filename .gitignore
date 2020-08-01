@@ -1,6 +1,7 @@
 # Editor
 **/.vs/
 **/.vscode/
+**/CMakeSettings.json
 
 # Python
 **/__pycache__/
