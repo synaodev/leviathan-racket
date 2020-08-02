@@ -19,24 +19,24 @@
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
 
-static const byte_t kEventPath[]	= "./vfs/event/";
-static const byte_t kFieldPath[]	= "./vfs/field/";
-static const byte_t kFontPath[]		= "./vfs/font/";
-static const byte_t kI18NPath[]		= "./vfs/i18n/";
-static const byte_t kImagePath[]	= "./vfs/image/";
-static const byte_t kInitPath[]		= "./vfs/init/";
-static const byte_t kNoisePath[]	= "./vfs/noise/";
-static const byte_t kPalettePath[]	= "./vfs/palette/";
-static const byte_t kSavePath[]		= "./vfs/save/";
-static const byte_t kSpritePath[]	= "./vfs/sprite/";
-static const byte_t kTileKeyPath[]	= "./vfs/tilekey/";
-static const byte_t kTunePath[]		= "./vfs/tune/";
+static const byte_t kEventPath[]	= "./data/event/";
+static const byte_t kFieldPath[]	= "./data/field/";
+static const byte_t kFontPath[]		= "./data/font/";
+static const byte_t kI18NPath[]		= "./data/i18n/";
+static const byte_t kImagePath[]	= "./data/image/";
+static const byte_t kInitPath[]		= "./data/init/";
+static const byte_t kNoisePath[]	= "./data/noise/";
+static const byte_t kPalettePath[]	= "./data/palette/";
+static const byte_t kSavePath[]		= "./data/save/";
+static const byte_t kSpritePath[]	= "./data/sprite/";
+static const byte_t kTileKeyPath[]	= "./data/tilekey/";
+static const byte_t kTunePath[]		= "./data/tune/";
 
 static constexpr byte_t kDefaultLang[] 	= "english";
 static constexpr arch_t kTotalThreads 	= 4;
 static constexpr arch_t kDebugFontIndex = 4;
 
-vfs_t::vfs_t() : 
+vfs_t::vfs_t() :
 	thread_pool(),
 	storage_mutex(),
 	language(kDefaultLang),
@@ -46,7 +46,7 @@ vfs_t::vfs_t() :
 	palettes(),
 	shaders(),
 	fonts(),
-	animations() 
+	animations()
 {
 
 }
@@ -123,8 +123,8 @@ static std::string::const_iterator decode(std::string::const_iterator begin, std
 }
 
 std::back_insert_iterator<std::u32string> vfs::to_utf32(
-	std::string::const_iterator begin, 
-	std::string::const_iterator end, 
+	std::string::const_iterator begin,
+	std::string::const_iterator end,
 	std::back_insert_iterator<std::u32string> output) {
 	while (begin < end) {
 		uint_t point;
@@ -444,8 +444,8 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 			return names;
 		};
 		ref.load(
-			std::invoke(generate_full_paths, names), 
-			pixel_format_t::R8G8B8A8, 
+			std::invoke(generate_full_paths, names),
+			pixel_format_t::R8G8B8A8,
 			*vfs::device->thread_pool
 		);
 		return &ref;
@@ -471,8 +471,8 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->allocate_safely(name, vfs::device->palettes);
 		ref.load(
-			directory + name + ".png", 
-			pixel_format_t::R2G2B2A2, 
+			directory + name + ".png",
+			pixel_format_t::R2G2B2A2,
 			*vfs::device->thread_pool
 		);
 		return &ref;

@@ -1004,8 +1004,8 @@ ImGuiIO::ImGuiIO()
     DisplaySize = ImVec2(-1.0f, -1.0f);
     DeltaTime = 1.0f/60.0f;
     IniSavingRate = 5.0f;
-    IniFilename = "./vfs/init/imgui.cfg";
-    LogFilename = "./vfs/init/imgui_log.txt";
+    IniFilename = "./data/init/imgui.cfg";
+    LogFilename = "./data/init/imgui_log.txt";
     MouseDoubleClickTime = 0.30f;
     MouseDoubleClickMaxDist = 6.0f;
     for (int i = 0; i < ImGuiKey_COUNT; i++)
