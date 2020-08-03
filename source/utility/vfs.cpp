@@ -4,6 +4,7 @@
 #include "./thread_pool.hpp"
 #include "../resource/entry.hpp"
 
+#include <locale>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
@@ -175,6 +176,30 @@ bool vfs::directory_exists(const std::string& name) {
 	return true;
 }
 
+bool vfs::file_exists(const std::string& name) {
+#ifndef __APPLE__
+	if (!std::filesystem::exists(name)) {
+		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+		return false;
+	}
+	if (!std::filesystem::is_regular_file(name)) {
+		SYNAO_LOG("\"%s\" isn't a regular file!\n", name.c_str());
+		return false;
+	}
+#else // __APPLE__
+	struct stat sb;
+	if (stat(name.c_str(), &sb) != 0) {
+		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+		return false;
+	}
+	if (S_ISREG(sb.st_mode) == 0) {
+		SYNAO_LOG("\"%s\" isn't a regular file!\n", name.c_str());
+		return false;
+	}
+#endif // __APPLE__
+	return true;
+}
+
 bool vfs::create_directory(const std::string& name) {
 	if (vfs::directory_exists(name)) {
 		return true;
@@ -217,6 +242,14 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	}
 	return std::string();
 }
+
+#if 0 // TODO: System Locale
+
+std::string vfs::system_locale() {
+	const std::locale locale;
+}
+
+#endif
 
 std::vector<std::string> vfs::file_list(const std::string& path) {
 	std::vector<std::string> result;

@@ -40,14 +40,16 @@ using vfs_resource_path_t = __enum_vfs_resource_path::type;
 namespace vfs {
 	static vfs_t* device = nullptr;
 	std::back_insert_iterator<std::u32string> to_utf32(
-		std::string::const_iterator begin, 
-		std::string::const_iterator end, 
+		std::string::const_iterator begin,
+		std::string::const_iterator end,
 		std::back_insert_iterator<std::u32string> output
 	);
 	bool verify_structure();
 	bool directory_exists(const std::string& name);
+	bool file_exists(const std::string& name);
 	bool create_directory(const std::string& name);
 	std::string resource_path(vfs_resource_path_t path);
+	std::string system_locale();
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);
