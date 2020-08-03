@@ -2,7 +2,7 @@
 #include "./logger.hpp"
 #include "./setup_file.hpp"
 #include "./thread_pool.hpp"
-#include "../resource/entry.hpp"
+#include "../resource/tbl_entry.hpp"
 
 #include <locale>
 #include <fstream>
@@ -422,11 +422,11 @@ std::string vfs::global_script(const std::string& name) {
 }
 
 const noise_t* vfs::noise(const std::string& name) {
-	const resource_entry_t entry = resource_entry_t(name.c_str());
+	const tbl_entry_t entry = tbl_entry_t(name.c_str());
 	return vfs::noise(entry);
 }
 
-const noise_t* vfs::noise(const resource_entry_t& entry) {
+const noise_t* vfs::noise(const tbl_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -434,13 +434,13 @@ const noise_t* vfs::noise(const resource_entry_t& entry) {
 	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->noises);
-		ref.load(kNoisePath + std::string(entry.filename) + ".wav", *vfs::device->thread_pool);
+		ref.load(kNoisePath + std::string(entry.name) + ".wav", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const animation_t* vfs::animation(const resource_entry_t& entry) {
+const animation_t* vfs::animation(const tbl_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -448,14 +448,14 @@ const animation_t* vfs::animation(const resource_entry_t& entry) {
 	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
 		animation_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->animations);
-		ref.load(kSpritePath + std::string(entry.filename) + ".cfg", *vfs::device->thread_pool);
+		ref.load(kSpritePath + std::string(entry.name) + ".cfg", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
 const animation_t* vfs::animation(const std::string& name) {
-	const resource_entry_t entry = resource_entry_t(name.c_str());
+	const tbl_entry_t entry = tbl_entry_t(name.c_str());
 	return vfs::animation(entry);
 }
 

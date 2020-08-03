@@ -5,7 +5,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
-sprite_t::sprite_t(const resource_entry_t& entry) :
+sprite_t::sprite_t(const tbl_entry_t& entry) :
 	file(nullptr),
 	amend(false),
 	timer(0.0),
@@ -42,7 +42,7 @@ sprite_t::sprite_t() :
 	angle(0.0f),
 	shake(0.0f)
 {
-	
+
 }
 
 void sprite_t::reset() {
@@ -123,7 +123,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 					viewport,
 					sprite.state,
 					sprite.frame,
-					sprite.variation, 
+					sprite.variation,
 					sprite.layer,
 					sprite.position,
 					sprite.scale
@@ -157,9 +157,9 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 				);
 			} else {
 				sprite.file->render(
-					renderer, 
-					viewport, 
-					panic, 
+					renderer,
+					viewport,
+					panic,
 					sprite.amend,
 					sprite.state,
 					sprite.frame,

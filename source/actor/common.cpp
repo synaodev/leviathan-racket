@@ -60,6 +60,15 @@ void ai::door::ctor(entt::entity s, kontext_t& ktx) {
 	sprite.position = ktx.get<location_t>(s).position;
 }
 
+void ai::spikes::ctor(entt::entity s, kontext_t& ktx) {
+	auto& location = ktx.get<location_t>(s);
+	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 8.0f);
+
+	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Death);
+	sprite.position = location.position;
+	sprite.pivot = glm::vec2(8.0f);
+}
+
 void ai::death_spikes::ctor(entt::entity s, kontext_t& ktx) {
 	auto& location = ktx.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 24.0f, 12.0f);

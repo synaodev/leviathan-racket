@@ -10,14 +10,14 @@ struct audio_t;
 struct renderer_t;
 struct kontext_t;
 struct location_t;
-struct resource_entry_t;
+struct tbl_entry_t;
 
 struct liquid_body_t {
 public:
 	liquid_body_t(rect_t hitbox) :
 		amend(true),
 		hitbox(hitbox) {}
-	liquid_body_t() : 
+	liquid_body_t() :
 		amend(true),
 		hitbox() {}
 	liquid_body_t(const liquid_body_t&) = default;
@@ -25,14 +25,14 @@ public:
 	liquid_body_t(liquid_body_t&&) = default;
 	liquid_body_t& operator=(liquid_body_t&&) = default;
 	~liquid_body_t() = default;
-public:	
+public:
 	mutable bool_t amend;
 	rect_t hitbox;
 };
 
 struct liquid_listener_t {
 public:
-	liquid_listener_t(arch_t particle_type, const resource_entry_t& entry) :
+	liquid_listener_t(arch_t particle_type, const tbl_entry_t& entry) :
 		liquid(entt::null),
 		particle_type(particle_type),
 		sound(&entry) {}
@@ -48,7 +48,7 @@ public:
 public:
 	entt::entity liquid;
 	arch_t particle_type;
-	const resource_entry_t* sound;
+	const tbl_entry_t* sound;
 };
 
 namespace liquid {
@@ -57,4 +57,4 @@ namespace liquid {
 	void render(const kontext_t& context, renderer_t& renderer, rect_t viewport);
 }
 
-#endif // SYNAO_COMPONENT_LIQUID_HPP 
+#endif // SYNAO_COMPONENT_LIQUID_HPP

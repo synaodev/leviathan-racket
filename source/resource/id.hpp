@@ -1,10 +1,10 @@
 #ifndef SYNAO_RESOURCE_ID_HPP
 #define SYNAO_RESOURCE_ID_HPP
 
-#include "./entry.hpp"
+#include "./tbl_entry.hpp"
 
 #define SYNAO_RES_BYTES_DEF(NAME, STR) constexpr byte_t NAME[] = STR
-#define SYNAO_RES_ENTRY_DEF(TAG, FILE) constexpr resource_entry_t TAG(FILE);
+#define SYNAO_RES_ENTRY_DEF(TAG, FILE) constexpr tbl_entry_t TAG(FILE);
 
 namespace res {
 	namespace img {

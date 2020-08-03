@@ -30,6 +30,10 @@ namespace ai {
 		constexpr arch_t type = SYNAO_HASH("door");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
+	namespace spikes {
+		constexpr arch_t type = SYNAO_HASH("spikes");
+		void ctor(entt::entity s, kontext_t& ktc);
+	}
 	namespace death_spikes {
 		constexpr arch_t type = SYNAO_HASH("death");
 		void ctor(entt::entity s, kontext_t& ktx);

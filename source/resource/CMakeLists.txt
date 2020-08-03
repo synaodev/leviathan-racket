@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.15)
 
 target_sources (leviathan PRIVATE
 	"icon.cpp" "icon.hpp"
-	"entry.hpp" "id.hpp"
+	"tbl_entry.hpp" "id.hpp"
 	"pipeline.cpp" "pipeline.hpp"
 )
 

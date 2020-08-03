@@ -14,7 +14,7 @@
 #include "../event/receiver.hpp"
 #include "./thread_pool.hpp"
 
-struct resource_entry_t;
+struct tbl_entry_t;
 struct setup_file_t;
 struct vfs_t;
 
@@ -62,9 +62,9 @@ namespace vfs {
 	std::string local_script(const std::string& name);
 	std::string global_script(const std::string& name);
 	const noise_t* noise(const std::string& name);
-	const noise_t* noise(const resource_entry_t& entry);
+	const noise_t* noise(const tbl_entry_t& entry);
 	const animation_t* animation(const std::string& name);
-	const animation_t* animation(const resource_entry_t& entry);
+	const animation_t* animation(const tbl_entry_t& entry);
 	const texture_t* texture(const std::vector<std::string>& names, const std::string& directory);
 	const texture_t* texture(const std::vector<std::string>& names);
 	const texture_t* texture(const std::string& name);
