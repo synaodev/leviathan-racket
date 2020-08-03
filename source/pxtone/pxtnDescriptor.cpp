@@ -27,6 +27,7 @@ bool pxtnDescriptor::set_memory_r( void *p_mem, int size )
 
 bool pxtnDescriptor::set_file_r  ( FILE *fd )
 {
+#if 0
 	if( !fd ) return false;
 
 	fpos_t sz;
@@ -37,8 +38,6 @@ bool pxtnDescriptor::set_file_r  ( FILE *fd )
 
 #ifdef pxSCE
 	_size   = (int32_t)sz._Off;
-#elif defined(__GNUC__) && !defined(__APPLE__)
-	_size   = (int32_t)sz.__pos;
 #else
 	_size 	= (int32_t)sz;
 #endif
@@ -46,6 +45,7 @@ bool pxtnDescriptor::set_file_r  ( FILE *fd )
 	_b_file = true;
 	_b_read = true;
 	_cur    =    0;
+#endif
 	return true;
 }
 
@@ -97,10 +97,10 @@ bool pxtnDescriptor::w_asfile( const void *p, int size, int num )
 	bool b_ret = false;
 
 	if( !_p_desc || !_b_file || _b_read ) goto End;
-	
+
 	if( fwrite( p, size, num, (FILE*)_p_desc ) != num ) goto End;
 	_size += size * num;
-	
+
 	b_ret = true;
 End:
 	return b_ret;
@@ -126,7 +126,7 @@ bool pxtnDescriptor::r(       void *p, int size, int num )
 			_cur += size;
 		}
 	}
-	
+
 	b_ret = true;
 End:
 	return b_ret;
@@ -161,7 +161,7 @@ int  pxtnDescriptor::v_w_asfile( int val, int *p_add )
 	uint8_t  b[ 5 ] = {0};
 	uint32_t us     = (uint32_t )val;
 	int32_t  bytes  = 0;
-	
+
 	a[ 0 ] = *( (uint8_t *)(&us) + 0 );
 	a[ 1 ] = *( (uint8_t *)(&us) + 1 );
 	a[ 2 ] = *( (uint8_t *)(&us) + 2 );

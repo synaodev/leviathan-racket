@@ -29,16 +29,19 @@ static const byte_t kMainDecl[]  = "void main()";
 static const byte_t kDeathDecl[] = "void death(arch_t type)";
 static const byte_t kInvenDecl[] = "void inven(arch_t type, arch_t cursor)";
 
+static constexpr uint_t kMaxCalls = 128;
+
 receiver_t::receiver_t() :
 	bitmask(0),
-	timer(0.0),
+	timer(0.0f),
+	calls(0),
 	engine(nullptr),
 	state(nullptr),
 	current(nullptr),
 	boot(nullptr),
 	events()
 {
-	
+
 }
 
 receiver_t::~receiver_t() {
@@ -77,14 +80,18 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	}
 	this->generate_properties();
 	this->generate_functions(
-		input, audio, music, 
-		kernel, stack_gui, dialogue_gui, 
-		title_view, headsup, camera, 
+		input, audio, music,
+		kernel, stack_gui, dialogue_gui,
+		title_view, headsup, camera,
 		naomi_state, kontext
 	);
 	state = engine->CreateContext();
 	if (state == nullptr) {
 		SYNAO_LOG("Scripting state creation failed!\n");
+		return false;
+	}
+	if (state->SetLineCallback(asFUNCTION(calls_callback), &calls, asCALL_CDECL) < 0) {
+		SYNAO_LOG("Creating line callback for script context failed!\n");
 		return false;
 	}
 	if (!this->load(kGlobFile, rec_loading_t::Global)) {
@@ -110,7 +117,8 @@ void receiver_t::reset() {
 	bitmask[rec_bits_t::Running] = false;
 	bitmask[rec_bits_t::Waiting] = false;
 	bitmask[rec_bits_t::Stalled] = false;
-	timer = 0.0;
+	timer = 0.0f;
+	calls = 0;
 	this->discard_all_events();
 }
 
@@ -122,15 +130,18 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					bitmask[rec_bits_t::Running] = true;
 					bitmask[rec_bits_t::Waiting] = false;
 					bitmask[rec_bits_t::Stalled] = false;
-					timer = 0.0;
+					timer = 0.0f;
+					calls = 0;
 				}
 			} else if (bitmask[rec_bits_t::Waiting]) {
-				timer -= interval::kMin;
-				if (timer <= 0.0) {
+				static const real_t kInterval32 = static_cast<real_t>(interval::kMin);
+				timer -= kInterval32;
+				if (timer <= 0.0f) {
 					bitmask[rec_bits_t::Running] = true;
 					bitmask[rec_bits_t::Waiting] = false;
 					bitmask[rec_bits_t::Stalled] = false;
-					timer = 0.0;
+					timer = 0.0f;
+					calls = 0;
 				}
 			} else {
 				sint_t r = state->Execute();
@@ -141,16 +152,17 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 				case asEXECUTION_FINISHED:
 				case asEXECUTION_ABORTED: {
 					this->close_dependencies(
-						kernel, 
-						stack_gui, 
-						inventory_gui, 
+						kernel,
+						stack_gui,
+						inventory_gui,
 						dialogue_gui
 					);
 					break;
 				}
 				case asEXECUTION_EXCEPTION: {
 					bitmask.reset();
-					timer = 0.0;
+					timer = 0.0f;
+					calls = 0;
 					SYNAO_LOG(
 						"Running script threw an exception!\n%s\n%s at line %d!\n",
 						state->GetExceptionString(),
@@ -287,8 +299,10 @@ void receiver_t::suspend() {
 		bitmask[rec_bits_t::Running] = true;
 		bitmask[rec_bits_t::Waiting] = false;
 		bitmask[rec_bits_t::Stalled] = false;
-		timer = 0.0;
-		state->Suspend();
+		timer = 0.0f;
+		calls = 0;
+		sint_t r = state->Suspend();
+		assert(r >= 0);
 	}
 }
 
@@ -320,6 +334,15 @@ void receiver_t::error_callback(const asSMessageInfo* msg, optr_t) {
 	);
 }
 
+void receiver_t::calls_callback(asIScriptContext* ctx, uint_t* calls) {
+	assert(calls != nullptr);
+	(*calls)++;
+	if (*calls >= kMaxCalls) {
+		*calls = 0;
+		ctx->Suspend();
+	}
+}
+
 asIScriptFunction* receiver_t::find_from_symbol(const std::string& module_name, const std::string& symbol) const {
 	const std::string declaration = "void " + symbol + "()";
 	asIScriptModule* module = engine->GetModule(module_name.c_str(), asGM_ONLY_IF_EXISTS);
@@ -345,7 +368,8 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 		bitmask[rec_bits_t::Running] = true;
 		bitmask[rec_bits_t::Waiting] = false;
 		bitmask[rec_bits_t::Stalled] = false;
-		timer = 0.0;
+		timer = 0.0f;
+		calls = 0;
 	} else {
 		SYNAO_LOG("Couldn't execute function!\n");
 	}
@@ -356,7 +380,8 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 		bitmask[rec_bits_t::Running] = true;
 		bitmask[rec_bits_t::Waiting] = false;
 		bitmask[rec_bits_t::Stalled] = false;
-		timer = 0.0;
+		timer = 0.0f;
+		calls = 0;
 		for (arch_t it = 0; it < args.size(); ++it) {
 #ifdef SYNAO_MACHINE_x64
 			if (state->SetArgQWord(static_cast<uint_t>(it), args[it]) < 0) {
@@ -375,7 +400,8 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 
 void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_gui, const inventory_gui_t& inventory_gui, dialogue_gui_t& dialogue_gui) {
 	bitmask.reset();
-	timer = 0.0;
+	timer = 0.0f;
+	calls = 0;
 	state->Unprepare();
 	if (stack_gui.empty() and !inventory_gui.open()) {
 		kernel.unlock();
@@ -428,11 +454,12 @@ void receiver_t::set_stalled_period() {
 	bitmask[rec_bits_t::Running] = true;
 	bitmask[rec_bits_t::Waiting] = false;
 	bitmask[rec_bits_t::Stalled] = true;
-	timer = 0.0;
+	timer = 0.0f;
+	calls = 0;
 	state->Suspend();
 }
 
-void receiver_t::set_waiting_period(real64_t seconds) {
+void receiver_t::set_waiting_period(real_t seconds) {
 	bitmask[rec_bits_t::Running] = true;
 	bitmask[rec_bits_t::Waiting] = true;
 	bitmask[rec_bits_t::Stalled] = false;
@@ -458,10 +485,10 @@ void receiver_t::generate_properties() {
 	assert(r >= 0);
 	// Set Error Callback
 	r = engine->SetMessageCallback(
-		WRAP_FN(receiver_t::error_callback), 
-		nullptr, 
-		kUseGenericCall ? 
-			asCALL_GENERIC : 
+		WRAP_FN(receiver_t::error_callback),
+		nullptr,
+		kUseGenericCall ?
+			asCALL_GENERIC :
 			asCALL_CDECL
 	);
 	assert(r >= 0);
@@ -527,11 +554,11 @@ void receiver_t::generate_properties() {
 }
 
 void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
-	asECallConvTypes call_cdecl = kUseGenericCall ? 
-		asCALL_GENERIC : 
+	asECallConvTypes call_cdecl = kUseGenericCall ?
+		asCALL_GENERIC :
 		asCALL_CDECL;
-	asECallConvTypes call_gthis = kUseGenericCall ? 
-		asCALL_GENERIC : 
+	asECallConvTypes call_gthis = kUseGenericCall ?
+		asCALL_GENERIC :
 		asCALL_THISCALL_ASGLOBAL;
 	sint_t r = 0;
 	// Set Namespace
@@ -544,7 +571,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void wait()", WRAP_MFN(receiver_t, set_stalled_period), call_gthis, this);
 	assert(r >= 0);
 	// Wait For Script
-	r = engine->RegisterGlobalFunction("void wait(real64_t seconds)", WRAP_MFN(receiver_t, set_waiting_period), call_gthis, this);
+	r = engine->RegisterGlobalFunction("void wait(real32_t seconds)", WRAP_MFN(receiver_t, set_waiting_period), call_gthis, this);
 	assert(r >= 0);
 	// Suspend Current Script
 	r = engine->RegisterGlobalFunction("void suspend()", WRAP_MFN(receiver_t, suspend), call_gthis, this);
@@ -654,7 +681,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Pop Menu
 	r = engine->RegisterGlobalFunction("void pop_widget()", WRAP_MFN(stack_gui_t, pop), call_gthis, &stack_gui);
 	assert(r >= 0);
-	
+
 	// Set Namespace
 	r = engine->SetDefaultNamespace("msg");
 	assert(r >= 0);

@@ -14,7 +14,7 @@ void boot() {
 	msg::push_card("Leviathan Racket", font_t::One);
 	msg::set_card_position(0, 160.0f, 48.0f);
 	msg::set_card_centered(0, true, false);
-	sys::wait(1.5);
+	sys::wait(1.5f);
 	msg::clear_cards();
 	msg::fade_in();
 }
@@ -51,16 +51,16 @@ void use_bed() /* Bed */ {
 			msg::close();
 			pxt::fade(2.0f);
 			msg::fade_out();
-			sys::wait(1.0);
+			sys::wait(1.0f);
 			msg::top_box();
 			msg::say(sys::locale("UseBed", 3));
 			sys::wait();
 			msg::close();
 			nao::life_up(20);
-			sys::wait(1.0);
+			sys::wait(1.0f);
 			msg::fade_in();
 			pxt::redo(1.0f);
-			sys::wait(0.5);
+			sys::wait(0.5f);
 			msg::top_box();
 			msg::say(sys::locale("UseBed", 4));
 			sys::wait();
@@ -107,7 +107,7 @@ void death(arch_t type) /* Naomi Dies */ {
 
 	sys::lock();
 	pxt::exit();
-	sys::wait(1.5);
+	sys::wait(1.5f);
 
 	pxt::load("game_over", 0.0f, 0.0f);
 	sys::freeze();
@@ -119,22 +119,22 @@ void death(arch_t type) /* Naomi Dies */ {
 		msg::clear();
 		msg::say(sys::locale("Death", 6));
 		sys::wait();
-		std::array<std::string> question = { 
-			sys::locale("Main", 1), 
-			sys::locale("Main", 2) 
+		std::array<std::string> question = {
+			sys::locale("Main", 1),
+			sys::locale("Main", 2)
 		};
 		msg::ask(question);
 		if (msg::get_answer() == 0) {
 			msg::close();
 			msg::fade_out();
-			sys::wait(0.5);
+			sys::wait(0.5f);
 			pxt::exit();
 			sys::load_progress();
 		} else {
 			msg::close();
 			msg::fade_out();
 			pxt::fade(2.0f);
-			sys::wait(2.0);
+			sys::wait(2.0f);
 			pxt::exit();
 			sys::boot();
 		}
@@ -142,7 +142,7 @@ void death(arch_t type) /* Naomi Dies */ {
 		msg::close();
 		msg::fade_out();
 		pxt::fade(2.0f);
-		sys::wait(2.0);
+		sys::wait(2.0f);
 		pxt::exit();
 		sys::boot();
 	}

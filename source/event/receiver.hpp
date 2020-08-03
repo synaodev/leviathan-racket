@@ -74,6 +74,7 @@ public:
 private:
 	static void print_message(const std::string& message);
 	static void error_callback(const asSMessageInfo* msg, optr_t aux);
+	static void calls_callback(asIScriptContext* ctx, uint_t* calls);
 	asIScriptFunction* find_from_symbol(const std::string& module_name, const std::string& symbol) const;
 	asIScriptFunction* find_from_declaration(const std::string& module_name, const std::string& declaration) const;
 	void execute_function(asIScriptFunction* function);
@@ -82,12 +83,13 @@ private:
 	void discard_all_events();
 	void link_imported_functions(asIScriptModule* module);
 	void set_stalled_period();
-	void set_waiting_period(real64_t seconds);
+	void set_waiting_period(real_t seconds);
 	void generate_properties();
 	void generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
 private:
 	std::bitset<rec_bits_t::Total> bitmask;
-	real64_t timer;
+	real_t timer;
+	uint_t calls;
 	asIScriptEngine* engine;
 	asIScriptContext* state;
 	asIScriptModule* current;

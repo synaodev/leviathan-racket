@@ -53,10 +53,10 @@ void routine_t::handle(audio_t& audio, camera_t& camera, naomi_state_t& naomi_st
 	auto view = kontext.slice<routine_t>();
 	if (!view.empty()) {
 		routine_tuple_t rtp(
-			audio, 
-			camera, 
-			naomi_state, 
-			kontext, 
+			audio,
+			camera,
+			naomi_state,
+			kontext,
 			tilemap
 		);
 		view.each([&rtp](entt::entity actor, routine_t& routine) {
