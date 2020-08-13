@@ -17,7 +17,7 @@
 static const byte_t kStatProgPath[] = "_prog.cfg";
 static const byte_t kStatCpntPath[] = "_check.cfg";
 
-runtime_t::runtime_t() : 
+runtime_t::runtime_t() :
 	accum(0.0),
 	kernel(),
 	receiver(),
@@ -31,7 +31,7 @@ runtime_t::runtime_t() :
 	kontext(),
 	tilemap()
 {
-	
+
 }
 
 bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {
@@ -222,7 +222,7 @@ void runtime_t::setup_load(renderer_t& renderer) {
 				static_cast<direction_t>(direction),
 				static_cast<sint_t>(current),
 				static_cast<sint_t>(maximum),
-				static_cast<sint_t>(leviathan), 
+				static_cast<sint_t>(leviathan),
 				static_cast<arch_t>(std::stoi(equips, nullptr, 0))
 			);
 			kernel.read_data(file);

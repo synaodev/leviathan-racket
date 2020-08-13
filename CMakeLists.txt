@@ -11,8 +11,15 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable (leviathan)
 
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_64")
+elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_32")
+else ()
+	message (FATAL_ERROR "Error! Weird pointer size!")
+endif ()
+
 if (WIN32)
-	
 	target_compile_definitions (leviathan PRIVATE
 		"-DNOMINMAX"
 		"-DUNICODE"
@@ -48,18 +55,18 @@ if (WIN32)
 			"/wd4245" # conversion from 'type1' to 'type2', signed/unsigned mismatch
 			"/wd4458" # declaration of 'identifier' hides class member
 			"/wd4706" # assignment within conditional expression
-			"/wd26812"# Prefer 'enum class' over 'enum' 
+			"/wd26812"# Prefer 'enum class' over 'enum'
 			"/w44263" # Non-virtual member function hides base class virtual function
 			"/w44265" # Class has virtual functions, but destructor is not virtual
 		)
 		if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-			set_target_properties (leviathan PROPERTIES 
+			set_target_properties (leviathan PROPERTIES
 				LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL"
 				COMPILE_PDB_NAME "leviathan"
 				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
 			)
 		elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-			set_target_properties(leviathan PROPERTIES 
+			set_target_properties(leviathan PROPERTIES
 				LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
 				COMPILE_PDB_NAME "leviathan"
 				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
@@ -70,7 +77,7 @@ if (WIN32)
 	endif ()
 elseif (UNIX)
 	find_package (Threads REQUIRED)
-	target_link_libraries (leviathan PRIVATE 
+	target_link_libraries (leviathan PRIVATE
 		Threads::Threads
 		${CMAKE_DL_LIBS}
 	)
@@ -137,8 +144,8 @@ target_link_libraries (leviathan PRIVATE
 	glm
 )
 
-target_include_directories (leviathan PRIVATE 
-	${STB_INCLUDE_DIR} 
+target_include_directories (leviathan PRIVATE
+	${STB_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}

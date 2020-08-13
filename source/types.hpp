@@ -43,26 +43,27 @@ using real_t = float;
 using void_t = void;
 using optr_t = void*;
 
-#if defined(_WIN32) && !defined(_WIN64)
-#define SYNAO_MACHINE_x86
-using arch_t = uint32_t;
-#else // _WIN32 _WIN64
-#define SYNAO_MACHINE_x64
-using arch_t = uint64_t;
-#endif // _WIN32 _WIN64
+#if defined(TARGET_VOIDP_EQUALS_64)
+	#define SYNAO_MACHINE_x64
+	using arch_t = uint64_t;
+#elif defined(TARGET_VOIDP_EQUALS_32)
+	#define SYNAO_MACHINE_x86
+	using arch_t = uint32_t;
+#else
+	#error "Error! Architecture is undefined!"
+#endif // TARGET_VOIDP_EQUALS*
 
-#if !defined(NDEBUG) || defined(_DEBUG)
-#define SYNAO_DEBUG_BUILD
-#endif // NDEBUG _DEBUG
+#if !defined(NDEBUG) || defined(_DEBUG) || defined(DEBUG)
+	#define SYNAO_DEBUG_BUILD
+#endif // NDEBUG _DEBUG DEBUG
 
 #ifndef __GNUC__
-#ifndef and
-#define and &&
-#endif // and
-
-#ifndef or
-#define or ||
-#endif // or
+	#ifndef and
+		#define and &&
+	#endif // and
+	#ifndef or
+		#define or ||
+	#endif // or
 #endif // __GNUC__
 
 namespace rng {

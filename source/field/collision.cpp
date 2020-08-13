@@ -6,7 +6,7 @@
 static constexpr sint_t kSintTileSize = 16;
 static constexpr real_t kRealTileSize = 16.0f;
 
-collision::info_t::info_t(glm::ivec2 index, sint_t attribute) : 
+collision::info_t::info_t(glm::ivec2 index, sint_t attribute) :
 	index(index),
 	attribute(attribute),
 	coordinate(0.0f)
@@ -78,7 +78,7 @@ static real_t use_slope_height(const collision::info_t& info) {
 
 struct collision_result_t {
 public:
-	collision_result_t() : 
+	collision_result_t() :
 		valid(false),
 		coordinate(0.0f) {}
 	collision_result_t(real_t coordinate) :
@@ -195,8 +195,8 @@ std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<ph
 std::optional<glm::vec2> collision::find_intersection(glm::vec2 ray_pos, glm::vec2 ray_dir, glm::vec2 seg_a, glm::vec2 seg_b) {
 	real_t s_dx = seg_b.x - seg_a.x;
 	real_t s_dy = seg_b.y - seg_a.y;
-	real_t r_mag = std::sqrt(ray_dir.x * ray_dir.x + ray_dir.y * ray_dir.y);
-	real_t s_mag = std::sqrt(s_dx * s_dx + s_dy * s_dy);
+	real_t r_mag = glm::sqrt(ray_dir.x * ray_dir.x + ray_dir.y * ray_dir.y);
+	real_t s_mag = glm::sqrt(s_dx * s_dx + s_dy * s_dy);
 	if ((ray_dir.x / r_mag == s_dx / s_mag) and (ray_dir.y / r_mag == s_dy / s_mag)) {
 		return std::nullopt;
 	}
@@ -288,7 +288,7 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 	return origin + len * direction;
 }
 
-glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle) { 
+glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle) {
 	glm::vec2 direction = glm::vec2(glm::cos(angle), glm::sin(angle));
 	return trace_ray(
 		tilemap,

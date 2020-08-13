@@ -13,6 +13,7 @@ target_sources (leviathan PRIVATE
 	"glcheck.cpp" "glcheck.hpp"
 	"image.cpp" "image.hpp"
 	"indexed_quads.cpp" "indexed_quads.hpp"
+	"khrplatform.hpp"
 	"light.cpp" "light.hpp"
 	"palette.cpp" "palette.hpp"
 	"program.cpp" "program.hpp"
