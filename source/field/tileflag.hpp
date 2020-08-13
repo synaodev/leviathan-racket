@@ -1,9 +1,9 @@
-#ifndef SYNAO_FIELD_TILE_FLAG_HPP
-#define SYNAO_FIELD_TILE_FLAG_HPP
+#ifndef SYNAO_FIELD_TILEFLAG_HPP
+#define SYNAO_FIELD_TILEFLAG_HPP
 
 #include "../types.hpp"
 
-namespace __enum_tile_flag {
+namespace __enum_tileflag {
 	enum type : sint_t {
 		Empty		= (0 << 0),  // 0x0000
 		Block		= (1 << 0),  // 0x0001
@@ -29,6 +29,6 @@ namespace __enum_tile_flag {
 	};
 }
 
-using tile_flag_t = __enum_tile_flag::type;
+using tileflag_t = __enum_tileflag::type;
 
-#endif // SYNAO_FIELD_TILE_FLAG_HPP
+#endif // SYNAO_FIELD_TILEFLAG_HPP

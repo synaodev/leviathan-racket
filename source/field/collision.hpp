@@ -4,7 +4,7 @@
 #include <bitset>
 #include <optional>
 
-#include "./tile_flag.hpp"
+#include "./tileflag.hpp"
 
 #include "../utility/rect.hpp"
 #include "../component/common.hpp"

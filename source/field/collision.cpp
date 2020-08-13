@@ -32,43 +32,43 @@ rect_t collision::info_t::hitbox() const {
 }
 
 /*static bool is_slope_tall(const collision::info_t& info) {
-	return info.attribute & tile_flag_t::Tall;
+	return info.attribute & tileflag_t::Tall;
 }*/
 
 static bool is_slope_opposing_side(const collision::info_t& info, side_t side) {
-	if (info.attribute & tile_flag_t::Floor) {
+	if (info.attribute & tileflag_t::Floor) {
 		return side == side_t::Top;
-	} else if (info.attribute & tile_flag_t::Ceiling) {
+	} else if (info.attribute & tileflag_t::Ceiling) {
 		return side == side_t::Bottom;
 	}
 	return false;
 }
 
 static real_t use_slope_multiplier(const collision::info_t& info) {
-	if (info.attribute & tile_flag_t::Positive) {
+	if (info.attribute & tileflag_t::Positive) {
 		return 0.5f;
 	}
 	return -0.5f;
 }
 
 static real_t use_slope_height(const collision::info_t& info) {
-	if (info.attribute & tile_flag_t::Ceiling) {
-		if (info.attribute & tile_flag_t::Negative) {
-			if (info.attribute & tile_flag_t::Tall) {
+	if (info.attribute & tileflag_t::Ceiling) {
+		if (info.attribute & tileflag_t::Negative) {
+			if (info.attribute & tileflag_t::Tall) {
 				return kRealTileSize;
 			}
-		} else if (info.attribute & tile_flag_t::Positive) {
-			if (info.attribute & tile_flag_t::Short) {
+		} else if (info.attribute & tileflag_t::Positive) {
+			if (info.attribute & tileflag_t::Short) {
 				return 0.0f;
 			}
 		}
-	} else if (info.attribute & tile_flag_t::Floor) {
-		if (info.attribute & tile_flag_t::Negative) {
-			if (info.attribute & tile_flag_t::Short) {
+	} else if (info.attribute & tileflag_t::Floor) {
+		if (info.attribute & tileflag_t::Negative) {
+			if (info.attribute & tileflag_t::Short) {
 				return kRealTileSize;
 			}
-		} else if (info.attribute & tile_flag_t::Positive) {
-			if (info.attribute & tile_flag_t::Tall) {
+		} else if (info.attribute & tileflag_t::Positive) {
+			if (info.attribute & tileflag_t::Tall) {
 				return 0.0f;
 			}
 		}
@@ -96,26 +96,26 @@ public:
 
 static collision_result_t test_collision(const rect_t& delta, const collision::info_t& info, side_t opposite, real_t perpendicular_position, real_t leading_position, bool should_test_slopes) {
 	collision_result_t result = collision_result_t(leading_position);
-	if (info.attribute & tile_flag_t::Block) {
+	if (info.attribute & tileflag_t::Block) {
 		rect_t hitbox = info.hitbox();
 		if (delta.overlaps(hitbox)) {
 			switch (opposite) {
 			case side_t::Right: {
-				if (!(info.attribute & tile_flag_t::FallThrough)) {
+				if (!(info.attribute & tileflag_t::FallThrough)) {
 					result.valid = true;
 					result.coordinate = hitbox.right();
 				}
 				break;
 			}
 			case side_t::Left: {
-				if (!(info.attribute & tile_flag_t::FallThrough)) {
+				if (!(info.attribute & tileflag_t::FallThrough)) {
 					result.valid = true;
 					result.coordinate = hitbox.x;
 				}
 				break;
 			}
 			case side_t::Top: {
-				if (info.attribute & tile_flag_t::FallThrough) {
+				if (info.attribute & tileflag_t::FallThrough) {
 					if (delta.bottom() - (kRealTileSize / 2.0f) < hitbox.y) {
 						result.valid = true;
 						result.coordinate = hitbox.y;
@@ -133,7 +133,7 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 			}
 			}
 		}
-	} else if (should_test_slopes and (info.attribute & tile_flag_t::Slope) and is_slope_opposing_side(info, opposite)) {
+	} else if (should_test_slopes and (info.attribute & tileflag_t::Slope) and is_slope_opposing_side(info, opposite)) {
 		rect_t hitbox = info.hitbox();
 		real_t multiplier = use_slope_multiplier(info);
 		real_t height = use_slope_height(info);
@@ -165,7 +165,7 @@ std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<ph
 			sint_t x = horizontal ? primary : secondary;
 			sint_t a = tilemap.get_attribute(x, y);
 			collision::info_t info = collision::info_t(glm::ivec2(x, y), a);
-			if (info.attribute & tile_flag_t::OutBounds) {
+			if (info.attribute & tileflag_t::OutBounds) {
 				return info;
 			}
 			side_t opposing = side_fn::opposing(side);
@@ -182,7 +182,7 @@ std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<ph
 				info.coordinate = result.coordinate;
 				return info;
 			} else if ((side == side_t::Bottom and flags[phy_t::Bottom]) or (side == side_t::Top and flags[phy_t::Top])) {
-				if ((flags[phy_t::Sloped] and info.attribute & tile_flag_t::Slope) or (!flags[phy_t::Sloped] and info.attribute & tile_flag_t::Tall)) {
+				if ((flags[phy_t::Sloped] and info.attribute & tileflag_t::Slope) or (!flags[phy_t::Sloped] and info.attribute & tileflag_t::Tall)) {
 					info.coordinate = result.coordinate;
 					return info;
 				}
@@ -235,16 +235,16 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 		sint_t xpos = tilemap_t::round(index.x);
 		sint_t ypos = tilemap_t::round(index.y);
 		sint_t attr = tilemap.get_attribute(xpos, ypos);
-		if (attr != tile_flag_t::Empty and !(attr & (tile_flag_t::FallThrough | tile_flag_t::OutBounds))) {
-			if (attr & tile_flag_t::Block) {
-				if (attr & tile_flag_t::Hooked) {
+		if (attr != tileflag_t::Empty and !(attr & (tileflag_t::FallThrough | tileflag_t::OutBounds))) {
+			if (attr & tileflag_t::Block) {
+				if (attr & tileflag_t::Hooked) {
 					return glm::vec2(
 						tilemap_t::extend(xpos) + (kRealTileSize / 2.0f),
 						tilemap_t::extend(ypos) + (kRealTileSize / 2.0f)
 					);
 				}
 				return origin + len * direction;
-			} else if (attr & tile_flag_t::Slope) {
+			} else if (attr & tileflag_t::Slope) {
 				std::optional<glm::vec2> intersect;
 				real_t left = tilemap_t::extend(xpos);
 				real_t top = tilemap_t::extend(ypos);
@@ -252,28 +252,28 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 				real_t bottom = tilemap_t::extend(ypos + 1);
 				real_t center = top + (kRealTileSize / 2.0f);
 				switch (attr) {
-				case tile_flag_t::Slope_1:
+				case tileflag_t::Slope_1:
 					intersect = find_intersection(origin, direction, glm::vec2(left, top), glm::vec2(right, center));
 					break;
-				case tile_flag_t::Slope_2:
+				case tileflag_t::Slope_2:
 					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, bottom));
 					break;
-				case tile_flag_t::Slope_3:
+				case tileflag_t::Slope_3:
 					intersect = find_intersection(origin, direction, glm::vec2(left, bottom), glm::vec2(right, center));
 					break;
-				case tile_flag_t::Slope_4:
+				case tileflag_t::Slope_4:
 					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, top));
 					break;
-				case tile_flag_t::Slope_5:
+				case tileflag_t::Slope_5:
 					intersect = find_intersection(origin, direction, glm::vec2(left, bottom), glm::vec2(right, center));
 					break;
-				case tile_flag_t::Slope_6:
+				case tileflag_t::Slope_6:
 					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, top));
 					break;
-				case tile_flag_t::Slope_7:
+				case tileflag_t::Slope_7:
 					intersect = find_intersection(origin, direction, glm::vec2(left, top), glm::vec2(right, center));
 					break;
-				case tile_flag_t::Slope_8:
+				case tileflag_t::Slope_8:
 					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, bottom));
 					break;
 				default:

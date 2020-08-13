@@ -40,25 +40,25 @@ void kinematics_t::accel_angle(real_t angle, real_t speed) {
 }
 
 void kinematics_t::accel_x(real_t amount, real_t limit) {
-	velocity.x = amount > 0.0f ? 
+	velocity.x = amount > 0.0f ?
 		glm::min(velocity.x + amount, limit) :
 		glm::max(velocity.x + amount, -limit);
 }
 
 void kinematics_t::accel_y(real_t amount, real_t limit) {
-	velocity.y = amount > 0.0f ? 
+	velocity.y = amount > 0.0f ?
 		glm::min(velocity.y + amount, limit) :
 		glm::max(velocity.y + amount, -limit);
 }
 
 void kinematics_t::decel_x(real_t amount) {
-	velocity.x = velocity.x > 0.0f ? 
+	velocity.x = velocity.x > 0.0f ?
 		glm::max(0.0f, velocity.x - amount) :
 		glm::min(0.0f, velocity.x + amount);
 }
 
 void kinematics_t::decel_y(real_t amount) {
-	velocity.y = velocity.y > 0.0f ? 
+	velocity.y = velocity.y > 0.0f ?
 		glm::max(0.0f, velocity.y - amount) :
 		glm::min(0.0f, velocity.y + amount);
 }
@@ -140,7 +140,7 @@ void kinematics_t::do_angle(location_t& location, kinematics_t& kinematics, glm:
 	kinematics.flags[phy_t::Constrained] = distance > kinematics.tether;
 	if (kinematics.flags[phy_t::Constrained]) {
 		real_t angle = glm::atan(
-			kinematics.anchor.y - test_point.y, 
+			kinematics.anchor.y - test_point.y,
 			kinematics.anchor.x - test_point.x
 		);
 		glm::vec2 normal = glm::vec2(glm::cos(angle), glm::sin(angle));
@@ -171,7 +171,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 			kinematics.velocity.x = 0.0f;
 			kinematics.flags[phy_t::Right] = side == side_t::Right;
 			kinematics.flags[phy_t::Left] = side == side_t::Left;
-			kinematics.flags[phy_t::Hooked] = info->attribute & tile_flag_t::Hooked;
+			kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
 		} else {
 			location.position.x += inertia;
 			kinematics.flags[phy_t::Right] = false;
@@ -194,8 +194,8 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 			side
 		);
 		if (info.has_value()) {
-			if (!(info->attribute & tile_flag_t::OutBounds)) {
-				if (info->attribute & tile_flag_t::FallThrough and (side != side_t::Bottom or kinematics.flags[phy_t::WillDrop])) {
+			if (!(info->attribute & tileflag_t::OutBounds)) {
+				if (info->attribute & tileflag_t::FallThrough and (side != side_t::Bottom or kinematics.flags[phy_t::WillDrop])) {
 					location.position.y += inertia;
 					kinematics.flags[phy_t::Top] = false;
 					kinematics.flags[phy_t::Bottom] = false;
@@ -203,8 +203,8 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 				} else {
 					location.position.y = info->coordinate - location.bounding.side(side);
 					kinematics.velocity.y = 0.0f;
-					kinematics.flags[phy_t::Hooked] = info->attribute & tile_flag_t::Hooked;
-					kinematics.flags[phy_t::Sloped] = info->attribute & tile_flag_t::Slope;
+					kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
+					kinematics.flags[phy_t::Sloped] = info->attribute & tileflag_t::Slope;
 					if (side == side_t::Top) {
 						kinematics.flags[phy_t::Top] = true;
 						kinematics.flags[phy_t::Bottom] = false;
@@ -212,7 +212,7 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 					} else {
 						kinematics.flags[phy_t::Top] = false;
 						kinematics.flags[phy_t::Bottom] = true;
-						kinematics.flags[phy_t::FallThrough] = info->attribute & tile_flag_t::FallThrough;
+						kinematics.flags[phy_t::FallThrough] = info->attribute & tileflag_t::FallThrough;
 					}
 				}
 			} else {

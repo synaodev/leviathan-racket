@@ -1,5 +1,5 @@
 #include "./tilemap.hpp"
-#include "./tile_flag.hpp"
+#include "./tileflag.hpp"
 #include "./camera.hpp"
 
 #include <tmxlite/Map.hpp>
@@ -67,16 +67,16 @@ void tilemap_t::handle(const camera_t& camera) {
 void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
 	for (auto&& background : backgrounds) {
 		background.render(
-			renderer, 
-			viewport, 
+			renderer,
+			viewport,
 			parallax_texture
 		);
 	}
 	for (auto&& tilemap_layer : tilemap_layers) {
 		tilemap_layer.render(
-			renderer, 
-			amend, 
-			tilemap_layer_texture, 
+			renderer,
+			amend,
+			tilemap_layer_texture,
 			tilemap_layer_palette
 		);
 	}
@@ -114,7 +114,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	if (!attribute_key.empty()) {
-		glm::vec2 inverse = tilemap_layer_texture != nullptr ? 
+		glm::vec2 inverse = tilemap_layer_texture != nullptr ?
 			tilemap_layer_texture->get_inverse_dimensions() :
 			glm::zero<glm::vec2>();
 		auto& recent = tilemap_layers.emplace_back(dimensions);
@@ -146,9 +146,9 @@ sint_t tilemap_t::get_attribute(sint_t x, sint_t y) const {
 			static_cast<arch_t>(dimensions.x)
 		];
 	} else if (y > (dimensions.y + 1)) {
-		return tile_flag_t::OutBounds;
+		return tileflag_t::OutBounds;
 	}
-	return tile_flag_t::Empty;
+	return tileflag_t::Empty;
 }
 
 sint_t tilemap_t::get_attribute(glm::ivec2 index) const {
