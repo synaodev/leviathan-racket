@@ -25,7 +25,7 @@ bool indexed_quads_t::allocate_indexer(arch_t length, primitive_t primitive) {
 				GL_ELEMENT_ARRAY_BUFFER,
 				sizeof(decltype(indices)::value_type) * indices.size(),
 				indices.data(),
-				buffer_usage_t::Static
+				GL_STATIC_DRAW
 			));
 		}
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
@@ -108,8 +108,11 @@ void indexed_quads_t::setup(buffer_usage_t usage, vertex_spec_t specify) {
 void indexed_quads_t::create(arch_t length) {
 	if (indexed_quads_t::elemts != 0 and arrays != 0) {
 		this->length = length;
+
+		uint_t gl_enum = gfx_t::get_buffer_usage_gl_enum(usage);
+
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-		glCheck(glBufferData(GL_ARRAY_BUFFER, specify.length * length, nullptr, usage));
+		glCheck(glBufferData(GL_ARRAY_BUFFER, specify.length * length, nullptr, gl_enum));
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	}
 }
@@ -156,7 +159,12 @@ void indexed_quads_t::draw(arch_t count) const {
 	if (indexed_quads_t::elemts != 0 and arrays != 0) {
 		count = indexed_quads_t::convert(count);
 		glCheck(glBindVertexArray(arrays));
-		glCheck(glDrawElements(indexed_quads_t::primitive, static_cast<uint_t>(count), GL_UNSIGNED_SHORT, nullptr));
+		glCheck(glDrawElements(
+			indexed_quads_t::primitive,
+			static_cast<uint_t>(count),
+			GL_UNSIGNED_SHORT,
+			nullptr
+		));
 		glCheck(glBindVertexArray(0));
 	}
 }
@@ -179,7 +187,7 @@ arch_t indexed_quads_t::convert(arch_t length) {
 
 std::vector<uint16_t> indexed_quads_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
 	std::vector<uint16_t> result(indexed_quads_t::convert(length));
-	arch_t it = 0; 
+	arch_t it = 0;
 	uint16_t ut = static_cast<uint16_t>(offset);
 	while (it < result.size()) {
 		auto ptr = &result[it];

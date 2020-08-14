@@ -7,7 +7,7 @@
 #include "./const_buffer.hpp"
 
 gfx_t::gfx_t() :
-	depth_func(gfx_cmp_func_t::Disable),
+	depth_func(compare_func_t::Disable),
 	blend_mode(blend_mode_t::Disable),
 	program(nullptr),
 	samplers{},
@@ -17,16 +17,17 @@ gfx_t::gfx_t() :
 	const_buffers.fill(nullptr);
 }
 
-void gfx_t::set_depth_func(gfx_cmp_func_t depth_func) {
+void gfx_t::set_depth_func(compare_func_t depth_func) {
 	if (this->depth_func != depth_func) {
-		if (depth_func == gfx_cmp_func_t::Disable) {
+		if (depth_func == compare_func_t::Disable) {
 			glCheck(glDisable(GL_DEPTH_TEST));
-		} else if (this->depth_func == gfx_cmp_func_t::Disable) {
+		} else if (this->depth_func == compare_func_t::Disable) {
 			glCheck(glEnable(GL_DEPTH_TEST));
 		}
 		this->depth_func = depth_func;
-		if (this->depth_func != gfx_cmp_func_t::Disable) {
-			glCheck(glDepthFunc(depth_func));
+		if (this->depth_func != compare_func_t::Disable) {
+			uint_t gl_enum = get_compare_func_gl_enum(depth_func);
+			glCheck(glDepthFunc(gl_enum));
 		}
 	}
 }
@@ -144,4 +145,40 @@ void gfx_t::set_const_buffer(const const_buffer_t* buffer, arch_t index) {
 			}
 		}
 	}
+}
+
+uint_t gfx_t::get_compare_func_gl_enum(compare_func_t func) {
+	switch (func) {
+	case compare_func_t::Disable:
+		break;
+	case compare_func_t::Never:
+		return GL_NEVER;
+	case compare_func_t::Less:
+		return GL_LESS;
+	case compare_func_t::Equal:
+		return GL_EQUAL;
+	case compare_func_t::Lequal:
+		return GL_LEQUAL;
+	case compare_func_t::Greater:
+		return GL_GREATER;
+	case compare_func_t::Nequal:
+		return GL_NOTEQUAL;
+	case compare_func_t::Gequal:
+		return GL_GEQUAL;
+	case compare_func_t::Always:
+		return GL_ALWAYS;
+	}
+	return GL_NONE;
+}
+
+uint_t gfx_t::get_buffer_usage_gl_enum(buffer_usage_t usage) {
+	switch (usage) {
+	case buffer_usage_t::Static:
+		return GL_STATIC_DRAW;
+	case buffer_usage_t::Dynamic:
+		return GL_DYNAMIC_DRAW;
+	case buffer_usage_t::Stream:
+		return GL_STREAM_DRAW;
+	}
+	return GL_NONE;
 }

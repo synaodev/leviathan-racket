@@ -13,7 +13,7 @@ vertex_buffer_t::vertex_buffer_t() :
 	vtx_count(0),
 	idx_count(0)
 {
-	
+
 }
 
 vertex_buffer_t::vertex_buffer_t(vertex_buffer_t&& that) noexcept : vertex_buffer_t() {
@@ -79,10 +79,13 @@ void vertex_buffer_t::create(arch_t vtx_count, arch_t idx_count) {
 	if (arrays != 0) {
 		this->vtx_count = vtx_count;
 		this->idx_count = idx_count;
+
+		uint_t gl_enum = gfx_t::get_buffer_usage_gl_enum(usage);
+
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, buffer));
-		glCheck(glBufferData(GL_ARRAY_BUFFER, specify.length * vtx_count, nullptr, usage));
+		glCheck(glBufferData(GL_ARRAY_BUFFER, specify.length * vtx_count, nullptr, gl_enum));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elemts));
-		glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint16_t) * idx_count, nullptr, usage));
+		glCheck(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint16_t) * idx_count, nullptr, gl_enum));
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, 0));
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	}

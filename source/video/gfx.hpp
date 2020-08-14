@@ -18,27 +18,27 @@ namespace __enum_blend_mode {
 
 using blend_mode_t = __enum_blend_mode::type;
 
-namespace __enum_gfx_cmp_func {
-	enum type : uint_t {
-		Disable	= 0x0000,
-		Never	= 0x0200,
-		Less	= 0x0201,
-		Equal	= 0x0202,
-		Lequal	= 0x0203,
-		Greater	= 0x0204,
-		Nequal	= 0x0205,
-		Gequal	= 0x0206,
-		Always	= 0x0207
+namespace __enum_compare_func {
+	enum type : arch_t {
+		Disable,
+		Never,
+		Less,
+		Equal,
+		Lequal,
+		Greater,
+		Nequal,
+		Gequal,
+		Always
 	};
 }
 
-using gfx_cmp_func_t = __enum_gfx_cmp_func::type;
+using compare_func_t = __enum_compare_func::type;
 
 namespace __enum_buffer_usage {
-	enum type : uint_t {
-		Stream  = 0x88E0,
-		Static  = 0x88E4,
-		Dynamic = 0x88E8
+	enum type : arch_t {
+		Static,
+		Dynamic,
+		Stream
 	};
 }
 
@@ -52,14 +52,7 @@ namespace __enum_primitive {
 		LineStrip,
 		Triangles,
 		TriangleStrip,
-		TriangleFan,
-		Quads,
-		QuadStrip,
-		Polygon,
-		LinesAdjacency,
-		LineStripAdjacency,
-		TrianglesAdjacency,
-		TriangleStripAdjacency
+		TriangleFan
 	};
 }
 
@@ -76,11 +69,11 @@ struct frame_buffer_t;
 struct gfx_t : public not_copyable_t {
 public:
 	gfx_t();
-	gfx_t(gfx_t&&) = default;
-	gfx_t& operator=(gfx_t&&) = default;
+	gfx_t(gfx_t&&) noexcept = default;
+	gfx_t& operator=(gfx_t&&) noexcept = default;
 	~gfx_t() = default;
 public:
-	void set_depth_func(gfx_cmp_func_t depth_func);
+	void set_depth_func(compare_func_t depth_func);
 	void set_blend_mode(blend_mode_t blend_mode);
 	void set_program(const program_t* program);
 	void set_sampler(const texture_t* texture, arch_t index);
@@ -88,8 +81,11 @@ public:
 	void set_sampler(const depth_buffer_t* depth_buffer, arch_t index);
 	void set_sampler(std::nullptr_t, arch_t index);
 	void set_const_buffer(const const_buffer_t* buffer, arch_t index);
+public:
+	static uint_t get_compare_func_gl_enum(compare_func_t func);
+	static uint_t get_buffer_usage_gl_enum(buffer_usage_t usage);
 private:
-	gfx_cmp_func_t depth_func;
+	compare_func_t depth_func;
 	blend_mode_t blend_mode;
 	const program_t* program;
 	std::array<const sampler_t*, 4> samplers;

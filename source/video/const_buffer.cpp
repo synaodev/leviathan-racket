@@ -45,8 +45,10 @@ void const_buffer_t::setup(buffer_usage_t usage) {
 
 void const_buffer_t::create(arch_t length) {
 	if (handle != 0 and !immuts) {
+		uint_t gl_enum = gfx_t::get_buffer_usage_gl_enum(usage);
+
 		glCheck(glBindBuffer(GL_UNIFORM_BUFFER, handle));
-		glCheck(glBufferData(GL_UNIFORM_BUFFER, length, nullptr, usage));
+		glCheck(glBufferData(GL_UNIFORM_BUFFER, length, nullptr, gl_enum));
 		glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 		this->length = length;
 	}
