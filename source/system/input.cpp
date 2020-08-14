@@ -108,7 +108,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN: {
-			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ? 
+			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ?
 				btn_t::ClickL :
 				btn_t::ClickR;
 			pressed[btn] = !holding[btn];
@@ -116,7 +116,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_MOUSEBUTTONUP: {
-			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ? 
+			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ?
 				btn_t::ClickL :
 				btn_t::ClickR;
 			holding[btn] = false;
@@ -218,7 +218,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 				joystick = SDL_JoystickOpen(0);
 				if (joystick == nullptr) {
 					SYNAO_LOG(
-						"Couldn't open joystick! SDL Error: %s\n", 
+						"Couldn't open joystick! SDL Error: %s\n",
 						SDL_GetError()
 					);
 				}
@@ -241,7 +241,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 	}
 	glm::ivec2 integral_position = glm::zero<glm::ivec2>();
 	SDL_GetMouseState(
-		&integral_position.x, 
+		&integral_position.x,
 		&integral_position.y
 	);
 	position = glm::vec2(integral_position);
@@ -257,14 +257,6 @@ void input_t::flush() {
 #ifdef SYNAO_DEBUG_BUILD
 	debug_pressed.clear();
 #endif // SYNAO_DEBUG_BUILD
-}
-
-bool input_t::get_button_pressed(btn_t btn) const {
-	return pressed[btn];
-}
-
-bool input_t::get_button_held(btn_t btn) const {
-	return holding[btn];
 }
 
 glm::vec2 input_t::get_position() const {

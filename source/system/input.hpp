@@ -25,19 +25,19 @@ using policy_t = __enum_policy::type;
 
 namespace __enum_btn {
 	enum type : arch_t {
-		Jump, 
+		Jump,
 		Yes = Jump,
-		Hammer, 
+		Hammer,
 		No = Hammer,
-		Item, 
+		Item,
 		Dash,
-		Context, 
+		Context,
 		Strafe,
-		Inventory, 
+		Inventory,
 		Options,
-		Up, 
-		Down, 
-		Left, 
+		Up,
+		Down,
+		Left,
 		Right,
 		ClickL,
 		ClickR,
@@ -58,8 +58,6 @@ public:
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
 	void flush();
-	bool get_button_pressed(btn_t btn) const;
-	bool get_button_held(btn_t btn) const;
 	glm::vec2 get_position() const;
 	bool has_joystick_connection() const;
 	bool has_valid_recording() const;

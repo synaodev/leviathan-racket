@@ -661,10 +661,10 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("real32_t get_rand(real32_t lowest, real32_t highest)", WRAP_FN_PR(rng::next, (real_t, real_t), real_t), call_cdecl);
 	assert(r >= 0);
 	// Get Input Press
-	r = engine->RegisterGlobalFunction("bool get_key_press(arch_t action)", WRAP_MFN(input_t, get_button_pressed), call_gthis, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_press(arch_t action)", WRAP_MFN(std::bitset<btn_t::Total>, test), call_gthis, &input.pressed);
 	assert(r >= 0);
 	// Get Input Held
-	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", WRAP_MFN(input_t, get_button_held), call_gthis, &input);
+	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", WRAP_MFN(std::bitset<btn_t::Total>, test), call_gthis, &input.holding);
 	assert(r >= 0);
 	// Get Locale String
 	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t), std::string), call_cdecl);
