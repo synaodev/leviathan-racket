@@ -30,7 +30,7 @@ renderer_t::~renderer_t() {
 	if (!result) {
 		SYNAO_LOG("Couldn't release indexed_quads_t indexer!\n");
 	}
-} 
+}
 
 bool renderer_t::init(glm::ivec2 version) {
 	if (!indexed_quads_t::allocate_indexer(kMaxIndices, primitive_t::Triangles)) {
@@ -44,14 +44,14 @@ bool renderer_t::init(glm::ivec2 version) {
 	projection_buffer.setup(buffer_usage_t::Static);
 	if (const_buffer_t::has_immutable_option()) {
 		projection_buffer.create_immutable(
-			sizeof(glm::mat4) + 
-			sizeof(glm::vec2) + 
+			sizeof(glm::mat4) +
+			sizeof(glm::vec2) +
 			sizeof(glm::vec2)
 		);
 	} else {
 		projection_buffer.create(
-			sizeof(glm::mat4) + 
-			sizeof(glm::vec2) + 
+			sizeof(glm::mat4) +
+			sizeof(glm::vec2) +
 			sizeof(glm::vec2)
 		);
 	}
@@ -67,28 +67,28 @@ bool renderer_t::init(glm::ivec2 version) {
 	viewport_buffer.setup(buffer_usage_t::Dynamic);
 	if (const_buffer_t::has_immutable_option()) {
 		viewport_buffer.create_immutable(
-			sizeof(glm::mat4) + 
-			sizeof(glm::vec2) + 
+			sizeof(glm::mat4) +
+			sizeof(glm::vec2) +
 			sizeof(glm::vec2)
 		);
 	} else {
 		viewport_buffer.create(
-			sizeof(glm::mat4) + 
-			sizeof(glm::vec2) + 
+			sizeof(glm::mat4) +
+			sizeof(glm::vec2) +
 			sizeof(glm::vec2)
 		);
 	}
 	viewport_buffer.update(
 		&gk_viewport_matrix,
-		sizeof(glm::mat4) + 
-		sizeof(glm::vec2) + 
+		sizeof(glm::mat4) +
+		sizeof(glm::vec2) +
 		sizeof(glm::vec2)
 	);
-	graphics_state.set_buffer(&viewport_buffer, 0);
+	graphics_state.set_const_buffer(&viewport_buffer, 0);
 
 	const shader_t* blank = vfs::shader(
-		"blank", 
-		pipeline::blank_vert(version), 
+		"blank",
+		pipeline::blank_vert(version),
 		shader_stage_t::Vertex
 	);
 	const shader_t* major = vfs::shader(
@@ -157,12 +157,12 @@ void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
 	}
 	// Draw Normal Quads
 	frame_buffer_t::clear(video.get_integral_dimensions());
-	graphics_state.set_buffer(&viewport_buffer, 0);
+	graphics_state.set_const_buffer(&viewport_buffer, 0);
 	for (auto&& list : normal_quads) {
 		list.flush(graphics_state);
 	}
 	// Draw Overlay Quads
-	graphics_state.set_buffer(&projection_buffer, 0);
+	graphics_state.set_const_buffer(&projection_buffer, 0);
 	for (auto&& list : overlay_quads) {
 		list.flush(graphics_state);
 	}
@@ -171,7 +171,7 @@ void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
 void renderer_t::flush(const glm::ivec2& dimensions) {
 	// Draw Overlay Quads (Only)
 	frame_buffer_t::clear(dimensions);
-	graphics_state.set_buffer(&projection_buffer, 0);
+	graphics_state.set_const_buffer(&projection_buffer, 0);
 	for (auto&& list : overlay_quads) {
 		list.flush(graphics_state);
 	}
@@ -195,8 +195,8 @@ void renderer_t::ortho(glm::ivec2 integral_dimensions) {
 		);
 		viewport_buffer.update(
 			&gk_viewport_matrix,
-			sizeof(glm::mat4) + 
-			sizeof(glm::vec2) + 
+			sizeof(glm::mat4) +
+			sizeof(glm::vec2) +
 			sizeof(glm::vec2)
 		);
 	}
@@ -224,14 +224,14 @@ display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_
 		}
 	}
 	overlay_quads.emplace_back(
-		layer, blend_mode, 
-		texture, palette, 
+		layer, blend_mode,
+		texture, palette,
 		program
 	);
 	std::sort(overlay_quads.begin(), overlay_quads.end());
 	return this->get_overlay_quads(
 		layer, blend_mode,
-		program, texture, 
+		program, texture,
 		palette
 	);
 }
@@ -248,7 +248,7 @@ display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_
 	return this->get_overlay_quads(
 		layer, blend_mode,
 		pipeline,
-		nullptr, nullptr	
+		nullptr, nullptr
 	);
 }
 
@@ -259,14 +259,14 @@ display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_m
 		}
 	}
 	normal_quads.emplace_back(
-		layer, blend_mode, 
-		texture, palette, 
+		layer, blend_mode,
+		texture, palette,
 		program
 	);
 	std::sort(normal_quads.begin(), normal_quads.end());
 	return this->get_normal_quads(
 		layer, blend_mode,
-		program, texture, 
+		program, texture,
 		palette
 	);
 }
@@ -283,6 +283,6 @@ display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_m
 	return this->get_normal_quads(
 		layer, blend_mode,
 		pipeline,
-		nullptr, nullptr	
+		nullptr, nullptr
 	);
 }

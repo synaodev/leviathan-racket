@@ -1,6 +1,8 @@
 #ifndef SYNAO_VIDEO_GFX_HPP
 #define SYNAO_VIDEO_GFX_HPP
 
+#include <array>
+
 #include "../types.hpp"
 
 namespace __enum_blend_mode {
@@ -44,19 +46,19 @@ using buffer_usage_t = __enum_buffer_usage::type;
 
 namespace __enum_primitive {
 	enum type : uint_t {
-		Points, 
-		Lines, 
-		LineLoop, 
+		Points,
+		Lines,
+		LineLoop,
 		LineStrip,
-		Triangles, 
-		TriangleStrip, 
+		Triangles,
+		TriangleStrip,
 		TriangleFan,
-		Quads, 
-		QuadStrip, 
+		Quads,
+		QuadStrip,
 		Polygon,
-		LinesAdjacency, 
+		LinesAdjacency,
 		LineStripAdjacency,
-		TrianglesAdjacency, 
+		TrianglesAdjacency,
 		TriangleStripAdjacency
 	};
 }
@@ -69,12 +71,13 @@ struct palette_t;
 struct depth_buffer_t;
 struct program_t;
 struct const_buffer_t;
+struct frame_buffer_t;
 
 struct gfx_t : public not_copyable_t {
 public:
 	gfx_t();
 	gfx_t(gfx_t&&) = default;
-	gfx_t& operator=(gfx_t&&) = default; 
+	gfx_t& operator=(gfx_t&&) = default;
 	~gfx_t() = default;
 public:
 	void set_depth_func(gfx_cmp_func_t depth_func);
@@ -84,15 +87,13 @@ public:
 	void set_sampler(const palette_t* palette, arch_t index);
 	void set_sampler(const depth_buffer_t* depth_buffer, arch_t index);
 	void set_sampler(std::nullptr_t, arch_t index);
-	void set_buffer(const const_buffer_t* buffer, arch_t index);
+	void set_const_buffer(const const_buffer_t* buffer, arch_t index);
 private:
-	static constexpr arch_t kSmpUnits = 4;
-	static constexpr arch_t kBufUnits = 4;
 	gfx_cmp_func_t depth_func;
 	blend_mode_t blend_mode;
 	const program_t* program;
-	const sampler_t* samplers[kSmpUnits];
-	const const_buffer_t* buffers[kBufUnits];
+	std::array<const sampler_t*, 4> samplers;
+	std::array<const const_buffer_t*, 4> const_buffers;
 };
 
 #endif // SYNAO_VIDEO_GFX_HPP

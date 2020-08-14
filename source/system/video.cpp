@@ -6,6 +6,8 @@
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
 
+#include <SDL2/SDL.h>
+
 static constexpr byte_t kWindowName[] = "Leviathan Racket";
 static constexpr sint_t kVideoWidths  = 320;
 static constexpr sint_t kVideoHeight  = 180;
@@ -44,12 +46,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		this->minor = 3;
 	}
 	params.scaling = glm::clamp(
-		params.scaling, 
-		screen_params_t::kDefaultScaling, 
+		params.scaling,
+		screen_params_t::kDefaultScaling,
 		screen_params_t::kHighestScaling
 	);
 	params.framerate = glm::max(
-		params.framerate, 
+		params.framerate,
 		screen_params_t::kDefaultFramerate
 	);
 	if (window != nullptr) {
@@ -217,11 +219,10 @@ void video_t::set_parameters(screen_params_t params) {
 		this->params.full = params.full;
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
 			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
-		} else 
-		{
+		} else {
 			SDL_SetWindowPosition(
-				window, 
-				SDL_WINDOWPOS_CENTERED, 
+				window,
+				SDL_WINDOWPOS_CENTERED,
 				SDL_WINDOWPOS_CENTERED
 			);
 		}
@@ -229,24 +230,24 @@ void video_t::set_parameters(screen_params_t params) {
 	if (this->params.scaling != params.scaling) {
 		this->params.scaling = params.scaling;
 		this->params.scaling = glm::clamp(
-			this->params.scaling, 
-			screen_params_t::kDefaultScaling, 
+			this->params.scaling,
+			screen_params_t::kDefaultScaling,
 			screen_params_t::kHighestScaling
 		);
 		SDL_SetWindowSize(
-			window, 
-			kVideoWidths * params.scaling, 
+			window,
+			kVideoWidths * params.scaling,
 			kVideoHeight * params.scaling
 		);
 		SDL_SetWindowPosition(
-			window, 
-			SDL_WINDOWPOS_CENTERED, 
+			window,
+			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED
 		);
 	}
 	if (this->params.framerate != params.framerate) {
 		this->params.framerate = glm::max(
-			params.framerate, 
+			params.framerate,
 			screen_params_t::kDefaultFramerate
 		);
 	}

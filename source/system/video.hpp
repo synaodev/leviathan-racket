@@ -24,7 +24,7 @@ public:
 		scaling(scaling),
 		framerate(framerate) {}
 	screen_params_t() :
-		vsync(false), 
+		vsync(false),
 		full(false),
 		scaling(kDefaultScaling),
 		framerate(kDefaultFramerate) {}

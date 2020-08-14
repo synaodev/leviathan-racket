@@ -11,10 +11,10 @@ gfx_t::gfx_t() :
 	blend_mode(blend_mode_t::Disable),
 	program(nullptr),
 	samplers{},
-	buffers{}
+	const_buffers{}
 {
-	std::fill(samplers, samplers + kSmpUnits, nullptr);
-	std::fill(buffers, buffers + kBufUnits, nullptr);
+	samplers.fill(nullptr);
+	const_buffers.fill(nullptr);
 }
 
 void gfx_t::set_depth_func(gfx_cmp_func_t depth_func) {
@@ -74,13 +74,13 @@ void gfx_t::set_program(const program_t* program) {
 				glCheck(glBindProgramPipeline(program->handle));
 			} else {
 				glCheck(glUseProgram(program->handle));
-			}		
+			}
 		}
 	}
 }
 
 void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
-	if (index < kSmpUnits) {
+	if (index < samplers.size()) {
 		if (this->samplers[index] != texture) {
 			this->samplers[index] = texture;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
@@ -97,7 +97,7 @@ void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
 }
 
 void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
-	if (index < kSmpUnits) {
+	if (index < samplers.size()) {
 		if (this->samplers[index] != palette) {
 			this->samplers[index] = palette;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
@@ -110,7 +110,7 @@ void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
 }
 
 void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
-	if (index < kSmpUnits) {
+	if (index < samplers.size()) {
 		if (this->samplers[index] != depth_buffer) {
 			this->samplers[index] = depth_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
@@ -122,7 +122,7 @@ void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
 }
 
 void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
-	if (index < kSmpUnits) {
+	if (index < samplers.size()) {
 		if (this->samplers[index] != nullptr) {
 			this->samplers[index] = nullptr;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
@@ -131,10 +131,10 @@ void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
 	}
 }
 
-void gfx_t::set_buffer(const const_buffer_t* buffer, arch_t index) {
-	if (index < kBufUnits) {
-		if (this->buffers[index] != buffer) {
-			this->buffers[index] = buffer;
+void gfx_t::set_const_buffer(const const_buffer_t* buffer, arch_t index) {
+	if (index < const_buffers.size()) {
+		if (this->const_buffers[index] != buffer) {
+			this->const_buffers[index] = buffer;
 			if (buffer != nullptr) {
 				glCheck(glBindBufferBase(
 					GL_UNIFORM_BUFFER,
