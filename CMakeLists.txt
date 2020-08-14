@@ -64,7 +64,7 @@ target_link_libraries (leviathan PRIVATE
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}
 	${TMXLITE_LIBRARY}
-	${PUGIXML_LIBRARIES}
+	${PUGIXML_LIBRARY}
 	EnTT::EnTT
 	glm
 )
@@ -74,7 +74,7 @@ target_include_directories (leviathan PRIVATE
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
-	${PUGIXML_INCLUDE_DIRS}
+	${PUGIXML_INCLUDE_DIR}
 )
 
 add_subdirectory("source")

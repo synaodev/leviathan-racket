@@ -9,6 +9,7 @@ I hope to release in Winter 2020.
 - [EnTT](https://github.com/skypjack/entt)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [Tmxlite](https://github.com/fallahn/tmxlite)
+- [PugiXML](https://github.com/zeux/pugixml)
 - [Nlohmann JSON](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
 ## Included Dependencies
@@ -29,11 +30,11 @@ I hope to release in Winter 2020.
   - You can install several required packages using homebrew (Angelscript, GLM, EnTT, Nlohmann JSON), but openal-soft is always ignored in favor of OpenAL.Framework, which is also true of sdl2 and SDL2.Framework. Additionally, SDL2.Framework can cause linking errors so it's probably best to stick with vcpkg for now.
 - Linux:
   - Debian/Ubuntu:
-    - Run `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev`.
+    - Run `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev libpugixml-dev`.
     - For [Angelscript](https://github.com/codecat/angelscript-mirror), [EnTT](https://github.com/skypjack/entt), and [Tmxlite](https://github.com/fallahn/tmxlite), build and install from source using cmake.
     - For [stb](https://github.com/nothings/stb), clone the repository and run `cp stb*.h /usr/local/include`.
 ## Python Scripts
 The dependencies required to run the python scripts are in 'requirements.txt'.
 - 'fix_fontatlas.py' fixes transparency problems in BFMC's auto-generated font atlases.
-- 'make_config.py' generates a default 'boot.cfg' file in a given directory. 
+- 'make_config.py' generates a default 'boot.cfg' file in a given directory.
 - 'make_palette.py' generates palettes and indexed textures from input textures.
