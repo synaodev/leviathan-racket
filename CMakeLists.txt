@@ -1,145 +1,70 @@
 cmake_minimum_required (VERSION 3.15)
 
+# General settings
+
 project (LEVIATHAN_RACKET)
 
 set (LEVIATHAN_RACKET_VERSION_MAJOR 0)
 set (LEVIATHAN_RACKET_VERSION_MINOR 0)
+
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
+set (CMAKE_C_STANDARD 11)
+set (CMAKE_C_STANDARD_REQUIRED ON)
+set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_executable (leviathan)
-
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_64")
-elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_32")
-else ()
-	message (FATAL_ERROR "Error! Weird pointer size!")
-endif ()
-
-if (WIN32)
-	target_compile_definitions (leviathan PRIVATE
-		"-DNOMINMAX"
-		"-DUNICODE"
-		"-D_UNICODE"
-		"-DWIN32_LEAN_AND_MEAN"
-		"-D_WIN32_WINNT=0x0602"
-		"-D_SCL_SECURE_NO_WARNINGS"
-		"-D_CRT_SECURE_NO_WARNINGS"
-		"-D_CRT_SECURE_NO_DEPRECATE"
-		"-D_CRT_NONSTDC_NO_WARNINGS"
-	)
-	if (MINGW)
-		message (FATAL_ERROR "MinGW is not supported!")
-	elseif (MSVC)
-		# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
-		foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
-			string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
-		endforeach ()
-		target_compile_options(leviathan PRIVATE
-			"/sdl"	  # Enable security checks
-			"/MP"	  # Multi-processor compilation
-			"/utf-8"  # UTF-8 source files
-			"/WX"	  # Treat linker warnings as errors
-			"/wd4201" # nonstandard extension used : nameless struct/union
-			"/wd4127" # conditional expression is constant
-			"/wd4100" # 'identifier' : unreferenced formal parameter
-			"/wd4200" # InputCommon fix temp.
-			"/wd4244" # 'conversion' conversion from 'type1' to 'type2', possible loss of data
-			"/wd4121" # 'symbol' : alignment of a member was sensitive to packing
-			"/wd4324" # Padding was added at the end of a structure because you specified a __declspec(align) value.
-			"/wd4714" # function 'function' marked as __forceinline not inlined
-			"/wd4351" # new behavior: elements of array 'array' will be default initialized
-			"/wd4245" # conversion from 'type1' to 'type2', signed/unsigned mismatch
-			"/wd4458" # declaration of 'identifier' hides class member
-			"/wd4706" # assignment within conditional expression
-			"/wd26812"# Prefer 'enum class' over 'enum'
-			"/w44263" # Non-virtual member function hides base class virtual function
-			"/w44265" # Class has virtual functions, but destructor is not virtual
-		)
-		if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-			set_target_properties (leviathan PROPERTIES
-				LINK_FLAGS "/SUBSYSTEM:CONSOLE /DEBUG /INCREMENTAL"
-				COMPILE_PDB_NAME "leviathan"
-				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
-			)
-		elseif (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-			set_target_properties(leviathan PROPERTIES
-				LINK_FLAGS "/SUBSYSTEM:WINDOWS /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF"
-				COMPILE_PDB_NAME "leviathan"
-				COMPILE_PDB_OUTPUT_DIR ${CMAKE_CURRENT_BINARY_DIR}
-			)
-		else ()
-			set_target_properties(leviathan PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
-		endif ()
-	endif ()
-elseif (UNIX)
-	find_package (Threads REQUIRED)
-	target_link_libraries (leviathan PRIVATE
-		Threads::Threads
-		${CMAKE_DL_LIBS}
-	)
-	if (NOT APPLE)
-		target_link_libraries (leviathan PRIVATE stdc++fs)
-	endif ()
-endif ()
-
-if (VCPKG_TOOLCHAIN)
-	find_package (OpenAL CONFIG REQUIRED)
-	set (OPENAL_LIBRARY OpenAL::OpenAL)
-
-	find_package (SDL2 CONFIG REQUIRED)
-	if (APPLE)
-		set (SDL2_LIBRARIES SDL2::SDL2)
-	else ()
-		set (SDL2_LIBRARIES SDL2::SDL2 SDL2::SDL2main)
-	endif ()
-else ()
-	include (./cmake/FindOpenAL.cmake)
-	if (NOT OPENAL_FOUND)
-		message (FATAL_ERROR "Could not find OpenAL!")
-	endif ()
-	if (APPLE)
-		target_compile_definitions (leviathan PRIVATE "-DSYNAO_WITHOUT_VCPKG")
-	endif ()
-
-	include (./cmake/FindSDL2.cmake)
-	if (NOT SDL2_FOUND)
-		message (FATAL_ERROR "Could not find SDL2!")
-	endif ()
-	if (NOT APPLE)
-		if (NOT SDL2MAIN_FOUND)
-			message (FATAL_ERROR "Could not find SDL2-Main!")
-		endif ()
-	endif ()
-endif ()
+# Find most packages & libaries
 
 find_package (Angelscript CONFIG REQUIRED)
 find_package (glm CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
 
-include (./cmake/FindTmxlite.cmake)
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindTmxlite.cmake")
 if (NOT TMXLITE_FOUND)
 	message (FATAL_ERROR "Could not find Tmxlite!")
 endif ()
 
-include (./cmake/FindNlohmannJson.cmake)
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindPugiXML.cmake")
+if (NOT PUGIXML_FOUND)
+	message (FATAL_ERROR "Could not find PugiXML!")
+endif ()
+
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindNlohmannJson.cmake")
 if (NOT NLOHMANN_JSON_FOUND)
 	message (FATAL_ERROR "Could not find JSON library!")
 endif ()
 
-include (./cmake/FindStb.cmake)
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindStb.cmake")
 if (NOT STB_FOUND)
 	message (FATAL_ERROR "Could not find stb!")
 endif ()
+
+# Define executable
+
+add_executable (leviathan)
+
+# Platform specific
+
+include ("${PROJECT_SOURCE_DIR}/cmake/platforms/libs.cmake")
+
+if (WIN32)
+	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
+elseif (UNIX)
+	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/unix.cmake")
+else ()
+	message (FATAL_ERROR "Undefined platform!")
+endif ()
+
+# Link/Include
 
 target_link_libraries (leviathan PRIVATE
 	Angelscript::angelscript
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}
 	${TMXLITE_LIBRARY}
+	${PUGIXML_LIBRARIES}
 	EnTT::EnTT
 	glm
 )
@@ -149,6 +74,7 @@ target_include_directories (leviathan PRIVATE
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
+	${PUGIXML_INCLUDE_DIRS}
 )
 
-add_subdirectory(source)
+add_subdirectory("source")
