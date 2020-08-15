@@ -14,7 +14,7 @@ static constexpr byte_t kPriorityType[] = "priority";
 
 tilemap_layer_t::tilemap_layer_t(glm::ivec2 map_size) : tilemap_layer_t() {
 	tiles.resize(
-		static_cast<arch_t>(map_size.x) * 
+		static_cast<arch_t>(map_size.x) *
 		static_cast<arch_t>(map_size.y)
 	);
 	quads.setup<vtx_major_t>();
@@ -72,8 +72,8 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 	auto& array = dynamic_cast<tmx::TileLayer*>(layer.get())->getTiles();
 	for (arch_t it = 0; it < array.size(); ++it) {
 		sint_t type = static_cast<sint_t>(array[it].ID) - 1;
-		tiles[it] = type >= 0 ? 
-			glm::ivec2(type % kSintTileSize, type / kSintTileSize) : 
+		tiles[it] = type >= 0 ?
+			glm::ivec2(type % kSintTileSize, type / kSintTileSize) :
 			glm::ivec2(kInvalidTiles);
 		if (colliding and type >= 0) {
 			attributes[it] = attribute_key[type];
@@ -127,6 +127,7 @@ void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const texture_t
 	auto& list = renderer.get_normal_quads(
 		priority,
 		blend_mode_t::Alpha,
+		buffer_usage_t::Dynamic,
 		palette != nullptr ? pipeline_t::VtxMajorIndexed : pipeline_t::VtxMajorSprites,
 		texture,
 		palette

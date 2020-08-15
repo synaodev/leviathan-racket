@@ -53,6 +53,7 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 		auto& list = renderer.get_normal_quads(
 			layer_value::TileFront,
 			blend_mode_t::Add,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxBlankColors
 		);
 		view.each([&list, &viewport](entt::entity, const liquid_body_t& instance) {

@@ -19,7 +19,7 @@ location_t::location_t(glm::vec2 position) :
 
 }
 
-location_t::location_t(glm::vec2 position, direction_t direction) : 
+location_t::location_t(glm::vec2 position, direction_t direction) :
 	position(position),
 	direction(direction),
 	bounding(0.0f, 0.0f, 16.0f, 16.0f)
@@ -71,6 +71,7 @@ void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t v
 	auto& list = renderer.get_normal_quads(
 		layer_value::HeadsUp,
 		blend_mode_t::Add,
+		buffer_usage_t::Dynamic,
 		pipeline_t::VtxBlankColors
 	);
 	kontext.slice<location_t>().each([&list, &viewport, &color](entt::entity, const location_t& location) {

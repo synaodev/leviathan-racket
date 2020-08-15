@@ -28,7 +28,7 @@ inventory_gui_element_t::inventory_gui_element_t() :
 
 void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
 	glm::vec2 position = glm::vec2(
-		2.0f + static_cast<real_t>((index % 6) * 49), 
+		2.0f + static_cast<real_t>((index % 6) * 49),
 		2.0f + static_cast<real_t>((index / 6) * 21)
 	);
 	scheme.set_file(animation);
@@ -174,6 +174,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxBlankColors
 		);
 		if (amend) {
@@ -183,7 +184,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 			);
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
-					rect_t(0.0f, 0.0f, 32.0f, 16.0f), 
+					rect_t(0.0f, 0.0f, 32.0f, 16.0f),
 					glm::vec4(0.0f, 0.0f, 1.0f, 0.5f)
 				)
 				.vtx_transform_write(cursor_position)
@@ -201,7 +202,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 				);
 				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(
-						rect_t(0.0f, 0.0f, 32.0f, 16.0f), 
+						rect_t(0.0f, 0.0f, 32.0f, 16.0f),
 						glm::vec4(1.0f, 0.0f, 0.0f, 0.5f)
 					)
 					.vtx_transform_write(cursor_position)

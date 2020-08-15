@@ -35,6 +35,7 @@ void draw_count_t::render(renderer_t& renderer) const {
 		auto& list = renderer.get_overlay_quads(
 			layer,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxMajorIndexed,
 			texture,
 			palette
@@ -189,11 +190,11 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 				bounding.y
 			);
 			this->generate_one(
-				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad), 
+				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
 				pos, txcd, inv
 			);
-			pos.x -= (*it == kPoint) ? 
-				bounding.w / 2.0f : 
+			pos.x -= (*it == kPoint) ?
+				bounding.w / 2.0f :
 				bounding.w;
 		}
 	} else {
@@ -203,11 +204,11 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 				bounding.y
 			);
 			this->generate_one(
-				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad), 
+				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
 				pos, txcd, inv
 			);
-			pos.x += (*it == kPoint) ? 
-				bounding.w / 2.0f : 
+			pos.x += (*it == kPoint) ?
+				bounding.w / 2.0f :
 				bounding.w;
 		}
 	}

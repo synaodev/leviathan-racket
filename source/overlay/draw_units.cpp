@@ -27,7 +27,8 @@ void draw_units_t::render(renderer_t& renderer) const {
 	if (!quads.empty()) {
 		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
-			blend_mode_t::Alpha, 
+			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxMajorIndexed,
 			texture,
 			palette
@@ -89,7 +90,7 @@ void draw_units_t::set_table(real_t table) {
 		amend = true;
 		this->table = table;
 		this->set_values(current_value, maximum_value);
-	}	
+	}
 }
 
 void draw_units_t::set_texture(const texture_t* texture) {
@@ -141,7 +142,7 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 		quad[3].table = table;
 		quad[3].alpha = 1.0f;
 
-		if (it != kLoopPoint) {	
+		if (it != kLoopPoint) {
 			pos.x += bounding.w;
 		} else {
 			pos.x = position.x;

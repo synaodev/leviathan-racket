@@ -17,7 +17,7 @@ parallax_background_t::parallax_background_t() :
 	dimensions(1.0f),
 	bounding()
 {
-	
+
 }
 
 parallax_background_t::parallax_background_t(parallax_background_t&& that) noexcept : parallax_background_t() {
@@ -83,6 +83,7 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 	auto& list = renderer.get_normal_quads(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
+		buffer_usage_t::Dynamic,
 		pipeline_t::VtxMajorSprites,
 		texture,
 		nullptr
@@ -96,7 +97,7 @@ void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const 
 				.end();
 				indices += display_list_t::SingleQuad;
 			}
-		}	
+		}
 	} else {
 		list.skip(indices);
 	}

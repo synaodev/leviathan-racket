@@ -41,6 +41,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 		auto& list = renderer.get_overlay_quads(
 			layer,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxMajorIndexed,
 			font->get_texture(),
 			font->get_palette()
@@ -143,8 +144,8 @@ rect_t draw_text_t::bounds() const {
 			}
 		}
 		return rect_t(
-			left, top, 
-			right - left, 
+			left, top,
+			right - left,
 			bottom - top
 		);
 	}
@@ -179,8 +180,8 @@ void draw_text_t::generate() {
 	quads.clear();
 	if (font != nullptr and !buffer.empty()) {
 		arch_t spaces_chars = std::count_if(
-			begin(buffer), 
-			begin(buffer) + current, 
+			begin(buffer),
+			begin(buffer) + current,
 			[](auto c) { return c == U'\n' or c == U'\t'; }
 		);
 		arch_t drawable_chars = buffer.size() - spaces_chars;

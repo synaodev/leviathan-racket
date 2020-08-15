@@ -24,12 +24,12 @@ public:
 	void flush(const glm::ivec2& dimensions);
 	void ortho(glm::ivec2 integral_dimensions);
 	arch_t get_draw_calls() const;
-	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
-	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
-	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
-	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette);
-	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
-	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
+	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline);
 private:
 	std::vector<display_list_t> overlay_quads, normal_quads;
 	std::vector<program_t> programs;

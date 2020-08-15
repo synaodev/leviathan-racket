@@ -37,7 +37,7 @@ void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 			title_view.set_head();
 		}
 		widgets.back()->handle(
-			config, input, 
+			config, input,
 			video, audio,
 			music, kernel,
 			*this, headsup
@@ -72,13 +72,14 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxBlankColors
 		);
 		if (amend) {
 			amend = false;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
-					rect_t(0.0f, 0.0f, 320.0f, 180.0f), 
+					rect_t(0.0f, 0.0f, 320.0f, 180.0f),
 					glm::vec4(0.0f, 0.0f, 0.0f, 0.5f)
 				)
 			.end();

@@ -12,7 +12,7 @@ static constexpr arch_t kMaskLength = 256;
 
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
 
-tileset_viewer_t::tileset_viewer_t() : 
+tileset_viewer_t::tileset_viewer_t() :
 	amend(false),
 	select(false),
 	flash(false),
@@ -81,8 +81,8 @@ void tileset_viewer_t::handle(const input_t& input) {
 					static_cast<real_t>(integral_coordinates.y * 16)
 				);
 				SYNAO_LOG(
-					"(%d, %d)\n", 
-					integral_coordinates.x, 
+					"(%d, %d)\n",
+					integral_coordinates.x,
 					integral_coordinates.y
 				);
 				amend = true;
@@ -121,11 +121,12 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.get_overlay_quads(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline_t::VtxBlankColors
 			);
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
-					rect_t(glm::zero<glm::vec2>(), cursor.dimensions()), 
+					rect_t(glm::zero<glm::vec2>(), cursor.dimensions()),
 					glm::one<glm::vec4>()
 				)
 				.vtx_transform_write(cursor.left_top())
@@ -135,14 +136,15 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.get_overlay_quads(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline_t::VtxMajorSprites,
 				texture,
 				nullptr
 			);
 			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(
-					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()), 
-					texture->get_dimensions(), 
+					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()),
+					texture->get_dimensions(),
 					0.0f, 1.0f,
 					mirroring_t::None
 				)
@@ -154,6 +156,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.get_overlay_quads(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline_t::VtxBlankColors
 			);
 			list.skip(display_list_t::SingleQuad);
@@ -162,6 +165,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.get_overlay_quads(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline_t::VtxMajorSprites,
 				texture,
 				nullptr
@@ -199,7 +203,7 @@ bool tileset_viewer_t::save() {
 		std::ofstream ofs(tilekey_path + file + ".atr", std::ofstream::binary);
 		if (ofs.is_open()) {
 			ofs.write(
-				reinterpret_cast<byte_t*>(&bitmasks[0]), 
+				reinterpret_cast<byte_t*>(&bitmasks[0]),
 				sizeof(sint_t) * kMaskLength
 			);
 			SYNAO_LOG("Save successful!\n");

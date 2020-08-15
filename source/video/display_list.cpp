@@ -3,7 +3,7 @@
 
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) :
 	layer(layer),
 	blend_mode(blend_mode),
 	texture(texture),
@@ -21,10 +21,10 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const tex
 		specify = program->get_specify();
 	}
 	quad_pool.setup(specify);
-	quad_list.setup(buffer_usage_t::Dynamic, specify);
+	quad_list.setup(usage, specify);
 }
 
-display_list_t::display_list_t() : 
+display_list_t::display_list_t() :
 	layer(layer_value::Automatic),
 	blend_mode(blend_mode_t::None),
 	texture(nullptr),
@@ -232,13 +232,18 @@ bool display_list_t::visible() const {
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 	if (layer_value::equal(lhv.layer, rhv.layer)) {
 		if (lhv.blend_mode == rhv.blend_mode) {
-			if (lhv.texture == rhv.texture) {
-				if (lhv.palette == rhv.palette) {
-					return lhv.program < rhv.program;
+			uint_t lhu = lhv.quad_list.get_usage();
+			uint_t rhu = rhv.quad_list.get_usage();
+			if (lhu == rhu) {
+				if (lhv.texture == rhv.texture) {
+					if (lhv.palette == rhv.palette) {
+						return lhv.program < rhv.program;
+					}
+					return lhv.palette < rhv.palette;
 				}
-				return lhv.palette < rhv.palette;
+				return lhv.texture < rhv.texture;
 			}
-			return lhv.texture < rhv.texture;
+			return lhu < rhu;
 		}
 		return lhv.blend_mode < rhv.blend_mode;
 	}

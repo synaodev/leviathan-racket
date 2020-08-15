@@ -14,7 +14,7 @@ animation_t::animation_t() :
 	texture(nullptr),
 	palette(nullptr)
 {
-	
+
 }
 
 animation_t::animation_t(animation_t&& that) noexcept : animation_t() {
@@ -66,8 +66,9 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 				index = palette->convert(index);
 			}
 			auto& list = renderer.get_normal_quads(
-				layer, 
+				layer,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline,
 				texture,
 				palette
@@ -100,6 +101,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			auto& list = renderer.get_normal_quads(
 				layer,
 				blend_mode_t::Alpha,
+				buffer_usage_t::Dynamic,
 				pipeline,
 				texture,
 				palette
@@ -126,8 +128,9 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 			index = palette->convert(index);
 		}
 		auto& list = renderer.get_overlay_quads(
-			layer_value::HeadsUp, 
+			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline,
 			texture,
 			palette

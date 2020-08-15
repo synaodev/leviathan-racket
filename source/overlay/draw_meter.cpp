@@ -12,7 +12,7 @@ draw_meter_t::draw_meter_t() :
 	varying(kGraphedPosition, kVaryingDimensions),
 	graphed()
 {
-	
+
 }
 
 void draw_meter_t::init(const animation_t* animation) {
@@ -44,6 +44,7 @@ void draw_meter_t::render(renderer_t& renderer) const {
 		auto& list = renderer.get_overlay_quads(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
+			buffer_usage_t::Dynamic,
 			pipeline_t::VtxBlankColors,
 			nullptr,
 			nullptr

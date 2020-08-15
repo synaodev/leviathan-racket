@@ -217,71 +217,71 @@ arch_t renderer_t::get_draw_calls() const {
 	return result;
 }
 
-display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : overlay_quads) {
 		if (list.matches(layer, blend_mode, texture, palette, program)) {
 			return list;
 		}
 	}
 	overlay_quads.emplace_back(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		texture, palette,
 		program
 	);
 	std::sort(overlay_quads.begin(), overlay_quads.end());
 	return this->get_overlay_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		program, texture,
 		palette
 	);
 }
 
-display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_overlay_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		&programs[pipeline],
 		texture, palette
 	);
 }
 
-display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
+display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline) {
 	return this->get_overlay_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		pipeline,
 		nullptr, nullptr
 	);
 }
 
-display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, const program_t* program, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : normal_quads) {
 		if (list.matches(layer, blend_mode, texture, palette, program)) {
 			return list;
 		}
 	}
 	normal_quads.emplace_back(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		texture, palette,
 		program
 	);
 	std::sort(normal_quads.begin(), normal_quads.end());
 	return this->get_normal_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		program, texture,
 		palette
 	);
 }
 
-display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
 	return this->get_normal_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		&programs[pipeline],
 		texture, palette
 	);
 }
 
-display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, pipeline_t pipeline) {
+display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline) {
 	return this->get_normal_quads(
-		layer, blend_mode,
+		layer, blend_mode, usage,
 		pipeline,
 		nullptr, nullptr
 	);

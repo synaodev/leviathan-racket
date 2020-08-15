@@ -3,7 +3,7 @@
 
 static constexpr real_t kChange = 8.0f;
 
-draw_fade_t::draw_fade_t() : 
+draw_fade_t::draw_fade_t() :
 	amend(true),
 	state(fade_state_t::DoneOut),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f)
@@ -51,7 +51,8 @@ void draw_fade_t::handle() {
 void draw_fade_t::render(renderer_t& renderer) const {
 	auto& list = renderer.get_overlay_quads(
 		layer_value::HeadsUp,
-		blend_mode_t::Alpha, 
+		blend_mode_t::Alpha,
+		buffer_usage_t::Dynamic,
 		pipeline_t::VtxBlankColors
 	);
 	if (amend) {
