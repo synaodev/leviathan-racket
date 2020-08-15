@@ -1,13 +1,12 @@
 #include "./tilemap_layer.hpp"
 
-#include <tmxlite/TileLayer.hpp>
-
+#include "../utility/constants.hpp"
 #include "../utility/tmx_convert.hpp"
 #include "../system/renderer.hpp"
 
+#include <tmxlite/TileLayer.hpp>
+
 static constexpr arch_t kMinimumVerts = 21 * 13 * display_list_t::SingleQuad;
-static constexpr real_t kRealTileSize = 16.0f;
-static constexpr sint_t kSintTileSize = 16;
 static constexpr sint_t kInvalidTiles = -1;
 static constexpr byte_t kCollideLayer[] = "collide";
 static constexpr byte_t kPriorityType[] = "priority";
@@ -73,7 +72,7 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 	for (arch_t it = 0; it < array.size(); ++it) {
 		sint_t type = static_cast<sint_t>(array[it].ID) - 1;
 		tiles[it] = type >= 0 ?
-			glm::ivec2(type % kSintTileSize, type / kSintTileSize) :
+			glm::ivec2(type % constants::TileSize<sint_t>(), type / constants::TileSize<sint_t>()) :
 			glm::ivec2(kInvalidTiles);
 		if (colliding and type >= 0) {
 			attributes[it] = attribute_key[type];
@@ -86,40 +85,40 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 		quads.resize(range);
 	}
 	indices = 0;
-	glm::vec2 pos = glm::vec2(first * kSintTileSize);
+	glm::vec2 pos = glm::vec2(first * constants::TileSize<sint_t>());
 	glm::vec2 uvs = glm::zero<glm::vec2>();
 	for (sint_t y = first.y; y < last.y; ++y) {
 		for (sint_t x = first.x; x < last.x; ++x) {
 			arch_t index = static_cast<arch_t>(x) + static_cast<arch_t>(y) * static_cast<arch_t>(map_size.x);
 			glm::ivec2 tile = tiles[index];
 			if (tile.x >= 0 and tile.y >= 0) {
-				uvs = glm::vec2(tile * kSintTileSize);
+				uvs = glm::vec2(tile * constants::TileSize<sint_t>());
 				vtx_major_t* quad = quads.at<vtx_major_t>(indices * display_list_t::SingleQuad);
 				quad[0].position = pos;
 				quad[0].uvcoords = uvs * inverse_dimensions;
 				quad[0].table = 0.0f;
 				quad[0].alpha = 1.0f;
 
-				quad[1].position = glm::vec2(pos.x, pos.y + kRealTileSize);
-				quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + kRealTileSize) * inverse_dimensions;
+				quad[1].position = glm::vec2(pos.x, pos.y + constants::TileSize<real_t>());
+				quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
 				quad[1].table = 0.0f;
 				quad[1].alpha = 1.0f;
 
-				quad[2].position = glm::vec2(pos.x + kRealTileSize, pos.y);
-				quad[2].uvcoords = glm::vec2(uvs.x + kRealTileSize, uvs.y) * inverse_dimensions;
+				quad[2].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y);
+				quad[2].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y) * inverse_dimensions;
 				quad[2].table = 0.0f;
 				quad[2].alpha = 1.0f;
 
-				quad[3].position = glm::vec2(pos.x + kRealTileSize, pos.y + kRealTileSize);
-				quad[3].uvcoords = glm::vec2(uvs.x + kRealTileSize, uvs.y + kRealTileSize) * inverse_dimensions;
+				quad[3].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y + constants::TileSize<real_t>());
+				quad[3].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
 				quad[3].table = 0.0f;
 				quad[3].alpha = 1.0f;
 				++indices;
 			}
-			pos.x += kRealTileSize;
+			pos.x += constants::TileSize<real_t>();
 		}
-		pos.x = static_cast<real_t>(first.x * kSintTileSize);
-		pos.y += kRealTileSize;
+		pos.x = static_cast<real_t>(first.x * constants::TileSize<sint_t>());
+		pos.y += constants::TileSize<real_t>();
 	}
 }
 

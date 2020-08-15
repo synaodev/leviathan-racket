@@ -1,5 +1,6 @@
 #include "./draw_title_view.hpp"
 
+#include "../utility/constants.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
@@ -31,7 +32,7 @@ bool draw_title_view_t::init() {
 
 void draw_title_view_t::handle() {
 	if (!head.empty()) {
-		timer -= interval::kMin;
+		timer -= constants::MinInterval();
 		if (timer <= 0.0) {
 			this->set_head();
 		}

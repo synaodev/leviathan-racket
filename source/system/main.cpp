@@ -7,6 +7,7 @@
 #include "./editor.hpp"
 
 #include "../utility/vfs.hpp"
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup_file.hpp"
 
@@ -163,7 +164,7 @@ static bool run_editor(input_t& input, video_t& video, renderer_t& renderer) {
 			if (editor.viable()) {
 				editor.handle(input, renderer);
 				editor.render(video, renderer);
-				real64_t waiting = interval::kMin - sync_watch.elapsed();
+				real64_t waiting = constants::MinInterval() - sync_watch.elapsed();
 				if (waiting > 0.0) {
 					uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
 					SDL_Delay(ticks);

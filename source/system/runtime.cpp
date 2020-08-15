@@ -9,6 +9,7 @@
 #include "../system/video.hpp"
 #include "../system/renderer.hpp"
 #include "../utility/debug.hpp"
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/tmx_convert.hpp"
 #include "../utility/setup_file.hpp"
@@ -63,7 +64,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 
 bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	while (this->viable()) {
-		accum = glm::max(accum - interval::kMin, 0.0);
+		accum = glm::max(accum - constants::MinInterval(), 0.0);
 		if (headsup.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
 				this->setup_boot(renderer);
@@ -133,7 +134,7 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 }
 
 bool runtime_t::viable() const {
-	return accum >= interval::kMax;
+	return accum >= constants::MaxInterval();
 }
 
 bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {

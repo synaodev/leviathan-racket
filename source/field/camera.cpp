@@ -1,25 +1,25 @@
 #include "./camera.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-
+#include "../utility/constants.hpp"
 #include "../video/display_list.hpp"
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
 #include "../actor/naomi.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 static const glm::vec2 kDefaultSpeed  = glm::vec2(16.0f, 8.0f);
-static const glm::vec2 kDefaultSizes  = glm::vec2(320.0f, 180.0f);
 static const glm::vec2 kDefaultLowest = glm::vec2(8.0f, 6.0f);
-static const glm::vec2 kDefaultCenter = (kDefaultSizes / 2.0f) + kDefaultLowest;
+static const glm::vec2 kDefaultCenter = (constants::NormalDimensions<real_t>() / 2.0f) + kDefaultLowest;
 
 camera_t::camera_t() :
 	identity(0),
 	cycling(false),
 	indefinite(false),
 	timer(0.0),
-	view_limits(kDefaultLowest, kDefaultSizes),
+	view_limits(kDefaultLowest, constants::NormalDimensions<real_t>()),
 	position(kDefaultCenter),
-	dimensions(kDefaultSizes),
+	dimensions(constants::NormalDimensions<real_t>()),
 	offsets(0.0f),
 	quake_power(0.0f),
 	view_angle(0.0f)
@@ -32,9 +32,9 @@ void camera_t::reset() {
 	cycling = false;
 	indefinite = false;
 	timer = 0.0;
-	view_limits = rect_t(kDefaultLowest, kDefaultSizes);
+	view_limits = rect_t(kDefaultLowest, constants::NormalDimensions<real_t>());
 	position = kDefaultCenter;
-	dimensions = kDefaultSizes;
+	dimensions = constants::NormalDimensions<real_t>();
 	offsets = glm::zero<glm::vec2>();
 	quake_power = 0.0f;
 	view_angle = 0.0f;
@@ -90,7 +90,7 @@ void camera_t::set_view_limits(rect_t view_limits) {
 	this->view_limits.w = view_limits.w - 16.0f;
 	this->view_limits.h = view_limits.h - 12.0f;
 	position = kDefaultCenter;
-	dimensions = kDefaultSizes;
+	dimensions = constants::NormalDimensions<real_t>();
 }
 
 void camera_t::set_focus(glm::vec2 position) {

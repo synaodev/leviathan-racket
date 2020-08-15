@@ -1,10 +1,9 @@
 #include "./collision.hpp"
 #include "./tilemap.hpp"
 
-#include <limits>
+#include "../utility/constants.hpp"
 
-static constexpr sint_t kSintTileSize = 16;
-static constexpr real_t kRealTileSize = 16.0f;
+#include <limits>
 
 collision::info_t::info_t(glm::ivec2 index, sint_t attribute) :
 	index(index),
@@ -24,16 +23,16 @@ collision::info_t::info_t() :
 
 rect_t collision::info_t::hitbox() const {
 	return rect_t(
-		static_cast<real_t>(index.x * kSintTileSize),
-		static_cast<real_t>(index.y * kSintTileSize),
-		kRealTileSize,
-		kRealTileSize
+		glm::vec2(index) * constants::TileSize<real_t>(),
+		constants::TileDimensions<real_t>()
 	);
+	// return rect_t(
+	// 	static_cast<real_t>(index.x * kSintTileSize),
+	// 	static_cast<real_t>(index.y * kSintTileSize),
+	// 	kRealTileSize,
+	// 	kRealTileSize
+	// );
 }
-
-/*static bool is_slope_tall(const collision::info_t& info) {
-	return info.attribute & tileflag_t::Tall;
-}*/
 
 static bool is_slope_opposing_side(const collision::info_t& info, side_t side) {
 	if (info.attribute & tileflag_t::Floor) {
@@ -55,7 +54,7 @@ static real_t use_slope_height(const collision::info_t& info) {
 	if (info.attribute & tileflag_t::Ceiling) {
 		if (info.attribute & tileflag_t::Negative) {
 			if (info.attribute & tileflag_t::Tall) {
-				return kRealTileSize;
+				return constants::TileSize<real_t>();
 			}
 		} else if (info.attribute & tileflag_t::Positive) {
 			if (info.attribute & tileflag_t::Short) {
@@ -65,7 +64,7 @@ static real_t use_slope_height(const collision::info_t& info) {
 	} else if (info.attribute & tileflag_t::Floor) {
 		if (info.attribute & tileflag_t::Negative) {
 			if (info.attribute & tileflag_t::Short) {
-				return kRealTileSize;
+				return constants::TileSize<real_t>();
 			}
 		} else if (info.attribute & tileflag_t::Positive) {
 			if (info.attribute & tileflag_t::Tall) {
@@ -73,7 +72,7 @@ static real_t use_slope_height(const collision::info_t& info) {
 			}
 		}
 	}
-	return kRealTileSize / 2.0f;
+	return constants::HalfTile<real_t>();
 }
 
 struct collision_result_t {
@@ -116,7 +115,7 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 			}
 			case side_t::Top: {
 				if (info.attribute & tileflag_t::FallThrough) {
-					if (delta.bottom() - (kRealTileSize / 2.0f) < hitbox.y) {
+					if (delta.bottom() - (constants::HalfTile<real_t>()) < hitbox.y) {
 						result.valid = true;
 						result.coordinate = hitbox.y;
 					}
@@ -239,8 +238,8 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 			if (attr & tileflag_t::Block) {
 				if (attr & tileflag_t::Hooked) {
 					return glm::vec2(
-						tilemap_t::extend(xpos) + (kRealTileSize / 2.0f),
-						tilemap_t::extend(ypos) + (kRealTileSize / 2.0f)
+						tilemap_t::extend(xpos) + (constants::HalfTile<real_t>()),
+						tilemap_t::extend(ypos) + (constants::HalfTile<real_t>())
 					);
 				}
 				return origin + len * direction;
@@ -250,7 +249,7 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 				real_t top = tilemap_t::extend(ypos);
 				real_t right = tilemap_t::extend(xpos + 1);
 				real_t bottom = tilemap_t::extend(ypos + 1);
-				real_t center = top + (kRealTileSize / 2.0f);
+				real_t center = top + (constants::HalfTile<real_t>());
 				switch (attr) {
 				case tileflag_t::Slope_1:
 					intersect = find_intersection(origin, direction, glm::vec2(left, top), glm::vec2(right, center));

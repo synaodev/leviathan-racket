@@ -1,6 +1,7 @@
 #include "./renderer.hpp"
 #include "./video.hpp"
 
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 #include "../video/frame_buffer.hpp"
@@ -18,8 +19,8 @@ renderer_t::renderer_t() :
 	graphics_state(),
 	gk_projection_matrix(1.0f),
 	gk_viewport_matrix(1.0f),
-	gk_video_dimensions(320.0f, 180.0f),
-	gk_video_resolution(320.0f, 180.0f)
+	gk_video_dimensions(constants::NormalDimensions<real_t>()),
+	gk_video_resolution(constants::NormalDimensions<real_t>())
 {
 	gk_projection_matrix = glm::ortho(0.0f, gk_video_resolution.x, gk_video_resolution.y, 0.0f);
 	gk_viewport_matrix = gk_projection_matrix;

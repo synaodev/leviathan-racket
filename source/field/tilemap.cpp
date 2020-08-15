@@ -2,24 +2,23 @@
 #include "./tileflag.hpp"
 #include "./camera.hpp"
 
+#include "../system/renderer.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/constants.hpp"
+#include "../utility/tmx_convert.hpp"
+
 #include <tmxlite/Map.hpp>
 #include <tmxlite/ImageLayer.hpp>
 
-#include "../system/renderer.hpp"
-#include "../utility/vfs.hpp"
-#include "../utility/tmx_convert.hpp"
-
-static constexpr sint_t kScreenWidth   = 21;
-static constexpr sint_t kScreenHeight  = 12;
-static constexpr sint_t kSintTileSize  = 16;
-static constexpr real_t kRealTileSize  = 16.0f;
+static constexpr sint_t kScreenWidth  = 21;
+static constexpr sint_t kScreenHeight = 12;
 
 tilemap_t::tilemap_t() :
 	amend(false),
 	dimensions(0),
 	attributes(),
 	attribute_key(),
-	previous_viewport(-kRealTileSize, -kRealTileSize, 320.0f, 180.0f),
+	previous_viewport(glm::zero<glm::vec2>(), constants::NormalDimensions<real_t>()),
 	tilemap_layer_texture(nullptr),
 	tilemap_layer_palette(nullptr),
 	parallax_texture(nullptr),
@@ -33,7 +32,10 @@ void tilemap_t::reset() {
 	amend = true;
 	dimensions = glm::zero<glm::ivec2>();
 	attributes.clear();
-	previous_viewport = rect_t(-kRealTileSize, -kRealTileSize, 320.0f, 180.0f);
+	previous_viewport = rect_t(
+		-constants::TileDimensions<real_t>(),
+		constants::NormalDimensions<real_t>()
+	);
 	tilemap_layer_texture = nullptr;
 	tilemap_layer_palette = nullptr;
 	parallax_texture = nullptr;
@@ -54,8 +56,8 @@ void tilemap_t::handle(const camera_t& camera) {
 			glm::max(tilemap_t::floor(viewport.y), 0)
 		);
 		glm::ivec2 last = glm::ivec2(
-			glm::min(tilemap_t::ceiling(viewport.right() + kRealTileSize), dimensions.x),
-			glm::min(tilemap_t::ceiling(viewport.bottom() + kRealTileSize), dimensions.y)
+			glm::min(tilemap_t::ceiling(viewport.right() + constants::TileSize<real_t>()), dimensions.x),
+			glm::min(tilemap_t::ceiling(viewport.bottom() + constants::TileSize<real_t>()), dimensions.y)
 		);
 		arch_t range = camera.get_tile_range(first, last);
 		for (auto&& tilemap_layer : tilemap_layers) {
@@ -88,8 +90,8 @@ static const byte_t kPaletteProperty[] = "indexed";
 void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 	const tmx::FloatRect bounds = tmxmap.getBounds();
 	dimensions = glm::ivec2(
-		glm::max(static_cast<sint_t>(bounds.width) / kSintTileSize, kScreenWidth),
-		glm::max(static_cast<sint_t>(bounds.height) / kSintTileSize, kScreenHeight)
+		glm::max(static_cast<sint_t>(bounds.width) / constants::TileSize<sint_t>(), kScreenWidth),
+		glm::max(static_cast<sint_t>(bounds.height) / constants::TileSize<sint_t>(), kScreenHeight)
 	);
 	attributes.resize(
 		static_cast<arch_t>(dimensions.x) *
@@ -156,17 +158,17 @@ sint_t tilemap_t::get_attribute(glm::ivec2 index) const {
 }
 
 sint_t tilemap_t::round(real_t value) {
-	return static_cast<sint_t>(value) / kSintTileSize;
+	return static_cast<sint_t>(value) / constants::TileSize<sint_t>();
 }
 
 sint_t tilemap_t::ceiling(real_t value) {
-	return static_cast<sint_t>(glm::ceil(value / kRealTileSize));
+	return static_cast<sint_t>(glm::ceil(value / constants::TileSize<real_t>()));
 }
 
 sint_t tilemap_t::floor(real_t value) {
-	return static_cast<sint_t>(glm::floor(value / kRealTileSize));
+	return static_cast<sint_t>(glm::floor(value / constants::TileSize<real_t>()));
 }
 
 real_t tilemap_t::extend(sint_t value) {
-	return static_cast<real_t>(value * kSintTileSize);
+	return static_cast<real_t>(value * constants::TileSize<sint_t>());
 }

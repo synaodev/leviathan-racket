@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
 target_sources (leviathan PRIVATE
+	"constants.hpp"
 	"debug.hpp" "debug.cpp"
 	"enums.hpp"
 	"hash.hpp"

@@ -3,15 +3,11 @@
 #include "../video/frame_buffer.hpp"
 #include "../video/glad.hpp"
 #include "../resource/icon.hpp"
+#include "../utility/constants.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
 
 #include <SDL2/SDL.h>
-
-static constexpr byte_t kWindowName[] = "Leviathan Racket";
-static constexpr sint_t kVideoWidths  = 320;
-static constexpr sint_t kVideoHeight  = 180;
-static constexpr sint_t kImguiWidths  = 800;
 
 video_t::video_t() :
 	window(nullptr),
@@ -86,20 +82,20 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	}
 	if (start_imgui) {
 		window = SDL_CreateWindow(
-			kWindowName,
+			constants::WindowName,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			kImguiWidths,
-			kImguiWidths,
+			constants::ImguiWidth<sint_t>(),
+			constants::ImguiWidth<sint_t>(),
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
 		);
 	} else {
 		window = SDL_CreateWindow(
-			kWindowName,
+			constants::WindowName,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			kVideoWidths * params.scaling,
-			kVideoHeight * params.scaling,
+			constants::NormalWidth<sint_t>() * params.scaling,
+			constants::NormalHeight<sint_t>() * params.scaling,
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
 		);
 	}
@@ -159,12 +155,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	}
 	if (start_imgui) {
 		frame_buffer_t::clear(
-			glm::ivec2(kImguiWidths),
+			constants::ImguiDimensions<sint_t>(),
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 		);
 	} else {
 		frame_buffer_t::clear(
-			glm::ivec2(kVideoWidths, kVideoHeight) * params.scaling,
+			constants::NormalDimensions<sint_t>() * params.scaling,
 			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
 		);
 	}
@@ -236,8 +232,8 @@ void video_t::set_parameters(screen_params_t params) {
 		);
 		SDL_SetWindowSize(
 			window,
-			kVideoWidths * params.scaling,
-			kVideoHeight * params.scaling
+			constants::NormalWidth<sint_t>() * params.scaling,
+			constants::NormalHeight<sint_t>() * params.scaling
 		);
 		SDL_SetWindowPosition(
 			window,
@@ -258,21 +254,15 @@ screen_params_t video_t::get_parameters() const {
 }
 
 glm::vec2 video_t::get_dimensions() const {
-	return glm::vec2(
-		kVideoWidths * params.scaling,
-		kVideoHeight * params.scaling
-	);
+	return glm::vec2(this->get_integral_dimensions());
 }
 
 glm::ivec2 video_t::get_integral_dimensions() const {
-	return params.scaling * glm::ivec2(
-		kVideoWidths,
-		kVideoHeight
-	);
+	return constants::NormalDimensions<sint_t>() * params.scaling;
 }
 
 glm::ivec2 video_t::get_imgui_dimensions() const {
-	return glm::ivec2(kImguiWidths);
+	return constants::ImguiDimensions<sint_t>();
 }
 
 glm::ivec2 video_t::get_opengl_version() const {

@@ -9,6 +9,7 @@
 #include "../system/music.hpp"
 #include "../system/kernel.hpp"
 
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
@@ -134,8 +135,7 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					calls = 0;
 				}
 			} else if (bitmask[rec_bits_t::Waiting]) {
-				static const real_t kInterval32 = static_cast<real_t>(interval::kMin);
-				timer -= kInterval32;
+				timer -= constants::MinInterval<real32_t>();
 				if (timer <= 0.0f) {
 					bitmask[rec_bits_t::Running] = true;
 					bitmask[rec_bits_t::Waiting] = false;

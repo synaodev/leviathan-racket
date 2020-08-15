@@ -3,6 +3,7 @@
 #include "./video.hpp"
 #include "./renderer.hpp"
 
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 
 // Needed in order to quell annoying warnings...
@@ -39,14 +40,14 @@ static const uint_t kSlopeFlagInts[kSecondSize] = {
 	0x00AA, 0x006A, 0x0066, 0x00A6
 };
 
-editor_t::editor_t() : 
+editor_t::editor_t() :
 	accum(0.0),
 	window(nullptr),
 	context(nullptr),
 	attribute_gui(),
 	tileset_viewer()
 {
-	
+
 }
 
 editor_t::~editor_t() {
@@ -67,7 +68,7 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	if (!ImGui_ImplSDL2_InitForOpenGL(
-			std::get<SDL_Window*>(device), 
+			std::get<SDL_Window*>(device),
 			std::get<SDL_GLContext>(device)
 		)) {
 		SYNAO_LOG("Error! Failed to initialize SDL2 for ImGui!\n");
@@ -97,8 +98,8 @@ void editor_t::handle(input_t& input, renderer_t& renderer) {
 			ImGui::Begin(
 				"Attributes",
 				nullptr,
-				ImGuiWindowFlags_NoCollapse | 
-				ImGuiWindowFlags_NoMove | 
+				ImGuiWindowFlags_NoCollapse |
+				ImGuiWindowFlags_NoMove |
 				ImGuiWindowFlags_NoResize
 			);
 			sint_t bitmask = tileset_viewer.get_bitmask();
@@ -141,7 +142,7 @@ void editor_t::render(const video_t& video, renderer_t& renderer) const {
 }
 
 bool editor_t::viable() const {
-	return accum >= interval::kMax;
+	return accum >= constants::MaxInterval();
 }
 
 editor_t::event_callback_t editor_t::get_event_callback() {
