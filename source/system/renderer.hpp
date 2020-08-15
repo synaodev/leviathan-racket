@@ -1,6 +1,7 @@
 #ifndef SYNAO_SYSTEM_RENDERER_HPP
 #define SYNAO_SYSTEM_RENDERER_HPP
 
+#include <optional>
 #include <glm/mat4x4.hpp>
 
 #include "../utility/enums.hpp"
@@ -30,6 +31,9 @@ public:
 	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette);
 	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
 	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline);
+	display_list_t* find_quads(sint64_t guid);
+	sint64_t capture_list(display_list_t& list);
+	void release_list(display_list_t& list);
 private:
 	quad_buffer_allocator_t display_allocator;
 	std::vector<display_list_t> overlay_quads, normal_quads;

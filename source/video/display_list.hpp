@@ -1,6 +1,8 @@
 #ifndef SYNAO_VIDEO_DISPLAY_LIST_HPP
 #define SYNAO_VIDEO_DISPLAY_LIST_HPP
 
+#include <bitset>
+
 #include "../utility/enums.hpp"
 
 #include "./gfx.hpp"
@@ -33,8 +35,12 @@ public:
 	void skip(arch_t count);
 	void skip();
 	void flush(gfx_t& gfx);
+	sint64_t capture(const gfx_t& gfx);
+	bool release(const gfx_t& gfx);
 	bool matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const;
-	bool visible() const;
+	bool matches(sint64_t timestamp) const;
+	bool rendered() const;
+	bool persists() const;
 	friend bool operator<(const display_list_t& lhv, const display_list_t& rhv);
 public:
 	static constexpr arch_t SingleQuad = 4;
@@ -44,7 +50,8 @@ private:
 	const texture_t* texture;
 	const palette_t* palette;
 	const program_t* program;
-	bool_t drawn, write;
+	bool_t visible, amend;
+	sint64_t timestamp;
 	arch_t current, account;
 	vertex_pool_t quad_pool;
 	quad_buffer_t quad_buffer;

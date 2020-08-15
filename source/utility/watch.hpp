@@ -16,6 +16,7 @@ public:
 public:
 	real64_t elapsed() const;
 	real64_t restart();
+	static sint64_t timestamp();
 private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> point;
 };

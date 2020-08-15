@@ -1,6 +1,7 @@
 #include "./display_list.hpp"
 #include "./program.hpp"
 
+#include "../utility/watch.hpp"
 #include "../utility/rect.hpp"
 
 display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_buffer_allocator_t* allocator) :
@@ -9,8 +10,9 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_us
 	texture(texture),
 	palette(palette),
 	program(program),
-	drawn(false),
-	write(false),
+	visible(false),
+	amend(false),
+	timestamp(0),
 	current(0),
 	account(0),
 	quad_pool(),
@@ -30,8 +32,9 @@ display_list_t::display_list_t() :
 	texture(nullptr),
 	palette(nullptr),
 	program(nullptr),
-	drawn(false),
-	write(false),
+	visible(false),
+	amend(false),
+	timestamp(0),
 	current(0),
 	account(0),
 	quad_pool(),
@@ -47,8 +50,9 @@ display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t(
 		std::swap(texture, that.texture);
 		std::swap(palette, that.palette);
 		std::swap(program, that.program);
-		std::swap(drawn, that.drawn);
-		std::swap(write, that.write);
+		std::swap(visible, that.visible);
+		std::swap(amend, that.amend);
+		std::swap(timestamp, that.timestamp);
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
@@ -63,8 +67,9 @@ display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
 		std::swap(texture, that.texture);
 		std::swap(palette, that.palette);
 		std::swap(program, that.program);
-		std::swap(drawn, that.drawn);
-		std::swap(write, that.write);
+		std::swap(visible, that.visible);
+		std::swap(amend, that.amend);
+		std::swap(timestamp, that.timestamp);
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
@@ -179,7 +184,7 @@ display_list_t& display_list_t::vtx_transform_write(real_t x, real_t y) {
 }
 
 void display_list_t::end() {
-	write = true;
+	amend = true;
 	current += account;
 	account = 0;
 }
@@ -195,12 +200,10 @@ void display_list_t::skip() {
 }
 
 void display_list_t::flush(gfx_t& gfx) {
-#ifdef SYNAO_DEBUG_BUILD
-	drawn = current != 0;
-#endif // SYNAO_DEBUG_BUILD
-	if (current != 0) {
-		if (write) {
-			write = false;
+	visible = current != 0;
+	if (visible) {
+		if (amend) {
+			amend = false;
 			if (current > quad_buffer.get_length()) {
 				quad_buffer.create(current);
 			}
@@ -215,6 +218,22 @@ void display_list_t::flush(gfx_t& gfx) {
 	current = 0;
 }
 
+sint64_t display_list_t::capture(const gfx_t& /*gfx*/) {
+	if (!this->persists()) {
+		timestamp = watch_t::timestamp();
+		return timestamp;
+	}
+	return 0;
+}
+
+bool display_list_t::release(const gfx_t& /*gfx*/) {
+	if (this->persists()) {
+		timestamp = 0;
+		return true;
+	}
+	return false;
+}
+
 bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const {
 	return (
 		layer_value::equal(this->layer, layer) and
@@ -226,8 +245,16 @@ bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usag
 	);
 }
 
-bool display_list_t::visible() const {
-	return drawn;
+bool display_list_t::matches(sint64_t timestamp) const {
+	return this->timestamp == timestamp;
+}
+
+bool display_list_t::rendered() const {
+	return visible;
+}
+
+bool display_list_t::persists() const {
+	return timestamp != 0;
 }
 
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {

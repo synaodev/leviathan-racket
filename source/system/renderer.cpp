@@ -133,8 +133,15 @@ bool renderer_t::init(glm::ivec2 version) {
 }
 
 void renderer_t::clear() {
-	overlay_quads.clear();
-	normal_quads.clear();
+	auto lacks_owner = [](auto& list) { return !list.persists(); };
+	overlay_quads.erase(
+		std::remove_if(overlay_quads.begin(), overlay_quads.end(), lacks_owner),
+		overlay_quads.end()
+	);
+	normal_quads.erase(
+		std::remove_if(normal_quads.begin(), normal_quads.end(), lacks_owner),
+		normal_quads.end()
+	);
 }
 
 void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
@@ -199,12 +206,12 @@ void renderer_t::ortho(glm::ivec2 integral_dimensions) {
 arch_t renderer_t::get_draw_calls() const {
 	arch_t result = 0;
 	for (auto&& list : overlay_quads) {
-		if (list.visible()) {
+		if (list.rendered()) {
 			result++;
 		}
 	}
 	for (auto&& list : normal_quads) {
-		if (list.visible()) {
+		if (list.rendered()) {
 			result++;
 		}
 	}
@@ -279,4 +286,35 @@ display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_m
 		pipeline,
 		nullptr, nullptr
 	);
+}
+
+display_list_t* renderer_t::find_quads(sint64_t guid) {
+	if (guid != 0) {
+		for (auto&& list : overlay_quads) {
+			if (list.matches(guid)) {
+				return &list;
+			}
+		}
+		for (auto&& list : normal_quads) {
+			if (list.matches(guid)) {
+				return &list;
+			}
+		}
+	}
+	return nullptr;
+}
+
+sint64_t renderer_t::capture_list(display_list_t& list) {
+	sint64_t guid = list.capture(graphics_state);
+#ifdef SYNAO_DEBUG_BUILD
+	assert(guid != 0);
+#endif // SYNAO_DEBUG_BUILD
+	return guid;
+}
+
+void renderer_t::release_list(display_list_t& list) {
+	bool success = list.release(graphics_state);
+#ifdef SYNAO_DEBUG_BUILD
+	assert(success);
+#endif // SYNAO_DEBUG_BUILD
 }
