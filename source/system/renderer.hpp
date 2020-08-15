@@ -16,7 +16,7 @@ public:
 	renderer_t();
 	renderer_t(renderer_t&&) = default;
 	renderer_t& operator=(renderer_t&&) = default;
-	~renderer_t();
+	~renderer_t() = default;
 public:
 	bool init(glm::ivec2 version);
 	void clear();
@@ -31,6 +31,7 @@ public:
 	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette);
 	display_list_t& get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline);
 private:
+	quad_buffer_allocator_t display_allocator;
 	std::vector<display_list_t> overlay_quads, normal_quads;
 	std::vector<program_t> programs;
 	const_buffer_t projection_buffer, viewport_buffer;

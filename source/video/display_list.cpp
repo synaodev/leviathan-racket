@@ -3,7 +3,7 @@
 
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_buffer_allocator_t* allocator) :
 	layer(layer),
 	blend_mode(blend_mode),
 	texture(texture),
@@ -14,14 +14,14 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_us
 	current(0),
 	account(0),
 	quad_pool(),
-	quad_list()
+	quad_buffer()
 {
 	vertex_spec_t specify;
 	if (program != nullptr) {
 		specify = program->get_specify();
 	}
 	quad_pool.setup(specify);
-	quad_list.setup(usage, specify);
+	quad_buffer.setup(allocator, usage, specify);
 }
 
 display_list_t::display_list_t() :
@@ -35,7 +35,7 @@ display_list_t::display_list_t() :
 	current(0),
 	account(0),
 	quad_pool(),
-	quad_list()
+	quad_buffer()
 {
 
 }
@@ -52,7 +52,7 @@ display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t(
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
-		std::swap(quad_list, that.quad_list);
+		std::swap(quad_buffer, that.quad_buffer);
 	}
 }
 
@@ -68,7 +68,7 @@ display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
-		std::swap(quad_list, that.quad_list);
+		std::swap(quad_buffer, that.quad_buffer);
 	}
 	return *this;
 }
@@ -201,24 +201,25 @@ void display_list_t::flush(gfx_t& gfx) {
 	if (current != 0) {
 		if (write) {
 			write = false;
-			if (current > quad_list.get_length()) {
-				quad_list.create(current);
+			if (current > quad_buffer.get_length()) {
+				quad_buffer.create(current);
 			}
-			quad_list.update(quad_pool[0], current);
+			quad_buffer.update(quad_pool[0], current);
 		}
 		gfx.set_blend_mode(blend_mode);
 		gfx.set_program(program);
 		gfx.set_sampler(texture, 0);
 		gfx.set_sampler(palette, 1);
-		quad_list.draw(current);
+		quad_buffer.draw(current);
 	}
 	current = 0;
 }
 
-bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) const {
+bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const {
 	return (
 		layer_value::equal(this->layer, layer) and
 		this->blend_mode == blend_mode and
+		this->quad_buffer.get_usage() == usage and
 		this->texture == texture and
 		this->palette == palette and
 		this->program == program
@@ -232,8 +233,8 @@ bool display_list_t::visible() const {
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 	if (layer_value::equal(lhv.layer, rhv.layer)) {
 		if (lhv.blend_mode == rhv.blend_mode) {
-			uint_t lhu = lhv.quad_list.get_usage();
-			uint_t rhu = rhv.quad_list.get_usage();
+			uint_t lhu = lhv.quad_buffer.get_usage();
+			uint_t rhu = rhv.quad_buffer.get_usage();
 			if (lhu == rhu) {
 				if (lhv.texture == rhv.texture) {
 					if (lhv.palette == rhv.palette) {

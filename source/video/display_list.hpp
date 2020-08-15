@@ -5,7 +5,7 @@
 
 #include "./gfx.hpp"
 #include "./vertex_pool.hpp"
-#include "./indexed_quads.hpp"
+#include "./quad_buffer.hpp"
 
 struct texture_t;
 struct palette_t;
@@ -14,7 +14,7 @@ struct rect_t;
 
 struct display_list_t : public not_copyable_t {
 public:
-	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program);
+	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_buffer_allocator_t* allocator);
 	display_list_t();
 	display_list_t(display_list_t&& that) noexcept;
 	display_list_t& operator=(display_list_t&& that) noexcept;
@@ -33,7 +33,7 @@ public:
 	void skip(arch_t count);
 	void skip();
 	void flush(gfx_t& gfx);
-	bool matches(layer_t layer, blend_mode_t blend_mode, const texture_t* texture, const palette_t* palette, const program_t* program) const;
+	bool matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const;
 	bool visible() const;
 	friend bool operator<(const display_list_t& lhv, const display_list_t& rhv);
 public:
@@ -47,7 +47,7 @@ private:
 	bool_t drawn, write;
 	arch_t current, account;
 	vertex_pool_t quad_pool;
-	indexed_quads_t quad_list;
+	quad_buffer_t quad_buffer;
 };
 
 bool operator<(const display_list_t& lhv, const display_list_t& rhv);

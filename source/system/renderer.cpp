@@ -6,11 +6,11 @@
 #include "../utility/vfs.hpp"
 #include "../video/frame_buffer.hpp"
 
+#include <limits>
 #include <glm/gtc/matrix_transform.hpp>
 
-static constexpr arch_t kMaxIndices = 65535;
-
 renderer_t::renderer_t() :
+	display_allocator(),
 	overlay_quads(),
 	normal_quads(),
 	programs(pipeline_t::Total),
@@ -26,16 +26,9 @@ renderer_t::renderer_t() :
 	gk_viewport_matrix = gk_projection_matrix;
 }
 
-renderer_t::~renderer_t() {
-	bool result = indexed_quads_t::release_indexer();
-	if (!result) {
-		SYNAO_LOG("Couldn't release indexed_quads_t indexer!\n");
-	}
-}
-
 bool renderer_t::init(glm::ivec2 version) {
-	if (!indexed_quads_t::allocate_indexer(kMaxIndices, primitive_t::Triangles)) {
-		SYNAO_LOG("Couldn't allocate indexed_quads_t indexer!\n");
+	if (!display_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
+		SYNAO_LOG("Couldn't create quad_buffer_allocator_t!\n");
 		return false;
 	}
 	if (projection_buffer.valid() or viewport_buffer.valid()) {
@@ -220,14 +213,14 @@ arch_t renderer_t::get_draw_calls() const {
 
 display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : overlay_quads) {
-		if (list.matches(layer, blend_mode, texture, palette, program)) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, program)) {
 			return list;
 		}
 	}
 	overlay_quads.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		program
+		program, &display_allocator
 	);
 	std::sort(overlay_quads.begin(), overlay_quads.end());
 	return this->get_overlay_quads(
@@ -255,14 +248,14 @@ display_list_t& renderer_t::get_overlay_quads(layer_t layer, blend_mode_t blend_
 
 display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : normal_quads) {
-		if (list.matches(layer, blend_mode, texture, palette, program)) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, program)) {
 			return list;
 		}
 	}
 	normal_quads.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		program
+		program, &display_allocator
 	);
 	std::sort(normal_quads.begin(), normal_quads.end());
 	return this->get_normal_quads(
