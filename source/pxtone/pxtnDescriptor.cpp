@@ -3,6 +3,11 @@
 
 #include "./pxtnDescriptor.h"
 
+#ifdef __clang__
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wswitch"
+#endif // __clang__
+
 pxtnDescriptor::pxtnDescriptor()
 {
 	_p_desc = NULL ;
@@ -270,3 +275,7 @@ bool pxtnDescriptor::v_r  ( int32_t *p  )
 
 	return true;
 }
+
+#ifdef __clang__
+	#pragma clang diagnostic pop
+#endif // __clang__

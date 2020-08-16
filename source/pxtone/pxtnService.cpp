@@ -9,6 +9,10 @@
 
 #include "./pxtnService.h"
 
+#ifdef __clang__
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wunused-value"
+#endif // __clang__
 
 #define _VERSIONSIZE    16
 #define _CODESIZE        8
@@ -18,26 +22,26 @@ static const char* _code_tune_x2x     = "PTTUNE--20050608";
 static const char* _code_tune_x3x     = "PTTUNE--20060115";
 static const char* _code_tune_x4x     = "PTTUNE--20060930";
 static const char* _code_tune_v5      = "PTTUNE--20071119";
-							
+
 static const char* _code_proj_x1x     = "PTCOLLAGE-050227";
 static const char* _code_proj_x2x     = "PTCOLLAGE-050608";
 static const char* _code_proj_x3x     = "PTCOLLAGE-060115";
 static const char* _code_proj_x4x     = "PTCOLLAGE-060930";
 static const char* _code_proj_v5      = "PTCOLLAGE-071119";
-							
-							
+
+
 static const char* _code_x1x_PROJ     = "PROJECT=";
 static const char* _code_x1x_EVEN     = "EVENT===";
 static const char* _code_x1x_UNIT     = "UNIT====";
 static const char* _code_x1x_END      = "END=====";
 static const char* _code_x1x_PCM      = "matePCM=";
-			
+
 static const char* _code_x3x_pxtnUNIT = "pxtnUNIT";
 static const char* _code_x4x_evenMAST = "evenMAST";
 static const char* _code_x4x_evenUNIT = "evenUNIT";
-			
+
 static const char* _code_antiOPER     = "antiOPER"; // anti operation(edit)
-			
+
 static const char* _code_num_UNIT     = "num UNIT";
 static const char* _code_MasterV5     = "MasterV5";
 static const char* _code_Event_V5     = "Event V5";
@@ -80,7 +84,7 @@ enum _enum_Tag
 	_TAG_textCOMM    ,
 	_TAG_assiUNIT    ,
 	_TAG_assiWOIC    ,
-	_TAG_pxtoneND    
+	_TAG_pxtoneND
 
 };
 
@@ -93,12 +97,12 @@ pxtnService::pxtnService()
 	text          = NULL;
 	master        = NULL;
 	evels         = NULL;
-			      
+
 	_delays       = NULL; _delay_max = _delay_num = 0;
 	_ovdrvs       = NULL; _ovdrv_max = _ovdrv_num = 0;
 	_woices       = NULL; _woice_max = _woice_num = 0;
 	_units        = NULL; _unit_max  = _unit_num  = 0;
-			     
+
 	_ptn_bldr     = NULL;
 
 	_sampled_proc = NULL;
@@ -177,7 +181,7 @@ pxtnERR pxtnService::_init( int32_t fix_evels_num, bool b_edit )
 	byte_size = sizeof(pxtnUnit*) * pxtnMAX_TUNEUNITSTRUCT;
 	if( !(  _units = (pxtnUnit**      )malloc( byte_size ) ) ){ res = pxtnERR_memory; goto End; }
 	memset( _units, 0,                         byte_size );
-	_unit_max = pxtnMAX_TUNEUNITSTRUCT; 
+	_unit_max = pxtnMAX_TUNEUNITSTRUCT;
 
 	_group_num = pxtnMAX_TUNEGROUPNUM  ;
 
@@ -635,7 +639,7 @@ pxtnERR pxtnService::_io_Read_Woice( pxtnDescriptor *p_doc, pxtnWOICETYPE type )
 	case pxtnWOICE_PTV : res = woice->io_matePTV_r( p_doc ); if( res != pxtnOK ) goto term; break;
 	case pxtnWOICE_PTN : res = woice->io_matePTN_r( p_doc ); if( res != pxtnOK ) goto term; break;
 	case pxtnWOICE_OGGV:
-#ifdef pxINCLUDE_OGGVORBIS		
+#ifdef pxINCLUDE_OGGVORBIS
 		res = woice->io_mateOGGV_r( p_doc );
 		if( res != pxtnOK ) goto term;
 #else
@@ -843,7 +847,7 @@ pxtnERR pxtnService::write( pxtnDescriptor *p_doc, bool b_tune, uint16_t exe_ver
 	int32_t  rough = b_tune ? 10 : 1;
 	uint16_t rrr   =            0;
 	pxtnERR  res   = pxtnERR_VOID;
-	
+
 	// format version
 	if( b_tune ){ if( !p_doc->w_asfile( _code_tune_v5, 1, _VERSIONSIZE ) ){ res = pxtnERR_desc_w; goto End; } }
 	else        { if( !p_doc->w_asfile( _code_proj_v5, 1, _VERSIONSIZE ) ){ res = pxtnERR_desc_w; goto End; } }
@@ -898,15 +902,15 @@ pxtnERR pxtnService::write( pxtnDescriptor *p_doc, bool b_tune, uint16_t exe_ver
 		case pxtnWOICE_PCM:
 			if( !p_doc->w_asfile( _code_matePCM , 1, _CODESIZE ) ){ res = pxtnERR_desc_w; goto End; }
 			if( !p_w->io_matePCM_w ( p_doc )                     ){ res = pxtnERR_desc_w; goto End; }
-			break;										   
-		case pxtnWOICE_PTV:								   
+			break;
+		case pxtnWOICE_PTV:
 			if( !p_doc->w_asfile( _code_matePTV , 1, _CODESIZE ) ){ res = pxtnERR_desc_w; goto End; }
 			if( !p_w->io_matePTV_w ( p_doc                     ) ){ res = pxtnERR_desc_w; goto End; }
-			break;										   
-		case pxtnWOICE_PTN:								   
+			break;
+		case pxtnWOICE_PTN:
 			if( !p_doc->w_asfile( _code_matePTN , 1, _CODESIZE ) ){ res = pxtnERR_desc_w; goto End; }
 			if( !p_w->io_matePTN_w ( p_doc                     ) ){ res = pxtnERR_desc_w; goto End; }
-			break;										   
+			break;
 		case pxtnWOICE_OGGV:
 
 #ifdef pxINCLUDE_OGGVORBIS
@@ -918,7 +922,7 @@ pxtnERR pxtnService::write( pxtnDescriptor *p_doc, bool b_tune, uint16_t exe_ver
 			break;
         default:
             res = pxtnERR_inv_data; goto End;
-		}												   
+		}
 
         if( !b_tune && p_w->is_name_buf() )
 		{
@@ -945,7 +949,7 @@ pxtnERR pxtnService::write( pxtnDescriptor *p_doc, bool b_tune, uint16_t exe_ver
 		if( !p_doc->w_asfile( _code_pxtoneND, 1, _CODESIZE ) ){ res = pxtnERR_desc_w; goto End; }
 		if( !p_doc->w_asfile( &end_size     , 4,         1 ) ){ res = pxtnERR_desc_w; goto End; }
 	}
-	
+
 	res = pxtnOK;
 End:
 
@@ -969,7 +973,7 @@ pxtnERR pxtnService::_ReadTuneItems( pxtnDescriptor *p_doc )
 	while( !b_end )
 	{
 		if( !p_doc->r( code, 1, _CODESIZE ) ){ res = pxtnERR_desc_r; goto term; }
-		
+
 		_enum_Tag tag = _CheckTagCode( code );
 		switch( tag )
 		{
@@ -1007,7 +1011,7 @@ pxtnERR pxtnService::_ReadTuneItems( pxtnDescriptor *p_doc )
 		case _TAG_textCOMM    : if( !text->Comment_r               ( p_doc ) ){ res = pxtnERR_desc_r; goto term; } break;
 		case _TAG_assiWOIC    : res = _io_assiWOIC_r               ( p_doc ); if( res != pxtnOK ) goto term; break;
 		case _TAG_assiUNIT    : res = _io_assiUNIT_r               ( p_doc ); if( res != pxtnOK ) goto term; break;
-		case _TAG_pxtoneND    : b_end = true; break;				
+		case _TAG_pxtoneND    : b_end = true; break;
 
 		// old -------
 		case _TAG_x4x_evenMAST: res = master->io_r_x4x              ( p_doc                ); if( res != pxtnOK ) goto term; break;
@@ -1017,15 +1021,15 @@ pxtnERR pxtnService::_ReadTuneItems( pxtnDescriptor *p_doc )
 		case _TAG_x1x_UNIT    : res = _io_Read_OldUnit              ( p_doc, 1             ); if( res != pxtnOK ) goto term; break;
 		case _TAG_x1x_PCM     : res = _io_Read_Woice                ( p_doc, pxtnWOICE_PCM ); if( res != pxtnOK ) goto term; break;
 		case _TAG_x1x_EVEN    : res = evels ->io_Unit_Read_x4x_EVENT( p_doc, true, false   ); if( res != pxtnOK ) goto term; break;
-		case _TAG_x1x_END     : b_end = true; break;									 
-																						 
+		case _TAG_x1x_END     : b_end = true; break;
+
 		default: res = pxtnERR_fmt_unknown; goto term;
 		}
 	}
 
 	res = pxtnOK;
 term:
-	
+
 	return res;
 
 }
@@ -1158,10 +1162,10 @@ pxtnERR pxtnService::_pre_count_event( pxtnDescriptor *p_doc, int32_t* p_count )
 		case _TAG_antiOPER    :
 		case _TAG_num_UNIT    :
 		case _TAG_x3x_pxtnUNIT:
-		case _TAG_matePCM     : 
-		case _TAG_matePTV     : 
-		case _TAG_matePTN     : 
-		case _TAG_mateOGGV    : 
+		case _TAG_matePCM     :
+		case _TAG_matePTV     :
+		case _TAG_matePTN     :
+		case _TAG_mateOGGV    :
 		case _TAG_effeDELA    :
 		case _TAG_effeOVER    :
 		case _TAG_textNAME    :
@@ -1190,7 +1194,7 @@ term:
 
 	if( res != pxtnOK ) *p_count =     0;
 	else                *p_count = count;
-	
+
 	return res;
 }
 
@@ -1244,7 +1248,7 @@ pxtnERR pxtnService::read( pxtnDescriptor *p_doc )
 		if( clock1 > clock2 ) master->AdjustMeasNum( clock1 );
 		else                  master->AdjustMeasNum( clock2 );
 	}
-	
+
 	_moo_b_valid_data = true;
 	res = pxtnOK;
 term:
@@ -1300,3 +1304,7 @@ bool pxtnService::_x1x_Project_Read( pxtnDescriptor *p_doc )
 
 	return true;
 }
+
+#ifdef __clang__
+	#pragma clang diagnostic pop
+#endif // __clang__

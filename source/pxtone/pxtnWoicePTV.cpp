@@ -5,6 +5,11 @@
 #include "./pxtnMem.h"
 #include "./pxtnWoice.h"
 
+#ifdef __clang__
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wswitch"
+#endif // __clang__
+
 //                          01234567
 static const char *_code = "PTVOICE-";
 //             _version  =  20050826;
@@ -60,7 +65,7 @@ static bool _Write_Wave( pxtnDescriptor *p_doc, const pxtnVOICEUNIT *p_vc, int32
 		if( !p_doc->w_asfile( p_vc->p_pcm->get_p_buf(), 1, size )      ) goto End;
 		*p_total += size;
 		break;
-			
+
 		case pxtnVOICE_OggVorbis: goto End; // not support.
 	}
 
@@ -231,7 +236,7 @@ bool pxtnWoice::PTV_Write( pxtnDescriptor *p_doc, int32_t *p_total ) const
 	if( p_total ) *p_total = 16 + total;
 	b_ret  = true;
 End:
-	
+
 	return b_ret;
 }
 
@@ -288,3 +293,8 @@ term:
 
 	return res;
 }
+
+#ifdef __clang__
+	#pragma clang diagnostic pop
+#endif // __clang__
+

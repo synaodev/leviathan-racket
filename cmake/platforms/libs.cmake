@@ -10,6 +10,10 @@ else ()
 	message (FATAL_ERROR "Undefined pointer size!")
 endif ()
 
+# Set ImGui OpenGL Loader to GLAD
+
+target_compile_definitions (leviathan PRIVATE "-DIMGUI_IMPL_OPENGL_LOADER_GLAD")
+
 # Load SDL2 and OpenAL here since they can be finnicky
 
 if (VCPKG_TOOLCHAIN)

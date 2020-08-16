@@ -6,15 +6,20 @@
 
 #include "./pxtnDelay.h"
 
+#ifdef __clang__
+	#pragma clang diagnostic push
+	#pragma clang diagnostic ignored "-Wswitch"
+#endif // __clang__
+
 pxtnDelay::pxtnDelay()
 {
-	_b_played = true; 
-	_unit     = DELAYUNIT_Beat;    
+	_b_played = true;
+	_unit     = DELAYUNIT_Beat;
 	_group    =    0;
 	_rate     = 33.0;
 	_freq     =  3.f;
-	_smp_num  =    0;  
-	_offset   =    0;  
+	_smp_num  =    0;
+	_offset   =    0;
 	_rate_s32 =  100;
 
 	memset( _bufs, 0, sizeof(_bufs) );
@@ -151,3 +156,7 @@ pxtnERR pxtnDelay::Read( pxtnDescriptor *p_doc )
 
 	return pxtnOK;
 }
+
+#ifdef __clang__
+	#pragma clang diagnostic pop
+#endif // __clang__

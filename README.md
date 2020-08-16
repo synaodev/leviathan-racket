@@ -20,7 +20,7 @@ I hope to release in Winter 2020.
   - Must have compiler with C++17 support and at least CMake v3.15.
   - OpenGL v3.3 is the lowest version supported.
   - To manage dependencies, I recommend [vcpkg](https://github.com/microsoft/vcpkg). It's only required for Windows, but you can use it for MacOS and Linux as well.
-  - Run `vcpkg install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb`.
+  - Run `vcpkg install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb pugixml`.
   - When running cmake, pass the toolchain file: `cmake <build-directory> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Windows:
   - Limited to MSVC for now, unfortunately.
