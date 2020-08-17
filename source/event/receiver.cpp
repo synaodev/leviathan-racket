@@ -383,15 +383,15 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 		timer = 0.0f;
 		calls = 0;
 		for (arch_t it = 0; it < args.size(); ++it) {
-#ifdef SYNAO_MACHINE_x64
-			if (state->SetArgQWord(static_cast<uint_t>(it), args[it]) < 0) {
-				SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+			if constexpr (sizeof(arch_t) == 8) {
+				if (state->SetArgQWord(static_cast<uint_t>(it), args[it]) < 0) {
+					SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+				}
+			} else {
+				if (state->SetArgDWord(static_cast<uint_t>(it), args[it]) < 0) {
+					SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+				}
 			}
-#else // SYNAO_MACHINE_x64
-			if (state->SetArgDWord(static_cast<uint_t>(it), args[it]) < 0) {
-				SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
-			}
-#endif // SYNAO_MACHINE_x64
 		}
 	} else {
 		SYNAO_LOG("Couldn't execute function!\n");
@@ -505,11 +505,11 @@ void receiver_t::generate_properties() {
 	assert(r >= 0);
 	r = engine->RegisterTypedef("real64_t", "double");
 	assert(r >= 0);
-#ifdef SYNAO_MACHINE_x64
-	r = engine->RegisterTypedef("arch_t", "uint64");
-#else
-	r = engine->RegisterTypedef("arch_t", "uint");
-#endif
+	if constexpr (sizeof(arch_t) == 8) {
+		r = engine->RegisterTypedef("arch_t", "uint64");
+	} else {
+		r = engine->RegisterTypedef("arch_t", "uint");
+	}
 	// Register String Type
 	RegisterStdString(engine);
 	// Register Array Type

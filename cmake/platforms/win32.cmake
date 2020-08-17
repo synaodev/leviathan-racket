@@ -12,7 +12,13 @@ target_compile_definitions (leviathan PRIVATE
 	"-D_CRT_NONSTDC_NO_WARNINGS"
 )
 
-if (MSVC)
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_compile_definitions (leviathan PRIVATE
+		"/sdl"	  # Enable security checks
+		"/utf-8"  # UTF-8 source files
+		"/WX"	  # Treat linker warnings as errors
+	)
+elseif (MSVC)
 	# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
 	foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
@@ -38,8 +44,6 @@ if (MSVC)
 		"/w44263" # Non-virtual member function hides base class virtual function
 		"/w44265" # Class has virtual functions, but destructor is not virtual
 	)
-elseif (MINGW)
-	target_link_libraries (leviathan PRIVATE stdc++fs)
 else ()
 	message (FATAL_ERROR "Undefined Windows toolchain!")
 endif ()

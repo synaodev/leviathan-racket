@@ -5,6 +5,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
+#include <fstream>
 #include <nlohmann/json.hpp>
 
 font_t::font_t() :
@@ -13,7 +14,7 @@ font_t::font_t() :
 	texture(nullptr),
 	palette(nullptr)
 {
-	
+
 }
 
 font_t::font_t(font_t&& that) noexcept : font_t() {

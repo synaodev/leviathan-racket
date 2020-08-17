@@ -12,6 +12,7 @@
 #include "../utility/setup_file.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <SDL2/SDL.h>
 
 static constexpr uint_t kStopDelay = 40;

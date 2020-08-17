@@ -49,8 +49,9 @@ using optr_t = void*;
 #elif defined(TARGET_VOIDP_EQUALS_32)
 	#define SYNAO_MACHINE_x86
 	using arch_t = uint32_t;
-#else
-	#error "Error! Architecture is undefined!"
+#else // If undefined, include <cstddef> and use size_t
+	#include <cstddef>
+	using arch_t = std::size_t;
 #endif // TARGET_VOIDP_EQUALS*
 
 #if !defined(NDEBUG) || defined(_DEBUG) || defined(DEBUG)
