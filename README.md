@@ -26,6 +26,7 @@ I hope to release in Winter 2020.
   - Supports MSVC, Clang, and MinGW (Posix threading model only).
   - For MinGW, you need to first build vcpkg dependencies using a MinGW triplet. When running cmake, you then need to specifiy your target triplet and your compiler locations like this:
     `cmake <build-directory> \`
+	`-G "MinGW Makefiles" \`
     `-DCMAKE_C_COMPILER=<mingw-gcc-posix> \`
     `-DCMAKE_CXX_COMPILER=<mingw-g++-posix> \`
     `-DVCPKG_TARGET_TRIPLET=x64-mingw-<linking-type>`

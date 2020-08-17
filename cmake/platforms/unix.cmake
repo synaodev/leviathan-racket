@@ -5,8 +5,9 @@ target_link_libraries (leviathan PRIVATE Threads::Threads)
 
 if (NOT MINGW)
 	target_link_libraries(leviathan PRIVATE ${CMAKE_DL_LIBS})
+
+	if (NOT APPLE)
+		target_link_libraries (leviathan PRIVATE stdc++fs)
+	endif ()
 endif ()
 
-if (NOT APPLE)
-	target_link_libraries (leviathan PRIVATE stdc++fs)
-endif ()

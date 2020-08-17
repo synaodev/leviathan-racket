@@ -37,7 +37,7 @@ endif ()
 
 if (UNIX OR MINGW)
 	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/unix.cmake")
-elseif (WINDOWS)
+elseif (WIN32)
 	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
 else ()
 	message (FATAL_ERROR "Undefined platform!")
