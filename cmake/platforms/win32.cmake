@@ -39,7 +39,7 @@ if (MSVC)
 		"/w44265" # Class has virtual functions, but destructor is not virtual
 	)
 elseif (MINGW)
-	message (FATAL_ERROR "MinGW is not currently supported!")
+	target_link_libraries (leviathan PRIVATE stdc++fs)
 else ()
 	message (FATAL_ERROR "Undefined Windows toolchain!")
 endif ()

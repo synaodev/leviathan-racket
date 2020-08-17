@@ -15,44 +15,32 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Find most packages & libaries
+# Find packages and libraries
 
-find_package (Angelscript CONFIG REQUIRED)
-find_package (glm CONFIG REQUIRED)
-find_package (EnTT CONFIG REQUIRED)
+include ("${PROJECT_SOURCE_DIR}/cmake/libraries.cmake")
 
-include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindTmxlite.cmake")
-if (NOT TMXLITE_FOUND)
-	message (FATAL_ERROR "Could not find Tmxlite!")
-endif ()
-
-include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindPugiXML.cmake")
-if (NOT PUGIXML_FOUND)
-	message (FATAL_ERROR "Could not find PugiXML!")
-endif ()
-
-include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindNlohmannJson.cmake")
-if (NOT NLOHMANN_JSON_FOUND)
-	message (FATAL_ERROR "Could not find JSON library!")
-endif ()
-
-include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindStb.cmake")
-if (NOT STB_FOUND)
-	message (FATAL_ERROR "Could not find stb!")
-endif ()
-
-# Define executable
+# Define executable and target compile defitions
 
 add_executable (leviathan)
 
+if (CMAKE_SIZEOF_VOID_P EQUAL 8)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_64")
+elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_32")
+else ()
+	message (FATAL_ERROR "Undefined pointer size!")
+endif ()
+
+if (VCPKG_TOOLCHAIN)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_TOOLCHAIN_VCPKG")
+endif ()
+
 # Platform specific
 
-include ("${PROJECT_SOURCE_DIR}/cmake/platforms/libs.cmake")
-
-if (WIN32)
-	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
-elseif (UNIX)
+if (UNIX OR MINGW)
 	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/unix.cmake")
+elseif (WINDOWS)
+	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
 else ()
 	message (FATAL_ERROR "Undefined platform!")
 endif ()
@@ -64,7 +52,6 @@ target_link_libraries (leviathan PRIVATE
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}
 	${TMXLITE_LIBRARY}
-	${PUGIXML_LIBRARY}
 	EnTT::EnTT
 	glm
 )
@@ -74,7 +61,6 @@ target_include_directories (leviathan PRIVATE
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
-	${PUGIXML_INCLUDE_DIR}
 )
 
 add_subdirectory("source")

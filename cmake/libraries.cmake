@@ -1,24 +1,27 @@
 cmake_minimum_required (VERSION 3.15)
 
-# Set pointer size
+find_package (Angelscript CONFIG REQUIRED)
+find_package (glm CONFIG REQUIRED)
+find_package (EnTT CONFIG REQUIRED)
 
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_64")
-elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_32")
-else ()
-	message (FATAL_ERROR "Undefined pointer size!")
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindTmxlite.cmake")
+if (NOT TMXLITE_FOUND)
+	message (FATAL_ERROR "Could not find Tmxlite!")
 endif ()
 
-# Set ImGui OpenGL Loader to GLAD
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindNlohmannJson.cmake")
+if (NOT NLOHMANN_JSON_FOUND)
+	message (FATAL_ERROR "Could not find JSON library!")
+endif ()
 
-target_compile_definitions (leviathan PRIVATE "-DIMGUI_IMPL_OPENGL_LOADER_GLAD")
+include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindStb.cmake")
+if (NOT STB_FOUND)
+	message (FATAL_ERROR "Could not find stb!")
+endif ()
 
-# Load SDL2 and OpenAL here since they can be finnicky
+# Vcpkg makes OpenAL and SDL2 finnicky
 
 if (VCPKG_TOOLCHAIN)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_TOOLCHAIN_VCPKG")
-
 	find_package (OpenAL CONFIG REQUIRED)
 	set (OPENAL_LIBRARY OpenAL::OpenAL)
 
@@ -29,8 +32,6 @@ if (VCPKG_TOOLCHAIN)
 		set (SDL2_LIBRARIES SDL2::SDL2 SDL2::SDL2main)
 	endif ()
 else ()
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_TOOLCHAIN_DEFAULT")
-
 	include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindOpenAL.cmake")
 	if (NOT OPENAL_FOUND)
 		message (FATAL_ERROR "Could not find OpenAL!")
