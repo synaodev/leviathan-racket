@@ -18,6 +18,12 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 		"/utf-8"  # UTF-8 source files
 		"/WX"	  # Treat linker warnings as errors
 	)
+elseif (MINGW)
+	find_package (Threads REQUIRED)
+	target_link_libraries (leviathan PRIVATE
+		Threads::Threads
+		stdc++fs
+	)
 elseif (MSVC)
 	# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
 	foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
