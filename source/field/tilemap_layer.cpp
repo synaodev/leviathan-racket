@@ -61,7 +61,7 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 		auto& name = property.getName();
 		if (name == kCollideLayer) {
 			colliding = tmx_convert::prop_to_bool(property);
-			priority = layer_value::TileFront;
+			priority = layer_value::TileBack;
 		} else if (name == kPriorityType) {
 			if (tmx_convert::prop_to_bool(property)) {
 				priority = layer_value::TileFront;

@@ -96,7 +96,7 @@ bool ai::weapons::damage_range(entt::entity s, kontext_t& ktx, glm::vec2 center,
 bool ai::weapons::reverse_range(entt::entity s, kontext_t& ktx) {
 	entt::entity result = entt::null;
 	rect_t zone = ktx.get<location_t>(s).hitbox();
-	ktx.slice<actor_header_t, location_t, kinematics_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, kinematics_t& kinematics, health_t& health) {	
+	ktx.slice<actor_header_t, location_t, kinematics_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, kinematics_t& kinematics, health_t& health) {
 		if (health.flags[health_flags_t::Deflectable] and location.overlap(zone)) {
 			health.flags[health_flags_t::Leviathan] = false;
 			kinematics.velocity = -kinematics.velocity;
@@ -149,7 +149,7 @@ void ai::frontier::tick(entt::entity s, routine_tuple_t& rtp) {
 	if (timer[0]-- <= 0 or weapons::damage_check(s, rtp.ktx)) {
 		rtp.ktx.dispose(s);
 	} else {
-		auto& sprite = rtp.ktx.get<sprite_t>(s);	
+		auto& sprite = rtp.ktx.get<sprite_t>(s);
 		sprite.amend = true;
 		sprite.angle = glm::mod(sprite.angle + 0.035f, glm::two_pi<real_t>());
 	}
@@ -190,9 +190,9 @@ void ai::toxitier::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
 	auto& timer = rtp.ktx.get<actor_timer_t>(s);
 	auto& listener = rtp.ktx.get<liquid_listener_t>(s);
-	if (listener.liquid == entt::null or 
-		!rtp.ktx.valid(listener.liquid) or 
-		timer[0]-- <= 0 or 
+	if (listener.liquid == entt::null or
+		!rtp.ktx.valid(listener.liquid) or
+		timer[0]-- <= 0 or
 		weapons::damage_check(s, rtp.ktx)) {
 		rtp.ktx.dispose(s);
 	} else {
@@ -374,11 +374,11 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 			glm::vec2 naomi_center = naomi_location.center();
 			real_t magnitude = glm::length(naomi_kinematics.velocity);
 			real_t angle = glm::atan(
-				naomi_center.y - actor_center.y, 
+				naomi_center.y - actor_center.y,
 				naomi_center.x - actor_center.x
 			);
 			real_t speed = glm::clamp(
-				magnitude + (kLowSpeed / 2.0f), 
+				magnitude + (kLowSpeed / 2.0f),
 				kLowSpeed, kMaxSpeed
 			);
 			kinematics.accel_angle(angle, speed);
@@ -480,18 +480,18 @@ void ai::kannon::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
 	if (kinematics.velocity.x != 0.0f) {
 		kinematics.accel_x(
-			kinematics.velocity.x > 0.0f ? 
+			kinematics.velocity.x > 0.0f ?
 			0.1f : -0.1f, kTopSpeed
 		);
 	} else if (kinematics.velocity.y != 0.0f) {
 		kinematics.accel_y(
-			kinematics.velocity.y > 0.0f ? 
+			kinematics.velocity.y > 0.0f ?
 			0.1f : -0.1f, kTopSpeed
 		);
 	}
 	auto& timer = rtp.ktx.get<actor_timer_t>(s);
-	if (kinematics.any_side() or 
-		weapons::damage_check(s, rtp.ktx) or 
+	if (kinematics.any_side() or
+		weapons::damage_check(s, rtp.ktx) or
 		timer[0]++ > 45) {
 		rtp.ktx.spawn(ai::blast_large::type, location.center());
 		rtp.aud.play(res::sfx::Explode2, 5);
@@ -576,7 +576,7 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 			angle = glm::pi<real_t>();
 		}
 		glm::vec2 end_point = collision::trace_ray(
-			rtp.map, 320.0f, 
+			rtp.map, 320.0f,
 			location.position, angle
 		);
 		sprite.amend = true;
@@ -594,6 +594,7 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.ktx.spawn(ai::blast_medium::type, location.center());
 	} if (rtp.ktx.valid(s)) {
 		sprite.alpha = glm::clamp(sprite.alpha - 0.075f, 0.0f, 1.0f);
+		sprite.amend = true;
 	}
 }
 
@@ -644,7 +645,7 @@ void ai::austere::tick(entt::entity s, routine_tuple_t& rtp) {
 		);
 		kinematics.accel_angle(angle, -kSpeed);
 	}
-	if (kinematics.any_side() or 
+	if (kinematics.any_side() or
 		weapons::damage_check(s, rtp.ktx) or
 		timer[0]-- <= 0) {
 		rtp.aud.play(res::sfx::Bwall, 5);

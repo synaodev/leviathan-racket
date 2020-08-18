@@ -4,21 +4,30 @@
 #include "./thread_pool.hpp"
 #include "../resource/tbl_entry.hpp"
 
-#include <locale>
+#include <cstdlib>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
 #include <nlohmann/json.hpp>
 
-#ifndef __APPLE__
-#include <filesystem>
-#else // __APPLE__
-#include <dirent.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#ifdef _WIN32
+	#include <windows.h>
+#else
+	#include <dirent.h>
+	#include <unistd.h>
+	#include <sys/stat.h>
+	#include <sys/types.h>
+#endif // _WIN32
+
+#ifdef __APPLE__
+	#include <libproc.h>
 #endif // __APPLE__
 
-#define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0]))
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	#include <filesystem>
+#endif // TARGET_MISSING_STL_FILESYSTEM
+
+#define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0] ))
 
 static const byte_t kEventPath[]	= "./data/event/";
 static const byte_t kFieldPath[]	= "./data/field/";
@@ -62,7 +71,7 @@ vfs_t::~vfs_t() {
 	}
 }
 
-bool vfs_t::mount(const setup_file_t& config) {
+bool vfs_t::init(const setup_file_t& config) {
 	if (vfs::device == this) {
 		SYNAO_LOG("Error! This virtual file system already exists!\n");
 		return false;
@@ -81,7 +90,7 @@ bool vfs_t::mount(const setup_file_t& config) {
 		SYNAO_LOG("Error! Couldn't create thread pool!\n");
 		return false;
 	}
-	SYNAO_LOG("Virtual filesystem mounted.\n");
+	SYNAO_LOG("Virtual filesystem initialized.\n");
 	return true;
 }
 
@@ -135,14 +144,31 @@ std::back_insert_iterator<std::u32string> vfs::to_utf32(
 	return output;
 }
 
-bool vfs::verify_structure() {
-	const byte_t* kDirList[] = {
+bool vfs::mount(const std::string& directory) {
+	static const byte_t* kDirList[] = {
 		kEventPath, kFieldPath,
 		kFontPath, kI18NPath,
 		kImagePath, kNoisePath,
 		kPalettePath, kSpritePath,
 		kTileKeyPath, kTunePath
 	};
+	if (!vfs::directory_exists(directory)) {
+		return false;
+	}
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	std::error_code code;
+	std::filesystem::current_path(directory, code);
+	if (code) {
+		SYNAO_LOG("Failed to set working directory to \"%s\"!\n", directory.c_str());
+		return false;
+	}
+#else
+	sint_t result = chdir(directory.c_str());
+	if (result != 0) {
+		SYNAO_LOG("Failed to set working directory to \"%s\"!\n", directory.c_str());
+		return false;
+	}
+#endif // TARGET_MISSING_STL_FILESYSTEM
 	bool result = true;
 	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
 		if (!vfs::directory_exists(kDirList[it])) {
@@ -153,50 +179,34 @@ bool vfs::verify_structure() {
 }
 
 bool vfs::directory_exists(const std::string& name) {
-#ifndef __APPLE__
-	if (!std::filesystem::exists(name)) {
-		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	if (!std::filesystem::exists(name) or !std::filesystem::is_directory(name)) {
+		SYNAO_LOG("\"%s\" isn't a valid directory!\n", name.c_str());
 		return false;
 	}
-	if (!std::filesystem::is_directory(name)) {
-		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
-		return false;
-	}
-#else // __APPLE__
+#else // TARGET_MISSING_STL_FILESYSTEM
 	struct stat sb;
-	if (stat(name.c_str(), &sb) != 0) {
-		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+	if (stat(name.c_str(), &sb) != 0 or S_ISDIR(sb.st_mode) == 0) {
+		SYNAO_LOG("\"%s\" isn't a valid directory!\n", name.c_str());
 		return false;
 	}
-	if (S_ISDIR(sb.st_mode) == 0) {
-		SYNAO_LOG("\"%s\" isn't a directory!\n", name.c_str());
-		return false;
-	}
-#endif // __APPLE__
+#endif // TARGET_MISSING_STL_FILESYSTEM
 	return true;
 }
 
 bool vfs::file_exists(const std::string& name) {
-#ifndef __APPLE__
-	if (!std::filesystem::exists(name)) {
-		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	if (!std::filesystem::exists(name) or !std::filesystem::is_regular_file(name)) {
+		SYNAO_LOG("\"%s\" isn't a valid file!\n", name.c_str());
 		return false;
 	}
-	if (!std::filesystem::is_regular_file(name)) {
-		SYNAO_LOG("\"%s\" isn't a regular file!\n", name.c_str());
-		return false;
-	}
-#else // __APPLE__
+#else // TARGET_MISSING_STL_FILESYSTEM
 	struct stat sb;
-	if (stat(name.c_str(), &sb) != 0) {
-		SYNAO_LOG("Cannot find \"%s\"!\n", name.c_str());
+	if (stat(name.c_str(), &sb) != 0 or S_ISREG(sb.st_mode) == 0) {
+		SYNAO_LOG("\"%s\" isn't a valid file!\n", name.c_str());
 		return false;
 	}
-	if (S_ISREG(sb.st_mode) == 0) {
-		SYNAO_LOG("\"%s\" isn't a regular file!\n", name.c_str());
-		return false;
-	}
-#endif // __APPLE__
+#endif // TARGET_MISSING_STL_FILESYSTEM
 	return true;
 }
 
@@ -204,11 +214,72 @@ bool vfs::create_directory(const std::string& name) {
 	if (vfs::directory_exists(name)) {
 		return true;
 	}
-#ifndef __APPLE__
-	return std::filesystem::create_directory(name);
-#else // __APPLE__
-	return mkdir(name.c_str(), 0755) == 0;
-#endif // __APPLE__
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	std::error_code code;
+	if (!std::filesystem::create_directory(name, code)) {
+		SYNAO_LOG("Failed to create file at: \"%s\"\n", name.c_str());
+		return false;
+	}
+#else
+	if (mkdir(name.c_str(), 0755) != 0) {
+		SYNAO_LOG("Failed to create file at: \"%s\"\n", name.c_str());
+		return false;
+	}
+#endif // TARGET_MISSING_STL_FILESYSTEM
+	return true;
+}
+
+std::string vfs::working_directory() {
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	std::error_code code;
+	auto path = std::filesystem::current_path(code);
+	if (code) {
+		SYNAO_LOG("Failed get working directory!\n");
+		return std::string();
+	}
+	return path.string();
+#else
+	byte_t buffer[1024];
+	if (getcwd(buffer, sizeof(buffer)) == nullptr) {
+		SYNAO_LOG("Failed get working directory!\n");
+		return std::string();
+	}
+	return std::string(buffer);
+#endif // TARGET_MISSING_STL_FILESYSTEM
+}
+
+std::string vfs::executable_directory() {
+	std::string result;
+#if defined(_WIN32)
+	byte_t buffer[MAX_PATH];
+	::GetModuleFileNameA(NULL, buffer, sizeof(buffer));
+	if (strlen(buffer) == 0) {
+		SYNAO_LOG("Failed get executable path!\n");
+		return std::string();
+	}
+	result = buffer;
+#elif defined(__APPLE__)
+	byte_t buffer[PROC_PIDPATHINFO_MAXSIZE];
+	pid_t getpid();
+	if (proc_pidpath(pid, buffer, sizeof(buffer)) <= 0) {
+		SYNAO_LOG("Failed get executable path!\n");
+		return std::string();
+	}
+	result = buffer;
+#elif defined(__linux__)
+	byte_t buffer[PATH_MAX + 1];
+	if (readlink("/proc/self/exe", buffer, PATH_MAX) < 0) {
+		SYNAO_LOG("Failed get executable path!\n");
+		return std::string();
+	}
+	result = buffer;
+#endif
+	arch_t position = result.find_last_of("\\/");
+	if (position == std::string::npos) {
+		SYNAO_LOG("Failed get executable directory!\n");
+		return std::string();
+	}
+	return result.substr(0, position);
 }
 
 std::string vfs::resource_path(vfs_resource_path_t path) {
@@ -243,17 +314,9 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	return std::string();
 }
 
-#if 0 // TODO: System Locale
-
-std::string vfs::system_locale() {
-	const std::locale locale;
-}
-
-#endif
-
 std::vector<std::string> vfs::file_list(const std::string& path) {
 	std::vector<std::string> result;
-#ifndef __APPLE__
+#ifndef TARGET_MISSING_STL_FILESYSTEM
 	for (auto&& file : std::filesystem::directory_iterator(path)) {
 		if (!file.is_directory()) {
 			const std::string fname = file.path().filename().string();
@@ -261,7 +324,7 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 			result.push_back(fstrn);
 		}
 	}
-#else // __APPLE__
+#else // TARGET_MISSING_STL_FILESYSTEM
 	DIR* dir;
 	struct dirent* ent;
 	if ((dir = opendir(path.c_str())) != nullptr) {
@@ -274,7 +337,7 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 		}
 		closedir(dir);
 	}
-#endif // __APPLE__
+#endif // TARGET_MISSING_STL_FILESYSTEM
 	return result;
 }
 
@@ -433,7 +496,7 @@ const noise_t* vfs::noise(const tbl_entry_t& entry) {
 	// auto it = vfs::device->noises.find(entry.hash);
 	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
-		noise_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->noises);
+		noise_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->noises);
 		ref.load(kNoisePath + std::string(entry.name) + ".wav", *vfs::device->thread_pool);
 		return &ref;
 	}
@@ -447,7 +510,7 @@ const animation_t* vfs::animation(const tbl_entry_t& entry) {
 	// auto it = vfs::device->animations.find(entry.hash);
 	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
-		animation_t& ref = vfs::device->allocate_safely(entry.hash, vfs::device->animations);
+		animation_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->animations);
 		ref.load(kSpritePath + std::string(entry.name) + ".cfg", *vfs::device->thread_pool);
 		return &ref;
 	}
@@ -469,7 +532,7 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 	// auto it = vfs::device->textures.find(names[0]);
 	auto it = vfs::device->search_safely(names[0], vfs::device->textures);
 	if (it == vfs::device->textures.end()) {
-		texture_t& ref = vfs::device->allocate_safely(names[0], vfs::device->textures);
+		texture_t& ref = vfs::device->emplace_safely(names[0], vfs::device->textures);
 		auto generate_full_paths = [&directory](std::vector<std::string> names) {
 			for (auto&& name : names) {
 				name = directory + name + ".png";
@@ -502,7 +565,7 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	// auto it = vfs::device->palettes.find(name);
 	auto it = vfs::device->search_safely(name, vfs::device->palettes);
 	if (it == vfs::device->palettes.end()) {
-		palette_t& ref = vfs::device->allocate_safely(name, vfs::device->palettes);
+		palette_t& ref = vfs::device->emplace_safely(name, vfs::device->palettes);
 		ref.load(
 			directory + name + ".png",
 			pixel_format_t::R2G2B2A2,

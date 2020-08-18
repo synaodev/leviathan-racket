@@ -44,12 +44,13 @@ namespace vfs {
 		std::string::const_iterator end,
 		std::back_insert_iterator<std::u32string> output
 	);
-	bool verify_structure();
+	bool mount(const std::string& directory);
 	bool directory_exists(const std::string& name);
 	bool file_exists(const std::string& name);
 	bool create_directory(const std::string& name);
+	std::string working_directory();
+	std::string executable_directory();
 	std::string resource_path(vfs_resource_path_t path);
-	std::string system_locale();
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);
@@ -82,9 +83,9 @@ public:
 	vfs_t(vfs_t&&) = delete;
 	vfs_t& operator=(vfs_t&&) = delete;
 	~vfs_t();
-	bool mount(const setup_file_t& config);
+	bool init(const setup_file_t& config);
 	template<typename K, typename T>
-	T& allocate_safely(const K& key, std::unordered_map<K, T>& map) {
+	T& emplace_safely(const K& key, std::unordered_map<K, T>& map) {
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
 		auto result = map.try_emplace(key);
 		return result.first->second;

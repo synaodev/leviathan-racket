@@ -6,6 +6,8 @@ target_link_libraries (leviathan PRIVATE
 	${CMAKE_DL_LIBS}
 )
 
-if (NOT APPLE)
+if (APPLE)
+	target_compile_definitions (leviathan PRIVATE "-DTARGET_MISSING_STL_FILESYSTEM")
+else ()
 	target_link_libraries (leviathan PRIVATE stdc++fs)
 endif ()

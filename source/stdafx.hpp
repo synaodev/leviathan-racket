@@ -34,7 +34,7 @@
 #include <numeric>
 #include <fstream>
 #include <sstream>
-#include <iomanip> 
+#include <iomanip>
 #include <streambuf>
 #include <locale>
 #include <atomic>
@@ -42,12 +42,9 @@
 #include <mutex>
 #include <future>
 
-// C++ filesystem library is weird on Apple Clang
-#ifndef __APPLE__
-#include <filesystem>
-#else
-#include <dirent.h>
-#endif // __APPLE__
+#ifndef TARGET_MISSING_STL_FILESYSTEM
+	#include <filesystem>
+#endif // TARGET_MISSING_STL_FILESYSTEM
 
 // Other libraries
 #include <glm/glm.hpp>

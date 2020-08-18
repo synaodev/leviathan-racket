@@ -127,7 +127,7 @@ static int proc_naomi(setup_file_t& config) {
 	// Accessible from anywhere in order to reduce headaches.
 	// Must destroy this before destroying video and audio devices.
 	vfs_t fs;
-	if (!fs.mount(config)) {
+	if (!fs.init(config)) {
 		return EXIT_FAILURE;
 	}
 	// Global music device is dependent on existance of audio device.
@@ -190,7 +190,7 @@ static int proc_editor(setup_file_t& config) {
 		return EXIT_FAILURE;
 	}
 	vfs_t fs;
-	if (!fs.mount(config)) {
+	if (!fs.init(config)) {
 		return EXIT_FAILURE;
 	}
 	glm::ivec2 version = video.get_opengl_version();
@@ -208,10 +208,41 @@ static void print_version() {
 	SYNAO_LOG("Leviathan Racket Version: 0.0.0.0\n");
 }
 
+static bool attempt_mounting(const byte_t* directory) {
+	if (directory != nullptr) {
+		if (vfs::mount(directory)) {
+			return true;
+		} else {
+			SYNAO_LOG("Warning! Couldn\'t mount filesystem at directory: \"%s\"\n", directory);
+		}
+	}
+	const std::string working_directory = vfs::working_directory();
+	if (vfs::mount(working_directory)) {
+		return true;
+	}
+	const std::string executable_directory = vfs::executable_directory();
+	if (vfs::mount(executable_directory)) {
+		return true;
+	}
+	return false;
+}
+
 int main(int argc, char** argv) {
-	if (!vfs::verify_structure()) {
-		SYNAO_LOG("Fatal error! Directory structure is incorrect!\n");
-		return EXIT_FAILURE;
+	// Check arguments
+	const byte_t* directory = nullptr;
+	bool_t tile_editor = false;
+	bool_t show_version = false;
+	for (sint_t it = 1; it < argc; ++it) {
+		const byte_t* option = argv[it];
+		if (!show_version and std::strcmp(option, "--version") == 0) {
+			show_version = true;
+		} else if (!tile_editor and std::strcmp(option, "--editor") == 0) {
+			tile_editor = true;
+		} else if (directory == nullptr) {
+			directory = option;
+		} else {
+			break;
+		}
 	}
 	if (std::atexit(SDL_Quit) != 0) {
 		SYNAO_LOG("Pushing to \"std::atexit\" buffer failed!\n");
@@ -221,20 +252,13 @@ int main(int argc, char** argv) {
 		SYNAO_LOG("SDL Initialization failed!\nSDL Error: %s\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
+	// "Mount" filesystem before loading anything.
+	if (!attempt_mounting(directory)) {
+		SYNAO_LOG("Fatal error! Could not mount filesystem!\n");
+		return EXIT_FAILURE;
+	}
+	// Load config file
 	setup_file_t config;
 	load_config_file(config);
-	// Check arguments
-	if (argc > 1) {
-		const byte_t* option = argv[1];
-		if (std::strcmp(option, "--editor") == 0) {
-			SYNAO_LOG("Editor requested...\n");
-			return proc_editor(config);
-		} else if (std::strcmp(option, "--version") == 0) {
-			print_version();
-		} else {
-			SYNAO_LOG("Error! Unknown command option!\n");
-			return EXIT_FAILURE;
-		}
-	}
-	return proc_naomi(config);
+	return tile_editor ? proc_editor(config) : proc_naomi(config);
 }
