@@ -39,7 +39,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, title_view, headsup, camera, naomi_state, kontext)) {
 		return false;
 	}
-	if (!dialogue_gui.init(receiver)) {
+	if (!dialogue_gui.init(audio, receiver)) {
 		return false;
 	}
 	if (!inventory_gui.init()) {
@@ -89,7 +89,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 #endif // SYNAO_DEBUG_BUILD
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
 		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
-		dialogue_gui.handle(input, audio);
+		dialogue_gui.handle(input);
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
 		title_view.handle();
 		headsup.handle(kernel);
@@ -108,6 +108,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 void runtime_t::update(real64_t delta) {
 	accum += delta;
 	kernel.update(delta);
+	receiver.update(delta);
 	stack_gui.update(delta);
 	dialogue_gui.update(delta);
 	inventory_gui.update(delta);

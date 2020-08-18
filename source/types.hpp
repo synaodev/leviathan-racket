@@ -44,10 +44,8 @@ using void_t = void;
 using optr_t = void*;
 
 #if defined(TARGET_VOIDP_EQUALS_64)
-	#define SYNAO_MACHINE_x64
 	using arch_t = uint64_t;
 #elif defined(TARGET_VOIDP_EQUALS_32)
-	#define SYNAO_MACHINE_x86
 	using arch_t = uint32_t;
 #else // If undefined, include <cstddef> and use size_t
 	#include <cstddef>

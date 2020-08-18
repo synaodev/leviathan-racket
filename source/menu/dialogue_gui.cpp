@@ -2,6 +2,7 @@
 
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
+#include "../utility/constants.hpp"
 #include "../event/receiver.hpp"
 #include "../event/array.hpp"
 #include "../system/input.hpp"
@@ -16,26 +17,30 @@ static const glm::vec2 kArrowOffset = glm::vec2(5.0f, 10.0f);
 static const glm::vec2 kTextOffsetA = glm::vec2(10.0f, 6.0f);
 static const glm::vec2 kTextOffsetB = glm::vec2(68.0f, 6.0f);
 
-static constexpr arch_t kFacesAnimState = 4;
-static constexpr real64_t kDefaultDelay = 0.04;
+static constexpr real_t kKeyHeldDelay = constants::MinInterval();
+static constexpr real_t kDefaultDelay = constants::MinInterval() * 2.8778;
+static constexpr real_t kHighestDelay = constants::MinInterval() * 6.0;
+
+static constexpr arch_t kFacesAnimIndex = 4;
 
 dialogue_gui_t::dialogue_gui_t() :
 	amend(true),
 	flags(0),
 	cursor_index(0),
 	cursor_total(0),
-	timer(0.0),
+	timer(0.0f),
 	delay(kDefaultDelay),
 	rect(glm::zero<glm::vec2>(), kDefaultRect),
 	text(),
 	faces(),
 	arrow(),
-	suspender()
+	suspender(),
+	push_sound()
 {
 
 }
 
-bool dialogue_gui_t::init(receiver_t& receiver) {
+bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
 	const font_t* font = vfs::font(0);
 	const animation_t* animation = vfs::animation(res::anim::Heads);
 	if (font == nullptr or animation == nullptr) {
@@ -49,6 +54,9 @@ bool dialogue_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
+	push_sound = [&audio](const tbl_entry_t& sound, arch_t index) {
+		audio.play(sound, index);
+	};
 	SYNAO_LOG("Dialogue GUI is ready.\n");
 	return true;
 }
@@ -57,32 +65,29 @@ void dialogue_gui_t::reset() {
 	this->close_textbox();
 }
 
-void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
+void dialogue_gui_t::handle(const input_t& input) {
 	if (flags[dialogue_flag_t::Textbox]) {
 		if (!text.finished()) {
-			if (flags[dialogue_flag_t::Sound]) {
-				flags[dialogue_flag_t::Sound] = false;
-				flags[dialogue_flag_t::Writing] = true;
-				text.increment();
-				audio.play(res::sfx::Text, 7);
+			if (!flags[dialogue_flag_t::Delay]) {
+				delay = input.holding[btn_t::Yes] ? kKeyHeldDelay : kDefaultDelay;
 			}
 		} else if (flags[dialogue_flag_t::Question]) {
 			if (input.pressed[btn_t::Up]) {
 				if (cursor_index > 0) {
 					--cursor_index;
 					arrow.mut_position(0.0f, -text.get_font_size().y);
-					audio.play(res::sfx::Select, 0);
+					std::invoke(push_sound, res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Down]) {
 				if (cursor_index < cursor_total) {
 					++cursor_index;
 					arrow.mut_position(0.0f, text.get_font_size().y);
-					audio.play(res::sfx::Select, 0);
+					std::invoke(push_sound, res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Jump]) {
 				cursor_total = 0;
 				flags[dialogue_flag_t::Question] = false;
-				audio.play(res::sfx::TitleBeg, 0);
+				std::invoke(push_sound, res::sfx::TitleBeg, 0);
 			}
 		} else {
 			flags[dialogue_flag_t::Writing] = false;
@@ -92,11 +97,13 @@ void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
 
 void dialogue_gui_t::update(real64_t delta) {
 	if (flags[dialogue_flag_t::Textbox]) {
-		timer += delta;
+		timer += static_cast<real_t>(delta);
 		if (timer >= delay) {
 			timer = glm::mod(timer, delay);
 			if (!text.finished()) {
-				flags[dialogue_flag_t::Sound] = true;
+				flags[dialogue_flag_t::Writing] = true;
+				text.increment();
+				std::invoke(push_sound, res::sfx::Text, 7);
 			}
 		}
 		if (flags[dialogue_flag_t::Facebox]) {
@@ -185,6 +192,7 @@ void dialogue_gui_t::close_textbox() {
 	amend = true;
 	cursor_index = 0;
 	cursor_total = 0;
+	timer = 0.0f;
 	delay = kDefaultDelay;
 	flags.reset();
 	text.clear();
@@ -200,7 +208,7 @@ void dialogue_gui_t::set_face(arch_t state, direction_t direction) {
 	cursor_total = 0;
 	text.set_position(rect.left_top() + kTextOffsetB);
 	faces.set_position(rect.left_top() + kFacesOffset);
-	faces.set_state(state + kFacesAnimState);
+	faces.set_state(state + kFacesAnimIndex);
 	faces.set_direction(direction);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 }
@@ -214,6 +222,16 @@ void dialogue_gui_t::set_face() {
 	faces.set_state(0);
 	faces.set_direction(direction_t::Right);
 	arrow.set_position(rect.left_top() + kArrowOffset);
+}
+
+void dialogue_gui_t::set_delay(real_t delay) {
+	flags[dialogue_flag_t::Delay] = true;
+	this->delay = glm::clamp(delay, kDefaultDelay, kHighestDelay);
+}
+
+void dialogue_gui_t::set_delay() {
+	flags[dialogue_flag_t::Delay] = false;
+	this->delay = kDefaultDelay;
 }
 
 void dialogue_gui_t::ask_question(const CScriptArray* array) {

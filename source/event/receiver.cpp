@@ -134,16 +134,7 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					timer = 0.0f;
 					calls = 0;
 				}
-			} else if (bitmask[rec_bits_t::Waiting]) {
-				timer -= constants::MinInterval<real32_t>();
-				if (timer <= 0.0f) {
-					bitmask[rec_bits_t::Running] = true;
-					bitmask[rec_bits_t::Waiting] = false;
-					bitmask[rec_bits_t::Stalled] = false;
-					timer = 0.0f;
-					calls = 0;
-				}
-			} else {
+			} else if (!bitmask[rec_bits_t::Waiting]) {
 				sint_t r = state->Execute();
 				switch (r) {
 				case asEXECUTION_SUSPENDED: {
@@ -178,6 +169,19 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 				}
 				}
 			}
+		}
+	}
+}
+
+void receiver_t::update(real64_t delta) {
+	if (bitmask[rec_bits_t::Waiting]) {
+		timer -= static_cast<real_t>(delta);
+		if (timer <= 0.0f) {
+			bitmask[rec_bits_t::Running] = true;
+			bitmask[rec_bits_t::Waiting] = false;
+			bitmask[rec_bits_t::Stalled] = false;
+			timer = 0.0f;
+			calls = 0;
 		}
 	}
 }
@@ -702,6 +706,12 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	assert(r >= 0);
 	// Set No Facebox
 	r = engine->RegisterGlobalFunction("void set_face()", WRAP_MFN_PR(dialogue_gui_t, set_face, (void), void), call_gthis, &dialogue_gui);
+	assert(r >= 0);
+	// Set Text Delay
+	r = engine->RegisterGlobalFunction("void set_delay(real32_t delay)", WRAP_MFN_PR(dialogue_gui_t, set_delay, (real_t), void), call_gthis, &dialogue_gui);
+	assert(r >= 0);
+	// Set No Text Delay
+	r = engine->RegisterGlobalFunction("void set_delay()", WRAP_MFN_PR(dialogue_gui_t, set_delay, (void), void), call_gthis, &dialogue_gui);
 	assert(r >= 0);
 	// Push Titlecard
 	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_title_view_t, push), call_gthis, &title_view);

@@ -30,7 +30,7 @@ kontext_t::kontext_t() :
 	push_event(),
 	push_meter()
 {
-	
+
 }
 
 bool kontext_t::init(receiver_t& receiver, draw_headsup_t& headsup) {
@@ -170,17 +170,11 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		iter->second(actor, *this);
 		return true;
 	}
-#ifdef SYNAO_MACHINE_x64
-	SYNAO_LOG(
-		"Couldn't spawn actor %" PRIu64 "!\n",
-		spawn.type
-	);
-#else // SYNAO_MACHINE_x64
-	SYNAO_LOG(
-		"Couldn't spawn actor %d!\n",
-		spawn.type
-	);
-#endif // SYNAO_MACHINE_x64
+	if constexpr (sizeof(arch_t) == 8) {
+		SYNAO_LOG("Couldn't spawn actor %" PRIu64 "!\n", spawn.type);
+	} else {
+		SYNAO_LOG("Couldn't spawn actor %d!\n", static_cast<uint_t>(spawn.type));
+	}
 	return false;
 }
 
