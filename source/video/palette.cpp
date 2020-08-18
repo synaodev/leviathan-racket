@@ -19,7 +19,7 @@ palette_t::palette_t(palette_t&& that) noexcept : palette_t() {
 		std::atomic<bool> temp = ready.load();
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
-		
+
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(dimensions, that.dimensions);
@@ -32,7 +32,7 @@ palette_t& palette_t::operator=(palette_t&& that) noexcept {
 		std::atomic<bool> temp = ready.load();
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
-		
+
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(dimensions, that.dimensions);
@@ -57,15 +57,18 @@ bool palette_t::create(glm::ivec2 dimensions, pixel_format_t format) {
 	if (!handle) {
 		this->dimensions = dimensions;
 		this->format = format;
+
+		uint_t gl_enum = gfx_t::get_pixel_format_gl_enum(format);
+
 		glCheck(glGenTextures(1, &handle));
 		glCheck(glBindTexture(GL_TEXTURE_2D, handle));
 
 		if (sampler_t::has_immutable_option()) {
-			glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, format, dimensions.x, dimensions.y));
+			glCheck(glTexStorage2D(GL_TEXTURE_2D, 1, gl_enum, dimensions.x, dimensions.y));
 		} else {
-			glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			glCheck(glTexImage2D(GL_TEXTURE_2D, 0, gl_enum, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 		}
-		
+
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -96,8 +99,8 @@ void palette_t::assure() {
 		if (!image.empty()) {
 			if (this->create(image.get_dimensions(), format)) {
 				glCheck(glTexSubImage2D(
-					GL_TEXTURE_2D, 0, 0, 0, 
-					dimensions.x, dimensions.y, 
+					GL_TEXTURE_2D, 0, 0, 0,
+					dimensions.x, dimensions.y,
 					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
 				));
 				glCheck(glGenerateMipmap(GL_TEXTURE_2D));

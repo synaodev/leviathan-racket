@@ -5,21 +5,9 @@
 #include <atomic>
 
 #include "./image.hpp"
+#include "./gfx.hpp"
 
 struct thread_pool_t;
-
-namespace __enum_pixel_format {
-	enum type : uint_t {
-		Invalid  = 0,
-		R3G3B2A0 = 0x2A10,
-		R8G8B8A0 = 0x8051,
-		R2G2B2A2 = 0x8055,
-		R4G4B4A4 = 0x8056,
-		R8G8B8A8 = 0x8058
-	};
-}
-
-using pixel_format_t = __enum_pixel_format::type;
 
 struct sampler_t {
 public:

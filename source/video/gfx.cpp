@@ -182,3 +182,21 @@ uint_t gfx_t::get_buffer_usage_gl_enum(buffer_usage_t usage) {
 	}
 	return GL_NONE;
 }
+
+uint_t gfx_t::get_pixel_format_gl_enum(pixel_format_t format) {
+	switch (format) {
+	case pixel_format_t::Invalid:
+		break;
+	case pixel_format_t::R3G3B2A0:
+		return GL_R3_G3_B2;
+	case pixel_format_t::R8G8B8A0:
+		return GL_RGB8;
+	case pixel_format_t::R2G2B2A2:
+		return GL_RGBA2;
+	case pixel_format_t::R4G4B4A4:
+		return GL_RGBA4;
+	case pixel_format_t::R8G8B8A8:
+		return GL_RGBA8;
+	}
+	return GL_NONE;
+}

@@ -58,6 +58,19 @@ namespace __enum_primitive {
 
 using primitive_t = __enum_primitive::type;
 
+namespace __enum_pixel_format {
+	enum type : arch_t {
+		Invalid,
+		R3G3B2A0,
+		R8G8B8A0,
+		R2G2B2A2,
+		R4G4B4A4,
+		R8G8B8A8
+	};
+}
+
+using pixel_format_t = __enum_pixel_format::type;
+
 struct sampler_t;
 struct texture_t;
 struct palette_t;
@@ -84,6 +97,7 @@ public:
 public:
 	static uint_t get_compare_func_gl_enum(compare_func_t func);
 	static uint_t get_buffer_usage_gl_enum(buffer_usage_t usage);
+	static uint_t get_pixel_format_gl_enum(pixel_format_t format);
 private:
 	compare_func_t depth_func;
 	blend_mode_t blend_mode;

@@ -20,7 +20,7 @@ texture_t::texture_t() :
 	layers(0),
 	format(pixel_format_t::Invalid)
 {
-	
+
 }
 
 texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
@@ -69,13 +69,16 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		this->dimensions = dimensions;
 		this->layers = layers;
 		this->format = format;
+
+		uint_t gl_enum = gfx_t::get_pixel_format_gl_enum(format);
+
 		glCheck(glGenTextures(1, &handle));
 		if (layers > 1) {
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
 			if (sampler_t::has_immutable_option()) {
-				glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
+				glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, gl_enum, dimensions.x, dimensions.y, static_cast<uint_t>(layers)));
 			} else {
-				glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, format, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+				glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_enum, dimensions.x, dimensions.y, static_cast<uint_t>(layers), 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 			}
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
@@ -85,9 +88,9 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		} else {
 			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
 			if (sampler_t::has_immutable_option()) {
-				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, format, dimensions.x, dimensions.y));
+				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, gl_enum, dimensions.x, dimensions.y));
 			} else {
-				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, format, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, gl_enum, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
 			}
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
@@ -107,7 +110,7 @@ bool texture_t::color_buffer(glm::ivec2 dimensions, arch_t layers, pixel_format_
 		for (arch_t index = 0; index < layers; ++index) {
 			uint_t i = static_cast<uint_t>(index);
 			glCheck(glFramebufferTextureLayer(
-				GL_FRAMEBUFFER, 
+				GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + i,
 				handle, 0, i
 			));
@@ -169,8 +172,8 @@ void texture_t::assure() {
 			auto& image = images[0];
 			if (this->create(image.get_dimensions(), 1, format)) {
 				glCheck(glTexSubImage2D(
-					GL_TEXTURE_2D, 0, 0, 0, 
-					dimensions.x, dimensions.y, 
+					GL_TEXTURE_2D, 0, 0, 0,
+					dimensions.x, dimensions.y,
 					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
 				));
 				glCheck(glGenerateMipmap(GL_TEXTURE_2D));
