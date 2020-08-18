@@ -169,13 +169,13 @@ bool vfs::mount(const std::string& directory) {
 		return false;
 	}
 #endif // TARGET_MISSING_STL_FILESYSTEM
-	bool result = true;
+	bool problem = true;
 	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
 		if (!vfs::directory_exists(kDirList[it])) {
-			result = false;
+			problem = false;
 		}
 	}
-	return result;
+	return problem;
 }
 
 bool vfs::directory_exists(const std::string& name) {
@@ -260,7 +260,7 @@ std::string vfs::executable_directory() {
 	result = buffer;
 #elif defined(__APPLE__)
 	byte_t buffer[PROC_PIDPATHINFO_MAXSIZE];
-	pid_t getpid();
+	pid_t pid = getpid();
 	if (proc_pidpath(pid, buffer, sizeof(buffer)) <= 0) {
 		SYNAO_LOG("Failed get executable path!\n");
 		return std::string();
