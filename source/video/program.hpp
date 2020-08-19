@@ -5,16 +5,7 @@
 #include <vector>
 
 #include "./vertex.hpp"
-
-namespace __enum_shader_stage {
-	enum type : uint_t {
-		Vertex	 = 0x8B31,
-		Geometry = 0x8DD9,
-		Fragment = 0x8B30
-	};
-}
-
-using shader_stage_t = __enum_shader_stage::type;
+#include "./gfx.hpp"
 
 struct shader_t : public not_copyable_t {
 public:

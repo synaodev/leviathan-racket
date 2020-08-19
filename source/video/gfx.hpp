@@ -71,6 +71,16 @@ namespace __enum_pixel_format {
 
 using pixel_format_t = __enum_pixel_format::type;
 
+namespace __enum_shader_stage {
+	enum type : uint_t {
+		Vertex,
+		Geometry,
+		Fragment
+	};
+}
+
+using shader_stage_t = __enum_shader_stage::type;
+
 struct sampler_t;
 struct texture_t;
 struct palette_t;
@@ -98,6 +108,7 @@ public:
 	static uint_t get_compare_func_gl_enum(compare_func_t func);
 	static uint_t get_buffer_usage_gl_enum(buffer_usage_t usage);
 	static uint_t get_pixel_format_gl_enum(pixel_format_t format);
+	static uint_t get_shader_stage_gl_enum(shader_stage_t stage);
 private:
 	compare_func_t depth_func;
 	blend_mode_t blend_mode;

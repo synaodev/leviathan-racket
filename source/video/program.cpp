@@ -43,8 +43,11 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 	if (!handle) {
 		this->stage = stage;
 		const byte_t* source_pointer = source.c_str();
+
+		uint_t gl_enum = gfx_t::get_shader_stage_gl_enum(stage);
+
 		if (program_t::has_separable()) {
-			glCheck(handle = glCreateShaderProgramv(stage, 1, &source_pointer));
+			glCheck(handle = glCreateShaderProgramv(gl_enum, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
 			sint_t length = 0;
 			glCheck(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
@@ -56,7 +59,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 				return false;
 			}
 		} else {
-			glCheck(handle = glCreateShader(stage));
+			glCheck(handle = glCreateShader(gl_enum));
 			glCheck(glShaderSource(handle, 1, &source_pointer, NULL));
 			glCheck(glCompileShader(handle));
 

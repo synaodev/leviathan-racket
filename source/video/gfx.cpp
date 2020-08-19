@@ -200,3 +200,15 @@ uint_t gfx_t::get_pixel_format_gl_enum(pixel_format_t format) {
 	}
 	return GL_NONE;
 }
+
+uint_t gfx_t::get_shader_stage_gl_enum(shader_stage_t stage) {
+	switch (stage) {
+	case shader_stage_t::Vertex:
+		return GL_VERTEX_SHADER;
+	case shader_stage_t::Geometry:
+		return GL_GEOMETRY_SHADER;
+	case shader_stage_t::Fragment:
+		return GL_FRAGMENT_SHADER;
+	}
+	return GL_NONE;
+}
