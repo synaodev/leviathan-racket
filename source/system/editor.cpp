@@ -6,10 +6,9 @@
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 
-// Needed in order to quell annoying warnings...
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif // _MSC_VER
+#if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_opengl3.h"
@@ -71,17 +70,17 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 			std::get<SDL_Window*>(device),
 			std::get<SDL_GLContext>(device)
 		)) {
-		SYNAO_LOG("Error! Failed to initialize SDL2 for ImGui!\n");
+		synao_log("Error! Failed to initialize SDL2 for ImGui!\n");
 		return false;
 	}
 	window = std::get<SDL_Window*>(device);
 	if (!ImGui_ImplOpenGL3_Init("#version 330")) {
-		SYNAO_LOG("Error! Failed to initialize OpenGL for ImGui!\n");
+		synao_log("Error! Failed to initialize OpenGL for ImGui!\n");
 		return false;
 	}
 	context = std::get<SDL_GLContext>(device);
 	renderer.ortho(video.get_imgui_dimensions());
-	SYNAO_LOG("Editor subsystems initialized.\n");
+	synao_log("Editor subsystems initialized.\n");
 	return true;
 }
 

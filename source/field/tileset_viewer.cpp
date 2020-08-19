@@ -33,7 +33,7 @@ void tileset_viewer_t::reset() {
 	for (auto&& mask : bitmasks) {
 		mask = 0;
 	}
-	SYNAO_LOG("Cleared!\n");
+	synao_log("Cleared!\n");
 }
 
 void tileset_viewer_t::handle(const input_t& input) {
@@ -80,7 +80,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 					static_cast<real_t>(integral_coordinates.x * 16),
 					static_cast<real_t>(integral_coordinates.y * 16)
 				);
-				SYNAO_LOG(
+				synao_log(
 					"(%d, %d)\n",
 					integral_coordinates.x,
 					integral_coordinates.y
@@ -190,7 +190,7 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 		}
 		file = path;
 		renderer.clear();
-		SYNAO_LOG("Load successful!\n");
+		synao_log("Load successful!\n");
 		return true;
 	}
 	return false;
@@ -206,13 +206,13 @@ bool tileset_viewer_t::save() {
 				reinterpret_cast<byte_t*>(&bitmasks[0]),
 				sizeof(sint_t) * kMaskLength
 			);
-			SYNAO_LOG("Save successful!\n");
+			synao_log("Save successful!\n");
 			return true;
 		} else {
-			SYNAO_LOG("Error! Couldn't save attribute file: %s!\n", file.c_str());
+			synao_log("Error! Couldn't save attribute file: %s!\n", file.c_str());
 		}
 	} else {
-		SYNAO_LOG("Error! Can't save file!\n");
+		synao_log("Error! Can't save file!\n");
 	}
 	return false;
 }

@@ -9,17 +9,17 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::null::type, 			ai::null::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::hv_trigger::type, 	ai::hv_trigger::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::chest_full::type, 	ai::chest_full::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::chest_empty::type, 	ai::chest_empty::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::door::type, 			ai::door::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::death_spikes::type, 	ai::death_spikes::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::bed::type, 			ai::bed::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::ammo_station::type, 	ai::ammo_station::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::computer::type, 		ai::computer::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::fireplace::type, 		ai::fireplace::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::null::type, 			ai::null::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::hv_trigger::type, 	ai::hv_trigger::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::chest_full::type, 	ai::chest_full::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::chest_empty::type, 	ai::chest_empty::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::door::type, 			ai::door::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::death_spikes::type, 	ai::death_spikes::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::bed::type, 			ai::bed::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::ammo_station::type, 	ai::ammo_station::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::computer::type, 		ai::computer::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::fireplace::type, 		ai::fireplace::ctor);
 }
 
 void ai::null::ctor(entt::entity, kontext_t&) {

@@ -9,17 +9,17 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::shrapnel::type, 		ai::shrapnel::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::dust::type, 			ai::dust::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::splash::type, 		ai::splash::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::blast_small::type, 	ai::blast_small::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::blast_medium::type, 	ai::blast_medium::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::blast_large::type, 	ai::blast_large::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::energy_trail::type, 	ai::energy_trail::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::dash_flash::type, 	ai::dash_flash::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::barrier::type, 		ai::barrier::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::shrapnel::type, 		ai::shrapnel::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::dust::type, 			ai::dust::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::splash::type, 		ai::splash::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_small::type, 	ai::blast_small::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_medium::type, 	ai::blast_medium::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_large::type, 	ai::blast_large::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::energy_trail::type, 	ai::energy_trail::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::dash_flash::type, 	ai::dash_flash::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::barrier::type, 		ai::barrier::ctor);
 }
 
 void ai::particles::tick(entt::entity s, routine_tuple_t& rtp) {
@@ -36,7 +36,7 @@ void ai::smoke::ctor(entt::entity s, kontext_t& ktx) {
 
 	auto& kinematics = ktx.assign_if<kinematics_t>(s);
 	kinematics.accel_angle(
-		rng::next(0.0f, glm::two_pi<real_t>()), 
+		rng::next(0.0f, glm::two_pi<real_t>()),
 		rng::next(0.3f, 3.0f)
 	);
 

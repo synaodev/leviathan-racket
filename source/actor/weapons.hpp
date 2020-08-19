@@ -17,52 +17,52 @@ namespace ai {
 		bool reverse_range(entt::entity s, kontext_t& ktx);
 	}
 	namespace frontier {
-		constexpr arch_t type = SYNAO_HASH("frontier");
+		constexpr arch_t type = synao_hash("frontier");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace toxitier {
-		constexpr arch_t type = SYNAO_HASH("toxitier");
+		constexpr arch_t type = synao_hash("toxitier");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace weak_hammer {
-		constexpr arch_t type = SYNAO_HASH("wkhammer");
+		constexpr arch_t type = synao_hash("wkhammer");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace strong_hammer {
-		constexpr arch_t type = SYNAO_HASH("sthammer");
+		constexpr arch_t type = synao_hash("sthammer");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace holy_lance {
-		constexpr arch_t type = SYNAO_HASH("hylance");
+		constexpr arch_t type = synao_hash("hylance");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace holy_tether {
-		constexpr arch_t type = SYNAO_HASH("hytethr");
+		constexpr arch_t type = synao_hash("hytethr");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace kannon {
-		constexpr arch_t type = SYNAO_HASH("kannon");
+		constexpr arch_t type = synao_hash("kannon");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace nail_ray {
-		constexpr arch_t type = SYNAO_HASH("nailray");
+		constexpr arch_t type = synao_hash("nailray");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace wolf_vulcan {
-		constexpr arch_t type = SYNAO_HASH("wlfvulc");
+		constexpr arch_t type = synao_hash("wlfvulc");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace austere {
-		constexpr arch_t type = SYNAO_HASH("austere");
+		constexpr arch_t type = synao_hash("austere");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}

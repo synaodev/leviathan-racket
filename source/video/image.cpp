@@ -7,7 +7,7 @@
 #include <stb_image.h>
 
 image_t::image_t() :
-	dimensions(0), 
+	dimensions(0),
 	pixels()
 {
 
@@ -43,14 +43,14 @@ image_t image_t::generate(const std::string& full_path) {
 	if (data != nullptr) {
 		image.dimensions = glm::ivec2(width, height);
 		image.pixels.resize(
-			static_cast<arch_t>(width) * 
-			static_cast<arch_t>(height) * 
+			static_cast<arch_t>(width) *
+			static_cast<arch_t>(height) *
 			sizeof(uint_t)
 		);
 		std::memcpy(&image.pixels[0], data, image.pixels.size());
 		stbi_image_free(data);
 	} else {
-		SYNAO_LOG("Failed to load image from %s!\n", full_path.c_str());
+		synao_log("Failed to load image from %s!\n", full_path.c_str());
 	}
 	return image;
 }

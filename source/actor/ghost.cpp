@@ -10,8 +10,8 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::ghost::type, ai::ghost::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::ghost::type, ai::ghost::ctor);
 }
 
 void ai::ghost::ctor(entt::entity s, kontext_t& ktx) {

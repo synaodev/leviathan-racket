@@ -6,8 +6,6 @@ target_link_libraries (leviathan PRIVATE
 	${CMAKE_DL_LIBS}
 )
 
-if (APPLE)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_MISSING_STL_FILESYSTEM")
-else ()
+if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
 	target_link_libraries (leviathan PRIVATE stdc++fs)
 endif ()

@@ -1,6 +1,6 @@
 #include "./glcheck.hpp"
 
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 #include "../utility/logger.hpp"
 
 void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expression) {
@@ -33,7 +33,7 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 			break;
 		}
 		std::string fstr = file;
-		SYNAO_LOG(
+		synao_log(
 			"An internal OpenGL call failed in %s (%d)."
 			"\nExpression:\n   %s"
 			"\nError description:\n   %s\n   %s\n",
@@ -43,4 +43,4 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 	}
 }
 
-#endif // SYNAO_DEBUG_BUILD
+#endif

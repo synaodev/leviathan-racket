@@ -12,10 +12,10 @@ static constexpr sint_t kRecordJoystick = -3;
 input_t::input_t() :
 	pressed(0),
 	holding(0),
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	debug_pressed(),
 	debug_holding(),
-#endif // SYNAO_DEBUG_BUILD
+#endif
 	key_bind(),
 	joy_bind(),
 	recorder(kRecordNothings),
@@ -36,17 +36,17 @@ bool input_t::init(const setup_file_t& config) {
 	this->all_key_bindings(config);
 	this->all_joy_bindings(config);
 	if (joystick != nullptr) {
-		SYNAO_LOG("Error! Joystick already exists!\n");
+		synao_log("Error! Joystick already exists!\n");
 		return false;
 	}
 	if (SDL_NumJoysticks() != 0) {
 		joystick = SDL_JoystickOpen(0);
 		if (joystick == nullptr) {
-			SYNAO_LOG("Joystick cannot be created at startup! SDL Error: %s\n", SDL_GetError());
+			synao_log("Joystick cannot be created at startup! SDL Error: %s\n", SDL_GetError());
 			return false;
 		}
 	}
-	SYNAO_LOG("Input system initialized.\n");
+	synao_log("Input system initialized.\n");
 	return true;
 }
 
@@ -70,20 +70,20 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 					policy = policy_t::Stop;
 					pressed.reset();
 					holding.reset();
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 					debug_pressed.clear();
 					debug_holding.clear();
-#endif // SYNAO_DEBUG_BUILD
+#endif
 				}
 			}
 			break;
 		}
 		case SDL_KEYDOWN: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 			debug_pressed[code] = !debug_holding[code];
 			debug_holding[code] = true;
-#endif // SYNAO_DEBUG_BUILD
+#endif
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
@@ -97,9 +97,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYUP: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 			debug_holding[code] = false;
-#endif // SYNAO_DEBUG_BUILD
+#endif
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
@@ -217,7 +217,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			if (evt.jdevice.which == 0 and joystick == nullptr) {
 				joystick = SDL_JoystickOpen(0);
 				if (joystick == nullptr) {
-					SYNAO_LOG(
+					synao_log(
 						"Couldn't open joystick! SDL Error: %s\n",
 						SDL_GetError()
 					);
@@ -254,9 +254,9 @@ policy_t input_t::poll(policy_t policy) {
 
 void input_t::flush() {
 	pressed.reset();
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	debug_pressed.clear();
-#endif // SYNAO_DEBUG_BUILD
+#endif
 }
 
 glm::vec2 input_t::get_position() const {

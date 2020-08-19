@@ -3,10 +3,10 @@
 
 #include "./pxtnDescriptor.h"
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wswitch"
-#endif // __clang__
+#endif
 
 pxtnDescriptor::pxtnDescriptor()
 {
@@ -276,6 +276,6 @@ bool pxtnDescriptor::v_r  ( int32_t *p  )
 	return true;
 }
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic pop
-#endif // __clang__
+#endif

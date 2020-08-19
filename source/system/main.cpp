@@ -58,15 +58,15 @@ static void write_default_config(setup_file_t& config, const std::string& boot_p
 	config.set("Input", "JoyOptions", 7);
 	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
 	if (!vfs::create_directory(init_path)) {
-		SYNAO_LOG("Warning! Will not be able to save newly generated config file!\n");
+		synao_log("Warning! Will not be able to save newly generated config file!\n");
 	}
 }
 
 static void load_config_file(setup_file_t& config) {
 	const std::string boot_path = get_boot_path();
 	if (!config.load(boot_path)) {
-		SYNAO_LOG("Couldn't find main configuration file at \"%s\"!\n", boot_path.c_str());
-		SYNAO_LOG("Generating new config file...\n");
+		synao_log("Couldn't find main configuration file at \"%s\"!\n", boot_path.c_str());
+		synao_log("Generating new config file...\n");
 		write_default_config(config, boot_path);
 	}
 }
@@ -75,10 +75,10 @@ static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audi
 	policy_t policy = policy_t::Run;
 	runtime_t runtime;
 	if (!runtime.init(input, audio, music, renderer)) {
-		SYNAO_LOG("Runtime initialization failed!\n");
+		synao_log("Runtime initialization failed!\n");
 		return false;
 	}
-	SYNAO_LOG("Entering main loop...\n");
+	synao_log("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
 		policy = input.poll(policy);
@@ -153,10 +153,10 @@ static bool run_editor(input_t& input, video_t& video, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	editor_t editor;
 	if (!editor.init(video, renderer)) {
-		SYNAO_LOG("Editor initialization failed!\n");
+		synao_log("Editor initialization failed!\n");
 		return false;
 	}
-	SYNAO_LOG("Entering main loop...\n");
+	synao_log("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
 		policy = input.poll(policy, editor_t::get_event_callback());
@@ -205,25 +205,26 @@ static int proc_editor(setup_file_t& config) {
 }
 
 static void print_version() {
-	SYNAO_LOG("Leviathan Racket Version: 0.0.0.0\n");
+	synao_log("Leviathan Racket Version: 0.0.0.0\n");
 }
 
-static bool attempt_mounting(const byte_t* directory) {
-	if (directory != nullptr) {
-		if (vfs::mount(directory)) {
+static bool attempt_mounting(const byte_t* provided_directory) {
+	const std::string working_directory = vfs::working_directory();
+	if (provided_directory != nullptr) {
+		if (vfs::mount(provided_directory, false)) {
 			return true;
 		} else {
-			SYNAO_LOG("Warning! Couldn\'t mount filesystem at directory: \"%s\"\n", directory);
+			synao_log("Warning! Couldn\'t mount filesystem at directory: \"%s\"\n", provided_directory);
 		}
 	}
-	const std::string working_directory = vfs::working_directory();
-	if (vfs::mount(working_directory)) {
+	if (vfs::mount(working_directory, false)) {
 		return true;
 	}
 	const std::string executable_directory = vfs::executable_directory();
 	if (vfs::mount(executable_directory)) {
 		return true;
 	}
+	synao_log("Warning! Working directory before mounting process was \"%s\"!\n", working_directory.c_str());
 	return false;
 }
 
@@ -245,16 +246,16 @@ int main(int argc, char** argv) {
 		}
 	}
 	if (std::atexit(SDL_Quit) != 0) {
-		SYNAO_LOG("Pushing to \"std::atexit\" buffer failed!\n");
+		synao_log("Pushing to \"std::atexit\" buffer failed!\n");
 		return EXIT_FAILURE;
 	}
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
-		SYNAO_LOG("SDL Initialization failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("SDL Initialization failed!\nSDL Error: %s\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 	// "Mount" filesystem before loading anything.
 	if (!attempt_mounting(directory)) {
-		SYNAO_LOG("Fatal error! Could not mount filesystem!\n");
+		synao_log("Fatal error! Could not mount filesystem!\n");
 		return EXIT_FAILURE;
 	}
 	// Load config file

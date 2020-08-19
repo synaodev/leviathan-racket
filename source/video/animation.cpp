@@ -152,7 +152,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 
 void animation_t::load(const std::string& full_path) {
 	if (sequences.size() > 0) {
-		SYNAO_LOG("Warning! Tried to overwrite animation!\n");
+		synao_log("Warning! Tried to overwrite animation!\n");
 		return;
 	}
 	setup_file_t setup;
@@ -213,7 +213,7 @@ void animation_t::load(const std::string& full_path) {
 		}
 		ready = true;
 	} else {
-		SYNAO_LOG("Failed to load animation from %s!\n", full_path.c_str());
+		synao_log("Failed to load animation from %s!\n", full_path.c_str());
 	}
 }
 

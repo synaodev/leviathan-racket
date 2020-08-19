@@ -75,9 +75,9 @@ private:
 	void all_joy_bindings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	std::map<SDL_Scancode, bool_t> debug_pressed, debug_holding;
-#endif // SYNAO_DEBUG_BUILD
+#endif
 private:
 	std::map<sint_t, btn_t> key_bind, joy_bind;
 	sint_t recorder;

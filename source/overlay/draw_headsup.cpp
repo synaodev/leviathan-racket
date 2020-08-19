@@ -17,8 +17,10 @@ draw_headsup_t::draw_headsup_t() :
 	oxygen_count(),
 	item_view(),
 	fight_meter(),
-	fade(),
-	hidden()
+	fade()
+#ifdef LEVIATHAN_BUILD_DEBUG
+	,hidden()
+#endif
 {
 
 }
@@ -32,7 +34,7 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	const texture_t* texture = vfs::texture(res::img::Heads);
 	const palette_t* palette = vfs::palette(res::pal::Heads);
 	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr) {
-		SYNAO_LOG("HeadsUp overlay is missing resources and so child overlays cannot be renderered!\n");
+		synao_log("HeadsUp overlay is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
 	main_scheme.set_file(heads_animation);
@@ -62,15 +64,15 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	item_view.init(texture, palette, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	const font_t* font = vfs::debug_font();
 	if (font == nullptr) {
-		SYNAO_LOG("Could not load debug font!\n");
+		synao_log("Could not load debug font!\n");
 		return false;
 	}
 	hidden.init(texture, palette, font);
-#endif // SYNAO_DEBUG_BUILD
-	SYNAO_LOG("HeadsUp overlay is ready.\n");
+#endif
+	synao_log("HeadsUp overlay is ready.\n");
 	return true;
 }
 
@@ -89,9 +91,9 @@ void draw_headsup_t::handle(const kernel_t& kernel) {
 void draw_headsup_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	hidden.update(delta);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 }
 
 void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const {
@@ -109,16 +111,16 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		oxygen_count.invalidate();
 		item_view.invalidate();
 		fight_meter.invalidate();
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 		hidden.invalidate();
-#endif // SYNAO_DEBUG_BUILD
+#endif
 	}
 	if (fade.is_visible()) {
 		fade.render(renderer);
 	}
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	hidden.render(renderer);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 }
 
 void draw_headsup_t::set_parameters(headsup_params_t params) {
@@ -134,13 +136,11 @@ void draw_headsup_t::set_fight_values(sint_t current, sint_t maximum) {
 	fight_meter.set_values(current, maximum);
 }
 
-#ifdef SYNAO_DEBUG_BUILD
-
-void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
-	hidden.set_state(state, radio);
-}
-
-#endif // SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
+	void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
+		hidden.set_state(state, radio);
+	}
+#endif
 
 void draw_headsup_t::fade_in() {
 	fade.fade_in();

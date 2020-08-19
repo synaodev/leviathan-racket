@@ -3,11 +3,11 @@
 #include <random>
 #include <chrono>
 
-#ifdef TARGET_VOIDP_EQUALS_64
-using mersenne_t = std::mt19937_64;
+#ifdef LEVIATHAN_MACHINE_64BIT
+	using mersenne_t = std::mt19937_64;
 #else
-using mersenne_t = std::mt19937;
-#endif // TARGET_VOIDP_EQUALS_64
+	using mersenne_t = std::mt19937;
+#endif
 
 static mersenne_t& get_mersenne() {
 	static const sint64_t seed = std::chrono::high_resolution_clock::now()

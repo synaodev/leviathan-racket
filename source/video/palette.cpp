@@ -75,7 +75,7 @@ bool palette_t::create(glm::ivec2 dimensions, pixel_format_t format) {
 		glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 		return true;
 	}
-	SYNAO_LOG("Warning! Tried to overwrite existing palette!\n");
+	synao_log("Warning! Tried to overwrite existing palette!\n");
 	return false;
 }
 

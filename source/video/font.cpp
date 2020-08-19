@@ -38,7 +38,7 @@ font_t& font_t::operator=(font_t&& that) noexcept {
 
 void font_t::load(const std::string& directory, const std::string& name) {
 	if (glyphs.size() > 0) {
-		SYNAO_LOG("Warning! Tried to overwrite font!\n");
+		synao_log("Warning! Tried to overwrite font!\n");
 		return;
 	}
 	const std::string full_path = directory + name;
@@ -63,7 +63,7 @@ void font_t::load(const std::string& directory, const std::string& name) {
 			glyphs[id] = glyph;
 		}
 	} else {
-		SYNAO_LOG("Failed to load font from %s!\n", full_path.c_str());
+		synao_log("Failed to load font from %s!\n", full_path.c_str());
 	}
 }
 

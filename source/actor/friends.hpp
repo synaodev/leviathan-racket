@@ -13,23 +13,23 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace kyoko {
-		constexpr arch_t type = SYNAO_HASH("kyoko");
+		constexpr arch_t type = synao_hash("kyoko");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
 	namespace nauzika {
-		constexpr arch_t type = SYNAO_HASH("nauzika");
+		constexpr arch_t type = synao_hash("nauzika");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
 	namespace senma {
-		constexpr arch_t type = SYNAO_HASH("senma");
+		constexpr arch_t type = synao_hash("senma");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
 	namespace fox {
-		constexpr arch_t type = SYNAO_HASH("fox");
+		constexpr arch_t type = synao_hash("fox");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
 	namespace gyo {
-		constexpr arch_t type = SYNAO_HASH("gyo");
+		constexpr arch_t type = synao_hash("gyo");
 		void ctor(entt::entity s, kontext_t& ktx);
 	}
 }

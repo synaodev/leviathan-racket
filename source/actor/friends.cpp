@@ -8,12 +8,12 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::kyoko::type, 		ai::kyoko::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::nauzika::type, 	ai::nauzika::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::senma::type, 		ai::senma::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::fox::type, 		ai::fox::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::gyo::type, 		ai::gyo::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::kyoko::type, 		ai::kyoko::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::nauzika::type, 	ai::nauzika::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::senma::type, 		ai::senma::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::fox::type, 		ai::fox::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::gyo::type, 		ai::gyo::ctor);
 }
 
 void ai::friends::tick(entt::entity s, routine_tuple_t& rtp) {

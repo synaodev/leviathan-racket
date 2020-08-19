@@ -44,7 +44,7 @@ bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
 	const font_t* font = vfs::font(0);
 	const animation_t* animation = vfs::animation(res::anim::Heads);
 	if (font == nullptr or animation == nullptr) {
-		SYNAO_LOG("Dialogue GUI is missing resources and cannot be rendered!\n");
+		synao_log("Dialogue GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
 	text.set_font(font);
@@ -57,7 +57,7 @@ bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
 	push_sound = [&audio](const tbl_entry_t& sound, arch_t index) {
 		audio.play(sound, index);
 	};
-	SYNAO_LOG("Dialogue GUI is ready.\n");
+	synao_log("Dialogue GUI is ready.\n");
 	return true;
 }
 

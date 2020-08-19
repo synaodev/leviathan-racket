@@ -20,7 +20,7 @@
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../utility/logger.hpp" 
+#include "../utility/logger.hpp"
 
 #include "../resource/id.hpp"
 
@@ -59,7 +59,7 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	backend = kontext.backend();
 	actor = backend->create();
 	if (actor == entt::null) {
-		SYNAO_LOG("First actor allocation failed!\n");
+		synao_log("First actor allocation failed!\n");
 		return false;
 	}
 	auto& location = backend->emplace<location_t>(actor);
@@ -72,7 +72,7 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	sprite.layer = 0.35f;
 	blinker.blink_state = naomi_anim_t::Blinking;
 	blinker.first_state = naomi_anim_t::Idle;
-	SYNAO_LOG("Naomi is ready.\n");
+	synao_log("Naomi is ready.\n");
 	return true;
 }
 
@@ -283,16 +283,16 @@ void naomi_state_t::damage(entt::entity other, audio_t& audio, kontext_t& kontex
 				chroniker[naomi_timer_t::Barrier] = 360;
 				audio.play(res::sfx::BrokenBarrier, 0);
 				kontext.spawn(
-					ai::barrier::type, 
-					naomi_location.center(), 
+					ai::barrier::type,
+					naomi_location.center(),
 					direction_t::Right
 				);
 			}
 		} else {
 			audio.play(res::sfx::Damage, 0);
 			kontext.spawn(
-				ai::barrier::type, 
-				naomi_location.center(), 
+				ai::barrier::type,
+				naomi_location.center(),
 				direction_t::Right
 			);
 		}
@@ -391,8 +391,8 @@ void naomi_state_t::set_phys_const(bool submerged) {
 
 void naomi_state_t::set_visible(bool visible) {
 	auto& sprite = backend->get<sprite_t>(actor);
-	sprite.layer = visible ? 
-		layer_value::Automatic : 
+	sprite.layer = visible ?
+		layer_value::Automatic :
 		layer_value::Invisible;
 }
 
@@ -441,7 +441,7 @@ void naomi_state_t::bump_kinematics(direction_t direction) {
 void naomi_state_t::boost_current_barrier(sint_t amount) {
 	auto& health = backend->get<health_t>(actor);
 	health.current = glm::max(
-		health.current + amount, 
+		health.current + amount,
 		health.maximum
 	);
 	flags[naomi_flags_t::BrokenBarrier] = false;
@@ -452,7 +452,7 @@ void naomi_state_t::boost_current_barrier(sint_t amount) {
 void naomi_state_t::boost_maximum_barrer(sint_t amount) {
 	auto& health = backend->get<health_t>(actor);
 	health.maximum = glm::clamp(
-		health.maximum + amount, 
+		health.maximum + amount,
 		0, kMaximumBarrier
 	);
 }
@@ -574,8 +574,8 @@ void naomi_state_t::do_barrier(kontext_t& kontext, const location_t& location, h
 			flags[naomi_flags_t::BrokenBarrier] = false;
 			health.current = 1;
 			kontext.spawn(
-				ai::barrier::type, 
-				location.center(), 
+				ai::barrier::type,
+				location.center(),
 				direction_t::Left
 			);
 		}
@@ -713,15 +713,15 @@ void naomi_state_t::do_hammer(const input_t& input, audio_t& audio, kontext_t& k
 			if (equips[naomi_equips_t::StrongHammer]) {
 				audio.play(res::sfx::Blade, 4);
 				kontext.spawn(
-					ai::strong_hammer::type, 
+					ai::strong_hammer::type,
 					location.center(),
-					kinematics.velocity, 
+					kinematics.velocity,
 					location.direction
 				);
 			} else {
 				audio.play(res::sfx::Blade, 4);
 				kontext.spawn(
-					ai::weak_hammer::type, 
+					ai::weak_hammer::type,
 					location.center(),
 					kinematics.velocity,
 					location.direction
@@ -744,7 +744,7 @@ void naomi_state_t::do_move(const input_t& input, location_t& location, kinemati
 			flags[naomi_flags_t::Moving] = true;
 			kinematics.accel_x(
 				right ? move_accel : -move_accel,
-				flags[naomi_flags_t::Slinging] ? 
+				flags[naomi_flags_t::Slinging] ?
 					max_hsling : max_hspeed
 			);
 			if (!flags[naomi_flags_t::Strafing]) {
@@ -768,7 +768,7 @@ void naomi_state_t::do_look(const input_t& input, location_t& location, const ki
 			location.vert(direction_t::Up);
 		} else if (down) {
 			location.vert(
-				!(kinematics.flags[phy_t::Bottom]) ? 
+				!(kinematics.flags[phy_t::Bottom]) ?
 					direction_t::Down : direction_t::Neutral
 			);
 		}
@@ -845,12 +845,12 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 			if (chroniker[naomi_timer_t::Flashing]-- <= 0) {
 				chroniker[naomi_timer_t::Flashing] = 6;
 				kontext.spawn(
-					ai::dash_flash::type, 
+					ai::dash_flash::type,
 					location.center()
 				);
 			}
 			if (flags[naomi_flags_t::DashingCeiling]) {
-				real_t speed = location.direction & direction_t::Left ? 
+				real_t speed = location.direction & direction_t::Left ?
 					-dash_speed : dash_speed;
 				if (kinematics.flags[phy_t::Right]) {
 					kinematics.flags[phy_t::Right] = false;
@@ -860,7 +860,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.velocity = glm::zero<glm::vec2>();
 					location.vert(direction_t::Up);
 					location.hori(
-						location.direction & direction_t::Left ? 
+						location.direction & direction_t::Left ?
 						direction_t::Right : direction_t::Left
 					);
 					flags[naomi_flags_t::DashingWalls] = true;
@@ -881,7 +881,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.velocity = glm::zero<glm::vec2>();
 					location.vert(direction_t::Up);
 					location.hori(
-						location.direction & direction_t::Left ? 
+						location.direction & direction_t::Left ?
 						direction_t::Right : direction_t::Left
 					);
 					flags[naomi_flags_t::DashingWalls] = true;
@@ -897,7 +897,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.velocity.x = speed;
 				}
 			} else if (flags[naomi_flags_t::DashingWalls]) {
-				real_t speed = location.direction & direction_t::Up ? 
+				real_t speed = location.direction & direction_t::Up ?
 					dash_speed : -dash_speed;
 				if (kinematics.flags[phy_t::Top]) {
 					kinematics.flags[phy_t::Right] = false;
@@ -907,7 +907,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.velocity = glm::zero<glm::vec2>();
 					location.vert(direction_t::Neutral);
 					location.hori(
-						location.direction & direction_t::Left ? 
+						location.direction & direction_t::Left ?
 						direction_t::Right : direction_t::Left
 					);
 					flags[naomi_flags_t::DashingCeiling] = true;
@@ -939,7 +939,7 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 					kinematics.velocity = glm::vec2(0.0f, speed);
 				}
 			} else {
-				real_t speed = location.direction & direction_t::Left ? 
+				real_t speed = location.direction & direction_t::Left ?
 					-dash_speed : dash_speed;
 				if (kinematics.flags[phy_t::Right]) {
 					flags[naomi_flags_t::DashingWalls] = true;
@@ -1006,7 +1006,7 @@ void naomi_state_t::do_wall_kick(const input_t& input, audio_t& audio, const til
 	if (equips[naomi_equips_t::WallKick]) {
 		if (!kinematics.flags[phy_t::Bottom]) {
 			if (flags[naomi_flags_t::WallJumping]) {
-				kinematics.velocity.x = location.direction & direction_t::Left ? 
+				kinematics.velocity.x = location.direction & direction_t::Left ?
 					-max_hspeed : max_hspeed;
 				if (chroniker[naomi_timer_t::WallJumping]-- <= 0) {
 					chroniker[naomi_timer_t::WallJumping] = 0;
@@ -1047,9 +1047,9 @@ void naomi_state_t::do_wall_kick(const input_t& input, audio_t& audio, const til
 }
 
 void naomi_state_t::do_cam_move(const location_t& location) {
-	real_t x_move = location.direction & direction_t::Left ? 
+	real_t x_move = location.direction & direction_t::Left ?
 		view_point.x - 1.0f : view_point.x + 1.0f;
-	real_t y_move = location.direction & direction_t::Up ? 
+	real_t y_move = location.direction & direction_t::Up ?
 		-32.0f : 0.0f;
 	view_point = glm::vec2(
 		glm::clamp(x_move, -32.0f, 32.0f),
@@ -1060,7 +1060,7 @@ void naomi_state_t::do_cam_move(const location_t& location) {
 void naomi_state_t::do_physics(kinematics_t& kinematics) {
 	if (!flags[naomi_flags_t::CannotFall]) {
 		kinematics.accel_y(
-			flags[naomi_flags_t::DashingCeiling] ? 
+			flags[naomi_flags_t::DashingCeiling] ?
 				-grav_speed : grav_speed,
 			max_vspeed
 		);
@@ -1159,9 +1159,9 @@ void naomi_state_t::do_headsup(draw_headsup_t& headsup, const health_t& health) 
 	params.current_leviathan = health.leviathan;
 	params.main_state = naomi_state_t::get_box_data(headsup, flags, params);
 	params.main_direction = flags[naomi_flags_t::Strafing] ?
-		direction_t::Left : 
+		direction_t::Left :
 		direction_t::Right;
-	params.current_oxygen = equips[naomi_equips_t::Oxygen] ? 
+	params.current_oxygen = equips[naomi_equips_t::Oxygen] ?
 		static_cast<sint_t>(kNao::Oxygens / 15) :
 		static_cast<sint_t>(chroniker[naomi_timer_t::Oxygen] / 15);
 	params.maximum_oxygen = static_cast<sint_t>(kNao::Oxygens / 15);

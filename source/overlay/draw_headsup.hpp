@@ -52,9 +52,9 @@ public:
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	void set_parameters(headsup_params_t params);
 	void set_fight_values(sint_t current, sint_t maximum);
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	void set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 	void fade_in();
 	void fade_out();
 	bool is_fade_done() const;
@@ -69,7 +69,9 @@ private:
 	draw_item_view_t item_view;
 	draw_meter_t fight_meter;
 	draw_fade_t fade;
+#ifdef LEVIATHAN_BUILD_DEBUG
 	draw_hidden_t hidden;
+#endif
 };
 
 #endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP

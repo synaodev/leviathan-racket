@@ -10,17 +10,17 @@ struct routine_tuple_t;
 
 namespace ai {
 	namespace shoshi_normal {
-		constexpr arch_t type = SYNAO_HASH("shoshi");
+		constexpr arch_t type = synao_hash("shoshi");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_carry {
-		constexpr arch_t type = SYNAO_HASH("shoshicarry");
+		constexpr arch_t type = synao_hash("shoshicarry");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_follow {
-		constexpr arch_t type = SYNAO_HASH("shoshifollow");
+		constexpr arch_t type = synao_hash("shoshifollow");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 		struct helper_t {

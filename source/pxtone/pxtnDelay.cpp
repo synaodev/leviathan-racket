@@ -6,10 +6,10 @@
 
 #include "./pxtnDelay.h"
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wswitch"
-#endif // __clang__
+#endif
 
 pxtnDelay::pxtnDelay()
 {
@@ -157,6 +157,6 @@ pxtnERR pxtnDelay::Read( pxtnDescriptor *p_doc )
 	return pxtnOK;
 }
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic pop
-#endif // __clang__
+#endif

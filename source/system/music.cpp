@@ -5,10 +5,9 @@
 #include "../utility/vfs.hpp"
 #include "../audio/alcheck.hpp"
 
-// Needed in order to quell annoying warnings...
-#if defined(_MSC_VER) && !defined(_CRT_SECURE_NO_WARNINGS)
-#define _CRT_SECURE_NO_WARNINGS
-#endif // _MSC_VER
+#if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #include "../pxtone/pxtnService.h"
 #include "../pxtone/pxtnError.h"
@@ -64,25 +63,25 @@ bool music_t::init(const setup_file_t& config) {
 	config.get("Music", "Volume", volume);
 	volume = glm::clamp(volume, 0.0f, 1.0f);
 	if (playing or !title.empty()) {
-		SYNAO_LOG("Music device is already running!\n");
+		synao_log("Music device is already running!\n");
 		return false;
 	}
 	if (service != nullptr) {
-		SYNAO_LOG("Pxtone service already exists!\n");
+		synao_log("Pxtone service already exists!\n");
 		return false;
 	}
 	service = std::make_unique<pxtnService>();
 	if (service == nullptr) {
-		SYNAO_LOG("Pxtone service creation failed!\n");
+		synao_log("Pxtone service creation failed!\n");
 		return false;
 	}
 	pxtnERR result = service->init();
 	if (result != pxtnERR::pxtnOK) {
-		SYNAO_LOG("Pxtone service initialization failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone service initialization failed! PxtnErr: %d\n", result);
 		return false;
 	}
 	if (!service->set_destination_quality(channels, sampling_rate)) {
-		SYNAO_LOG("Pxtone quality setting failed!\n");
+		synao_log("Pxtone quality setting failed!\n");
 		return false;
 	}
 	// Setup OpenAL stuff
@@ -90,10 +89,10 @@ bool music_t::init(const setup_file_t& config) {
 		alCheck(alGenSources(1, &source));
 		alCheck(alGenBuffers(buffers.size(), &buffers[0]));
 	} else {
-		SYNAO_LOG("Music OpenAL resources already exist!\n");
+		synao_log("Music OpenAL resources already exist!\n");
 		return false;
 	}
-	SYNAO_LOG("Music service is ready.\n");
+	synao_log("Music service is ready.\n");
 	return true;
 }
 
@@ -109,26 +108,26 @@ bool music_t::load(const std::string& title) {
 	std::vector<byte_t> buffer = vfs::byte_buffer(tune_path + title + ".ptcop");
 	arch_t length = buffer.size();
 	if (!length) {
-		SYNAO_LOG("Pxtone file loading failed!\n");
+		synao_log("Pxtone file loading failed!\n");
 		return false;
 	} else if (length >= kHeightLength) {
-		SYNAO_LOG("Pxtone file too large!\n");
+		synao_log("Pxtone file too large!\n");
 		return false;
 	}
 	pxtnDescriptor descriptor;
 	if (!descriptor.set_memory_r(&buffer[0], static_cast<sint_t>(length))) {
-		SYNAO_LOG("Pxtone descriptor creation failed!\n");
+		synao_log("Pxtone descriptor creation failed!\n");
 		return false;
 	}
 	pxtnERR result = service->read(&descriptor);
 	if (result != pxtnERR::pxtnOK) {
-		SYNAO_LOG("Pxtone descriptor reading failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone descriptor reading failed! PxtnErr: %d\n", result);
 		service->clear();
 		return false;
 	}
 	result = service->tones_ready();
 	if (result != pxtnERR::pxtnOK) {
-		SYNAO_LOG("Pxtone tone readying failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone tone readying failed! PxtnErr: %d\n", result);
 		service->clear();
 		return false;
 	}
@@ -156,7 +155,7 @@ bool music_t::play(real_t start_point, real_t fade_length) {
 	preparation.fadein_sec = fade_length / 1000.0f;
 	preparation.master_volume = volume;
 	if (!service->moo_preparation(&preparation)) {
-		SYNAO_LOG("Pxtone couldn't prepare tune!\n");
+		synao_log("Pxtone couldn't prepare tune!\n");
 		return false;
 	}
 	playing = true;
@@ -223,7 +222,7 @@ real_t music_t::get_volume() const {
 
 void music_t::process(music_t* music) {
 	if (music == nullptr) {
-		SYNAO_LOG("Music thread should not print this message.\n");
+		synao_log("Music thread should not print this message.\n");
 		return;
 	}
 	// Initialize Necessary Data
@@ -238,10 +237,10 @@ void music_t::process(music_t* music) {
 		for (auto&& buffer : music->buffers) {
 			if (music->service->Moo(&vector[0], amount)) {
 				alCheck(alBufferData(
-					buffer, 
-					music->channels != 2 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, 
-					&vector[0], 
-					amount, 
+					buffer,
+					music->channels != 2 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16,
+					&vector[0],
+					amount,
 					music->sampling_rate
 				));
 				alCheck(alSourceQueueBuffers(music->source, 1, &buffer));
@@ -262,9 +261,9 @@ void music_t::process(music_t* music) {
 				if (music->service->Moo(&vector[0], amount)) {
 					alCheck(alBufferData(
 						buffer,
-						music->channels != 2 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16, 
-						&vector[0], 
-						amount, 
+						music->channels != 2 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16,
+						&vector[0],
+						amount,
 						music->sampling_rate
 					));
 					alCheck(alSourceQueueBuffers(music->source, 1, &buffer));

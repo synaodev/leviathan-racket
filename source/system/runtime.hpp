@@ -39,9 +39,9 @@ private:
 	void setup_boot(renderer_t& renderer);
 	void setup_load(renderer_t& renderer);
 	void setup_save();
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	void setup_debug(input_t& input, const renderer_t& renderer);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 private:
 	real64_t accum;
 	kernel_t kernel;

@@ -16,14 +16,15 @@ I hope to release in Winter 2020.
 - [Pxtone Source](https://pxtone.org/developer)
 ## Building From Source
 - General:
-  - Must have compiler with C++17 support and at least CMake v3.15.
-  - OpenGL v3.3 is the lowest version supported.
+  - CMake version must be at least 3.15.
+  - OpenGL driver must support at least a 3.3 core profile.
+  - Compiler must support at least C++17 and C11.
   - To manage dependencies, I recommend [vcpkg](https://github.com/microsoft/vcpkg). It's required for Windows and MacOS builds, but you can use it on Linux as well.
   - `<vcpkg-CLI> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb`.
   - When running cmake, pass the toolchain file: `cmake <build-directory> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Windows:
   - Vcpkg is absolutely required.
-  - Supports MSVC, Clang, and MinGW (Posix threading model only).
+  - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin is not supported.
   - For MinGW, you need to first build vcpkg dependencies using a MinGW triplet. When running cmake, you then need to specifiy your target triplet and your compiler locations like this:
     `cmake <build-directory> \`
 	`-G "MinGW Makefiles" \`
@@ -34,7 +35,7 @@ I hope to release in Winter 2020.
   - Can use MinGW & vcpkg on Linux for cross-compiling to Windows.
 - MacOS:
   - Install Xcode and Xcode Command-Line Tools in order to use OpenGL headers (yes, seriously).
-  - Vcpkg is absolutely required. You /can/ install several required packages using homebrew (Angelscript, GLM, EnTT, Nlohmann JSON), but openal-soft is always ignored in favor of OpenAL.Framework.
+  - Vcpkg is absolutely required. It's possible to install a few required packages using homebrew (Angelscript, GLM, EnTT, Nlohmann JSON), but openal-soft is always ignored in favor of OpenAL.Framework.
   - There are tons of other little problems (especially with SDL2 and OpenGL), but in short: It's incredibly cumbersome to setup a build environment without vcpkg.
 - Linux:
   - Debian/Ubuntu:

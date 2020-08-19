@@ -4,10 +4,10 @@
 #include "./pxtnMem.h"
 #include "./pxtnPulse_NoiseBuilder.h"
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wunused-value"
-#endif // __clang__
+#endif
 
 #define _BASIC_SPS     44100.0
 #define _BASIC_FREQUENCY 100.0 // 100 Hz
@@ -526,6 +526,6 @@ End:
 	return p_pcm;
 }
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic pop
-#endif // __clang__
+#endif

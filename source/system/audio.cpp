@@ -35,36 +35,36 @@ bool audio_t::init(const setup_file_t& config) {
 	real_t volume = 1.0f;
 	config.get("Audio", "Volume", volume);
 	if (engine != nullptr) {
-		SYNAO_LOG("OpenAL engine already exists!\n");
+		synao_log("OpenAL engine already exists!\n");
 		return false;
 	}
 	if (context != nullptr) {
-		SYNAO_LOG("OpenAL context already exists!\n");
+		synao_log("OpenAL context already exists!\n");
 		return false;
 	}
 
 	engine = alcOpenDevice(nullptr);
 
 	if (engine == nullptr) {
-		SYNAO_LOG("OpenAL engine creation failed!\n");
+		synao_log("OpenAL engine creation failed!\n");
 		return false;
 	}
 
 	context = alcCreateContext(reinterpret_cast<ALCdevice*>(engine), nullptr);
 
 	if (context == nullptr) {
-		SYNAO_LOG("OpenAL context creation failed!\n");
+		synao_log("OpenAL context creation failed!\n");
 		return false;
 	}
 	if (alcMakeContextCurrent(reinterpret_cast<ALCcontext*>(context)) == 0) {
-		SYNAO_LOG("OpenAL context relevance failed!\n");
+		synao_log("OpenAL context relevance failed!\n");
 		return false;
 	}
 
 	for (auto&& channel : channels) {
 		channel.create(volume);
 	}
-	SYNAO_LOG("Audio system initialized.\n");
+	synao_log("Audio system initialized.\n");
 	return true;
 }
 

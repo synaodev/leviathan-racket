@@ -63,20 +63,20 @@ receiver_t::~receiver_t() {
 
 bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	if (engine != nullptr) {
-		SYNAO_LOG("Scripting engine already exists!\n");
+		synao_log("Scripting engine already exists!\n");
 		return false;
 	}
 	if (state != nullptr) {
-		SYNAO_LOG("Scripting state already exists!\n");
+		synao_log("Scripting state already exists!\n");
 		return false;
 	}
 	if (boot != nullptr) {
-		SYNAO_LOG("Scripting boot function already exists!\n");
+		synao_log("Scripting boot function already exists!\n");
 		return false;
 	}
 	engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
 	if (engine == nullptr) {
-		SYNAO_LOG("Scripting engine creation failed!\n");
+		synao_log("Scripting engine creation failed!\n");
 		return false;
 	}
 	this->generate_properties();
@@ -88,25 +88,25 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	);
 	state = engine->CreateContext();
 	if (state == nullptr) {
-		SYNAO_LOG("Scripting state creation failed!\n");
+		synao_log("Scripting state creation failed!\n");
 		return false;
 	}
 	if (state->SetLineCallback(asFUNCTION(calls_callback), &calls, asCALL_CDECL) < 0) {
-		SYNAO_LOG("Creating line callback for script context failed!\n");
+		synao_log("Creating line callback for script context failed!\n");
 		return false;
 	}
 	if (!this->load(kGlobFile, rec_loading_t::Global)) {
-		SYNAO_LOG("Global module loading failed!\n");
+		synao_log("Global module loading failed!\n");
 		return false;
 	}
 	asIScriptModule* global_module = engine->GetModuleByIndex(0);
 	boot = global_module->GetFunctionByDecl(kBootDecl);
 	if (boot == nullptr) {
-		SYNAO_LOG("Couldn't find boot function in global module!\n");
+		synao_log("Couldn't find boot function in global module!\n");
 		return false;
 	}
 	boot->AddRef();
-	SYNAO_LOG("Receiver subsystem initialized.\n");
+	synao_log("Receiver subsystem initialized.\n");
 	return true;
 }
 
@@ -154,7 +154,7 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					bitmask.reset();
 					timer = 0.0f;
 					calls = 0;
-					SYNAO_LOG(
+					synao_log(
 						"Running script threw an exception!\n%s\n%s at line %d!\n",
 						state->GetExceptionString(),
 						state->GetExceptionFunction()->GetName(),
@@ -203,24 +203,24 @@ bool receiver_t::load(const std::string& name) {
 
 bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 	if (engine == nullptr) {
-		SYNAO_LOG("Scripting engine doesn't exist!\nCouldn't load module!\n");
+		synao_log("Scripting engine doesn't exist!\nCouldn't load module!\n");
 		return false;
 	}
 	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_CREATE_IF_NOT_EXISTS);
 	if (module == nullptr) {
-		SYNAO_LOG("Couldn't allocate script module during loading process!\n");
+		synao_log("Couldn't allocate script module during loading process!\n");
 		return false;
 	}
 	const std::string buffer = vfs::string_buffer(vfs::event_path(name, flags));
 	arch_t length = buffer.length();
 	if (module->AddScriptSection(name.c_str(), buffer.c_str(), length) != 0) {
 		current = nullptr;
-		SYNAO_LOG("Adding script section %s failed!\n", name.c_str());
+		synao_log("Adding script section %s failed!\n", name.c_str());
 		return false;
 	}
 	if (module->Build() != 0) {
 		current = nullptr;
-		SYNAO_LOG("Building module %s failed!\n", name.c_str());
+		synao_log("Building module %s failed!\n", name.c_str());
 		return false;
 	}
 	this->link_imported_functions(module);
@@ -311,7 +311,7 @@ void receiver_t::suspend() {
 }
 
 void receiver_t::print_message(const std::string& message) {
-	SYNAO_LOG("%s\n", message.c_str());
+	synao_log("%s\n", message.c_str());
 }
 
 void receiver_t::error_callback(const asSMessageInfo* msg, optr_t) {
@@ -330,7 +330,7 @@ void receiver_t::error_callback(const asSMessageInfo* msg, optr_t) {
 		type = "OKAY";
 		break;
 	}
-	SYNAO_LOG(
+	synao_log(
 		"%s (%d, %d) : %s : %s\n",
 		msg->section,
 		msg->row, msg->col,
@@ -375,7 +375,7 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 		timer = 0.0f;
 		calls = 0;
 	} else {
-		SYNAO_LOG("Couldn't execute function!\n");
+		synao_log("Couldn't execute function!\n");
 	}
 }
 
@@ -389,16 +389,16 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 		for (arch_t it = 0; it < args.size(); ++it) {
 			if constexpr (sizeof(arch_t) == 8) {
 				if (state->SetArgQWord(static_cast<uint_t>(it), args[it]) < 0) {
-					SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+					synao_log("Couldn't set argument %d!\n", static_cast<uint_t>(it));
 				}
 			} else {
 				if (state->SetArgDWord(static_cast<uint_t>(it), args[it]) < 0) {
-					SYNAO_LOG("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+					synao_log("Couldn't set argument %d!\n", static_cast<uint_t>(it));
 				}
 			}
 		}
 	} else {
-		SYNAO_LOG("Couldn't execute function!\n");
+		synao_log("Couldn't execute function!\n");
 	}
 }
 
@@ -439,17 +439,17 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 		const byte_t* name = module->GetImportedFunctionSourceModule(it);
 		asIScriptModule* query = engine->GetModule(name, asGM_CREATE_IF_NOT_EXISTS);
 		if (query == nullptr) {
-			SYNAO_LOG("Couldn't allocate script module during linking process!\n");
+			synao_log("Couldn't allocate script module during linking process!\n");
 			break;
 		}
 		if (query->GetFunctionCount() == 0 and !this->load(name, rec_loading_t::Import)) {
-			SYNAO_LOG("Couldn't load script module during linking process!\n");
+			synao_log("Couldn't load script module during linking process!\n");
 			break;
 		}
 		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
 		asIScriptFunction* function = module->GetFunctionByDecl(declaration);
 		if (module->BindImportedFunction(it, function) < 0) {
-			SYNAO_LOG("Linking for declaration %s failed!\n", declaration);
+			synao_log("Linking for declaration %s failed!\n", declaration);
 		}
 	}
 }
@@ -471,16 +471,16 @@ void receiver_t::set_waiting_period(real_t seconds) {
 	state->Suspend();
 }
 
-#ifdef SYNAO_GENERIC_CALLING_CONV
+#if 0 // #ifdef SYNAO_GENERIC_CALLING_CONV
 	#include "./wrapper.hpp"
 	static constexpr bool kUseGenericCall = true;
-#else // SYNAO_GENERIC_CALLING_CONV
+#else
 	static constexpr bool kUseGenericCall = false;
 	#define WRAP_FN(name) 											asFUNCTION(name)
 	#define WRAP_FN_PR(name, Parameters, ReturnType) 				asFUNCTIONPR(name, Parameters, ReturnType)
 	#define WRAP_MFN(ClassType, name) 								asMETHOD(ClassType, name)
 	#define WRAP_MFN_PR(ClassType, name, Parameters, ReturnType) 	asMETHODPR(ClassType, name, Parameters, ReturnType)
-#endif // SYNAO_GENERIC_CALLING_CONV
+#endif
 
 void receiver_t::generate_properties() {
 	sint_t r = 0;

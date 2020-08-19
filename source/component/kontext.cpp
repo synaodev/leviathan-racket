@@ -44,10 +44,10 @@ bool kontext_t::init(receiver_t& receiver, draw_headsup_t& headsup) {
 		headsup.set_fight_values(current, maximum);
 	};
 	if (!routine_generator_t::init(ctor_table)) {
-		SYNAO_LOG("Actor constructor table generation failed!\n");
+		synao_log("Actor constructor table generation failed!\n");
 		return false;
 	}
-	SYNAO_LOG("Kontext system is ready.\n");
+	synao_log("Kontext system is ready.\n");
 	return true;
 }
 
@@ -86,11 +86,11 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 	if (liquid_flag) {
 		liquid::render(*this, renderer, viewport);
 	}
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	if (debug::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
-#endif // SYNAO_DEBUG_BUILD
+#endif
 	panic_draw = false;
 }
 
@@ -139,7 +139,7 @@ static const byte_t kMapActor[] = "actor";
 static const byte_t kMapWater[] = "water";
 
 bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags) {
-	arch_t type = SYNAO_HASH(name.c_str());
+	arch_t type = synao_hash(name.c_str());
 	auto iter = ctor_table.find(type);
 	if (iter != ctor_table.end()) {
 		entt::entity actor = registry.create();
@@ -151,7 +151,7 @@ bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t 
 		iter->second(actor, *this);
 		return true;
 	}
-	SYNAO_LOG("Couldn't create %s!\n", name.c_str());
+	synao_log("Couldn't create %s!\n", name.c_str());
 	return false;
 }
 
@@ -171,15 +171,15 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		return true;
 	}
 	if constexpr (sizeof(arch_t) == 8) {
-		SYNAO_LOG("Couldn't spawn actor %" PRIu64 "!\n", spawn.type);
+		synao_log("Couldn't spawn actor %" PRIu64 "!\n", spawn.type);
 	} else {
-		SYNAO_LOG("Couldn't spawn actor %d!\n", static_cast<uint_t>(spawn.type));
+		synao_log("Couldn't spawn actor %d!\n", static_cast<uint_t>(spawn.type));
 	}
 	return false;
 }
 
 bool kontext_t::create_minimally(const std::string& name, real_t x, real_t y, sint_t identity) {
-	arch_t type = SYNAO_HASH(name.c_str());
+	arch_t type = synao_hash(name.c_str());
 	auto iter = ctor_table.find(type);
 	if (iter != ctor_table.end()) {
 		spawn_commands.emplace_back(type, glm::vec2(x, y), direction_t::Right, identity, (arch_t)0);

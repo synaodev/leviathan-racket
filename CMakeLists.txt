@@ -23,14 +23,8 @@ include ("${PROJECT_SOURCE_DIR}/cmake/libraries.cmake")
 
 add_executable (leviathan)
 
-if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_64")
-elseif (CMAKE_SIZEOF_VOID_P EQUAL 4)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_VOIDP_EQUALS_32")
-endif ()
-
 if (VCPKG_TOOLCHAIN)
-	target_compile_definitions (leviathan PRIVATE "-DTARGET_TOOLCHAIN_VCPKG")
+	target_compile_definitions (leviathan PRIVATE "-DLEVIATHAN_USES_VCPKG")
 endif ()
 
 # Platform specific

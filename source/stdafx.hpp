@@ -42,9 +42,11 @@
 #include <mutex>
 #include <future>
 
-#ifndef TARGET_MISSING_STL_FILESYSTEM
+#include "./types.hpp"
+
+#ifdef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	#include <filesystem>
-#endif // TARGET_MISSING_STL_FILESYSTEM
+#endif // LEVIATHAN_TOOLCHAIN_APPLECLANG
 
 // Other libraries
 #include <glm/glm.hpp>
@@ -55,7 +57,5 @@
 #include <angelscript.h>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
-
-#include "./types.hpp"
 
 #endif // LEVIATHAN_INCLUDED_STDAFX_HPP

@@ -58,7 +58,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 		return false;
 	}
 	this->setup_boot(renderer);
-	SYNAO_LOG("Runtime subsystems initialized.\n");
+	synao_log("Runtime subsystems initialized.\n");
 	return true;
 }
 
@@ -84,9 +84,9 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		if (kernel.has(kernel_state_t::Quit)) {
 			return false;
 		}
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 		this->setup_debug(input, renderer);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
 		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
 		dialogue_gui.handle(input);
@@ -154,7 +154,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	const std::string full_path = vfs::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
-		SYNAO_LOG("Map file loading failed! Map Path: %s\n", full_path.c_str());
+		synao_log("Map file loading failed! Map Path: %s\n", full_path.c_str());
 		kernel.finish_field();
 		return false;
 	}
@@ -179,7 +179,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	}
 	naomi_state.setup(audio, kernel, camera, kontext);
 	kernel.finish_field();
-	SYNAO_LOG("Field loading successful.\n");
+	synao_log("Field loading successful.\n");
 	return true;
 }
 
@@ -190,7 +190,7 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 	dialogue_gui.reset();
 	headsup.reset();
 	naomi_state.reset(kontext);
-	SYNAO_LOG("Boot successful.\n");
+	synao_log("Boot successful.\n");
 }
 
 // If loading fails, run setup_boot() to make sure the game doesn't get stuck.
@@ -230,17 +230,17 @@ void runtime_t::setup_load(renderer_t& renderer) {
 			kernel.read_data(file);
 			if (!kernel.read_stream(save_path)) {
 				failure = true;
-				SYNAO_LOG("Couldn't load current flags!\n");
+				synao_log("Couldn't load current flags!\n");
 			} else {
-				SYNAO_LOG("Load successful.\n");
+				synao_log("Load successful.\n");
 			}
 		} else {
 			failure = true;
-			SYNAO_LOG("Couldn't load current state!\n");
+			synao_log("Couldn't load current state!\n");
 		}
 	} else {
 		failure = true;
-		SYNAO_LOG("Couldn't create save directory!\n");
+		synao_log("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
 	if (failure) {
@@ -264,19 +264,19 @@ void runtime_t::setup_save() {
 		file.set("Status", "Equips", naomi_state.hexadecimal_equips());
 		kernel.write_data(file);
 		if (!kernel.write_stream(save_path)) {
-			SYNAO_LOG("Couldn't save current flags!\n");
+			synao_log("Couldn't save current flags!\n");
 		} else if (!file.save(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
-			SYNAO_LOG("Couldn't save current state!\n");
+			synao_log("Couldn't save current state!\n");
 		} else {
-			SYNAO_LOG("Save successful.\n");
+			synao_log("Save successful.\n");
 		}
 	} else {
-		SYNAO_LOG("Couldn't create save directory!\n");
+		synao_log("Couldn't create save directory!\n");
 	}
 	kernel.finish_file_operation();
 }
 
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 	if (input.debug_holding[SDL_SCANCODE_BACKSPACE]) {
 		if (input.debug_pressed[SDL_SCANCODE_1]) {
@@ -307,4 +307,4 @@ void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 		}
 	}
 }
-#endif // SYNAO_DEBUG_BUILD
+#endif

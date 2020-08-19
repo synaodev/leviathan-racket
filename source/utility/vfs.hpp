@@ -44,9 +44,9 @@ namespace vfs {
 		std::string::const_iterator end,
 		std::back_insert_iterator<std::u32string> output
 	);
-	bool mount(const std::string& directory);
-	bool directory_exists(const std::string& name);
-	bool file_exists(const std::string& name);
+	bool mount(const std::string& directory, bool_t print = true);
+	bool directory_exists(const std::string& name, bool_t print = true);
+	bool file_exists(const std::string& name, bool_t print = true);
 	bool create_directory(const std::string& name);
 	std::string working_directory();
 	std::string executable_directory();

@@ -51,7 +51,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 			if (length > 0) {
 				byte_t log[1024];
 				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
-				SYNAO_LOG("Failed to create separable program! Error: %s", log);
+				synao_log("Failed to create separable program! Error: %s", log);
 				this->destroy();
 				return false;
 			}
@@ -65,7 +65,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 			if (!success) {
 				byte_t log[1024];
 				glCheck(glGetShaderInfoLog(handle, sizeof(log), 0, log));
-				SYNAO_LOG("Failed to compile vertex shader: %s\n", log);
+				synao_log("Failed to compile vertex shader: %s\n", log);
 				this->destroy();
 				return false;
 			}
@@ -112,15 +112,15 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 
 		for (sint_t it = 0; it < active; ++it) {
 			glCheck(glGetActiveAttrib(
-				program_handle, it, sizeof(buffer), 
+				program_handle, it, sizeof(buffer),
 				nullptr, nullptr, &vltype, buffer
 			));
 
 			glCheck(placmt = glGetAttribLocation(program_handle, buffer));
 			if (placmt == GL_INVALID_INDEX) {
-				SYNAO_LOG("Warning! Shader attribute location is invalid!\n");
+				synao_log("Warning! Shader attribute location is invalid!\n");
 			}
-			
+
 			typeslist[placmt] = vltype;
 		}
 		desc = vertex_spec_t::from(typeslist.data());
@@ -128,8 +128,8 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 	return desc;
 }
 
-program_t::program_t() : 
-	handle(0), 
+program_t::program_t() :
+	handle(0),
 	specify()
 {
 
@@ -180,7 +180,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 			if (length > 0) {
 				byte_t log[1024];
 				glCheck(glGetProgramPipelineInfoLog(handle, sizeof(log), 0, log));
-				SYNAO_LOG("Failed to create program pipeline! Error: %s", log);
+				synao_log("Failed to create program pipeline! Error: %s", log);
 				this->destroy();
 				return false;
 			}
@@ -206,7 +206,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 			if (!success) {
 				byte_t log[1024];
 				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
-				SYNAO_LOG("Failed to link program: %s\n", log);
+				synao_log("Failed to link program: %s\n", log);
 				this->destroy();
 				return false;
 			}
@@ -236,7 +236,7 @@ void program_t::destroy() {
 
 void program_t::set_block(const byte_t* name, arch_t binding) const {
 	if (program_t::has_separable()) {
-		SYNAO_LOG("Warning! OpenGL version is 4.2^! Don't manually set constant buffer bindings!\n");
+		synao_log("Warning! OpenGL version is 4.2^! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
 		uint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformBlockIndex(handle, name));
@@ -252,7 +252,7 @@ void program_t::set_block(const byte_t* name, arch_t binding) const {
 
 void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
 	if (program_t::has_separable()) {
-		SYNAO_LOG("Warning! OpenGL version is 4.2^! Don't manually set sampler bindings!\n");
+		synao_log("Warning! OpenGL version is 4.2^! Don't manually set sampler bindings!\n");
 	} else if (handle != 0) {
 		sint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformLocation(handle, name));
@@ -266,7 +266,7 @@ void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
 			} else {
 				glCheck(glUseProgram(handle));
 				glCheck(glUniform1i(
-					index, 
+					index,
 					static_cast<sint_t>(sampler)
 				));
 				glCheck(glUseProgram(0));

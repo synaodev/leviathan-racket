@@ -14,17 +14,17 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::frontier::type, 		ai::frontier::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::toxitier::type, 		ai::toxitier::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::weak_hammer::type, 	ai::weak_hammer::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::strong_hammer::type, 	ai::strong_hammer::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::holy_lance::type, 	ai::holy_lance::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::holy_tether::type, 	ai::holy_tether::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::kannon::type, 		ai::kannon::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::nail_ray::type, 		ai::nail_ray::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::wolf_vulcan::type, 	ai::wolf_vulcan::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::austere::type, 		ai::austere::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::frontier::type, 		ai::frontier::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::toxitier::type, 		ai::toxitier::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::weak_hammer::type, 	ai::weak_hammer::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::strong_hammer::type, 	ai::strong_hammer::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::holy_lance::type, 	ai::holy_lance::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::holy_tether::type, 	ai::holy_tether::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::kannon::type, 		ai::kannon::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::nail_ray::type, 		ai::nail_ray::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::wolf_vulcan::type, 	ai::wolf_vulcan::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::austere::type, 		ai::austere::ctor);
 }
 
 entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& ktx) {

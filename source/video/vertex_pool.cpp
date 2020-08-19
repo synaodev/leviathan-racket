@@ -57,7 +57,7 @@ void vertex_pool_t::copy(arch_t from, arch_t count, const vertex_pool_t& that) {
 			this_vtx[it] = that_vtx[it];
 		}
 	} else {
-		SYNAO_LOG("Warning! Source and Destination vertex pools have different callbacks! Cannot complete copying operation!\n");
+		synao_log("Warning! Source and Destination vertex pools have different callbacks! Cannot complete copying operation!\n");
 	}
 }
 

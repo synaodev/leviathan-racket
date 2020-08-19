@@ -70,7 +70,7 @@ void noise_t::load(const std::string& full_path) {
 		uint_t length = 0;
 		SDL_AudioSpec aospec;
 		if (!SDL_LoadWAV(full_path.c_str(), &aospec, &data, &length)) {
-			SYNAO_LOG("Failed to load noise from %s!\nSDL Error: %s\n", full_path.c_str(), SDL_GetError());
+			synao_log("Failed to load noise from %s!\nSDL Error: %s\n", full_path.c_str(), SDL_GetError());
 			return;
 		}
 		alCheck(alBufferData(
@@ -97,7 +97,7 @@ bool noise_t::create() {
 		alCheck(alGenBuffers(1, &handle));
 		return true;
 	}
-	SYNAO_LOG("Warning! Tried to overwrite existing noise!\n");
+	synao_log("Warning! Tried to overwrite existing noise!\n");
 	return false;
 }
 

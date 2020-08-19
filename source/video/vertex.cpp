@@ -45,7 +45,7 @@ vertex_spec_t& vertex_spec_t::operator=(vertex_spec_t&& that) noexcept {
 
 bool vertex_spec_t::compare(const uint_t* lhv, const uint_t* rhv) {
 	if (lhv == nullptr or rhv == nullptr) {
-		SYNAO_LOG("Warning! vertex_spec_t::compare has null inputs!\n");
+		synao_log("Warning! vertex_spec_t::compare has null inputs!\n");
 		return false;
 	}
 	while (*lhv) {
@@ -79,9 +79,9 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));
 			glCheck(glVertexAttribPointer(
-				0, glm::vec2::length(), 
-				GL_FLOAT, GL_FALSE, 
-				sizeof(vtx_minor_t), 
+				0, glm::vec2::length(),
+				GL_FLOAT, GL_FALSE,
+				sizeof(vtx_minor_t),
 				(const optr_t)offsetof(vtx_minor_t, position)
 			));
 		};
@@ -90,15 +90,15 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));
 			glCheck(glVertexAttribPointer(
-				0, glm::vec2::length(), 
-				GL_FLOAT, GL_FALSE, 
-				sizeof(vtx_blank_t), 
+				0, glm::vec2::length(),
+				GL_FLOAT, GL_FALSE,
+				sizeof(vtx_blank_t),
 				(const optr_t)offsetof(vtx_blank_t, position)
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribPointer(
-				1, glm::vec4::length(), 
-				GL_FLOAT, GL_FALSE, sizeof(vtx_blank_t), 
+				1, glm::vec4::length(),
+				GL_FLOAT, GL_FALSE, sizeof(vtx_blank_t),
 				(const optr_t)offsetof(vtx_blank_t, color)
 			));
 		};
@@ -107,28 +107,28 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));
 			glCheck(glVertexAttribPointer(
-				0, glm::vec2::length(), 
-				GL_FLOAT, GL_FALSE, sizeof(vtx_major_t), 
+				0, glm::vec2::length(),
+				GL_FLOAT, GL_FALSE, sizeof(vtx_major_t),
 				(const optr_t)offsetof(vtx_major_t, position)
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribPointer(
-				1, glm::vec3::length(), 
-				GL_FLOAT, GL_FALSE, 
-				sizeof(vtx_major_t), 
+				1, glm::vec3::length(),
+				GL_FLOAT, GL_FALSE,
+				sizeof(vtx_major_t),
 				(const optr_t)offsetof(vtx_major_t, uvcoords)
 			));
 			glCheck(glEnableVertexAttribArray(2));
 			glCheck(glVertexAttribPointer(
-				2, glm::vec1::length(), 
-				GL_FLOAT, GL_FALSE, 
-				sizeof(vtx_major_t), 
+				2, glm::vec1::length(),
+				GL_FLOAT, GL_FALSE,
+				sizeof(vtx_major_t),
 				(const optr_t)offsetof(vtx_major_t, alpha)
 			));
 		};
 	}
 	if (result.length == 0) {
-		SYNAO_LOG("Warning! vertex_spec_t result has a length of zero!\n");
+		synao_log("Warning! vertex_spec_t result has a length of zero!\n");
 	}
 	return result;
 }

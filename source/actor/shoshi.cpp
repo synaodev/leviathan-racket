@@ -12,10 +12,10 @@
 
 #include "../resource/id.hpp"
 
-SYNAO_CTOR_TABLE_CREATE(routine_generator_t) {
-	SYNAO_CTOR_TABLE_PUSH(ai::shoshi_normal::type, 	ai::shoshi_normal::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
-	SYNAO_CTOR_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
+LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_normal::type, 	ai::shoshi_normal::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
+	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
 }
 
 static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t direction) {
@@ -85,7 +85,7 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.ktx.get<location_t>(s);
 	location.position = naomi_location.position;
 	location.hori(
-		naomi_location.direction & direction_t::Left ? 
+		naomi_location.direction & direction_t::Left ?
 		direction_t::Left : direction_t::Right
 	);
 
@@ -150,7 +150,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 		kJumpHd /= 1.5f;
 		kGravSp /= 2.0f;
 	}
-	
+
 	if (box_distance.y > 16.0f) {
 		if (shoshi_center.y < naomi_center.y) {
 			if (kinematics.flags[phy_t::FallThrough] and kinematics.flags[phy_t::Bottom]) {

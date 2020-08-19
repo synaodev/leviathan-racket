@@ -28,11 +28,11 @@ renderer_t::renderer_t() :
 
 bool renderer_t::init(glm::ivec2 version) {
 	if (!display_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
-		SYNAO_LOG("Couldn't create quad_buffer_allocator_t!\n");
+		synao_log("Couldn't create quad_buffer_allocator_t!\n");
 		return false;
 	}
 	if (projection_buffer.valid() or viewport_buffer.valid()) {
-		SYNAO_LOG("Constant buffers already exist!\n");
+		synao_log("Constant buffers already exist!\n");
 		return false;
 	}
 	projection_buffer.setup(buffer_usage_t::Static);
@@ -107,17 +107,17 @@ bool renderer_t::init(glm::ivec2 version) {
 	);
 	bool result = programs[pipeline_t::VtxBlankColors].create(blank, colors);
 	if (!result) {
-		SYNAO_LOG("VtxBlankColors program creation failed!\n");
+		synao_log("VtxBlankColors program creation failed!\n");
 		return false;
 	}
 	result = programs[pipeline_t::VtxMajorSprites].create(major, sprites);
 	if (!result) {
-		SYNAO_LOG("VtxMajorSprites program creation failed!\n");
+		synao_log("VtxMajorSprites program creation failed!\n");
 		return false;
 	}
 	result = programs[pipeline_t::VtxMajorIndexed].create(major, indexed);
 	if (!result) {
-		SYNAO_LOG("VtxMajorIndexed program creation failed!\n");
+		synao_log("VtxMajorIndexed program creation failed!\n");
 		return false;
 	}
 	if (!program_t::has_separable()) {
@@ -128,7 +128,7 @@ bool renderer_t::init(glm::ivec2 version) {
 		programs[pipeline_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
 		programs[pipeline_t::VtxMajorIndexed].set_sampler("palette_map", 1);
 	}
-	SYNAO_LOG("Rendering service is ready.\n");
+	synao_log("Rendering service is ready.\n");
 	return true;
 }
 
@@ -306,15 +306,15 @@ display_list_t* renderer_t::find_quads(sint64_t guid) {
 
 sint64_t renderer_t::capture_list(display_list_t& list) {
 	sint64_t guid = list.capture(graphics_state);
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	assert(guid != 0);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 	return guid;
 }
 
 void renderer_t::release_list(display_list_t& list) {
 	bool success = list.release(graphics_state);
-#ifdef SYNAO_DEBUG_BUILD
+#ifdef LEVIATHAN_BUILD_DEBUG
 	assert(success);
-#endif // SYNAO_DEBUG_BUILD
+#endif
 }

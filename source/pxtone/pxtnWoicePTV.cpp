@@ -5,10 +5,10 @@
 #include "./pxtnMem.h"
 #include "./pxtnWoice.h"
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wswitch"
-#endif // __clang__
+#endif
 
 //                          01234567
 static const char *_code = "PTVOICE-";
@@ -294,7 +294,7 @@ term:
 	return res;
 }
 
-#ifdef __clang__
+#ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic pop
-#endif // __clang__
+#endif
 

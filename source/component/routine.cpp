@@ -21,13 +21,13 @@ bool routine_generator_t::init(std::unordered_map<arch_t, routine_ctor_fn>& ctor
 			if (callback != nullptr) {
 				std::invoke(callback, ctor_table);
 			} else {
-				SYNAO_LOG("Constructor table should not have null entries!\n");
+				synao_log("Constructor table should not have null entries!\n");
 				result = false;
 				break;
 			}
 		}
 	} else {
-		SYNAO_LOG("Constructor callback list is empty!\n");
+		synao_log("Constructor callback list is empty!\n");
 		result = false;
 	}
 	callback_list.clear();

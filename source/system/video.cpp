@@ -51,33 +51,33 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		screen_params_t::kDefaultFramerate
 	);
 	if (window != nullptr) {
-		SYNAO_LOG("Window already created!\n");
+		synao_log("Window already created!\n");
 		return false;
 	}
 	if (context != nullptr) {
-		SYNAO_LOG("OpenGL context already created!\n");
+		synao_log("OpenGL context already created!\n");
 		return false;
 	}
 #ifdef __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
-		SYNAO_LOG("Setting context flags failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting context flags failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 #endif // __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
-		SYNAO_LOG("Setting OpenGL Core profile failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting OpenGL Core profile failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) < 0) {
-		SYNAO_LOG("Setting depth buffer size failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting depth buffer size failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0) < 0) {
-		SYNAO_LOG("Setting stencil buffer size failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting stencil buffer size failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0) {
-		SYNAO_LOG("Setting double-buffering failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting double-buffering failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (start_imgui) {
@@ -100,20 +100,20 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		);
 	}
 	if (window == nullptr) {
-		SYNAO_LOG("Window creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Window creation failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
-		SYNAO_LOG("Fullscreen after window creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Fullscreen after window creation failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	while (1) {
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, this->major) < 0) {
-			SYNAO_LOG("Setting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
+			synao_log("Setting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
 			return false;
 		}
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, this->minor) < 0) {
-			SYNAO_LOG("Setting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
+			synao_log("Setting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
 			return false;
 		}
 		context = SDL_GL_CreateContext(window);
@@ -125,7 +125,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			this->major = 3;
 			this->minor = 3;
 		} else {
-			SYNAO_LOG("Error! OpenGL version must be at least 3.3!\n");
+			synao_log("Error! OpenGL version must be at least 3.3!\n");
 			break;
 		}
 	}
@@ -137,20 +137,20 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 			"Running Leviathan Racket requires at least OpenGL 3.3.\n",
 			nullptr
 		);
-		SYNAO_LOG("OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &this->major) < 0) {
-		SYNAO_LOG("Getting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Getting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &this->minor) < 0) {
-		SYNAO_LOG("Getting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Getting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
-	SYNAO_LOG("OpenGL Version is %d.%d!\n", this->major, this->minor);
+	synao_log("OpenGL Version is %d.%d!\n", this->major, this->minor);
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
-		SYNAO_LOG("OpenGL Extension loading failed!\n");
+		synao_log("OpenGL Extension loading failed!\n");
 		return false;
 	}
 	if (start_imgui) {
@@ -166,7 +166,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	}
 	SDL_GL_SwapWindow(window);
 	if (!start_imgui and SDL_GL_SetSwapInterval(params.vsync) < 0) {
-		SYNAO_LOG("Vertical sync after OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Vertical sync after OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
 		return false;
 	}
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
@@ -182,9 +182,9 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SDL_FreeSurface(surface);
 		surface = nullptr;
 	} else {
-		SYNAO_LOG("Icon surface creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Icon surface creation failed!\nSDL Error: %s\n", SDL_GetError());
 	}
-	SYNAO_LOG("Video system initialized.\n");
+	synao_log("Video system initialized.\n");
 	return true;
 }
 
@@ -208,13 +208,13 @@ void video_t::set_parameters(screen_params_t params) {
 	if (this->params.vsync != params.vsync) {
 		this->params.vsync = params.vsync;
 		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
-			SYNAO_LOG("Vertical sync change failed! SDL Error: %s\n", SDL_GetError());
+			synao_log("Vertical sync change failed! SDL Error: %s\n", SDL_GetError());
 		}
 	}
 	if (this->params.full != params.full) {
 		this->params.full = params.full;
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
-			SYNAO_LOG("Window mode change failed! SDL Error: %s\n", SDL_GetError());
+			synao_log("Window mode change failed! SDL Error: %s\n", SDL_GetError());
 		} else {
 			SDL_SetWindowPosition(
 				window,

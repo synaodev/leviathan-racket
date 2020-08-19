@@ -99,7 +99,7 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 		}
 		return true;
 	}
-	SYNAO_LOG("Warning! Tried to overwrite existing texture!\n");
+	synao_log("Warning! Tried to overwrite existing texture!\n");
 	return false;
 }
 
