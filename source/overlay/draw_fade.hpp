@@ -1,5 +1,5 @@
-#ifndef SYNAO_OVERLAY_DRAW_FADE_HPP
-#define SYNAO_OVERLAY_DRAW_FADE_HPP
+#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP
+#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP
 
 #include "../utility/rect.hpp"
 
@@ -38,4 +38,4 @@ private:
 	rect_t bounding;
 };
 
-#endif // SYNAO_OVERLAY_DRAW_FADE_HPP
+#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP

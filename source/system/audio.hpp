@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_AUDIO_HPP
-#define SYNAO_SYSTEM_AUDIO_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP
 
 #include <string>
 #include <vector>
@@ -34,4 +34,4 @@ private:
 	optr_t engine, context;
 };
 
-#endif // SYNAO_SYSTEM_AUDIO_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP

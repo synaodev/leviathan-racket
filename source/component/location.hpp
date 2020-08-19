@@ -1,5 +1,5 @@
-#ifndef SYNAO_COMPONENT_LOCATION_HPP
-#define SYNAO_COMPONENT_LOCATION_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP
 
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
@@ -32,4 +32,4 @@ public:
 	rect_t bounding;
 };
 
-#endif // SYNAO_COMPONENT_LOCATION_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP

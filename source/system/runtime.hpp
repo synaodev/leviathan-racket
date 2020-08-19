@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_RUNTIME_HPP
-#define SYNAO_SYSTEM_RUNTIME_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP
 
 #include "./kernel.hpp"
 
@@ -57,4 +57,4 @@ private:
 	tilemap_t tilemap;
 };
 
-#endif // SYNAO_SYSTEM_RUNTIME_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP

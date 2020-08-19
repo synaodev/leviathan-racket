@@ -1,5 +1,5 @@
-#ifndef SYNAO_PRECOMPILED_HEADER_HPP
-#define SYNAO_PRECOMPILED_HEADER_HPP
+#ifndef LEVIATHAN_INCLUDED_STDAFX_HPP
+#define LEVIATHAN_INCLUDED_STDAFX_HPP
 
 // C standard libraries
 #include <cstdlib>
@@ -58,4 +58,4 @@
 
 #include "./types.hpp"
 
-#endif // SYNAO_PRECOMPILED_HEADER_HPP
+#endif // LEVIATHAN_INCLUDED_STDAFX_HPP

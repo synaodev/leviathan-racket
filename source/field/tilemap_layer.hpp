@@ -1,5 +1,5 @@
-#ifndef SYNAO_FIELD_TILEMAP_LAYER_HPP
-#define SYNAO_FIELD_TILEMAP_LAYER_HPP
+#ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_LAYER_HPP
+#define LEVIATHAN_INCLUDED_FIELD_TILEMAP_LAYER_HPP
 
 #include <memory>
 #include <tmxlite/Layer.hpp>
@@ -30,4 +30,4 @@ private:
 	vertex_pool_t quads;
 };
 
-#endif // SYNAO_FIELD_TILELAYER_HPP
+#endif // LEVIATHAN_INCLUDED_FIELD_TILELAYER_HPP

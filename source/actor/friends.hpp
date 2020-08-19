@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_FRIENDS_HPP
-#define SYNAO_ACTOR_FRIENDS_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -34,4 +34,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_FRIENDS_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP

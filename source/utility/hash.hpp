@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_HASH_HPP
-#define SYNAO_UTILITY_HASH_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_HASH_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_HASH_HPP
 
 #include "../types.hpp"
 
@@ -28,4 +28,4 @@ inline constexpr arch_t __synao_hash_impl(const byte_t* const key) {
 #define SYNAO_HASH(KEY) __synao_hash_impl(KEY)
 #endif // _MSC_VER
 
-#endif // SYNAO_UTILITY_HASH_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_HASH_HPP

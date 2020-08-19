@@ -1,5 +1,5 @@
-#ifndef SYNAO_COMPONENT_HEALTH_HPP
-#define SYNAO_COMPONENT_HEALTH_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP
 
 #include <bitset>
 
@@ -30,7 +30,7 @@ struct kontext_t;
 
 struct health_t {
 public:
-	health_t() : 
+	health_t() :
 		flags(0),
 		current(2),
 		maximum(2),
@@ -53,4 +53,4 @@ public:
 	sint_t leviathan, damage;
 };
 
-#endif // SYNAO_COMPONENT_HEALTH_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP

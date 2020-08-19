@@ -1,5 +1,5 @@
-#ifndef SYNAO_TYPES_HPP
-#define SYNAO_TYPES_HPP
+#ifndef LEVIATHAN_INCLUDED_TYPES_HPP
+#define LEVIATHAN_INCLUDED_TYPES_HPP
 
 #include <cstdint>
 
@@ -22,17 +22,14 @@ public:
 };
 
 using sint8_t  = signed char;
-// using uint8_t  = unsigned char;
+
 using bool16_t = short;
 using sint16_t = signed short;
-// using uint16_t = unsigned short;
 using bool32_t = int;
 using sint32_t = signed int;
-// using uint32_t = unsigned int;
 using real32_t = float;
 using bool64_t = long long;
 using sint64_t = signed long long;
-// using uint64_t = unsigned long long;
 using real64_t = double;
 
 using byte_t = char;
@@ -70,4 +67,4 @@ namespace rng {
 	real_t next(real_t low, real_t high);
 }
 
-#endif // SYNAO_TYPES_HPP
+#endif // LEVIATHAN_INCLUDED_TYPES_HPP

@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_MUSIC_HPP
-#define SYNAO_SYSTEM_MUSIC_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP
 
 #include <string>
 #include <vector>
@@ -47,4 +47,4 @@ private: // For playing
 	std::array<uint_t, 3> buffers;
 };
 
-#endif // SYNAO_SYSTEM_MUSIC_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP

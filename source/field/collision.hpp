@@ -1,11 +1,10 @@
-#ifndef SYNAO_FIELD_COLLISION_HPP
-#define SYNAO_FIELD_COLLISION_HPP
+#ifndef LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP
+#define LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP
 
 #include <bitset>
 #include <optional>
 
 #include "./tileflag.hpp"
-
 #include "../utility/rect.hpp"
 #include "../component/common.hpp"
 
@@ -34,4 +33,4 @@ namespace collision {
 	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle);
 }
 
-#endif // SYNAO_FIELD_COLLISION_HPP
+#endif // LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP

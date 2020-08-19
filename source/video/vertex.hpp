@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_VERTEX_HPP
-#define SYNAO_VIDEO_VERTEX_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
 
 #include <typeinfo>
 
@@ -11,7 +11,7 @@ struct vtx_minor_t : public vertex_t {
 public:
 	glm::vec2 position;
 public:
-	vtx_minor_t(real_t x, real_t y) : 
+	vtx_minor_t(real_t x, real_t y) :
 		position(x, y) {}
 	vtx_minor_t() :
 		position(0.0f) {}
@@ -21,7 +21,7 @@ struct vtx_blank_t : public vertex_t {
 	glm::vec2 position;
 	glm::vec4 color;
 public:
-	vtx_blank_t() : 
+	vtx_blank_t() :
 		position(0.0f),
 		color(1.0f) {}
 };
@@ -30,10 +30,10 @@ struct vtx_major_t : public vertex_t {
 	glm::vec2 position, uvcoords;
 	real_t table, alpha;
 public:
-	vtx_major_t() : 
-		position(0.0f), 
-		uvcoords(0.0f), 
-		table(0.0f), 
+	vtx_major_t() :
+		position(0.0f),
+		uvcoords(0.0f),
+		table(0.0f),
 		alpha(0.0f) {}
 };
 
@@ -56,4 +56,4 @@ public:
 	bool operator!=(const vertex_spec_t& that);
 };
 
-#endif // SYNAO_VIDEO_VERTEX_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP

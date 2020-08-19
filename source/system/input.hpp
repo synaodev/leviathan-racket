@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_INPUT_HPP
-#define SYNAO_SYSTEM_INPUT_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 
 #include <bitset>
 #include <string>
@@ -85,4 +85,4 @@ private:
 	SDL_Joystick* joystick;
 };
 
-#endif // SYNAO_SYSTEM_INPUT_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP

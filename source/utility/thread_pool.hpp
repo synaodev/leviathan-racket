@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_THREAD_POOL_HPP
-#define SYNAO_UTILITY_THREAD_POOL_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP
 
 #include <functional>
 #include <future>
@@ -27,7 +27,7 @@ public:
 	template<typename Func, typename...Args>
 	auto push(Func&& func, Args&& ... args) -> std::future<decltype(func(args...))> {
 		std::function<decltype(func(args...))()> process = std::bind(
-			std::forward<Func>(func), 
+			std::forward<Func>(func),
 			std::forward<Args>(args)...);
 		auto task_pointer = std::make_shared<std::packaged_task<decltype(func(args...))()> >(process);
 		std::function<void()> wrapper = [task_pointer] {
@@ -109,4 +109,4 @@ private:
 	std::condition_variable conditional_lock;
 };
 
-#endif // SYNAO_UTILITY_THREAD_POOL_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP

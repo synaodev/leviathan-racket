@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_EDITOR_HPP
-#define SYNAO_SYSTEM_EDITOR_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_EDITOR_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_EDITOR_HPP
 
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_events.h>
@@ -33,4 +33,4 @@ private:
 	tileset_viewer_t tileset_viewer;
 };
 
-#endif // SYNAO_SYSTEM_EDITOR_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_EDITOR_HPP

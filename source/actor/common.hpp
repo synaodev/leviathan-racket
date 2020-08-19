@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_COMMON_HPP
-#define SYNAO_ACTOR_COMMON_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -56,4 +56,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_COMMON_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP

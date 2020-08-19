@@ -1,5 +1,5 @@
-#ifndef SYNAO_COMPONENT_LIQUID_HPP
-#define SYNAO_COMPONENT_LIQUID_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
 
 #include <entt/entity/fwd.hpp>
 #include <entt/entity/entity.hpp>
@@ -57,4 +57,4 @@ namespace liquid {
 	void render(const kontext_t& context, renderer_t& renderer, rect_t viewport);
 }
 
-#endif // SYNAO_COMPONENT_LIQUID_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP

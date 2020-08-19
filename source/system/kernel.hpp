@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_KERNEL_HPP
-#define SYNAO_SYSTEM_KERNEL_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP
 
 #include <vector>
 #include <string>
@@ -10,7 +10,7 @@
 class asIScriptFunction;
 
 namespace __enum_kernel_state {
-	enum type : arch_t { 
+	enum type : arch_t {
 		Boot,
 		Zero,
 		Quit,
@@ -99,4 +99,4 @@ private:
 	std::vector<uint64_t> flags;
 };
 
-#endif // SYNAO_SYSTEM_KERNEL_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP

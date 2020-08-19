@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_ENUMS_HPP
-#define SYNAO_UTILITY_ENUMS_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP
 
 #include "../types.hpp"
 
@@ -164,4 +164,4 @@ inline mirroring_t& operator&=(mirroring_t& lhv, const mirroring_t& rhv) {
 	return lhv;
 }
 
-#endif // SYNAO_UTILITY_ENUMS_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP

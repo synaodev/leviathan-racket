@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_WATCH_HPP
-#define SYNAO_UTILITY_WATCH_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP
 
 #include <chrono>
 
@@ -21,4 +21,4 @@ private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> point;
 };
 
-#endif // SYNAO_UTILITY_WATCH_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP

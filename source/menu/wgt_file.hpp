@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_WIDGET_FILE_HPP
-#define SYNAO_MENU_WIDGET_FILE_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_WIDGET_FILE_HPP
+#define LEVIATHAN_INCLUDED_MENU_WIDGET_FILE_HPP
 
 #include "./widget.hpp"
 
@@ -35,4 +35,4 @@ private:
 	draw_scheme_t arrow;
 };
 
-#endif // SYNAO_MENU_WIDGET_FILE_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_WIDGET_FILE_HPP

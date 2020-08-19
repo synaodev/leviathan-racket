@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_DIALOGUE_GUI_HPP
-#define SYNAO_MENU_DIALOGUE_GUI_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP
+#define LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP
 
 #include <functional>
 #include <bitset>
@@ -63,4 +63,4 @@ private:
 	std::function<void(const tbl_entry_t&, arch_t)> push_sound;
 };
 
-#endif // SYNAO_MENU_DIALOGUE_GUI_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP

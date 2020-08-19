@@ -1,5 +1,5 @@
-#ifndef SYNAO_RESOURCE_ID_HPP
-#define SYNAO_RESOURCE_ID_HPP
+#ifndef LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
+#define LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
 
 #include "./tbl_entry.hpp"
 
@@ -85,4 +85,4 @@ namespace res {
 	}
 }
 
-#endif // SYNAO_RESOURCE_ID_HPP
+#endif // LEVIATHAN_INCLUDED_RESOURCE_ID_HPP

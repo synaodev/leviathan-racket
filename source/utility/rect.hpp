@@ -1,13 +1,13 @@
-#ifndef SYNAO_UTILITY_RECT_HPP
-#define SYNAO_UTILITY_RECT_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_RECT_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_RECT_HPP
 
 #include "../types.hpp"
 
 namespace __enum_side {
 	enum type : arch_t {
-		Right, 
-		Left, 
-		Top, 
+		Right,
+		Left,
+		Top,
 		Bottom
 	};
 }
@@ -92,4 +92,4 @@ public:
 	bool operator!=(const glm::vec4& that) const;
 };
 
-#endif // SYNAO_UTILITY_RECT_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_RECT_HPP

@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_CAMERA_HPP
-#define SYNAO_SYSTEM_CAMERA_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP
 
 #include <glm/mat4x4.hpp>
 
@@ -35,4 +35,4 @@ private:
 	real_t quake_power, view_angle;
 };
 
-#endif // SYNAO_SYSTEM_CAMERA_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP

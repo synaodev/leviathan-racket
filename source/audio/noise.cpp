@@ -1,7 +1,6 @@
 #include "./noise.hpp"
 #include "./alcheck.hpp"
 #include "./channel.hpp"
-
 #include "../utility/logger.hpp"
 #include "../utility/thread_pool.hpp"
 
@@ -10,12 +9,11 @@
 
 noise_t::noise_t() :
 	ready(false),
-	// aospec(),
 	future(),
 	handle(0),
 	binder()
 {
-	
+
 }
 
 noise_t::noise_t(noise_t&& that) noexcept : noise_t() {
@@ -23,8 +21,7 @@ noise_t::noise_t(noise_t&& that) noexcept : noise_t() {
 		std::atomic<bool> temp = ready.load();
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
-		
-		// std::swap(aospec, that.aospec);
+
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(binder, that.binder);
@@ -36,8 +33,7 @@ noise_t& noise_t::operator=(noise_t&& that) noexcept {
 		std::atomic<bool> temp = ready.load();
 		ready.store(that.ready.load());
 		that.ready.store(temp.load());
-		
-		// std::swap(aospec, that.aospec);
+
 		std::swap(future, that.future);
 		std::swap(handle, that.handle);
 		std::swap(binder, that.binder);
@@ -78,10 +74,10 @@ void noise_t::load(const std::string& full_path) {
 			return;
 		}
 		alCheck(alBufferData(
-			handle, 
-			get_format_enum(&aospec), 
-			data, 
-			length, 
+			handle,
+			get_format_enum(&aospec),
+			data,
+			length,
 			aospec.freq
 		));
 		SDL_FreeWAV(data);
@@ -94,20 +90,6 @@ void noise_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
 	this->future = thread_pool.push([this](const std::string& full_path) -> void {
 		this->load(full_path);
 	}, full_path);
-	// this->future = thread_pool.push([this](const std::string& full_path) -> std::vector<uint8_t> {
-	// 	std::vector<uint8_t> result;
-	// 	uint8_t* data = nullptr;
-	// 	uint_t length = 0;
-	// 	if (SDL_LoadWAV(full_path.c_str(), &aospec, &data, &length)) {
-	// 		result.resize(length);
-	// 		std::memcpy(&result[0], data, result.size());
-	// 		SDL_FreeWAV(data);
-	// 	} else {
-	// 		SYNAO_LOG("Failed to load noise from %s!\n", full_path.c_str());
-	// 		SYNAO_LOG("SDL Error: %s\n", SDL_GetError());
-	// 	}
-	// 	return result;
-	// }, full_path);
 }
 
 bool noise_t::create() {
@@ -121,11 +103,9 @@ bool noise_t::create() {
 
 void noise_t::destroy() {
 	if (future.valid()) {
-		// auto result = future.get();
 		future.wait();
 	}
 	ready = false;
-	// std::memset(&aospec, 0, sizeof(aospec));
 	if (binder.size() > 0) {
 		std::set<channel_t*> channels;
 		channels.swap(binder);
@@ -139,28 +119,8 @@ void noise_t::destroy() {
 	}
 }
 
-// void noise_t::assure() {
-// 	if (!ready and future.valid()) {
-// 		// Do noise loading now
-// 		std::vector<uint8_t> buffer = future.get();
-// 		if (this->create()) {
-// 			uint_t length = static_cast<uint_t>(buffer.size());
-// 			sint_t format = get_format_enum(&aospec);
-// 			alCheck(alBufferData(
-// 				handle, 
-// 				format, 
-// 				buffer.data(),
-// 				length, 
-// 				aospec.freq
-// 			));
-// 		}
-// 		ready = true;
-// 	}
-// }
-
 void noise_t::assure() const {
 	if (!ready and future.valid()) {
 		future.wait();
-		// const_cast<noise_t*>(this)->assure();
 	}
 }

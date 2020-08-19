@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_IMAGE_HPP
-#define SYNAO_VIDEO_IMAGE_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_IMAGE_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_IMAGE_HPP
 
 #include <string>
 #include <vector>
@@ -26,4 +26,4 @@ private:
 	std::vector<byte_t> pixels;
 };
 
-#endif // SYNAO_VIDEO_IMAGE_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_IMAGE_HPP

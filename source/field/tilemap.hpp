@@ -1,5 +1,5 @@
-#ifndef SYNAO_FIELD_TILEMAP_HPP
-#define SYNAO_FIELD_TILEMAP_HPP
+#ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
+#define LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
 
 #include "./parallax_background.hpp"
 #include "./tilemap_layer.hpp"
@@ -38,4 +38,4 @@ private:
 	std::vector<tilemap_layer_t> tilemap_layers;
 };
 
-#endif // SYNAO_FIELD_TILEMAP_HPP
+#endif // LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP

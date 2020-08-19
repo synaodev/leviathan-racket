@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_NAOMI_HPP
-#define SYNAO_ACTOR_NAOMI_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP
 
 #include <vector>
 #include <bitset>
@@ -219,4 +219,4 @@ private:
 	real_t grav_speed, dash_speed;
 };
 
-#endif // SYNAO_ACTOR_NAOMI_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP

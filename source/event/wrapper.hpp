@@ -1,7 +1,7 @@
-#ifndef SYNAO_EVENT_WRAPPER_HPP
-#define SYNAO_EVENT_WRAPPER_HPP
+#ifndef LEVIATHAN_INCLUDED_EVENT_WRAPPER_HPP
+#define LEVIATHAN_INCLUDED_EVENT_WRAPPER_HPP
 
-#ifndef ANGELSCRIPT_H 
+#ifndef ANGELSCRIPT_H
 // Avoid having to inform include path if header is already include before
 #include <angelscript.h>
 #endif
@@ -554,8 +554,8 @@ Id<T> id(T /*fn_ptr*/) { return Id<T>(); }
 // On some versions of GNUC it is necessary to use the template keyword as disambiguator,
 // on others the template keyword gives an error, hence the need for the following define.
 // MSVC on the other hand seems to accept both with or without the template keyword.
-#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 4)) 
-	// GNUC 4.4.3 doesn't need the template keyword, and 
+#if defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 4))
+	// GNUC 4.4.3 doesn't need the template keyword, and
 	// hopefully upcoming versions won't need it either
 	#define TMPL template
 #else
@@ -578,4 +578,4 @@ Id<T> id(T /*fn_ptr*/) { return Id<T>(); }
 
 } // end namespace gw
 
-#endif // SYNAO_EVENT_WRAPPER_HPP
+#endif // LEVIATHAN_INCLUDED_EVENT_WRAPPER_HPP

@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_GHOST_HPP
-#define SYNAO_ACTOR_GHOST_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -16,4 +16,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_GHOST_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP

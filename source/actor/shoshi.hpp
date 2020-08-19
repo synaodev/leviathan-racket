@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_SHOSHI_HPP
-#define SYNAO_ACTOR_SHOSHI_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_SHOSHI_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_SHOSHI_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -25,7 +25,7 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 		struct helper_t {
 		public:
-			helper_t() : 
+			helper_t() :
 				augment(false) {}
 			helper_t(const helper_t&) = default;
 			helper_t& operator=(const helper_t&) = default;
@@ -38,4 +38,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_SHOSHI_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_SHOSHI_HPP

@@ -1,5 +1,5 @@
-#ifndef SYNAO_EVENT_RECEIVER_HPP
-#define SYNAO_EVENT_RECEIVER_HPP
+#ifndef LEVIATHAN_INCLUDED_EVENT_RECEIVER_HPP
+#define LEVIATHAN_INCLUDED_EVENT_RECEIVER_HPP
 
 #include <vector>
 #include <string>
@@ -98,4 +98,4 @@ private:
 	std::unordered_map<sint_t, asIScriptFunction*> events;
 };
 
-#endif // SYNAO_EVENT_RECEIVER_HPP
+#endif // LEVIATHAN_INCLUDED_EVENT_RECEIVER_HPP

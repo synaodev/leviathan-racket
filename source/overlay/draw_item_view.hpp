@@ -1,5 +1,5 @@
-#ifndef SYNAO_OVERLAY_DRAW_ITEM_VIEW_HPP
-#define SYNAO_OVERLAY_DRAW_ITEM_VIEW_HPP
+#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP
+#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP
 
 #include "./draw_scheme.hpp"
 #include "./draw_count.hpp"
@@ -22,4 +22,4 @@ private:
 	draw_count_t ammo;
 };
 
-#endif // SYNAO_OVERLAY_DRAW_ITEM_VIEW_HPP
+#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP

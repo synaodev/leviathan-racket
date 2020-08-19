@@ -3,15 +3,15 @@
 //
 // This function registers the std::string type with AngelScript to be used as the default string type.
 //
-// The string type is registered as a value type, thus may have performance issues if a lot of 
+// The string type is registered as a value type, thus may have performance issues if a lot of
 // string operations are performed in the script. However, for relatively few operations, this should
 // not cause any problem for most applications.
 //
 
-#ifndef SYNAO_EVENT_STRING_HPP
-#define SYNAO_EVENT_STRING_HPP
+#ifndef LEVIATHAN_INCLUDED_EVENT_STRING_HPP
+#define LEVIATHAN_INCLUDED_EVENT_STRING_HPP
 
-#ifndef ANGELSCRIPT_H 
+#ifndef ANGELSCRIPT_H
 // Avoid having to inform include path if header is already include before
 #include <angelscript.h>
 #endif
@@ -39,4 +39,4 @@ void RegisterStdString(asIScriptEngine* engine);
 
 END_AS_NAMESPACE
 
-#endif // SYNAO_EVENT_STRING_HPP
+#endif // LEVIATHAN_INCLUDED_EVENT_STRING_HPP

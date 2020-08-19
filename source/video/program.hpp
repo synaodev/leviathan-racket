@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_PROGRAM_HPP
-#define SYNAO_VIDEO_PROGRAM_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP
 
 #include <string>
 #include <vector>
@@ -55,4 +55,4 @@ private:
 	vertex_spec_t specify;
 };
 
-#endif // SYNAO_VIDEO_PROGRAM_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP

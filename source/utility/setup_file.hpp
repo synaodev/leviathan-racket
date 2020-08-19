@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_SETUP_FILE_HPP
-#define SYNAO_UTILITY_SETUP_FILE_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP
 
 #include <array>
 #include <vector>
@@ -98,7 +98,7 @@ inline void setup_file_t::get(const std::string& title, const std::string& key, 
 	}
 }
 
-template<typename T, arch_t L> 
+template<typename T, arch_t L>
 inline void setup_file_t::get(const std::string& title, const std::string& key, std::array<T, L>& value) const {
 	for (auto&& chunk : data) {
 		if (chunk.get_title() == title) {
@@ -134,8 +134,6 @@ inline void setup_file_t::get(const std::string& title, const std::string& key, 
 	}
 }
 
-// INDEX GETTER METHOD
-
 template<typename T>
 inline void setup_file_t::get(arch_t index, const std::string& key, T& value) const {
 	const std::string str = data[index].get(key);
@@ -156,7 +154,7 @@ inline void setup_file_t::get(arch_t index, const std::string& key, std::vector<
 	}
 }
 
-template<typename T, arch_t L> 
+template<typename T, arch_t L>
 inline void setup_file_t::get(arch_t index, const std::string& key, std::array<T, L>& value) const {
 	const std::string str = data[index].get(key);
 	if (!str.empty()) {
@@ -181,8 +179,6 @@ inline void setup_file_t::get(arch_t index, const std::string& key, glm::vec<L, 
 		}
 	}
 }
-
-// BASIC SETTER METHOD
 
 template<typename T>
 inline void setup_file_t::set(const std::string& title, const std::string& key, const T& value) {
@@ -250,8 +246,6 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 	chunk.set(key, buffer);
 	data.push_back(chunk);
 }
-
-// BASIC TYPE CONVERSIONS
 
 template<>
 inline sint16_t setup_file_t::convert_to<sint16_t>(const std::string& input) const {
@@ -327,10 +321,8 @@ inline std::string setup_file_t::convert_to<std::string>(const std::string& inpu
 	return input;
 }
 
-// BASIC STRING CONVERSIONS
-
-template<typename T> 
-inline std::string setup_file_t::make_string(T) const {	
+template<typename T>
+inline std::string setup_file_t::make_string(T) const {
 	return "[[PARSING-ERROR]]";
 }
 
@@ -400,4 +392,4 @@ inline std::string setup_file_t::make_string<uint64_t>(uint64_t value) const {
 	return ss.str();
 }
 
-#endif // SYNAO_UTILITY_SETUP_FILE_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP

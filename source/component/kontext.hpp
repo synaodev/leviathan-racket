@@ -1,5 +1,5 @@
-#ifndef SYNAO_COMPONENT_KONTEXT_HPP
-#define SYNAO_COMPONENT_KONTEXT_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP
 
 #include <vector>
 #include <unordered_map>
@@ -11,7 +11,6 @@
 #include "./common.hpp"
 #include "./routine.hpp"
 #include "./sprite.hpp"
-
 #include "../utility/rect.hpp"
 
 class asIScriptFunction;
@@ -75,7 +74,7 @@ public:
 	bool has(entt::entity actor) const;
 	template<typename... Component>
 	decltype(auto) get(entt::entity actor);
-	template<typename... Component> 
+	template<typename... Component>
 	decltype(auto) get(entt::entity actor) const;
 	template<typename Component, typename ...Args>
 	void assign(entt::entity actor, Args&& ...args);
@@ -180,4 +179,4 @@ inline void kontext_t::sort(Compare compare, Args&& ...args) {
 	registry.sort<Component>(compare, entt::std_sort{}, std::forward<Args>(args)...);
 }
 
-#endif // SYNAO_COMPONENT_KONTEXT_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP

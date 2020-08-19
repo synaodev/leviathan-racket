@@ -1,5 +1,5 @@
-#ifndef SYNAO_SYSTEM_RENDERER_HPP
-#define SYNAO_SYSTEM_RENDERER_HPP
+#ifndef LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
+#define LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
 
 #include <optional>
 #include <glm/mat4x4.hpp>
@@ -44,4 +44,4 @@ private:
 	glm::vec2 gk_video_dimensions, gk_video_resolution;
 };
 
-#endif // SYNAO_SYSTEM_RENDERER_HPP
+#endif // LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP

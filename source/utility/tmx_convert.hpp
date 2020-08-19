@@ -1,5 +1,5 @@
-#ifndef SYNAO_UTILITY_TMX_CONVERT_HPP
-#define SYNAO_UTILITY_TMX_CONVERT_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP
 
 #include <vector>
 #include <string>
@@ -23,4 +23,4 @@ namespace tmx_convert {
 	rect_t rect_to_rect(const tmx::FloatRect& rect);
 }
 
-#endif // SYNAO_UTILITY_TMX_CONVERT_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP

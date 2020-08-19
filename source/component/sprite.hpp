@@ -1,5 +1,5 @@
-#ifndef SYNAO_COMPONENT_SPRITE_HPP
-#define SYNAO_COMPONENT_SPRITE_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
 
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
@@ -49,4 +49,4 @@ public:
 	real_t angle, shake;
 };
 
-#endif // SYNAO_COMPONENT_SPRITE_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP

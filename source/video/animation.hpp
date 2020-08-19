@@ -1,11 +1,10 @@
-#ifndef SYNAO_VIDEO_ANIMATION_HPP
-#define SYNAO_VIDEO_ANIMATION_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP
 
 #include <future>
 
-#include "../utility/enums.hpp"
-
 #include "./animation_sequence.hpp"
+#include "../utility/enums.hpp"
 
 struct thread_pool_t;
 struct texture_t;
@@ -39,4 +38,4 @@ private:
 	const palette_t* palette;
 };
 
-#endif // SYNAO_VIDEO_ANIMATION_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP

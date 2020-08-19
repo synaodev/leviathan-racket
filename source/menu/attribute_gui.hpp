@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_ATTRIBUTE_GUI_HPP
-#define SYNAO_MENU_ATTRIBUTE_GUI_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_ATTRIBUTE_GUI_HPP
+#define LEVIATHAN_INCLUDED_MENU_ATTRIBUTE_GUI_HPP
 
 #include <vector>
 #include <string>
@@ -38,4 +38,4 @@ private:
 	std::vector<std::string> files;
 };
 
-#endif // SYNAO_MENU_ATTRIBUTE_GUI_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_ATTRIBUTE_GUI_HPP

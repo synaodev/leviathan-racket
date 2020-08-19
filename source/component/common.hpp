@@ -1,9 +1,8 @@
-#ifndef SYNAO_COMPONENT_COMMON_HPP
-#define SYNAO_COMPONENT_COMMON_HPP
+#ifndef LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP
+#define LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP
 
 #include <array>
 #include <bitset>
-
 #include <entt/entity/fwd.hpp>
 #include <entt/entity/entity.hpp>
 
@@ -42,7 +41,7 @@ using trigger_flags_t = __enum_trigger_flags::type;
 
 struct actor_header_t {
 public:
-	actor_header_t(arch_t type) : 
+	actor_header_t(arch_t type) :
 		type(type),
 		attach(entt::null) {}
 	actor_header_t() :
@@ -102,7 +101,7 @@ public:
 		direction(direction),
 		identity(identity),
 		bitmask(flags) {}
-	actor_spawn_t() : 
+	actor_spawn_t() :
 		type(0),
 		position(0.0f),
 		velocity(0.0f),
@@ -156,7 +155,7 @@ public:
 
 struct actor_timer_t {
 public:
-	actor_timer_t() : 
+	actor_timer_t() :
 		data{ 0, 0, 0, 0 } {}
 	actor_timer_t(const actor_timer_t&) = default;
 	actor_timer_t& operator=(const actor_timer_t&) = default;
@@ -174,4 +173,4 @@ private:
 	std::array<sint64_t, 4> data;
 };
 
-#endif // SYNAO_COMPONENT_COMMON_HPP
+#endif // LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP

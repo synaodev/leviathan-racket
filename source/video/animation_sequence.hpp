@@ -1,8 +1,5 @@
-#ifndef SYNAO_VIDEO_ANIMATION_SEQUENCE_HPP
-#define SYNAO_VIDEO_ANIMATION_SEQUENCE_HPP
-
-#include <vector>
-#include <string>
+#ifndef LEVIATHAN_INCLUDED_VIDEO_ANIMATION_SEQUENCE_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_ANIMATION_SEQUENCE_HPP
 
 #include <array>
 #include <vector>
@@ -15,8 +12,8 @@ struct sequence_frame_t {
 public:
 	glm::vec2 position, origin;
 public:
-	sequence_frame_t(glm::vec2 position, glm::vec2 origin) : 
-		position(position), 
+	sequence_frame_t(glm::vec2 position, glm::vec2 origin) :
+		position(position),
 		origin(origin) {}
 	sequence_frame_t() = default;
 	sequence_frame_t(const sequence_frame_t&) = default;
@@ -52,4 +49,4 @@ private:
 	bool_t repeat, reflect;
 };
 
-#endif // SYNAO_VIDEO_ANIMATION_SEQUENCE_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_ANIMATION_SEQUENCE_HPP

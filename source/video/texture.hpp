@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_TEXTURE_HPP
-#define SYNAO_VIDEO_TEXTURE_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP
 
 #include <future>
 #include <atomic>
@@ -47,4 +47,4 @@ private:
 	pixel_format_t format;
 };
 
-#endif // SYNAO_VIDEO_TEXTURE_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP

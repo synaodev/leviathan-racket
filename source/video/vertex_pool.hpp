@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_VERTEX_POOL_HPP
-#define SYNAO_VIDEO_VERTEX_POOL_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP
 
 #include <type_traits>
 #include <vector>
@@ -35,7 +35,7 @@ private:
 	std::vector<byte_t> memory;
 };
 
-template<typename V> 
+template<typename V>
 inline V* vertex_pool_t::at(arch_t index) {
 	if (specify.detail == nullptr) {
 		return nullptr;
@@ -44,7 +44,7 @@ inline V* vertex_pool_t::at(arch_t index) {
 	return reinterpret_cast<V*>(&memory[index * specify.length]);
 }
 
-template<typename V> 
+template<typename V>
 inline const V* vertex_pool_t::at(arch_t index) const {
 	if (specify.detail == nullptr) {
 		return nullptr;
@@ -53,4 +53,4 @@ inline const V* vertex_pool_t::at(arch_t index) const {
 	return reinterpret_cast<const V*>(&memory[index * specify.length]);
 }
 
-#endif // SYNAO_VIDEO_VERTEX_POOL_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP

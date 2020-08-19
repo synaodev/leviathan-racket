@@ -1,10 +1,11 @@
-#ifndef SYNAO_UTILITY_VFS_HPP
-#define SYNAO_UTILITY_VFS_HPP
+#ifndef LEVIATHAN_INCLUDED_UTILITY_VFS_HPP
+#define LEVIATHAN_INCLUDED_UTILITY_VFS_HPP
 
 #include <vector>
 #include <string>
 #include <unordered_map>
 
+#include "./thread_pool.hpp"
 #include "../audio/noise.hpp"
 #include "../video/texture.hpp"
 #include "../video/palette.hpp"
@@ -12,7 +13,6 @@
 #include "../video/font.hpp"
 #include "../video/animation.hpp"
 #include "../event/receiver.hpp"
-#include "./thread_pool.hpp"
 
 struct tbl_entry_t;
 struct setup_file_t;
@@ -108,4 +108,4 @@ public:
 	std::unordered_map<std::string, font_t> fonts;
 };
 
-#endif // SYNAO_UTILITY_VFS_HPP
+#endif // LEVIATHAN_INCLUDED_UTILITY_VFS_HPP

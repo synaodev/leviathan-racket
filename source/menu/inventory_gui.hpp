@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_INVENTORY_GUI_HPP
-#define SYNAO_MENU_INVENTORY_GUI_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_INVENTORY_GUI_HPP
+#define LEVIATHAN_INCLUDED_MENU_INVENTORY_GUI_HPP
 
 #include "../overlay/draw_count.hpp"
 #include "../overlay/draw_scheme.hpp"
@@ -48,4 +48,4 @@ private:
 	std::vector<inventory_gui_element_t> elements;
 };
 
-#endif // SYNAO_MENU_INVENTORY_GUI_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_INVENTORY_GUI_HPP

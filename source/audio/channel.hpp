@@ -1,5 +1,5 @@
-#ifndef SYNAO_AUDIO_CHANNEL_HPP
-#define SYNAO_AUDIO_CHANNEL_HPP
+#ifndef LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP
+#define LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP
 
 #include "../types.hpp"
 
@@ -31,4 +31,4 @@ private:
 	const noise_t* current;
 };
 
-#endif // SYNAO_AUDIO_CHANNEL_HPP
+#endif // LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP

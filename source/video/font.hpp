@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_FONT_HPP
-#define SYNAO_VIDEO_FONT_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_FONT_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_FONT_HPP
 
 #include <string>
 #include <unordered_map>
@@ -18,10 +18,10 @@ public:
 		x_offset(x_offset), y_offset(y_offset),
 		x_advance(x_advance) {}
 	font_glyph_t() :
-		x(0.0f), y(0.0f), 
+		x(0.0f), y(0.0f),
 		w(0.0f), h(0.0f),
-		x_offset(0.0f), 
-		y_offset(0.0f), 
+		x_offset(0.0f),
+		y_offset(0.0f),
 		x_advance(0.0f) {}
 	font_glyph_t(const font_glyph_t&) = default;
 	font_glyph_t(font_glyph_t&&) = default;
@@ -51,4 +51,4 @@ private:
 	const palette_t* palette;
 };
 
-#endif // SYNAO_VIDEO_FONT_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_FONT_HPP

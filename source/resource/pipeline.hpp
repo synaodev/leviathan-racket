@@ -1,5 +1,5 @@
-#ifndef SYNAO_RESOURCE_PIPELINE_HPP
-#define SYNAO_RESOURCE_PIPELINE_HPP
+#ifndef LEVIATHAN_INCLUDED_RESOURCE_PIPELINE_HPP
+#define LEVIATHAN_INCLUDED_RESOURCE_PIPELINE_HPP
 
 #include <string>
 
@@ -26,4 +26,4 @@ namespace pipeline {
 	std::string lighting_frag(glm::ivec2 version);
 }
 
-#endif // SYNAO_RESOURCE_PIPELINE_HPP
+#endif // LEVIATHAN_INCLUDED_RESOURCE_PIPELINE_HPP

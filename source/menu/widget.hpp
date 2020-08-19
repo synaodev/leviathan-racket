@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_WIDGET_HPP
-#define SYNAO_MENU_WIDGET_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_WIDGET_HPP
+#define LEVIATHAN_INCLUDED_MENU_WIDGET_HPP
 
 #include <bitset>
 
@@ -54,4 +54,4 @@ protected:
 	std::bitset<8> bitmask;
 };
 
-#endif // SYNAO_MENU_WIDGET_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_WIDGET_HPP

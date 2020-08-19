@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_PALETTE_HPP
-#define SYNAO_VIDEO_PALETTE_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_PALETTE_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_PALETTE_HPP
 
 #include "./texture.hpp"
 
@@ -28,4 +28,4 @@ private:
 	pixel_format_t format;
 };
 
-#endif // SYNAO_VIDEO_PALETTE_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_PALETTE_HPP

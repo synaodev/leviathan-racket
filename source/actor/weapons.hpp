@@ -1,5 +1,5 @@
-#ifndef SYNAO_ACTOR_WEAPONS_HPP
-#define SYNAO_ACTOR_WEAPONS_HPP
+#ifndef LEVIATHAN_INCLUDED_ACTOR_WEAPONS_HPP
+#define LEVIATHAN_INCLUDED_ACTOR_WEAPONS_HPP
 
 #include <entt/entity/registry.hpp>
 
@@ -68,4 +68,4 @@ namespace ai {
 	}
 }
 
-#endif // SYNAO_ACTOR_WEAPONS_HPP
+#endif // LEVIATHAN_INCLUDED_ACTOR_WEAPONS_HPP

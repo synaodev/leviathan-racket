@@ -1,5 +1,5 @@
-#ifndef SYNAO_AUDIO_NOISE_HPP
-#define SYNAO_AUDIO_NOISE_HPP
+#ifndef LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP
+#define LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP
 
 #include <string>
 #include <atomic>
@@ -22,16 +22,13 @@ public:
 	void load(const std::string& full_path, thread_pool_t& thread_pool);
 	bool create();
 	void destroy();
-	// void assure();
 	void assure() const;
 private:
 	friend struct channel_t;
 	std::atomic<bool> ready;
-	// SDL_AudioSpec aospec;
 	std::future<void> future;
-	// std::future<std::vector<uint8_t> > future;
 	uint_t handle;
 	mutable std::set<channel_t*> binder;
 };
 
-#endif // SYNAO_AUDIO_NOISE_HPP
+#endif // LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP

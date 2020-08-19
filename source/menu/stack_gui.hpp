@@ -1,5 +1,5 @@
-#ifndef SYNAO_MENU_STACK_GUI_HPP
-#define SYNAO_MENU_STACK_GUI_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP
+#define LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP
 
 #include <vector>
 #include <memory>
@@ -31,4 +31,4 @@ private:
 	std::vector<std::unique_ptr<widget_i> > widgets;
 };
 
-#endif // SYNAO_MENU_STACK_GUI_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP

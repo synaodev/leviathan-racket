@@ -1,5 +1,5 @@
-#ifndef SYNAO_OVERLAY_DRAW_HEADSUP_HPP
-#define SYNAO_OVERLAY_DRAW_HEADSUP_HPP
+#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP
+#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP
 
 #include <functional>
 
@@ -24,7 +24,7 @@ public:
 	sint_t current_oxygen, maximum_oxygen;
 public:
 	headsup_params_t() :
-		current_barrier(0), 
+		current_barrier(0),
 		maximum_barrier(0),
 		current_leviathan(0),
 		main_state(0.0f),
@@ -72,4 +72,4 @@ private:
 	draw_hidden_t hidden;
 };
 
-#endif // SYNAO_OVERLAY_DRAW_HEADSUP_HPP
+#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP

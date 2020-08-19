@@ -1,5 +1,5 @@
-#ifndef SYNAO_VIDEO_GFX_HPP
-#define SYNAO_VIDEO_GFX_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_GFX_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_GFX_HPP
 
 #include <array>
 
@@ -106,4 +106,4 @@ private:
 	std::array<const const_buffer_t*, 4> const_buffers;
 };
 
-#endif // SYNAO_VIDEO_GFX_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_GFX_HPP

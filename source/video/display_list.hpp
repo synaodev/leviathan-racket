@@ -1,7 +1,5 @@
-#ifndef SYNAO_VIDEO_DISPLAY_LIST_HPP
-#define SYNAO_VIDEO_DISPLAY_LIST_HPP
-
-#include <bitset>
+#ifndef LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP
 
 #include "../utility/enums.hpp"
 
@@ -59,4 +57,4 @@ private:
 
 bool operator<(const display_list_t& lhv, const display_list_t& rhv);
 
-#endif // SYNAO_VIDEO_DISPLAY_LIST_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP

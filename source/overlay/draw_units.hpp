@@ -1,5 +1,5 @@
-#ifndef SYNAO_OVERLAY_DRAW_UNITS_HPP
-#define SYNAO_OVERLAY_DRAW_UNITS_HPP
+#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP
+#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP
 
 #include "../utility/enums.hpp"
 #include "../utility/rect.hpp"
@@ -40,4 +40,4 @@ private:
 	vertex_pool_t quads;
 };
 
-#endif // SYNAO_OVERLAY_DRAW_UNITS_HPP
+#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP
