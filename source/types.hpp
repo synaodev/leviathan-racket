@@ -81,15 +81,6 @@
 	#define LEVIATHAN_BUILD_DEBUG
 #endif
 
-#ifndef LEVIATHAN_TOOLCHAIN_GNUC
-	#ifndef and
-		#define and &&
-	#endif
-	#ifndef or
-		#define or ||
-	#endif
-#endif
-
 #include <cstdint>
 
 #include <glm/common.hpp>
