@@ -423,9 +423,9 @@ std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 		return std::string();
 	}
 	if (flags & rec_loading_t::Global) {
-		return kEventPath + name + ".as";
+		return kEventPath + name + ".cc";
 	}
-	return kEventPath + vfs::device->language + '/' + name + ".as";
+	return kEventPath + vfs::device->language + '/' + name + ".cc";
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {
@@ -493,20 +493,6 @@ bool vfs::try_language(const std::string& language) {
 	}
 	synao_log("Error! Couldn't load language file: %s\n", full_path.c_str());
 	return false;
-}
-
-std::string vfs::local_script(const std::string& name) {
-	if (vfs::device == nullptr) {
-		return std::string();
-	}
-	return kEventPath + vfs::device->language + '/' + name + ".as";
-}
-
-std::string vfs::global_script(const std::string& name) {
-	if (vfs::device == nullptr) {
-		return std::string();
-	}
-	return kEventPath + name + ".as";
 }
 
 const noise_t* vfs::noise(const std::string& name) {

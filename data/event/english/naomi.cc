@@ -17,7 +17,7 @@ void door_to_hallway() {
 	sys::set_field("common", kThatDoorID);
 }
 
-void use_cmptr() {
+void use_computer() {
 	const arch_t kFileGUI = 1;
 	const sint32_t kCmptrID = 10000;
 

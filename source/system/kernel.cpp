@@ -10,7 +10,7 @@ static const byte_t kFlagProgsName[] = "_prog.bin";
 static const byte_t kFlagCheckName[] = "_check.bin";
 static const byte_t kTheFirstField[] = "naomi";
 
-static constexpr sint_t kTheFirstIDN = 10000;
+static constexpr sint_t kTheFirstIDN = 9999;
 static constexpr arch_t kMaxItemList = 30;
 static constexpr arch_t kMaxFlagList = 128;
 static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
@@ -41,11 +41,13 @@ void kernel_t::reset() {
 	bitmask.reset();
 	bitmask[kernel_state_t::Zero] = true;
 	bitmask[kernel_state_t::Field] = true;
+	// bitmask[kernel_state_t::Lock] = true;
+	// bitmask[kernel_state_t::Freeze] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
 	item_ptr = nullptr;
-	field = kTheFirstField; // config.get("Setup", "Field", field);
-	identity = kTheFirstIDN; // config.get("Setup", "Actor", identity);
+	field = kTheFirstField;
+	identity = kTheFirstIDN;
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }

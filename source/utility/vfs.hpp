@@ -60,8 +60,6 @@ namespace vfs {
 	std::string i18n_find(const std::string& segment, arch_t first, arch_t last);
 	arch_t i18n_size(const std::string& segment);
 	bool try_language(const std::string& language);
-	std::string local_script(const std::string& name);
-	std::string global_script(const std::string& name);
 	const noise_t* noise(const std::string& name);
 	const noise_t* noise(const tbl_entry_t& entry);
 	const animation_t* animation(const std::string& name);

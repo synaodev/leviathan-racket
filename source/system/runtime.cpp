@@ -150,7 +150,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 		kernel.finish_field();
 		return false;
 	}
-	receiver.run_field(kernel);
+	receiver.run_function(kernel);
 	const std::string full_path = vfs::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {

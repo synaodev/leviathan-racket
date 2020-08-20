@@ -1,15 +1,6 @@
-// Global Events
+// Global
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-enum input_t {
-	Yes	= 0,
-	No 	= 1
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void boot() {
+void init() {
 	pxt::exit();
 	msg::push_card("Leviathan Racket", font_t::One);
 	msg::set_card_position(0, 160.0f, 48.0f);
@@ -19,14 +10,14 @@ void boot() {
 	msg::fade_in();
 }
 
-void is_empty() /* Empty Chest */ {
+void is_empty() {
 	sys::freeze();
 	msg::top_box();
 	msg::say(sys::locale("IsEmpty", 0));
 	sys::wait();
 }
 
-void use_bed() /* Bed */ {
+void use_bed() {
 	sys::freeze();
 	msg::top_box();
 
@@ -72,7 +63,7 @@ void use_bed() /* Bed */ {
 	}
 }
 
-void death(arch_t type) /* Naomi Dies */ {
+void death(arch_t type) {
 	std::string death_print;
 	switch (type) {
 		case 1: /* Disintegration */ {
@@ -148,25 +139,19 @@ void death(arch_t type) /* Naomi Dies */ {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-
-void assign_item(const std::string &in wpn_name, arch_t index) /* Set Weapon */ {
-	if (index != sys::get_item_ptr_index()) {
-		sys::set_item_ptr_index(index);
-	} else {
-		msg::say(wpn_name);
-		sys::wait();
-	}
-}
-
-void inven(arch_t type, arch_t index) /* Using Inventory */ {
+void inventory(arch_t type, arch_t index) /* Inventory */ {
 	if (sys::get_key_held(input_t::Yes)) {
 		msg::low_box();
 		if (type >= sys::locale("Inven")) {
 			msg::say(sys::locale("Main", 3));
 			sys::wait();
 		} else if (type != 0) {
-			assign_item(sys::locale("Inven", type), index);
+            if (index != sys::get_item_ptr_index()) {
+                sys::set_item_ptr_index(index);
+            } else {
+                msg::say(sys::locale("Inven", type));
+                sys::wait();
+            }
 		} else {
 			msg::say(sys::locale("Inven", 0));
 			sys::wait();

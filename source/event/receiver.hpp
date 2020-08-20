@@ -65,7 +65,7 @@ public:
 	bool load(const kernel_t& kernel);
 	bool load(const std::string& name);
 	bool load(const std::string& name, rec_loading_t flags);
-	void run_field(const kernel_t& kernel);
+	void run_function(const kernel_t& kernel);
 	void run_event(sint_t id);
 	void run_inventory(arch_t type, arch_t index);
 	void run_death(arch_t type);
@@ -76,8 +76,11 @@ private:
 	static void print_message(const std::string& message);
 	static void error_callback(const asSMessageInfo* msg, optr_t aux);
 	static void calls_callback(asIScriptContext* ctx, uint_t* calls);
+	asIScriptFunction* find_from_index(const std::string& module_name, arch_t index) const;
 	asIScriptFunction* find_from_symbol(const std::string& module_name, const std::string& symbol) const;
 	asIScriptFunction* find_from_declaration(const std::string& module_name, const std::string& declaration) const;
+	asIScriptFunction* find_from_declaration(const std::string& declaration) const;
+	bool unlinked(asIScriptModule* boot_module, asIScriptModule* src_module) const;
 	void execute_function(asIScriptFunction* function);
 	void execute_function(asIScriptFunction* function, std::vector<arch_t> args);
 	void close_dependencies(kernel_t& kernel, const stack_gui_t& stack_gui, const inventory_gui_t& inventory_gui, dialogue_gui_t& dialogue_gui);
