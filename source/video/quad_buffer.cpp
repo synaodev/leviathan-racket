@@ -288,7 +288,7 @@ void quad_buffer_t::draw(arch_t count) const {
 		count = quad_buffer_allocator_t::convert(count);
 		glCheck(glBindVertexArray(arrays));
 		glCheck(glDrawElements(
-			allocator->get_primitive(),
+			gfx_t::get_primitive_gl_enum(allocator->get_primitive()),
 			static_cast<uint_t>(count),
 			GL_UNSIGNED_SHORT,
 			nullptr

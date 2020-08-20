@@ -162,7 +162,12 @@ bool vertex_buffer_t::update(const uint16_t* indices) {
 void vertex_buffer_t::draw(arch_t count) const {
 	if (arrays != 0) {
 		glCheck(glBindVertexArray(arrays));
-		glCheck(glDrawElements(primitive, static_cast<uint_t>(count), GL_UNSIGNED_SHORT, nullptr));
+		glCheck(glDrawElements(
+			gfx_t::get_primitive_gl_enum(primitive),
+			static_cast<uint_t>(count),
+			GL_UNSIGNED_SHORT,
+			nullptr
+		));
 		glCheck(glBindVertexArray(0));
 	}
 }

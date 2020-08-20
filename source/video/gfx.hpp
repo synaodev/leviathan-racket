@@ -5,81 +5,41 @@
 
 #include "../types.hpp"
 
-namespace __enum_blend_mode {
-	enum type : arch_t {
-		Disable,
-		None,
-		Alpha,
-		Add,
-		Subtract,
-		Multiply
-	};
-}
+enum class blend_mode_t {
+	Disable, None, Alpha,
+	Add, Subtract, Multiply
+};
 
-using blend_mode_t = __enum_blend_mode::type;
+enum class compare_func_t {
+	Disable, Never, Less,
+	Equal, Lequal, Greater,
+	Nequal, Gequal, Always
+};
 
-namespace __enum_compare_func {
-	enum type : arch_t {
-		Disable,
-		Never,
-		Less,
-		Equal,
-		Lequal,
-		Greater,
-		Nequal,
-		Gequal,
-		Always
-	};
-}
+enum class buffer_usage_t {
+	Static, Dynamic, Stream
+};
 
-using compare_func_t = __enum_compare_func::type;
+enum class primitive_t {
+	Points, Lines, LineLoop,
+	LineStrip, Triangles,
+	TriangleStrip, TriangleFan
+};
 
-namespace __enum_buffer_usage {
-	enum type : arch_t {
-		Static,
-		Dynamic,
-		Stream
-	};
-}
+enum class pixel_format_t {
+	Invalid,
+	R3G3B2A0,
+	R8G8B8A0,
+	R2G2B2A2,
+	R4G4B4A4,
+	R8G8B8A8
+};
 
-using buffer_usage_t = __enum_buffer_usage::type;
-
-namespace __enum_primitive {
-	enum type : uint_t {
-		Points,
-		Lines,
-		LineLoop,
-		LineStrip,
-		Triangles,
-		TriangleStrip,
-		TriangleFan
-	};
-}
-
-using primitive_t = __enum_primitive::type;
-
-namespace __enum_pixel_format {
-	enum type : arch_t {
-		Invalid,
-		R3G3B2A0,
-		R8G8B8A0,
-		R2G2B2A2,
-		R4G4B4A4,
-		R8G8B8A8
-	};
-}
-
-using pixel_format_t = __enum_pixel_format::type;
-
-namespace __enum_shader_stage {
-	enum type : uint_t {
-		Vertex,
-		Geometry,
-		Fragment
-	};
-}
-
-using shader_stage_t = __enum_shader_stage::type;
+enum class shader_stage_t {
+	Vertex,
+	Geometry,
+	Fragment
+};
 
 struct sampler_t;
 struct texture_t;
@@ -107,6 +67,7 @@ public:
 public:
 	static uint_t get_compare_func_gl_enum(compare_func_t func);
 	static uint_t get_buffer_usage_gl_enum(buffer_usage_t usage);
+	static uint_t get_primitive_gl_enum(primitive_t primitive);
 	static uint_t get_pixel_format_gl_enum(pixel_format_t format);
 	static uint_t get_shader_stage_gl_enum(shader_stage_t stage);
 private:

@@ -183,6 +183,27 @@ uint_t gfx_t::get_buffer_usage_gl_enum(buffer_usage_t usage) {
 	return GL_NONE;
 }
 
+uint_t gfx_t::get_primitive_gl_enum(primitive_t primitive) {
+	switch (primitive) {
+	case primitive_t::Points:
+		return GL_POINTS;
+	case primitive_t::Lines:
+		return GL_LINES;
+	case primitive_t::LineLoop:
+		return GL_LINE_LOOP;
+	case primitive_t::LineStrip:
+		return GL_LINE_STRIP;
+	case primitive_t::Triangles:
+		return GL_TRIANGLES;
+	case primitive_t::TriangleStrip:
+		return GL_TRIANGLE_STRIP;
+	case primitive_t::TriangleFan:
+		return GL_TRIANGLE_FAN;
+	}
+	return GL_NONE;
+}
+
+
 uint_t gfx_t::get_pixel_format_gl_enum(pixel_format_t format) {
 	switch (format) {
 	case pixel_format_t::Invalid:

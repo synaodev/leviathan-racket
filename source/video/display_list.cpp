@@ -260,8 +260,8 @@ bool display_list_t::persists() const {
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 	if (layer_value::equal(lhv.layer, rhv.layer)) {
 		if (lhv.blend_mode == rhv.blend_mode) {
-			uint_t lhu = lhv.quad_buffer.get_usage();
-			uint_t rhu = rhv.quad_buffer.get_usage();
+			buffer_usage_t lhu = lhv.quad_buffer.get_usage();
+			buffer_usage_t rhu = rhv.quad_buffer.get_usage();
 			if (lhu == rhu) {
 				if (lhv.texture == rhv.texture) {
 					if (lhv.palette == rhv.palette) {
