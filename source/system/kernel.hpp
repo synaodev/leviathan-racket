@@ -80,7 +80,8 @@ public:
 	arch_t get_file_index() const;
 	const std::string& get_field() const;
 	sint_t get_identity() const;
-	asIScriptFunction* get_function() const;
+	bool can_transfer() const;
+	asIScriptFunction* get_function();
 	glm::ivec2 get_cursor() const;
 	arch_t get_cursor_index() const;
 	sint_t get_item_count(sint_t type) const;

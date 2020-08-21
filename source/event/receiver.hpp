@@ -65,7 +65,7 @@ public:
 	bool load(const kernel_t& kernel);
 	bool load(const std::string& name);
 	bool load(const std::string& name, rec_loading_t flags);
-	void run_function(const kernel_t& kernel);
+	void run_function(kernel_t& kernel);
 	void run_event(sint_t id);
 	void run_inventory(arch_t type, arch_t index);
 	void run_death(arch_t type);

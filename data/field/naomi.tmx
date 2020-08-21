@@ -31,7 +31,7 @@
     <property name="dir" type="int" value="0"/>
     <property name="eve" value="use_computer"/>
     <property name="flags" value="0x4"/>
-    <property name="id" value="9999"/>
+    <property name="id" value="200"/>
     <property name="spawn" type="int" value="0"/>
    </properties>
   </object>
@@ -40,7 +40,7 @@
     <property name="dir" type="int" value="1"/>
     <property name="eve" value="use_bed"/>
     <property name="flags" value="0x4"/>
-    <property name="id" value="200"/>
+    <property name="id" value="0"/>
     <property name="spawn" type="int" value="0"/>
    </properties>
   </object>

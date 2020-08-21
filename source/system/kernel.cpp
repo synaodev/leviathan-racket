@@ -10,9 +10,7 @@
 
 static const byte_t kFlagProgsName[] = "_prog.bin";
 static const byte_t kFlagCheckName[] = "_check.bin";
-static const byte_t kTheFirstField[] = "naomi";
 
-static constexpr sint_t kTheFirstIDN = 9999;
 static constexpr arch_t kMaxItemList = 30;
 static constexpr arch_t kMaxFlagList = 128;
 static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
@@ -55,15 +53,13 @@ bool kernel_t::init(const receiver_t& receiver) {
 void kernel_t::reset() {
 	bitmask.reset();
 	bitmask[kernel_state_t::Zero] = true;
-	bitmask[kernel_state_t::Field] = true;
-	// bitmask[kernel_state_t::Lock] = true;
-	// bitmask[kernel_state_t::Freeze] = true;
+	bitmask[kernel_state_t::Lock] = true;
+	bitmask[kernel_state_t::Freeze] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
 	item_ptr = nullptr;
-	field = kTheFirstField;
-	identity = kTheFirstIDN;
-	// function.clear();
+	field.clear();
+	identity = 0;
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }
@@ -206,6 +202,7 @@ void kernel_t::buffer_field(asIScriptFunction* function, sint_t identity) {
 		const std::string location = std::invoke(verify, function);
 		if (!location.empty()) {
 			bitmask[kernel_state_t::Field] = true;
+			bitmask[kernel_state_t::Zero] = false;
 			this->identity = identity;
 			this->field = location;
 			if (this->function != nullptr) {
@@ -367,8 +364,17 @@ sint_t kernel_t::get_identity() const {
 	return identity;
 }
 
-asIScriptFunction* kernel_t::get_function() const {
-	return function;
+bool kernel_t::can_transfer() const {
+	return function != nullptr;
+}
+
+asIScriptFunction* kernel_t::get_function() {
+	asIScriptFunction* result = nullptr;
+	if (function != nullptr) {
+		function->Release();
+		std::swap(function, result);
+	}
+	return result;
 }
 
 glm::ivec2 kernel_t::get_cursor() const {

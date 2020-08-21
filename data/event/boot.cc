@@ -3,7 +3,7 @@
 import void intro() from "naomi";
 
 void boot() {
-	set_field();
+	sys::set_field(@intro, 200);
 }
 
 void is_empty() {

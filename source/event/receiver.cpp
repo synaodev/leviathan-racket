@@ -230,13 +230,13 @@ bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 	return true;
 }
 
-void receiver_t::run_function(const kernel_t& kernel) {
+void receiver_t::run_function(kernel_t& kernel) {
 	if (!bitmask[rec_bits_t::Running]) {
-		asIScriptFunction* imported = kernel.get_function();
-		if (imported != nullptr) {
-			this->execute_function(imported);
-		} else if (kernel.has(kernel_state_t::Zero)) {
+		if (kernel.has(kernel_state_t::Zero)) {
 			this->execute_function(boot);
+		} else if (kernel.can_transfer()) {
+			asIScriptFunction* imported = kernel.get_function();
+			this->execute_function(imported);
 		} else {
 			const std::string& field = kernel.get_field();
 			asIScriptFunction* function = this->find_from_index(field, 0);
@@ -314,8 +314,11 @@ std::string receiver_t::verify(asIScriptFunction* imported) const {
 	if (imported->GetFuncType() != asFUNC_IMPORTED) {
 		return std::string();
 	}
-	asUINT index = current->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
-	const byte_t* source = current->GetImportedFunctionSourceModule(index);
+	asIScriptModule* module = current != nullptr ?
+		current :
+		engine->GetModuleByIndex(0);
+	asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
+	const byte_t* source = module->GetImportedFunctionSourceModule(index);
 	if (source == nullptr) {
 		return std::string();
 	}
@@ -481,24 +484,26 @@ void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_g
 }
 
 void receiver_t::discard_all_events() {
-	asIScriptModule* boot_module = engine->GetModuleByIndex(0);
-	if (current != nullptr and current->GetImportedFunctionCount() == 0) {
-		asUINT count = engine->GetModuleCount();
-		for (uint_t it = 1; it < count; ++it) {
-			asIScriptModule* source = engine->GetModuleByIndex(it);
-			if (source != nullptr and this->unlinked(source, boot_module, current)) {
-				engine->DiscardModule(source->GetName());
+	if (current != nullptr) {
+		asIScriptModule* boot_module = engine->GetModuleByIndex(0);
+		if (current != nullptr and current->GetImportedFunctionCount() == 0) {
+			asUINT count = engine->GetModuleCount();
+			for (uint_t it = 1; it < count; ++it) {
+				asIScriptModule* source = engine->GetModuleByIndex(it);
+				if (source != nullptr and this->unlinked(source, boot_module, current)) {
+					engine->DiscardModule(source->GetName());
+				}
 			}
 		}
-	}
-	current = nullptr;
-	for (auto&& event : events) {
-		if (event.second != nullptr) {
-			event.second->Release();
-			event.second = nullptr;
+		current = nullptr;
+		for (auto&& event : events) {
+			if (event.second != nullptr) {
+				event.second->Release();
+				event.second = nullptr;
+			}
 		}
+		events.clear();
 	}
-	events.clear();
 }
 
 void receiver_t::link_imported_functions(asIScriptModule* module) {

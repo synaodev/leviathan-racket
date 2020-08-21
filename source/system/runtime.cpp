@@ -194,6 +194,7 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 	headsup.reset();
 	naomi_state.reset(kontext);
 	synao_log("Boot successful.\n");
+	receiver.run_function(kernel);
 }
 
 // If loading fails, run setup_boot() to make sure the game doesn't get stuck.
