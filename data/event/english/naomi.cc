@@ -8,6 +8,16 @@ void main() {
 	msg::fade_in();
 }
 
+void intro() {
+	pxt::exit();
+	msg::push_card("Leviathan Racket", font_t::One);
+	msg::set_card_position(0, 160.0f, 48.0f);
+	msg::set_card_centered(0, true, false);
+	sys::wait(1.5f);
+	msg::clear_cards();
+	msg::fade_in();
+}
+
 void door_to_hallway() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 100;
