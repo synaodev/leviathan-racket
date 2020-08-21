@@ -21,13 +21,20 @@ kernel_t::kernel_t() :
 	timer(0.0),
 	field(),
 	identity(0),
-	function(),
+	function(nullptr),
 	cursor(0),
 	item_ptr(nullptr),
 	items(kMaxItemList, glm::zero<glm::ivec4>()),
 	flags(kMaxFlagList, 0)
 {
 	
+}
+
+kernel_t::~kernel_t() {
+	if (function != nullptr) {
+		function->Release();
+		function = nullptr;
+	}
 }
 
 void kernel_t::reset() {
@@ -54,7 +61,7 @@ void kernel_t::reset(const std::string& field) {
 	item_ptr = nullptr;
 	this->field = field;
 	this->identity = 0;
-	this->function.clear();
+	// function.clear();
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }
@@ -179,21 +186,24 @@ void kernel_t::buffer_field(const std::string& field, sint_t identity) {
 	this->identity = identity;
 }
 
-void kernel_t::buffer_field(const std::string& field, sint_t identity, asIScriptFunction* handle) {
+void kernel_t::buffer_field(const std::string& field, sint_t identity, asIScriptFunction* function) {
 	bitmask[kernel_state_t::Field] = true;
 	this->field = field;
 	this->identity = identity;
-	if (handle != nullptr) {
-		this->function = handle->GetDeclaration();
-		handle->Release();
+	if (this->function != nullptr) {
+		this->function->Release();
 	}
+	this->function = function;
 }
 
 void kernel_t::finish_field() {
 	bitmask[kernel_state_t::Boot] = false;
 	bitmask[kernel_state_t::Zero] = false;
 	bitmask[kernel_state_t::Field] = false;
-	function.clear();
+	if (function != nullptr) {
+		function->Release();
+		function = nullptr;
+	}
 }
 
 bool kernel_t::has(kernel_state_t state) const {
@@ -333,7 +343,7 @@ sint_t kernel_t::get_identity() const {
 	return identity;
 }
 
-const std::string& kernel_t::get_function() const {
+asIScriptFunction* kernel_t::get_function() const {
 	return function;
 }
 

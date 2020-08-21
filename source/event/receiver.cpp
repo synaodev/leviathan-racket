@@ -201,28 +201,29 @@ bool receiver_t::load(const std::string& name) {
 }
 
 bool receiver_t::load(const std::string& name, rec_loading_t flags) {
-	if (engine == nullptr) {
-		synao_log("Scripting engine doesn't exist!\nCouldn't load module!\n");
-		return false;
+	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_ONLY_IF_EXISTS);
+	if (module != nullptr) {
+		synao_log("Module %s already exists!\n", name.c_str());
+	} else {
+		module = engine->GetModule(name.c_str(), asGM_ALWAYS_CREATE);
+		if (module == nullptr) {
+			synao_log("Couldn't allocate script module %s during loading process!\n", name.c_str());
+			return false;
+		}
+		const std::string buffer = vfs::string_buffer(vfs::event_path(name, flags));
+		arch_t length = buffer.length();
+		if (module->AddScriptSection(name.c_str(), buffer.c_str(), length) != 0) {
+			current = nullptr;
+			synao_log("Adding script section %s failed!\n", name.c_str());
+			return false;
+		}
+		if (module->Build() != 0) {
+			current = nullptr;
+			synao_log("Building module %s failed!\n", name.c_str());
+			return false;
+		}
+		this->link_imported_functions(module);
 	}
-	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_CREATE_IF_NOT_EXISTS);
-	if (module == nullptr) {
-		synao_log("Couldn't allocate script module during loading process!\n");
-		return false;
-	}
-	const std::string buffer = vfs::string_buffer(vfs::event_path(name, flags));
-	arch_t length = buffer.length();
-	if (module->AddScriptSection(name.c_str(), buffer.c_str(), length) != 0) {
-		current = nullptr;
-		synao_log("Adding script section %s failed!\n", name.c_str());
-		return false;
-	}
-	if (module->Build() != 0) {
-		current = nullptr;
-		synao_log("Building module %s failed!\n", name.c_str());
-		return false;
-	}
-	this->link_imported_functions(module);
 	if (flags == rec_loading_t::None) {
 		current = module;
 	}
@@ -231,11 +232,9 @@ bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 
 void receiver_t::run_function(const kernel_t& kernel) {
 	if (!bitmask[rec_bits_t::Running]) {
-		const std::string& declaration = kernel.get_function();
-		if (!declaration.empty()) {
-			const std::string& field = kernel.get_field();
-			asIScriptFunction* function = this->find_from_declaration(field, declaration);
-			this->execute_function(function);
+		asIScriptFunction* imported = kernel.get_function();
+		if (imported != nullptr) {
+			this->execute_function(imported);
 		} else if (kernel.has(kernel_state_t::Zero)) {
 			this->execute_function(boot);
 		} else {
@@ -496,24 +495,21 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 		const byte_t* name = module->GetImportedFunctionSourceModule(it);
 		asIScriptModule* source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
 		if (source == nullptr and !this->load(name, rec_loading_t::Import)) {
-			synao_log("\tCouldn't allocate script module during linking process!\n");
+			synao_log("Couldn't allocate script module during linking process!\n");
 			break;
 		}
 		source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
 		if (source == nullptr) {
-			synao_log("\tCouldn't allocate script module during linking process... again!\n");
+			synao_log("Couldn't allocate script module during linking process... again!\n");
 			break;
 		}
 		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
-		synao_log("\tImport Declaration: %s\n", declaration);
 		asIScriptFunction* function = source->GetFunctionByDecl(declaration);
 		if (function == nullptr) {
-			synao_log("\tCouldn't find imported script function with declaration: %s!\n", declaration);
+			synao_log("Couldn't find imported script function with declaration: %s!\n", declaration);
 			break;
 		}
-		synao_log("\tFunction Declaration: %s\n", function->GetDeclaration());
-		asUINT index = module->GetImportedFunctionIndexByDecl(function->GetDeclaration());
-		sint_t r = module->BindImportedFunction(index, function);
+		sint_t r = module->BindImportedFunction(it, function);
 		if (r == asNO_FUNCTION) {
 			synao_log("\tLinking for declaration %s failed!\n", declaration);
 			synao_log("\tError: No function!\n");
@@ -524,24 +520,6 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 			break;
 		}
 	}
-	/*uint_t total = module->GetImportedFunctionCount();
-	for (uint_t it = 0; it < total; ++it) {
-		const byte_t* name = module->GetImportedFunctionSourceModule(it);
-		asIScriptModule* query = engine->GetModule(name, asGM_CREATE_IF_NOT_EXISTS);
-		if (query == nullptr) {
-			synao_log("\tCouldn't allocate script module during linking process!\n");
-			break;
-		}
-		if (query->GetFunctionCount() == 0 and !this->load(name, rec_loading_t::Import)) {
-			synao_log("\tCouldn't load script module during linking process!\n");
-			break;
-		}
-		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
-		asIScriptFunction* function = query->GetFunctionByDecl(declaration);
-		if (function == nullptr or module->BindImportedFunction(it, function) < 0) {
-			synao_log("\tLinking for declaration %s failed!\n", declaration);
-		}
-	}*/
 }
 
 void receiver_t::set_stalled_period() {
