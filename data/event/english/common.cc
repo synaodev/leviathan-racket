@@ -5,6 +5,11 @@ void main() {
 	msg::fade_in();
 }
 
+void poopy_face() {
+	msg::set_field_text("Poopy Face");
+	msg::fade_in();
+}
+
 void door_to_naomi() {
 	const sint32_t kThisDoorID = 100;
 	const sint32_t kThatDoorID = 100;

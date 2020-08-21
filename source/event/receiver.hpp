@@ -80,7 +80,7 @@ private:
 	asIScriptFunction* find_from_symbol(const std::string& module_name, const std::string& symbol) const;
 	asIScriptFunction* find_from_declaration(const std::string& module_name, const std::string& declaration) const;
 	asIScriptFunction* find_from_declaration(const std::string& declaration) const;
-	bool unlinked(asIScriptModule* boot_module, asIScriptModule* src_module) const;
+	bool unlinked(asIScriptModule* source_module, asIScriptModule* boot_module, asIScriptModule* current_module) const;
 	void execute_function(asIScriptFunction* function);
 	void execute_function(asIScriptFunction* function, std::vector<arch_t> args);
 	void close_dependencies(kernel_t& kernel, const stack_gui_t& stack_gui, const inventory_gui_t& inventory_gui, dialogue_gui_t& dialogue_gui);

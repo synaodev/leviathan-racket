@@ -1,5 +1,7 @@
 // Naomi's Dorm
 
+import void poopy_face() from "common";
+
 void main() {
 	pxt::exit();
 	msg::set_field_text("Naomi's Dorm");
@@ -14,12 +16,12 @@ void door_to_hallway() {
 	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
-	sys::set_field("common", kThatDoorID);
+	sys::set_field("common", kThatDoorID, @poopy_face);
 }
 
 void use_computer() {
 	const arch_t kFileGUI = 1;
-	const sint32_t kCmptrID = 10000;
+	const sint32_t kCmptrID = 9999;
 
 	sys::freeze();
 	ktx::animate(kCmptrID, 1, dir_t::Right);

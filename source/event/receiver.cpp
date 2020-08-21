@@ -44,8 +44,12 @@ receiver_t::receiver_t() :
 }
 
 receiver_t::~receiver_t() {
-	this->reset();
+	// If boot isn't null it's been fully initialized.
 	if (boot != nullptr) {
+		asIScriptModule* boot_module = engine->GetModuleByIndex(0);
+		boot_module->UnbindAllImportedFunctions();
+		// Now calling discard_all_events will fully unlink all modules.
+		this->reset();
 		boot->Release();
 		boot = nullptr;
 	}
@@ -189,10 +193,7 @@ bool receiver_t::running() const {
 }
 
 bool receiver_t::load(const kernel_t& kernel) {
-	return this->load(
-		kernel.get_field(),
-		rec_loading_t::None
-	);
+	return this->load(kernel.get_field(), rec_loading_t::None);
 }
 
 bool receiver_t::load(const std::string& name) {
@@ -230,15 +231,17 @@ bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 
 void receiver_t::run_function(const kernel_t& kernel) {
 	if (!bitmask[rec_bits_t::Running]) {
-		asIScriptFunction* kernel_function = kernel.get_function();
-		if (kernel.has(kernel_state_t::Zero)) {
+		const std::string& declaration = kernel.get_function();
+		if (!declaration.empty()) {
+			const std::string& field = kernel.get_field();
+			asIScriptFunction* function = this->find_from_declaration(field, declaration);
+			this->execute_function(function);
+		} else if (kernel.has(kernel_state_t::Zero)) {
 			this->execute_function(boot);
-		} else if (kernel_function != nullptr) {
-			this->execute_function(kernel_function);
 		} else {
-			const std::string field = kernel.get_field();
-			asIScriptFunction* main_function = this->find_from_index(field, 0);
-			this->execute_function(main_function);
+			const std::string& field = kernel.get_field();
+			asIScriptFunction* function = this->find_from_index(field, 0);
+			this->execute_function(function);
 		}
 	}
 }
@@ -384,11 +387,18 @@ asIScriptFunction* receiver_t::find_from_declaration(const std::string& declarat
 	return nullptr;
 }
 
-bool receiver_t::unlinked(asIScriptModule* boot_module, asIScriptModule* src_module) const {
+bool receiver_t::unlinked(asIScriptModule* source_module, asIScriptModule* boot_module, asIScriptModule* current_module) const {
+	const byte_t* src_name = source_module->GetName();
 	asUINT count = boot_module->GetImportedFunctionCount();
-	const byte_t* src_name = src_module->GetName();
 	for (asUINT it = 0; it < count; ++it) {
 		const byte_t* imp_name = boot_module->GetImportedFunctionSourceModule(it);
+		if (std::strcmp(src_name, imp_name) == 0) {
+			return false;
+		}
+	}
+	count = current_module->GetImportedFunctionCount();
+	for (asUINT it = 0; it < count; ++it) {
+		const byte_t* imp_name = current_module->GetImportedFunctionSourceModule(it);
 		if (std::strcmp(src_name, imp_name) == 0) {
 			return false;
 		}
@@ -397,14 +407,30 @@ bool receiver_t::unlinked(asIScriptModule* boot_module, asIScriptModule* src_mod
 }
 
 void receiver_t::execute_function(asIScriptFunction* function) {
-	if (function != nullptr and state->Prepare(function) >= 0) {
-		bitmask[rec_bits_t::Running] = true;
-		bitmask[rec_bits_t::Waiting] = false;
-		bitmask[rec_bits_t::Stalled] = false;
-		timer = 0.0f;
-		calls = 0;
-	} else {
-		synao_log("Couldn't execute function!\n");
+	if (function != nullptr) {
+		sint_t r = state->Prepare(function);
+		if (r >= 0) {
+			bitmask[rec_bits_t::Running] = true;
+			bitmask[rec_bits_t::Waiting] = false;
+			bitmask[rec_bits_t::Stalled] = false;
+			timer = 0.0f;
+			calls = 0;
+		} else if (r == asCONTEXT_ACTIVE) {
+			synao_log("Prepare function failed!\nError: Context Active!\n");
+			assert(0);
+		} else if (r == asNO_FUNCTION) {
+			synao_log("Prepare function failed!\nError: No Function!\n");
+			assert(0);
+		} else if (r == asINVALID_ARG) {
+			synao_log("Prepare function failed!\nError: Invalid Args!\n");
+			assert(0);
+		} else if (r == asOUT_OF_MEMORY) {
+			synao_log("Prepare function failed!\nError: Out of memory!\n");
+			assert(0);
+		} else {
+			synao_log("Prepare function failed!\nError: Unknown!\n");
+			assert(0);
+		}
 	}
 }
 
@@ -444,12 +470,13 @@ void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_g
 }
 
 void receiver_t::discard_all_events() {
-	// asIScriptModule* boot_module = engine->GetModuleByIndex(0);
+	asIScriptModule* boot_module = engine->GetModuleByIndex(0);
 	if (current != nullptr and current->GetImportedFunctionCount() == 0) {
-		for (uint_t it = 1; it < engine->GetModuleCount(); ++it) {
-			asIScriptModule* module = engine->GetModuleByIndex(it);
-			if (module != nullptr /*and this->unlinked(boot_module, module)*/) {
-				engine->DiscardModule(module->GetName());
+		asUINT count = engine->GetModuleCount();
+		for (uint_t it = 1; it < count; ++it) {
+			asIScriptModule* source = engine->GetModuleByIndex(it);
+			if (source != nullptr and this->unlinked(source, boot_module, current)) {
+				engine->DiscardModule(source->GetName());
 			}
 		}
 	}
@@ -464,24 +491,57 @@ void receiver_t::discard_all_events() {
 }
 
 void receiver_t::link_imported_functions(asIScriptModule* module) {
-	uint_t total = module->GetImportedFunctionCount();
+	asUINT count = module->GetImportedFunctionCount();
+	for (asUINT it = 0; it < count; ++it) {
+		const byte_t* name = module->GetImportedFunctionSourceModule(it);
+		asIScriptModule* source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
+		if (source == nullptr and !this->load(name, rec_loading_t::Import)) {
+			synao_log("\tCouldn't allocate script module during linking process!\n");
+			break;
+		}
+		source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
+		if (source == nullptr) {
+			synao_log("\tCouldn't allocate script module during linking process... again!\n");
+			break;
+		}
+		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
+		synao_log("\tImport Declaration: %s\n", declaration);
+		asIScriptFunction* function = source->GetFunctionByDecl(declaration);
+		if (function == nullptr) {
+			synao_log("\tCouldn't find imported script function with declaration: %s!\n", declaration);
+			break;
+		}
+		synao_log("\tFunction Declaration: %s\n", function->GetDeclaration());
+		asUINT index = module->GetImportedFunctionIndexByDecl(function->GetDeclaration());
+		sint_t r = module->BindImportedFunction(index, function);
+		if (r == asNO_FUNCTION) {
+			synao_log("\tLinking for declaration %s failed!\n", declaration);
+			synao_log("\tError: No function!\n");
+			break;
+		} else if (r == asINVALID_INTERFACE) {
+			synao_log("\tLinking for declaration %s failed!\n", declaration);
+			synao_log("\tError: Invalid interface!\n");
+			break;
+		}
+	}
+	/*uint_t total = module->GetImportedFunctionCount();
 	for (uint_t it = 0; it < total; ++it) {
 		const byte_t* name = module->GetImportedFunctionSourceModule(it);
 		asIScriptModule* query = engine->GetModule(name, asGM_CREATE_IF_NOT_EXISTS);
 		if (query == nullptr) {
-			synao_log("Couldn't allocate script module during linking process!\n");
+			synao_log("\tCouldn't allocate script module during linking process!\n");
 			break;
 		}
 		if (query->GetFunctionCount() == 0 and !this->load(name, rec_loading_t::Import)) {
-			synao_log("Couldn't load script module during linking process!\n");
+			synao_log("\tCouldn't load script module during linking process!\n");
 			break;
 		}
 		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
-		asIScriptFunction* function = module->GetFunctionByDecl(declaration);
+		asIScriptFunction* function = query->GetFunctionByDecl(declaration);
 		if (function == nullptr or module->BindImportedFunction(it, function) < 0) {
-			synao_log("Linking for declaration %s failed!\n", declaration);
+			synao_log("\tLinking for declaration %s failed!\n", declaration);
 		}
-	}
+	}*/
 }
 
 void receiver_t::set_stalled_period() {
