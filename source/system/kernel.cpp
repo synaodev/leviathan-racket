@@ -1,10 +1,12 @@
 #include "./kernel.hpp"
 #include "./input.hpp"
 
+#include "../event/receiver.hpp"
+#include "../utility/logger.hpp"
+#include "../utility/setup_file.hpp"
+
 #include <fstream>
 #include <angelscript.h>
-
-#include "../utility/setup_file.hpp"
 
 static const byte_t kFlagProgsName[] = "_prog.bin";
 static const byte_t kFlagCheckName[] = "_check.bin";
@@ -16,6 +18,7 @@ static constexpr arch_t kMaxFlagList = 128;
 static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
 
 kernel_t::kernel_t() :
+	verify(nullptr),
 	bitmask(0),
 	file_index(0),
 	timer(0.0),
@@ -35,6 +38,18 @@ kernel_t::~kernel_t() {
 		function->Release();
 		function = nullptr;
 	}
+}
+
+bool kernel_t::init(const receiver_t& receiver) {
+	if (verify) {
+		synao_log("Error! Kernel is already initialized!\n");
+		return false;
+	}
+	verify = [&receiver](asIScriptFunction* function) {
+		return receiver.verify(function);
+	};
+	synao_log("Kernel is ready.\n");
+	return true;
 }
 
 void kernel_t::reset() {
@@ -186,14 +201,23 @@ void kernel_t::buffer_field(const std::string& field, sint_t identity) {
 	this->identity = identity;
 }
 
-void kernel_t::buffer_field(const std::string& field, sint_t identity, asIScriptFunction* function) {
-	bitmask[kernel_state_t::Field] = true;
-	this->field = field;
-	this->identity = identity;
-	if (this->function != nullptr) {
-		this->function->Release();
+void kernel_t::buffer_field(asIScriptFunction* function, sint_t identity) {
+	if (function != nullptr) {
+		const std::string location = std::invoke(verify, function);
+		if (!location.empty()) {
+			bitmask[kernel_state_t::Field] = true;
+			this->identity = identity;
+			this->field = location;
+			if (this->function != nullptr) {
+				this->function->Release();
+			}
+			this->function = function;
+		} else {
+			synao_log("Error! Passed transfer function is not imported!\n");
+		}
+	} else {
+		synao_log("Error! Passed transfer function is null!\n");
 	}
-	this->function = function;
 }
 
 void kernel_t::finish_field() {

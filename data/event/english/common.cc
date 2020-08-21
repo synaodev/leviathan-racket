@@ -5,8 +5,8 @@ void main() {
 	msg::fade_in();
 }
 
-void poopy_face() {
-	msg::set_field_text("Poopy Face");
+void stupid_face() {
+	msg::set_field_text("Stupid Face");
 	msg::fade_in();
 }
 

@@ -310,6 +310,18 @@ void receiver_t::suspend() {
 	}
 }
 
+std::string receiver_t::verify(asIScriptFunction* imported) const {
+	if (imported->GetFuncType() != asFUNC_IMPORTED) {
+		return std::string();
+	}
+	asUINT index = current->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
+	const byte_t* source = current->GetImportedFunctionSourceModule(index);
+	if (source == nullptr) {
+		return std::string();
+	}
+	return source;
+}
+
 void receiver_t::print_message(const std::string& message) {
 	synao_log("%s\n", message.c_str());
 }
@@ -694,7 +706,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Set Room Special Function
-	r = engine->RegisterGlobalFunction("void set_field(const std::string &in field, sint32_t id, std::event@ event)", WRAP_MFN_PR(kernel_t, buffer_field, (const std::string&, sint_t, asIScriptFunction*), void), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_field(std::event@ event, sint32_t id)", WRAP_MFN_PR(kernel_t, buffer_field, (asIScriptFunction*, sint_t), void), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Load Progress
 	r = engine->RegisterGlobalFunction("void load_progress()", WRAP_MFN(kernel_t, load_progress), asCALL_THISCALL_ASGLOBAL, &kernel);

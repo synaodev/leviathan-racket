@@ -4,9 +4,11 @@
 #include <vector>
 #include <string>
 #include <bitset>
+#include <functional>
 
 #include "../utility/enums.hpp"
 
+class asIScriptModule;
 class asIScriptFunction;
 
 namespace __enum_kernel_state {
@@ -32,6 +34,7 @@ struct input_t;
 struct audio_t;
 struct music_t;
 struct renderer_t;
+struct receiver_t;
 
 struct kernel_t : public not_copyable_t {
 public:
@@ -40,6 +43,7 @@ public:
 	kernel_t& operator=(kernel_t&&) = default;
 	~kernel_t();
 public:
+	bool init(const receiver_t& receiver);
 	void reset();
 	void reset(const std::string& field);
 	void update(real64_t delta);
@@ -58,7 +62,7 @@ public:
 	void save_checkpoint();
 	void finish_file_operation();
 	void buffer_field(const std::string& field, sint_t identity);
-	void buffer_field(const std::string& field, sint_t identity, asIScriptFunction* function);
+	void buffer_field(asIScriptFunction* function, sint_t identity);
 	void finish_field();
 	bool has(kernel_state_t state) const;
 	void set_file_index(arch_t file_index);
@@ -87,6 +91,7 @@ public:
 	const glm::ivec4* get_item_ptr() const;
 	bool get_flag(arch_t index) const;
 private:
+	std::function<std::string(asIScriptFunction*)> verify;
 	std::bitset<kernel_state_t::Total> bitmask;
 	arch_t file_index;
 	real64_t timer;

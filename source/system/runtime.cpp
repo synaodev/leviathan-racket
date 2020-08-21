@@ -36,6 +36,9 @@ runtime_t::runtime_t() :
 }
 
 bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {
+	if (!kernel.init(receiver)) {
+		return false;
+	}
 	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, title_view, headsup, camera, naomi_state, kontext)) {
 		return false;
 	}

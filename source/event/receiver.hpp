@@ -72,6 +72,7 @@ public:
 	void push_from_symbol(sint_t id, const std::string& module_name, const std::string& symbol);
 	void push_from_function(sint_t id, asIScriptFunction* function);
 	void suspend();
+	std::string verify(asIScriptFunction* imported) const;
 private:
 	static void print_message(const std::string& message);
 	static void error_callback(const asSMessageInfo* msg, optr_t aux);

@@ -1,6 +1,6 @@
 // Naomi's Dorm
 
-import void poopy_face() from "common";
+import void stupid_face() from "common";
 
 void main() {
 	pxt::exit();
@@ -16,7 +16,7 @@ void door_to_hallway() {
 	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
-	sys::set_field("common", kThatDoorID, @poopy_face);
+	sys::set_field(@stupid_face, kThatDoorID);
 }
 
 void use_computer() {
