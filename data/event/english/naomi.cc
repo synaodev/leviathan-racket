@@ -1,7 +1,5 @@
 // Naomi's Dorm
 
-import void transfer_common_stupid_face() from "common";
-
 void main() {
 	pxt::exit();
 	msg::set_field_text("Naomi's Dorm");
@@ -16,7 +14,7 @@ void door_to_hallway() {
 	ktx::animate(kThisDoorID, 0, dir_t::Left);
 	aud::play("door");
 	msg::fade_out();
-	sys::set_field(@transfer_common_stupid_face, kThatDoorID);
+	sys::set_field("common", kThatDoorID);
 }
 
 void use_computer() {
@@ -30,12 +28,11 @@ void use_computer() {
 }
 
 void shoshi_bed() {
-	transfer_common_stupid_face();
-	// sys::lock();
-	// msg::top_box();
-	// msg::set_face(0, 2);
-	// msg::say("Shoshi's Bed...");
-	// sys::wait();
+	sys::lock();
+	msg::top_box();
+	msg::set_face(0, 2);
+	msg::say("Shoshi's Bed...");
+	sys::wait();
 }
 
 void transfer_naomi_introduction() {

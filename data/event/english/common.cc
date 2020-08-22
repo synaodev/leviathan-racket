@@ -36,8 +36,3 @@ void check_fireplace() {
 	msg::say("It's hot...");
 	sys::wait();
 }
-
-void transfer_common_stupid_face() {
-	msg::set_field_text("Stupid Face");
-	msg::fade_in();
-}
