@@ -66,6 +66,10 @@ void draw_fade_t::render(renderer_t& renderer) const {
 	}
 }
 
+void draw_fade_t::invalidate() const {
+	amend = true;
+}
+
 void draw_fade_t::fade_in() {
 	state = fade_state_t::FadingIn;
 	bounding.h = 180.0f;

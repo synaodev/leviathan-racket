@@ -50,6 +50,7 @@ public:
 	void handle(const kernel_t& kernel);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
+	void invalidate() const;
 	void set_parameters(headsup_params_t params);
 	void set_fight_values(sint_t current, sint_t maximum);
 #ifdef LEVIATHAN_BUILD_DEBUG

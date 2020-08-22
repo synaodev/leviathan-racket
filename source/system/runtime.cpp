@@ -146,6 +146,8 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	kernel.lock();
 	receiver.reset();
 	stack_gui.reset();
+	title_view.invalidate();
+	headsup.invalidate();
 	camera.reset();
 	kontext.reset();
 	tilemap.reset();

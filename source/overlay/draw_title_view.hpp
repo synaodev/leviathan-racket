@@ -13,6 +13,7 @@ public:
 	bool init();
 	void handle();
 	void render(renderer_t& renderer) const;
+	void invalidate() const;
 	void push(const std::string& string, arch_t font);
 	void clear();
 	void set_position(arch_t index, glm::vec2 position);

@@ -123,6 +123,13 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 #endif
 }
 
+void draw_headsup_t::invalidate() const {
+	fade.invalidate();
+#ifdef LEVIATHAN_BUILD_DEBUG
+	hidden.invalidate();
+#endif
+}
+
 void draw_headsup_t::set_parameters(headsup_params_t params) {
 	main_scheme.set_index(params.main_state);
 	main_scheme.set_direction(params.main_direction);

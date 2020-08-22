@@ -53,6 +53,14 @@ void draw_title_view_t::render(renderer_t& renderer) const {
 	}
 }
 
+void draw_title_view_t::invalidate() const {
+	head.invalidate();
+	lite.invalidate();
+	for (auto&& card : cards) {
+		card.invalidate();
+	}
+}
+
 void draw_title_view_t::push(const std::string& string, arch_t font) {
 	auto& recent = cards.emplace_back();
 	recent.set_font(vfs::font(font));

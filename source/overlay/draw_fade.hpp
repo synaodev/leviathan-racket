@@ -27,6 +27,7 @@ public:
 	void reset();
 	void handle();
 	void render(renderer_t& renderer) const;
+	void invalidate() const;
 	void fade_in();
 	void fade_out();
 	bool is_done() const;
