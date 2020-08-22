@@ -1,8 +1,9 @@
 #ifndef LEVIATHAN_INCLUDED_VIDEO_GLCHECK_HPP
 #define LEVIATHAN_INCLUDED_VIDEO_GLCHECK_HPP
 
+#include <glad/glad.hpp>
+
 #include "../types.hpp"
-#include "./glad.hpp"
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 	namespace priv {

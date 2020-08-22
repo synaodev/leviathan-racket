@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.15)
 
+set (GLAD_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+
 find_package (Angelscript CONFIG REQUIRED)
 find_package (glm CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)

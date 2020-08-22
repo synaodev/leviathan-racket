@@ -49,6 +49,7 @@ target_link_libraries (leviathan PRIVATE
 )
 
 target_include_directories (leviathan PRIVATE
+	${GLAD_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
