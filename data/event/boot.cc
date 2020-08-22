@@ -1,9 +1,9 @@
 // Global
 
-import void intro() from "naomi";
+import void transfer_naomi_introduction() from "naomi";
 
 void boot() {
-	sys::set_field(@intro, 200);
+	sys::set_field(@transfer_naomi_introduction, 200);
 }
 
 void is_empty() {

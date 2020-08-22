@@ -226,6 +226,7 @@ bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 	}
 	if (flags == rec_loading_t::None) {
 		current = module;
+		synao_log("Module Count: %d\n", engine->GetModuleCount());
 	}
 	return true;
 }
@@ -235,8 +236,10 @@ void receiver_t::run_function(kernel_t& kernel) {
 		if (kernel.has(kernel_state_t::Zero)) {
 			this->execute_function(boot);
 		} else if (kernel.can_transfer()) {
-			asIScriptFunction* imported = kernel.get_function();
-			this->execute_function(imported);
+			const std::string& declaration = kernel.get_function();
+			const std::string& field = kernel.get_field();
+			asIScriptFunction* function = this->find_from_declaration(field, declaration);
+			this->execute_function(function);
 		} else {
 			const std::string& field = kernel.get_field();
 			asIScriptFunction* function = this->find_from_index(field, 0);
@@ -311,18 +314,30 @@ void receiver_t::suspend() {
 }
 
 std::string receiver_t::verify(asIScriptFunction* imported) const {
-	if (imported->GetFuncType() != asFUNC_IMPORTED) {
-		return std::string();
+	// if (imported->GetFuncType() != asFUNC_IMPORTED) {
+	// 	return std::string();
+	// }
+	// asIScriptModule* module = current != nullptr ?
+	// 	current :
+	// 	engine->GetModuleByIndex(0);
+	// asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
+	// const byte_t* source = module->GetImportedFunctionSourceModule(index);
+	// if (source == nullptr) {
+	// 	return std::string();
+	// }
+	// return source;
+	if (imported->GetFuncType() == asFUNC_IMPORTED) {
+		asUINT count = engine->GetModuleCount();
+		for (asUINT it = 0; it < count; ++it) {
+			asIScriptModule* module = engine->GetModuleByIndex(it);
+			asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
+			const byte_t* source = module->GetImportedFunctionSourceModule(index);
+			if (source != nullptr) {
+				return source;
+			}
+		}
 	}
-	asIScriptModule* module = current != nullptr ?
-		current :
-		engine->GetModuleByIndex(0);
-	asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
-	const byte_t* source = module->GetImportedFunctionSourceModule(index);
-	if (source == nullptr) {
-		return std::string();
-	}
-	return source;
+	return std::string();
 }
 
 void receiver_t::print_message(const std::string& message) {
@@ -401,23 +416,23 @@ asIScriptFunction* receiver_t::find_from_declaration(const std::string& declarat
 	return nullptr;
 }
 
-bool receiver_t::unlinked(asIScriptModule* source_module, asIScriptModule* boot_module, asIScriptModule* current_module) const {
-	const byte_t* src_name = source_module->GetName();
+bool receiver_t::has_linked_functions(asIScriptModule* source_module, asIScriptModule* boot_module, asIScriptModule* current_module) const {
+	const byte_t* source_name = source_module->GetName();
 	asUINT count = boot_module->GetImportedFunctionCount();
 	for (asUINT it = 0; it < count; ++it) {
-		const byte_t* imp_name = boot_module->GetImportedFunctionSourceModule(it);
-		if (std::strcmp(src_name, imp_name) == 0) {
-			return false;
+		const byte_t* import_name = boot_module->GetImportedFunctionSourceModule(it);
+		if (std::strcmp(source_name, import_name) == 0) {
+			return true;
 		}
 	}
 	count = current_module->GetImportedFunctionCount();
 	for (asUINT it = 0; it < count; ++it) {
-		const byte_t* imp_name = current_module->GetImportedFunctionSourceModule(it);
-		if (std::strcmp(src_name, imp_name) == 0) {
-			return false;
+		const byte_t* import_name = current_module->GetImportedFunctionSourceModule(it);
+		if (std::strcmp(source_name, import_name) == 0) {
+			return true;
 		}
 	}
-	return true;
+	return false;
 }
 
 void receiver_t::execute_function(asIScriptFunction* function) {
@@ -431,19 +446,14 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 			calls = 0;
 		} else if (r == asCONTEXT_ACTIVE) {
 			synao_log("Prepare function failed!\nError: Context Active!\n");
-			assert(0);
 		} else if (r == asNO_FUNCTION) {
 			synao_log("Prepare function failed!\nError: No Function!\n");
-			assert(0);
 		} else if (r == asINVALID_ARG) {
 			synao_log("Prepare function failed!\nError: Invalid Args!\n");
-			assert(0);
 		} else if (r == asOUT_OF_MEMORY) {
 			synao_log("Prepare function failed!\nError: Out of memory!\n");
-			assert(0);
 		} else {
 			synao_log("Prepare function failed!\nError: Unknown!\n");
-			assert(0);
 		}
 	}
 }
@@ -489,9 +499,9 @@ void receiver_t::discard_all_events() {
 		if (current != nullptr and current->GetImportedFunctionCount() == 0) {
 			asUINT count = engine->GetModuleCount();
 			for (uint_t it = 1; it < count; ++it) {
-				asIScriptModule* source = engine->GetModuleByIndex(it);
-				if (source != nullptr and this->unlinked(source, boot_module, current)) {
-					engine->DiscardModule(source->GetName());
+				asIScriptModule* used_module = engine->GetModuleByIndex(it);
+				if (used_module != nullptr and !this->has_linked_functions(used_module, boot_module, current)) {
+					engine->DiscardModule(used_module->GetName());
 				}
 			}
 		}

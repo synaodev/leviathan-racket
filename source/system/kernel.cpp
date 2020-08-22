@@ -22,20 +22,13 @@ kernel_t::kernel_t() :
 	timer(0.0),
 	field(),
 	identity(0),
-	function(nullptr),
+	function(),
 	cursor(0),
 	item_ptr(nullptr),
 	items(kMaxItemList, glm::zero<glm::ivec4>()),
 	flags(kMaxFlagList, 0)
 {
 	
-}
-
-kernel_t::~kernel_t() {
-	if (function != nullptr) {
-		function->Release();
-		function = nullptr;
-	}
 }
 
 bool kernel_t::init(const receiver_t& receiver) {
@@ -60,6 +53,7 @@ void kernel_t::reset() {
 	item_ptr = nullptr;
 	field.clear();
 	identity = 0;
+	function.clear();
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }
@@ -72,7 +66,7 @@ void kernel_t::reset(const std::string& field) {
 	item_ptr = nullptr;
 	this->field = field;
 	this->identity = 0;
-	// function.clear();
+	this->function.clear();
 	std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	std::fill(flags.begin(), flags.end(), 0);
 }
@@ -197,21 +191,19 @@ void kernel_t::buffer_field(const std::string& field, sint_t identity) {
 	this->identity = identity;
 }
 
-void kernel_t::buffer_field(asIScriptFunction* function, sint_t identity) {
-	if (function != nullptr) {
-		const std::string location = std::invoke(verify, function);
+void kernel_t::buffer_field(asIScriptFunction* handle, sint_t identity) {
+	if (handle != nullptr) {
+		const std::string location = std::invoke(verify, handle);
 		if (!location.empty()) {
 			bitmask[kernel_state_t::Field] = true;
 			bitmask[kernel_state_t::Zero] = false;
 			this->identity = identity;
 			this->field = location;
-			if (this->function != nullptr) {
-				this->function->Release();
-			}
-			this->function = function;
+			this->function = handle->GetDeclaration();
 		} else {
 			synao_log("Error! Passed transfer function is not imported!\n");
 		}
+		handle->Release();
 	} else {
 		synao_log("Error! Passed transfer function is null!\n");
 	}
@@ -221,10 +213,7 @@ void kernel_t::finish_field() {
 	bitmask[kernel_state_t::Boot] = false;
 	bitmask[kernel_state_t::Zero] = false;
 	bitmask[kernel_state_t::Field] = false;
-	if (function != nullptr) {
-		function->Release();
-		function = nullptr;
-	}
+	function.clear();
 }
 
 bool kernel_t::has(kernel_state_t state) const {
@@ -365,16 +354,11 @@ sint_t kernel_t::get_identity() const {
 }
 
 bool kernel_t::can_transfer() const {
-	return function != nullptr;
+	return !function.empty();
 }
 
-asIScriptFunction* kernel_t::get_function() {
-	asIScriptFunction* result = nullptr;
-	if (function != nullptr) {
-		function->Release();
-		std::swap(function, result);
-	}
-	return result;
+const std::string& kernel_t::get_function() const {
+	return function;
 }
 
 glm::ivec2 kernel_t::get_cursor() const {

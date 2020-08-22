@@ -90,6 +90,7 @@ void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audi
 		if (reboot) {
 			audio.play(res::sfx::TitleBeg, 0);
 			headsup.fade_out();
+			stack_gui.clear();
 			kernel.boot();
 		} else {
 			audio.play(res::sfx::Inven, 0);

@@ -8,7 +8,6 @@
 
 #include "../utility/enums.hpp"
 
-class asIScriptModule;
 class asIScriptFunction;
 
 namespace __enum_kernel_state {
@@ -41,7 +40,7 @@ public:
 	kernel_t();
 	kernel_t(kernel_t&&) = default;
 	kernel_t& operator=(kernel_t&&) = default;
-	~kernel_t();
+	~kernel_t() = default;
 public:
 	bool init(const receiver_t& receiver);
 	void reset();
@@ -62,7 +61,7 @@ public:
 	void save_checkpoint();
 	void finish_file_operation();
 	void buffer_field(const std::string& field, sint_t identity);
-	void buffer_field(asIScriptFunction* function, sint_t identity);
+	void buffer_field(asIScriptFunction* handle, sint_t identity);
 	void finish_field();
 	bool has(kernel_state_t state) const;
 	void set_file_index(arch_t file_index);
@@ -81,7 +80,7 @@ public:
 	const std::string& get_field() const;
 	sint_t get_identity() const;
 	bool can_transfer() const;
-	asIScriptFunction* get_function();
+	const std::string& get_function() const;
 	glm::ivec2 get_cursor() const;
 	arch_t get_cursor_index() const;
 	sint_t get_item_count(sint_t type) const;
@@ -98,7 +97,7 @@ private:
 	real64_t timer;
 	std::string field;
 	sint_t identity;
-	asIScriptFunction* function;
+	std::string function;
 	glm::ivec2 cursor;
 	glm::ivec4* item_ptr;
 	std::vector<glm::ivec4> items;
