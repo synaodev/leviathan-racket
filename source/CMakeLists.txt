@@ -1,12 +1,12 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (leviathan PRIVATE
-	"types.cpp" "types.hpp"
-)
-
 if (${CMAKE_VERSION} VERSION_GREATER "3.15" AND NOT MINGW)
 	target_precompile_headers (leviathan PRIVATE "stdafx.hpp")
 endif ()
+
+target_sources (leviathan PRIVATE
+	"types.cpp" "types.hpp"
+)
 
 add_subdirectory("actor")
 add_subdirectory("audio")
