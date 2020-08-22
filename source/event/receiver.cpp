@@ -494,26 +494,36 @@ void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_g
 }
 
 void receiver_t::discard_all_events() {
+	for (auto&& event : events) {
+		if (event.second != nullptr) {
+			event.second->Release();
+			event.second = nullptr;
+		}
+	}
+	events.clear();
 	if (current != nullptr) {
-		asIScriptModule* boot_module = engine->GetModuleByIndex(0);
-		if (current != nullptr and current->GetImportedFunctionCount() == 0) {
-			asUINT count = engine->GetModuleCount();
-			for (uint_t it = 1; it < count; ++it) {
-				asIScriptModule* used_module = engine->GetModuleByIndex(it);
-				if (used_module != nullptr and !this->has_linked_functions(used_module, boot_module, current)) {
-					engine->DiscardModule(used_module->GetName());
+		const byte_t* current_name = current->GetName();
+		asUINT module_count = engine->GetModuleCount();
+		for (asUINT i = 0; i < module_count; ++i) {
+			asIScriptModule* module = engine->GetModuleByIndex(i);
+			if (module != current) {
+				bool linked = false;
+				asUINT function_count = module->GetImportedFunctionCount();
+				for (asUINT j = 0; j < function_count; ++j) {
+					const byte_t* source_name = module->GetImportedFunctionSourceModule(j);
+					if (std::strcmp(source_name, current_name) == 0) {
+						linked = true;
+						break;
+					} 
+				}
+				if (!linked) {
+					engine->DiscardModule(current_name);
+					break;
 				}
 			}
 		}
-		current = nullptr;
-		for (auto&& event : events) {
-			if (event.second != nullptr) {
-				event.second->Release();
-				event.second = nullptr;
-			}
-		}
-		events.clear();
 	}
+	current = nullptr;
 }
 
 void receiver_t::link_imported_functions(asIScriptModule* module) {

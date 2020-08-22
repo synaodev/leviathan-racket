@@ -30,11 +30,12 @@ void use_computer() {
 }
 
 void shoshi_bed() {
-	sys::lock();
-	msg::top_box();
-	msg::set_face(0, 2);
-	msg::say("Shoshi's Bed...");
-	sys::wait();
+	transfer_common_stupid_face();
+	// sys::lock();
+	// msg::top_box();
+	// msg::set_face(0, 2);
+	// msg::say("Shoshi's Bed...");
+	// sys::wait();
 }
 
 void transfer_naomi_introduction() {
