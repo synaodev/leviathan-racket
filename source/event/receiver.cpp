@@ -3,6 +3,7 @@
 #include "./array.hpp"
 
 #include <angelscript.h>
+#include <cstring>
 
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
