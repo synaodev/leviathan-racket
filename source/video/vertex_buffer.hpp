@@ -18,7 +18,8 @@ public:
 		this->setup(primitive, usage, specify);
 	}
 	void setup(primitive_t primitive, buffer_usage_t usage, vertex_spec_t specify);
-	void create(arch_t vtx_count, arch_t idx_count);
+	void create(arch_t vertex_count, arch_t index_count);
+	void create_immutable(arch_t vertex_count, arch_t index_count);
 	void destroy();
 	bool update(const vertex_t* vertices, arch_t count, arch_t offset);
 	bool update(const vertex_t* vertices, arch_t count);
@@ -31,15 +32,16 @@ public:
 	bool valid() const;
 	primitive_t get_primitive() const;
 	buffer_usage_t get_usage() const;
-	arch_t get_vtx_count() const;
-	arch_t get_idx_count() const;
+	arch_t get_vertex_count() const;
+	arch_t get_index_count() const;
 private:
 	friend struct gfx_t;
 	primitive_t primitive;
 	buffer_usage_t usage;
+	bool_t immuts;
 	vertex_spec_t specify;
 	uint_t arrays, buffer, elemts;
-	arch_t vtx_count, idx_count;
+	arch_t vertex_count, index_count;
 };
 
 

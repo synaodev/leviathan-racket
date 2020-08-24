@@ -290,12 +290,12 @@ display_list_t& renderer_t::get_normal_quads(layer_t layer, blend_mode_t blend_m
 
 display_list_t* renderer_t::find_quads(sint64_t guid) {
 	if (guid != 0) {
-		for (auto&& list : overlay_quads) {
+		for (auto&& list : normal_quads) {
 			if (list.matches(guid)) {
 				return &list;
 			}
 		}
-		for (auto&& list : normal_quads) {
+		for (auto&& list : overlay_quads) {
 			if (list.matches(guid)) {
 				return &list;
 			}

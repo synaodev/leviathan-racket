@@ -72,9 +72,9 @@ void const_buffer_t::destroy() {
 		glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));
 		glCheck(glDeleteBuffers(1, &handle));
 		handle = 0;
-		immuts = false;
-		length = 0;
 	}
+	immuts = false;
+	length = 0;
 }
 
 bool const_buffer_t::update(const optr_t pointer, arch_t count, arch_t offset) {
