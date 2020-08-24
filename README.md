@@ -26,7 +26,7 @@ I hope to release in Winter 2020.
     - Run `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev`.
     - If using vcpkg, leave out openal-soft. If you're using PulseAudio, it will probably refuse to output any sound.
     - For Angelscript and EnTT, build and install from source using cmake.
-	  - Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`.
+    - Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`.
     - For STB, clone the [repository](https://github.com/nothings/stb) and copy `stb_image.h` to `/usr/local/include`.
 - MacOS:
   - Vcpkg is absolutely required.
