@@ -6,6 +6,6 @@ target_sources (leviathan PRIVATE
 	"pipeline.cpp" "pipeline.hpp"
 )
 
-if (MSVC)
+if (WIN32)
 	target_sources (leviathan PRIVATE "icon.rc")
 endif ()

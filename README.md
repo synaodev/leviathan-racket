@@ -1,6 +1,5 @@
 # Leviathan Racket
 This is the current official repository for Leviathan Racket.
-It's a computer game inspired by my love for Cave Story, Linguistics, and Geopolitics.
 I hope to release in Winter 2020.
 ## Required Dependencies
 - [OpenAL-Soft](https://github.com/kcat/openal-soft)
@@ -19,32 +18,44 @@ I hope to release in Winter 2020.
   - CMake version must be at least 3.15.
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
-  - To manage dependencies, I recommend [vcpkg](https://github.com/microsoft/vcpkg). It's required for Windows and MacOS builds, but you can use it on Linux as well.
-  - `<vcpkg-CLI> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb`.
-  - When running cmake, pass the toolchain file: `cmake <build-directory> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
-- Windows:
-  - Vcpkg is absolutely required.
-  - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin is not supported.
-  - For MinGW, you need to first build vcpkg dependencies using a MinGW triplet. When running cmake, you then need to specifiy your target triplet and your compiler locations like this:
-    `cmake <build-directory> \`
-	`-G "MinGW Makefiles" \`
-    `-DCMAKE_C_COMPILER=<mingw-gcc-posix> \`
-    `-DCMAKE_CXX_COMPILER=<mingw-g++-posix> \`
-    `-DVCPKG_TARGET_TRIPLET=x64-mingw-<linking-type>`
-    `-DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`
-  - Can use MinGW & vcpkg on Linux for cross-compiling to Windows.
-- MacOS:
-  - Install Xcode and Xcode Command-Line Tools in order to use OpenGL headers (yes, seriously).
-  - Vcpkg is absolutely required. It's possible to install a few required packages using homebrew (Angelscript, GLM, EnTT, Nlohmann JSON), but openal-soft is always ignored in favor of OpenAL.Framework.
-  - There are tons of other little problems (especially with SDL2 and OpenGL), but in short: It's incredibly cumbersome to setup a build environment without vcpkg.
+  - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
+  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb`.
+  - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Debian/Ubuntu:
     - Run `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev`.
+    - If using vcpkg, leave out openal-soft. If you're using PulseAudio, it will probably refuse to output any sound.
     - For Angelscript and EnTT, build and install from source using cmake.
-	- Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`
-    - For STB, clone the repository and run `cp stb*.h /usr/local/include`.
+	  - Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`.
+    - For STB, clone the [repository](https://github.com/nothings/stb) and copy `stb_image.h` to `/usr/local/include`.
+- MacOS:
+  - Vcpkg is absolutely required.
+  - Install Xcode and Xcode Command-Line Tools in order to use OpenGL.Framework (yes, seriously).
+  - Supports only AppleClang for now. GCC support is coming soon, and it might require the use of [homebrew](https://brew.sh/), but we'll see.
+  - When installing dependencies with vcpkg, leave out openal-soft. It often exhibits strange behavior, and it also usually gets ignored in favor of OpenAL.Framework.
+- Windows:
+  - Vcpkg is absolutely required.
+  - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin environment is not supported. You can also use MinGW & vcpkg on Linux for cross-compiling.
+  - Additionally, for MinGW, you need to build vcpkg dependencies using a MinGW triplet.
+  - To do this, open `<vcpkg-root>/scripts/toolchains/mingw.cmake` and add the following lines:
+    - `set(CMAKE_C_COMPILER "<mingw-gcc-posix>")`
+    - `set(CMAKE_CXX_COMPILER "<mingw-g++-posix>")`
+    - `set(CMAKE_RC_COMPILER "<mingw-windres>")`
+    - `set(CMAKE_RC_COMPILER "<mingw-windres>")`
+    - `set(CMAKE_FIND_ROOT_PATH "<paths-to-additional-dependencies>")`
+    - `set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)`
+    - `set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)`
+    - `set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)`
+    - `set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)`
+  - The "additional dependencies" variable needs to be set to directories containing these libraries:
+    - libwinpthread-1.dll
+    - libgcc_s_seh-1.dll
+    - libstdc++-6.dll
+  - If vcpkg fails to build SDL2 using MinGW and cites the `-mwindows` flag as a problem for pkgconfig, open SDL2's portfile and comment out the call to `vcpkg_fixup_pkgconfig`.
+  - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_RC_COMPILER=<mingw-windres> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-<linking-type>`
+  - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
 ## Python Scripts
-The dependencies required to run the python scripts are in 'requirements.txt'.
-- 'fix_fontatlas.py' fixes transparency problems in BFMC's auto-generated font atlases.
-- 'make_config.py' generates a default 'boot.cfg' file in a given directory.
-- 'make_palette.py' generates palettes and indexed textures from input textures.
+The dependencies required to run the python scripts are in `scripts/requirements.txt`.
+- `scripts/fix_fontatlas.py` fixes transparency problems in BFMC's auto-generated font atlases.
+- `scripts/make_config.py` generates a default 'boot.cfg' file in a given directory.
+- `scripts/make_palette.py` generates palettes and indexed textures from input textures.
