@@ -1,6 +1,11 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_compile_definitions (leviathan PRIVATE "-DNOMINMAX" "-DWIN32_LEAN_AND_MEAN")
+target_compile_definitions (leviathan PRIVATE 
+	"-DNOMINMAX"
+	"-DUNICODE"
+	"-D_UNICODE"
+	"-DWIN32_LEAN_AND_MEAN"
+)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	target_compile_definitions (leviathan PRIVATE

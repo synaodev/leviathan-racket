@@ -5,6 +5,7 @@
 #include "../resource/tbl_entry.hpp"
 
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <sstream>
 #include <streambuf>
@@ -260,11 +261,21 @@ std::string vfs::working_directory() {
 std::string vfs::executable_directory() {
 	std::string result;
 #if defined(LEVIATHAN_PLATFORM_WINDOWS)
-	byte_t buffer[MAX_PATH];
-	::GetModuleFileNameA(NULL, buffer, sizeof(buffer));
-	if (strlen(buffer) > 0) {
-		result = buffer;
-	}
+	#if defined(UNICODE) || defined(_UNICODE)
+		wchar_t wide_buffer[MAX_PATH];
+		GetModuleFileNameW(NULL, wide_buffer, sizeof(wide_buffer) / sizeof(wchar_t));
+		byte_t buffer[MAX_PATH];
+		std::wcstombs(buffer, wide_buffer, sizeof(buffer));
+		if (std::strlen(buffer) > 0) {
+			result = buffer;
+		}
+	#else
+		byte_t buffer[MAX_PATH];
+		GetModuleFileNameA(NULL, buffer, sizeof(buffer));
+		if (std::strlen(buffer) > 0) {
+			result = buffer;
+		}
+	#endif
 #elif defined(LEVIATHAN_PLATFORM_MACOS)
 	byte_t buffer[PROC_PIDPATHINFO_MAXSIZE];
 	pid_t pid = getpid();
@@ -285,7 +296,7 @@ std::string vfs::executable_directory() {
 		KERN_PROC_PATHNAME,
 		-1
 	};
-	if (sysctl(params, sizeof(params), buffer, &length, NULL, 0) != -1) {
+	if (sysctl(params, 4, buffer, &length, NULL, 0) != -1) {
 		result = buffer;
 	}
 #elif defined(LEVIATHAN_PLATFORM_NETBSD)
