@@ -5,7 +5,7 @@
 	#define LEVIATHAN_PLATFORM_WINDOWS
 #elif defined(__APPLE__) && defined(__MACH__)
 	#include <TargetConditionals.h>
-	#if defined(TARGET_OS_MACOS)
+	#if defined(TARGET_OS_MAC)
 		#define LEVIATHAN_PLATFORM_MACOS
 		#define LEVIATHAN_POSIX_COMPLIANT
 	#else
