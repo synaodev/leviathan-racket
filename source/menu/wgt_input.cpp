@@ -49,9 +49,9 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, draw_headsup_t&) {
 	if (waiting) {
 		flashed = !flashed;
-		if (input.has_valid_recording()) {
+		if (input.has_valid_scanner()) {
 			const std::string name = input.get_config_name(cursor, siding);
-			sint_t code = input.receive_record();
+			sint_t code = input.receive_scanner();
 			if (siding) {
 				btn_t other = input.set_joystick_binding(code, cursor);
 				if (other == btn_t::Total) {
@@ -74,7 +74,7 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 		} else if (!input.has_controller() and siding) {
 			waiting = false;
 			flashed = false;
-			input.set_nothings_recording();
+			input.set_nothing_scanner();
 			audio.play(res::sfx::Inven, 0);
 		}
 	} else if (input.pressed[btn_t::Up]) {
@@ -117,13 +117,13 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 			if (input.has_controller()) {
 				waiting = true;
 				flashed = false;
-				input.set_joystick_recording();
+				input.set_joystick_scanner();
 				audio.play(res::sfx::Inven, 0);
 			}
 		} else {
 			waiting = true;
 			flashed = false;
-			input.set_keyboard_recording();
+			input.set_keyboard_scanner();
 			audio.play(res::sfx::Inven, 0);
 		}
 	} else if (input.pressed[btn_t::No] or input.pressed[btn_t::Options]) {

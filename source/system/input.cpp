@@ -5,9 +5,9 @@
 
 #include <functional>
 
-static constexpr sint_t kRecordNothings = -1;
-static constexpr sint_t kRecordKeyboard = -2;
-static constexpr sint_t kRecordJoystick = -3;
+static constexpr sint_t kScancodeNothing = -1;
+static constexpr sint_t kScancodeKeyboard = -2;
+static constexpr sint_t kScancodeJoystick = -3;
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 	static std::map<SDL_Scancode, bool_t> debug_pressed;
@@ -18,9 +18,9 @@ input_t::input_t() :
 	pressed(0),
 	holding(0),
 	position(0.0f),
-	key_bind(),
-	joy_bind(),
-	recorder(kRecordNothings),
+	keyboard(),
+	joystick(),
+	scanner(kScancodeNothing),
 	device(nullptr)
 {
 
@@ -38,8 +38,8 @@ input_t::~input_t() {
 }
 
 bool input_t::init(const setup_file_t& config) {
-	this->all_key_bindings(config);
-	this->all_joy_bindings(config);
+	this->all_keyboard_bindings(config);
+	this->all_joystick_bindings(config);
 	if (device != nullptr) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;
@@ -85,14 +85,14 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYDOWN: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-			auto it = key_bind.find(code);
-			if (it != key_bind.end()) {
+			auto it = keyboard.find(code);
+			if (it != keyboard.end()) {
 				btn_t btn = it->second;
 				pressed[btn] = !holding[btn];
 				holding[btn] = true;
 			}
-			if (recorder == kRecordKeyboard) {
-				recorder = code;
+			if (scanner == kScancodeKeyboard) {
+				scanner = code;
 			}
 #ifdef LEVIATHAN_BUILD_DEBUG
 			debug_pressed[code] = !debug_holding[code];
@@ -102,8 +102,8 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYUP: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-			auto it = key_bind.find(code);
-			if (it != key_bind.end()) {
+			auto it = keyboard.find(code);
+			if (it != keyboard.end()) {
 				btn_t btn = it->second;
 				holding[btn] = false;
 			}
@@ -189,8 +189,8 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		case SDL_JOYBUTTONDOWN: {
 			if (evt.jbutton.which == 0) {
 				sint_t code = static_cast<sint_t>(evt.jbutton.button);
-				auto it = joy_bind.find(code);
-				if (it != joy_bind.end()) {
+				auto it = joystick.find(code);
+				if (it != joystick.end()) {
 					btn_t btn = it->second;
 					pressed[btn] = !holding[btn];
 					holding[btn] = true;
@@ -201,11 +201,11 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		case SDL_JOYBUTTONUP: {
 			if (evt.jbutton.which == 0) {
 				sint_t code = static_cast<sint_t>(evt.jbutton.button);
-				if (recorder == kRecordJoystick) {
-					recorder = code;
+				if (scanner == kScancodeJoystick) {
+					scanner = code;
 				}
-				auto it = joy_bind.find(code);
-				if (it != joy_bind.end()) {
+				auto it = joystick.find(code);
+				if (it != joystick.end()) {
 					btn_t btn = it->second;
 					holding[btn] = false;
 				}
@@ -256,12 +256,12 @@ bool input_t::has_controller() const {
 	return device != nullptr;
 }
 
-bool input_t::has_valid_recording() const {
-	return recorder >= 0;
+bool input_t::has_valid_scanner() const {
+	return scanner >= 0;
 }
 
 std::string input_t::get_scancode_name(arch_t index) const {
-	for (auto&& pair : key_bind) {
+	for (auto&& pair : keyboard) {
 		if (pair.second == index) {
 			SDL_Scancode code = static_cast<SDL_Scancode>(pair.first);
 			return SDL_GetScancodeName(code);
@@ -271,7 +271,7 @@ std::string input_t::get_scancode_name(arch_t index) const {
 }
 
 std::string input_t::get_joystick_button(arch_t index) const {
-	for (auto&& pair : joy_bind) {
+	for (auto&& pair : joystick) {
 		if (pair.second == index) {
 			return std::to_string(pair.first);
 		}
@@ -279,8 +279,8 @@ std::string input_t::get_joystick_button(arch_t index) const {
 	return std::string();
 }
 
-std::string input_t::get_config_name(arch_t index, bool_t is_joystick) const {
-	if (is_joystick) {
+std::string input_t::get_config_name(arch_t index, bool_t joy) const {
+	if (joy) {
 		switch (index) {
 			case 0: return "JoyJump";
 			case 1: return "JoyHammer";
@@ -309,18 +309,18 @@ std::string input_t::get_config_name(arch_t index, bool_t is_joystick) const {
 	return "Invalid";
 }
 
-sint_t input_t::receive_record() {
-	sint_t value = recorder;
-	recorder = kRecordNothings;
+sint_t input_t::receive_scanner() {
+	sint_t value = scanner;
+	scanner = kScancodeNothing;
 	return value;
 }
 
-void input_t::set_nothings_recording() {
-	recorder = kRecordNothings;
+void input_t::set_nothing_scanner() {
+	scanner = kScancodeNothing;
 }
 
-void input_t::set_keyboard_recording() {
-	recorder = kRecordKeyboard;
+void input_t::set_keyboard_scanner() {
+	scanner = kScancodeKeyboard;
 }
 
 btn_t input_t::set_keyboard_binding(sint_t code, arch_t btn) {
@@ -328,27 +328,27 @@ btn_t input_t::set_keyboard_binding(sint_t code, arch_t btn) {
 		btn = btn_t::Right;
 	}
 	sint_t found = -1;
-	for (auto&& pair : key_bind) {
+	for (auto&& pair : keyboard) {
 		if (pair.second == btn) {
 			found = pair.first;
 			break;
 		}
 	}
 	if (found != -1) {
-		if (key_bind.find(code) != key_bind.end()) {
-			btn_t index = key_bind[code];
-			key_bind[found] = key_bind[code];
-			key_bind[code] = static_cast<btn_t>(btn);
+		if (keyboard.find(code) != keyboard.end()) {
+			btn_t index = keyboard[code];
+			keyboard[found] = keyboard[code];
+			keyboard[code] = static_cast<btn_t>(btn);
 			return index;
 		}
-		key_bind.erase(found);
-		key_bind[code] = static_cast<btn_t>(btn);
+		keyboard.erase(found);
+		keyboard[code] = static_cast<btn_t>(btn);
 	}
 	return btn_t::Total;
 }
 
-void input_t::set_joystick_recording() {
-	recorder = kRecordJoystick;
+void input_t::set_joystick_scanner() {
+	scanner = kScancodeJoystick;
 }
 
 btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
@@ -356,26 +356,26 @@ btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 		btn = btn_t::Options;
 	}
 	sint_t found = -1;
-	for (auto&& pair : joy_bind) {
+	for (auto&& pair : joystick) {
 		if (pair.second == btn) {
 			found = pair.first;
 			break;
 		}
 	}
 	if (found != -1) {
-		if (joy_bind.find(code) != joy_bind.end()) {
-			btn_t index = key_bind[code];
-			joy_bind[found] = joy_bind[code];
-			joy_bind[code] = static_cast<btn_t>(btn);
+		if (joystick.find(code) != joystick.end()) {
+			btn_t index = keyboard[code];
+			joystick[found] = joystick[code];
+			joystick[code] = static_cast<btn_t>(btn);
 			return index;
 		}
-		joy_bind.erase(found);
-		joy_bind[code] = static_cast<btn_t>(btn);
+		joystick.erase(found);
+		joystick[code] = static_cast<btn_t>(btn);
 	}
 	return btn_t::Total;
 }
 
-void input_t::all_key_bindings(const setup_file_t& config) {
+void input_t::all_keyboard_bindings(const setup_file_t& config) {
 	sint_t jump		= SDL_SCANCODE_Z;
 	sint_t hammer	= SDL_SCANCODE_X;
 	sint_t item		= SDL_SCANCODE_LSHIFT;
@@ -402,21 +402,21 @@ void input_t::all_key_bindings(const setup_file_t& config) {
 	config.get("Input", "KeyLeft",		left);
 	config.get("Input", "KeyRight",		right);
 
-	key_bind[jump]		= btn_t::Jump;
-	key_bind[hammer]	= btn_t::Hammer;
-	key_bind[item]		= btn_t::Item;
-	key_bind[litedash]	= btn_t::Dash;
-	key_bind[context]	= btn_t::Context;
-	key_bind[strafe]	= btn_t::Strafe;
-	key_bind[inven]		= btn_t::Inventory;
-	key_bind[options]	= btn_t::Options;
-	key_bind[up]		= btn_t::Up;
-	key_bind[down]		= btn_t::Down;
-	key_bind[left]		= btn_t::Left;
-	key_bind[right]		= btn_t::Right;
+	keyboard[jump]		= btn_t::Jump;
+	keyboard[hammer]	= btn_t::Hammer;
+	keyboard[item]		= btn_t::Item;
+	keyboard[litedash]	= btn_t::Dash;
+	keyboard[context]	= btn_t::Context;
+	keyboard[strafe]	= btn_t::Strafe;
+	keyboard[inven]		= btn_t::Inventory;
+	keyboard[options]	= btn_t::Options;
+	keyboard[up]		= btn_t::Up;
+	keyboard[down]		= btn_t::Down;
+	keyboard[left]		= btn_t::Left;
+	keyboard[right]		= btn_t::Right;
 }
 
-void input_t::all_joy_bindings(const setup_file_t& config) {
+void input_t::all_joystick_bindings(const setup_file_t& config) {
 	sint_t jump		= 0;
 	sint_t hammer	= 1;
 	sint_t item		= 2;
@@ -435,12 +435,12 @@ void input_t::all_joy_bindings(const setup_file_t& config) {
 	config.get("Input", "JoyInventory",	inven);
 	config.get("Input", "JoyOptions",	options);
 
-	joy_bind[jump] 		= btn_t::Jump;
-	joy_bind[hammer] 	= btn_t::Hammer;
-	joy_bind[item] 		= btn_t::Item;
-	joy_bind[litedash] 	= btn_t::Dash;
-	joy_bind[context] 	= btn_t::Context;
-	joy_bind[strafe] 	= btn_t::Strafe;
-	joy_bind[inven] 	= btn_t::Inventory;
-	joy_bind[options] 	= btn_t::Options;
+	joystick[jump] 		= btn_t::Jump;
+	joystick[hammer] 	= btn_t::Hammer;
+	joystick[item] 		= btn_t::Item;
+	joystick[litedash] 	= btn_t::Dash;
+	joystick[context] 	= btn_t::Context;
+	joystick[strafe] 	= btn_t::Strafe;
+	joystick[inven] 	= btn_t::Inventory;
+	joystick[options] 	= btn_t::Options;
 }

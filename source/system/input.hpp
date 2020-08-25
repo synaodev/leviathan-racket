@@ -32,25 +32,25 @@ public:
 	policy_t poll(policy_t policy);
 	void flush();
 	bool has_controller() const;
-	bool has_valid_recording() const;
+	bool has_valid_scanner() const;
 	std::string get_scancode_name(arch_t index) const;
 	std::string get_joystick_button(arch_t index) const;
-	std::string get_config_name(arch_t index, bool_t is_joystick) const;
-	sint_t receive_record();
-	void set_nothings_recording();
-	void set_keyboard_recording();
+	std::string get_config_name(arch_t index, bool_t joy) const;
+	sint_t receive_scanner();
+	void set_nothing_scanner();
+	void set_keyboard_scanner();
 	btn_t set_keyboard_binding(sint_t code, arch_t btn);
-	void set_joystick_recording();
+	void set_joystick_scanner();
 	btn_t set_joystick_binding(sint_t code, arch_t btn);
 private:
-	void all_key_bindings(const setup_file_t& config);
-	void all_joy_bindings(const setup_file_t& config);
+	void all_keyboard_bindings(const setup_file_t& config);
+	void all_joystick_bindings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 	glm::vec2 position;
 private:
-	std::map<sint_t, btn_t> key_bind, joy_bind;
-	sint_t recorder;
+	std::map<sint_t, btn_t> keyboard, joystick;
+	sint_t scanner;
 	SDL_Joystick* device;
 };
 
