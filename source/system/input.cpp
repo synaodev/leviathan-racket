@@ -507,7 +507,9 @@ void input_t::all_demofile_settings(const setup_file_t& config) {
 		player = std::make_unique<demo_player_t>(output);
 		if (output) {
 			synao_log("Recording inputs into demofile: %s\n", demo.c_str());
-		} else if (!player->load(demo)) {
+		} else if (player->load(demo)) {
+			synao_log("Playing inputs from demofile: %s\n", demo.c_str());
+		} else {
 			player.reset();
 		}
 	}
