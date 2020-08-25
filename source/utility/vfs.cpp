@@ -239,6 +239,17 @@ bool vfs::create_directory(const std::string& name) {
 	return true;
 }
 
+bool vfs::create_recording(const std::string& path, const std::vector<uint64_t>& buffer) {
+	std::ofstream ofs(path, std::ios::binary);
+	if (ofs.is_open()) {
+		arch_t length = buffer.size() * sizeof(uint64_t);
+		ofs.write(reinterpret_cast<const byte_t*>(buffer.data()), length);
+		return true;
+	}
+	synao_log("Failed to write file: %s!\n", path.c_str());
+	return false;
+}
+
 std::string vfs::working_directory() {
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	std::error_code code;

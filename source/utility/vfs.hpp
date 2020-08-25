@@ -48,6 +48,7 @@ namespace vfs {
 	bool directory_exists(const std::string& name, bool_t print = true);
 	bool file_exists(const std::string& name, bool_t print = true);
 	bool create_directory(const std::string& name);
+	bool create_recording(const std::string& path, const std::vector<uint64_t>& buffer);
 	std::string working_directory();
 	std::string executable_directory();
 	std::string resource_path(vfs_resource_path_t path);

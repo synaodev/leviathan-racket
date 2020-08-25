@@ -106,6 +106,9 @@ static bool run_naomi(setup_file_t& config, input_t& input, video_t& video, audi
 			SDL_Delay(kStopDelay);
 		}
 	}
+	if (!input.save(config)) {
+		synao_log("Warning! Something went wrong when trying to write inputs to demo file!\n");
+	}
 	return config.save();
 }
 
