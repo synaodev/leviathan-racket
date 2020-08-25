@@ -64,7 +64,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				cursor.y = position.y + kDefaultPosition.y;
 			}
 		}
-		if (input.pressed[btn_t::ClickL]) {
+		if (input.pressed[btn_t::Click]) {
 			const rect_t bounds = rect_t(
 				kDefaultPosition,
 				texture->get_dimensions()
@@ -91,7 +91,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				cursor.x = real_coordinates.x + kDefaultPosition.x;
 				cursor.y = real_coordinates.y + kDefaultPosition.y;
 			}
-		} else if (input.pressed[btn_t::ClickR]) {
+		} else if (input.pressed[btn_t::Options]) {
 			amend = true;
 			select = false;
 			index = 0;

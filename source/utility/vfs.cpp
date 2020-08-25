@@ -428,6 +428,23 @@ std::vector<sint_t> vfs::sint_buffer(const std::string& path) {
 	return std::vector<sint_t>();
 }
 
+std::vector<uint64_t> vfs::uint64_buffer(const std::string& path) {
+	std::ifstream ifs(path, std::ios::binary);
+	if (ifs.is_open()) {
+		ifs.seekg(0, std::ios::end);
+		arch_t length = static_cast<arch_t>(ifs.tellg());
+		if (length > 0) {
+			ifs.seekg(0, std::ios::beg);
+			std::vector<uint64_t> buffer;
+			buffer.resize(length / sizeof(uint64_t));
+			ifs.read(reinterpret_cast<byte_t*>(buffer.data()), length);
+			return buffer;
+		}
+	}
+	synao_log("Failed to open file: %s!\n", path.c_str());
+	return std::vector<uint64_t>();
+}
+
 std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 	if (vfs::device == nullptr) {
 		synao_log("Couldn't find path for event: %s!\n", name.c_str());

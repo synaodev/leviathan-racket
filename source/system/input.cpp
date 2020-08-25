@@ -9,23 +9,28 @@ static constexpr sint_t kRecordNothings = -1;
 static constexpr sint_t kRecordKeyboard = -2;
 static constexpr sint_t kRecordJoystick = -3;
 
+#ifdef LEVIATHAN_BUILD_DEBUG
+	static std::map<SDL_Scancode, bool_t> debug_pressed;
+	static std::map<SDL_Scancode, bool_t> debug_holding;
+#endif
+
 input_t::input_t() :
 	pressed(0),
 	holding(0),
-#ifdef LEVIATHAN_BUILD_DEBUG
-	debug_pressed(),
-	debug_holding(),
-#endif
+	position(0.0f),
 	key_bind(),
 	joy_bind(),
 	recorder(kRecordNothings),
-	position(0.0f),
 	joystick(nullptr)
 {
 
 }
 
 input_t::~input_t() {
+#ifdef LEVIATHAN_BUILD_DEBUG
+	debug_pressed.clear();
+	debug_holding.clear();
+#endif
 	if (joystick != nullptr) {
 		SDL_JoystickClose(joystick);
 		joystick = nullptr;
@@ -80,10 +85,6 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_KEYDOWN: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-#ifdef LEVIATHAN_BUILD_DEBUG
-			debug_pressed[code] = !debug_holding[code];
-			debug_holding[code] = true;
-#endif
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
@@ -93,33 +94,31 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			if (recorder == kRecordKeyboard) {
 				recorder = code;
 			}
+#ifdef LEVIATHAN_BUILD_DEBUG
+			debug_pressed[code] = !debug_holding[code];
+			debug_holding[code] = true;
+#endif
 			break;
 		}
 		case SDL_KEYUP: {
 			SDL_Scancode code = evt.key.keysym.scancode;
-#ifdef LEVIATHAN_BUILD_DEBUG
-			debug_holding[code] = false;
-#endif
 			auto it = key_bind.find(code);
 			if (it != key_bind.end()) {
 				btn_t btn = it->second;
 				holding[btn] = false;
 			}
+#ifdef LEVIATHAN_BUILD_DEBUG
+			debug_holding[code] = false;
+#endif
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN: {
-			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ?
-				btn_t::ClickL :
-				btn_t::ClickR;
-			pressed[btn] = !holding[btn];
-			holding[btn] = true;
+			pressed[btn_t::Click] = !holding[btn_t::Click];
+			holding[btn_t::Click] = true;
 			break;
 		}
 		case SDL_MOUSEBUTTONUP: {
-			btn_t btn = evt.button.button == SDL_BUTTON_LEFT ?
-				btn_t::ClickL :
-				btn_t::ClickR;
-			holding[btn] = false;
+			holding[btn_t::Click] = false;
 			break;
 		}
 		case SDL_JOYAXISMOTION: {
@@ -239,12 +238,12 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		}
 	}
-	glm::ivec2 integral_position = glm::zero<glm::ivec2>();
+	glm::ivec2 integral = glm::zero<glm::ivec2>();
 	SDL_GetMouseState(
-		&integral_position.x,
-		&integral_position.y
+		&integral.x,
+		&integral.y
 	);
-	position = glm::vec2(integral_position);
+	position = glm::vec2(integral);
 	return policy;
 }
 
@@ -257,10 +256,6 @@ void input_t::flush() {
 #ifdef LEVIATHAN_BUILD_DEBUG
 	debug_pressed.clear();
 #endif
-}
-
-glm::vec2 input_t::get_position() const {
-	return position;
 }
 
 bool input_t::has_joystick_connection() const {

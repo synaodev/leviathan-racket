@@ -1,15 +1,12 @@
 #ifndef LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 #define LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 
-#include <bitset>
-#include <string>
 #include <map>
-
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
 
-#include "../utility/enums.hpp"
+#include "./button.hpp"
 
 struct setup_file_t;
 
@@ -23,30 +20,6 @@ namespace __enum_policy {
 
 using policy_t = __enum_policy::type;
 
-namespace __enum_btn {
-	enum type : arch_t {
-		Jump,
-		Yes = Jump,
-		Hammer,
-		No = Hammer,
-		Item,
-		Dash,
-		Context,
-		Strafe,
-		Inventory,
-		Options,
-		Up,
-		Down,
-		Left,
-		Right,
-		ClickL,
-		ClickR,
-		Total
-	};
-}
-
-using btn_t = __enum_btn::type;
-
 struct input_t : public not_copyable_t {
 public:
 	input_t();
@@ -58,7 +31,6 @@ public:
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
 	void flush();
-	glm::vec2 get_position() const;
 	bool has_joystick_connection() const;
 	bool has_valid_recording() const;
 	std::string get_scancode_name(arch_t index) const;
@@ -75,13 +47,10 @@ private:
 	void all_joy_bindings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
-#ifdef LEVIATHAN_BUILD_DEBUG
-	std::map<SDL_Scancode, bool_t> debug_pressed, debug_holding;
-#endif
+	glm::vec2 position;
 private:
 	std::map<sint_t, btn_t> key_bind, joy_bind;
 	sint_t recorder;
-	glm::vec2 position;
 	SDL_Joystick* joystick;
 };
 
