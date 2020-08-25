@@ -5,14 +5,14 @@
 
 static constexpr arch_t kNotReady = (arch_t)-1;
 
-demo_buffer_t::demo_buffer_t() :
+demo_player_t::demo_player_t() :
 	index(kNotReady),
 	buttons()
 {
 	
 }
 
-bool demo_buffer_t::load(const std::string& name) {
+bool demo_player_t::load(const std::string& name) {
 	index = kNotReady;
 	buttons.clear();
 	buttons = vfs::uint64_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo");
@@ -30,23 +30,22 @@ bool demo_buffer_t::load(const std::string& name) {
 	return true;
 }
 
-bool demo_buffer_t::valid() const {
+bool demo_player_t::valid() const {
 	return index != kNotReady;
 }
 
-bool demo_buffer_t::done() const {
+bool demo_player_t::done() const {
 	return ( 
 		this->valid() and
 		(index + 1) < buttons.size()
 	);
 }
 
-std::pair<std::bitset<btn_t::Total>, std::bitset<btn_t::Total> > demo_buffer_t::next() {
+std::pair<std::bitset<btn_t::Total>, std::bitset<btn_t::Total> > demo_player_t::next() {
 	if (!this->done()) {
-		return std::make_pair(
-			std::bitset<btn_t::Total>(buttons[index++]),
-			std::bitset<btn_t::Total>(buttons[index++])
-		);
+		std::bitset<btn_t::Total> pressed(index++);
+		std::bitset<btn_t::Total> holding(index++);
+		return std::make_pair(pressed, holding);
 	}
 	return {};
 }

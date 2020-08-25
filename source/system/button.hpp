@@ -28,20 +28,20 @@ namespace __enum_btn {
 
 using btn_t = __enum_btn::type;
 
-struct demo_buffer_t : public not_copyable_t {
+struct demo_player_t : public not_copyable_t {
 public:
-	// Demo buffer elements should be 8 bytes large.
-	static_assert(sizeof(std::bitset<btn_t::Total>) == sizeof(uint64_t));
-	demo_buffer_t();
-	demo_buffer_t(demo_buffer_t&&) = default;
-	demo_buffer_t& operator=(demo_buffer_t&&) = default;
-	~demo_buffer_t() = default;
+	demo_player_t();
+	demo_player_t(demo_player_t&&) = default;
+	demo_player_t& operator=(demo_player_t&&) = default;
+	~demo_player_t() = default;
 public:
 	bool load(const std::string& name);
 	bool valid() const;
 	bool done() const;
 	std::pair<std::bitset<btn_t::Total>, std::bitset<btn_t::Total> > next();
 private:
+	// Elements should be 8 bytes large.
+	static_assert(sizeof(std::bitset<btn_t::Total>) == sizeof(uint64_t));
 	arch_t index;
 	std::vector<uint64_t> buttons;
 };

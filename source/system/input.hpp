@@ -2,9 +2,10 @@
 #define LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 
 #include <map>
-#include <SDL2/SDL_scancode.h>
+#include <memory>
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL_scancode.h>
 
 #include "./button.hpp"
 
@@ -30,6 +31,7 @@ public:
 	bool init(const setup_file_t& config);
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
+	void advance();
 	void flush();
 	bool has_controller() const;
 	bool has_valid_scanner() const;
@@ -42,14 +44,18 @@ public:
 	btn_t set_keyboard_binding(sint_t code, arch_t btn);
 	void set_joystick_scanner();
 	btn_t set_joystick_binding(sint_t code, arch_t btn);
+	static bool get_debug_pressed(SDL_Scancode scancode);
+	static bool get_debug_holding(SDL_Scancode scancode);
 private:
 	void all_keyboard_bindings(const setup_file_t& config);
 	void all_joystick_bindings(const setup_file_t& config);
+	void all_demofile_settings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 	glm::vec2 position;
 private:
 	std::map<sint_t, btn_t> keyboard, joystick;
+	std::unique_ptr<demo_player_t> player;
 	sint_t scanner;
 	SDL_Joystick* device;
 };

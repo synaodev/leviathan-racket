@@ -20,6 +20,7 @@ input_t::input_t() :
 	position(0.0f),
 	keyboard(),
 	joystick(),
+	player(nullptr),
 	scanner(kScancodeNothing),
 	device(nullptr)
 {
@@ -40,6 +41,7 @@ input_t::~input_t() {
 bool input_t::init(const setup_file_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
+	this->all_demofile_settings(config);
 	if (device != nullptr) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;
@@ -73,141 +75,159 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			} else if (evt.window.type == SDL_WINDOWEVENT_FOCUS_LOST) {
 				if (policy == policy_t::Run) {
 					policy = policy_t::Stop;
-					pressed.reset();
-					holding.reset();
+					if (player == nullptr) {
+						pressed.reset();
+						holding.reset();
 #ifdef LEVIATHAN_BUILD_DEBUG
-					debug_pressed.clear();
-					debug_holding.clear();
+						debug_pressed.clear();
+						debug_holding.clear();
 #endif
+					}
 				}
 			}
 			break;
 		}
 		case SDL_KEYDOWN: {
-			SDL_Scancode code = evt.key.keysym.scancode;
-			auto it = keyboard.find(code);
-			if (it != keyboard.end()) {
-				btn_t btn = it->second;
-				pressed[btn] = !holding[btn];
-				holding[btn] = true;
-			}
-			if (scanner == kScancodeKeyboard) {
-				scanner = code;
-			}
+			if (player == nullptr) {
+				SDL_Scancode code = evt.key.keysym.scancode;
+				auto it = keyboard.find(code);
+				if (it != keyboard.end()) {
+					btn_t btn = it->second;
+					pressed[btn] = !holding[btn];
+					holding[btn] = true;
+				}
+				if (scanner == kScancodeKeyboard) {
+					scanner = code;
+				}
 #ifdef LEVIATHAN_BUILD_DEBUG
-			debug_pressed[code] = !debug_holding[code];
-			debug_holding[code] = true;
+				debug_pressed[code] = !debug_holding[code];
+				debug_holding[code] = true;
 #endif
+			}
 			break;
 		}
 		case SDL_KEYUP: {
-			SDL_Scancode code = evt.key.keysym.scancode;
-			auto it = keyboard.find(code);
-			if (it != keyboard.end()) {
-				btn_t btn = it->second;
-				holding[btn] = false;
-			}
+			if (player == nullptr) {
+				SDL_Scancode code = evt.key.keysym.scancode;
+				auto it = keyboard.find(code);
+				if (it != keyboard.end()) {
+					btn_t btn = it->second;
+					holding[btn] = false;
+				}
 #ifdef LEVIATHAN_BUILD_DEBUG
-			debug_holding[code] = false;
+				debug_holding[code] = false;
 #endif
+			}
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN: {
-			pressed[btn_t::Click] = !holding[btn_t::Click];
-			holding[btn_t::Click] = true;
+			if (player == nullptr) {
+				pressed[btn_t::Click] = !holding[btn_t::Click];
+				holding[btn_t::Click] = true;
+			}
 			break;
 		}
 		case SDL_MOUSEBUTTONUP: {
-			holding[btn_t::Click] = false;
+			if (player == nullptr) {
+				holding[btn_t::Click] = false;
+			}
 			break;
 		}
 		case SDL_JOYAXISMOTION: {
 			static constexpr sint16_t kDeadZone = 16383;
 			static constexpr uint8_t  kMoveAxis = 0;
 			static constexpr uint8_t  kLookAxis = 1;
-			if (evt.jaxis.which == 0) {
-				uint8_t index = evt.jaxis.axis;
-				sint16_t value = evt.jaxis.value;
-				if (index == kMoveAxis) {
-					if (value > kDeadZone) {
-						pressed[btn_t::Right] = !holding[btn_t::Right];
-						holding[btn_t::Right] = true;
-						holding[btn_t::Left] = false;
-					} else if (value < -kDeadZone) {
-						pressed[btn_t::Left] = !holding[btn_t::Left];
-						holding[btn_t::Left] = true;
-						holding[btn_t::Right] = false;
-					} else {
-						holding[btn_t::Right] = false;
-						holding[btn_t::Left] = false;
-					}
-				} else if (index == kLookAxis) {
-					if (value > kDeadZone) {
-						pressed[btn_t::Down] = !holding[btn_t::Down];
-						holding[btn_t::Down] = true;
-						holding[btn_t::Up] = false;
-					} else if (value < -kDeadZone) {
-						pressed[btn_t::Up] = !holding[btn_t::Up];
-						holding[btn_t::Up] = true;
-						holding[btn_t::Down] = false;
-					} else {
-						holding[btn_t::Down] = false;
-						holding[btn_t::Up] = false;
+			if (player == nullptr) {
+				if (evt.jaxis.which == 0) {
+					uint8_t index = evt.jaxis.axis;
+					sint16_t value = evt.jaxis.value;
+					if (index == kMoveAxis) {
+						if (value > kDeadZone) {
+							pressed[btn_t::Right] = !holding[btn_t::Right];
+							holding[btn_t::Right] = true;
+							holding[btn_t::Left] = false;
+						} else if (value < -kDeadZone) {
+							pressed[btn_t::Left] = !holding[btn_t::Left];
+							holding[btn_t::Left] = true;
+							holding[btn_t::Right] = false;
+						} else {
+							holding[btn_t::Right] = false;
+							holding[btn_t::Left] = false;
+						}
+					} else if (index == kLookAxis) {
+						if (value > kDeadZone) {
+							pressed[btn_t::Down] = !holding[btn_t::Down];
+							holding[btn_t::Down] = true;
+							holding[btn_t::Up] = false;
+						} else if (value < -kDeadZone) {
+							pressed[btn_t::Up] = !holding[btn_t::Up];
+							holding[btn_t::Up] = true;
+							holding[btn_t::Down] = false;
+						} else {
+							holding[btn_t::Down] = false;
+							holding[btn_t::Up] = false;
+						}
 					}
 				}
 			}
 			break;
 		}
 		case SDL_JOYHATMOTION: {
-			if (evt.jhat.which == 0) {
-				uint8_t value = evt.jhat.value;
-				if (value & SDL_HAT_UP) {
-					pressed[btn_t::Up] = !holding[btn_t::Up];
-					holding[btn_t::Up] = true;
-					holding[btn_t::Down] = false;
-				} else if (value & SDL_HAT_DOWN) {
-					pressed[btn_t::Down] = !holding[btn_t::Down];
-					holding[btn_t::Down] = true;
-					holding[btn_t::Up] = false;
-				} else if (value & SDL_HAT_RIGHT) {
-					pressed[btn_t::Right] = !holding[btn_t::Right];
-					holding[btn_t::Right] = true;
-					holding[btn_t::Left] = false;
-				} else if (value & SDL_HAT_LEFT) {
-					pressed[btn_t::Left] = !holding[btn_t::Left];
-					holding[btn_t::Left] = true;
-					holding[btn_t::Right] = false;
-				} else {
-					holding[btn_t::Up] = false;
-					holding[btn_t::Down] = false;
-					holding[btn_t::Left] = false;
-					holding[btn_t::Right] = false;
+			if (player == nullptr) {
+				if (evt.jhat.which == 0) {
+					uint8_t value = evt.jhat.value;
+					if (value & SDL_HAT_UP) {
+						pressed[btn_t::Up] = !holding[btn_t::Up];
+						holding[btn_t::Up] = true;
+						holding[btn_t::Down] = false;
+					} else if (value & SDL_HAT_DOWN) {
+						pressed[btn_t::Down] = !holding[btn_t::Down];
+						holding[btn_t::Down] = true;
+						holding[btn_t::Up] = false;
+					} else if (value & SDL_HAT_RIGHT) {
+						pressed[btn_t::Right] = !holding[btn_t::Right];
+						holding[btn_t::Right] = true;
+						holding[btn_t::Left] = false;
+					} else if (value & SDL_HAT_LEFT) {
+						pressed[btn_t::Left] = !holding[btn_t::Left];
+						holding[btn_t::Left] = true;
+						holding[btn_t::Right] = false;
+					} else {
+						holding[btn_t::Up] = false;
+						holding[btn_t::Down] = false;
+						holding[btn_t::Left] = false;
+						holding[btn_t::Right] = false;
+					}
 				}
 			}
 			break;
 		}
 		case SDL_JOYBUTTONDOWN: {
-			if (evt.jbutton.which == 0) {
-				sint_t code = static_cast<sint_t>(evt.jbutton.button);
-				auto it = joystick.find(code);
-				if (it != joystick.end()) {
-					btn_t btn = it->second;
-					pressed[btn] = !holding[btn];
-					holding[btn] = true;
+			if (player == nullptr) {
+				if (evt.jbutton.which == 0) {
+					sint_t code = static_cast<sint_t>(evt.jbutton.button);
+					auto it = joystick.find(code);
+					if (it != joystick.end()) {
+						btn_t btn = it->second;
+						pressed[btn] = !holding[btn];
+						holding[btn] = true;
+					}
 				}
 			}
 			break;
 		}
 		case SDL_JOYBUTTONUP: {
-			if (evt.jbutton.which == 0) {
-				sint_t code = static_cast<sint_t>(evt.jbutton.button);
-				if (scanner == kScancodeJoystick) {
-					scanner = code;
-				}
-				auto it = joystick.find(code);
-				if (it != joystick.end()) {
-					btn_t btn = it->second;
-					holding[btn] = false;
+			if (player == nullptr) {
+				if (evt.jbutton.which == 0) {
+					sint_t code = static_cast<sint_t>(evt.jbutton.button);
+					if (scanner == kScancodeJoystick) {
+						scanner = code;
+					}
+					auto it = joystick.find(code);
+					if (it != joystick.end()) {
+						btn_t btn = it->second;
+						holding[btn] = false;
+					}
 				}
 			}
 			break;
@@ -235,14 +255,29 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		}
 	}
-	glm::ivec2 integral = glm::zero<glm::ivec2>();
-	SDL_GetMouseState(&integral.x, &integral.y);
-	position = glm::vec2(integral);
+	if (player == nullptr) {
+		glm::ivec2 integral = glm::zero<glm::ivec2>();
+		SDL_GetMouseState(&integral.x, &integral.y);
+		position = glm::vec2(integral);
+	}
 	return policy;
 }
 
 policy_t input_t::poll(policy_t policy) {
 	return this->poll(policy, nullptr);
+}
+
+void input_t::advance() {
+	if (player != nullptr) {
+		if (player->valid()) {
+			auto pair = player->next();
+			pressed = pair.first;
+			holding = pair.second;
+		} else {
+			synao_log("Demo has completed!\n");
+			player.reset();
+		}
+	}
 }
 
 void input_t::flush() {
@@ -375,6 +410,22 @@ btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 	return btn_t::Total;
 }
 
+bool input_t::get_debug_pressed(SDL_Scancode scancode) {
+#ifdef LEVIATHAN_BUILD_DEBUG
+	return debug_pressed[scancode];
+#else
+	return false;
+#endif
+}
+
+bool input_t::get_debug_holding(SDL_Scancode scancode) {
+#ifdef LEVIATHAN_BUILD_DEBUG
+	return debug_holding[scancode];
+#else
+	return false;
+#endif
+}
+
 void input_t::all_keyboard_bindings(const setup_file_t& config) {
 	sint_t jump		= SDL_SCANCODE_Z;
 	sint_t hammer	= SDL_SCANCODE_X;
@@ -443,4 +494,15 @@ void input_t::all_joystick_bindings(const setup_file_t& config) {
 	joystick[strafe] 	= btn_t::Strafe;
 	joystick[inven] 	= btn_t::Inventory;
 	joystick[options] 	= btn_t::Options;
+}
+
+void input_t::all_demofile_settings(const setup_file_t& config) {
+	std::string demo;
+	config.get("Input", "Demo", demo);
+	if (!demo.empty()) {
+		player = std::make_unique<demo_player_t>();
+		if (!player->load(demo)) {
+			player.reset();
+		}
+	}
 }

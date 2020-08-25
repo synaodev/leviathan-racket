@@ -67,6 +67,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 
 bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	while (this->viable()) {
+		input.advance();
 		accum = glm::max(accum - constants::MinInterval(), 0.0);
 		if (headsup.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
@@ -88,7 +89,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 			return false;
 		}
 #ifdef LEVIATHAN_BUILD_DEBUG
-		this->setup_debug(input, renderer);
+		this->setup_debug(renderer);
 #endif
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
 		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
@@ -283,15 +284,15 @@ void runtime_t::setup_save() {
 }
 
 #ifdef LEVIATHAN_BUILD_DEBUG
-void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
-	if (input.debug_holding[SDL_SCANCODE_BACKSPACE]) {
-		if (input.debug_pressed[SDL_SCANCODE_1]) {
+void runtime_t::setup_debug(const renderer_t& renderer) {
+	if (input_t::get_debug_holding(SDL_SCANCODE_BACKSPACE)) {
+		if (input_t::get_debug_pressed(SDL_SCANCODE_1)) {
 			debug::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::None, nullptr);
-		} else if (input.debug_pressed[SDL_SCANCODE_2]) {
+		} else if (input_t::get_debug_pressed(SDL_SCANCODE_2)) {
 			debug::Framerate = !debug::Framerate;
 			headsup.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
-		} else if (input.debug_pressed[SDL_SCANCODE_3]) {
+		} else if (input_t::get_debug_pressed(SDL_SCANCODE_3)) {
 			debug::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
 				sint_t total_calls = static_cast<sint_t>(renderer.get_draw_calls());
@@ -299,14 +300,14 @@ void runtime_t::setup_debug(input_t& input, const renderer_t& renderer) {
 				// so subtract 2 from the total
 				return total_calls - 2;
 			});
-		} else if (input.debug_pressed[SDL_SCANCODE_4]) {
+		} else if (input_t::get_debug_pressed(SDL_SCANCODE_4)) {
 			debug::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
 				return static_cast<sint_t>(kontext.active());
 			});
-		} else if (input.debug_pressed[SDL_SCANCODE_MINUS]) {
+		} else if (input_t::get_debug_pressed(SDL_SCANCODE_MINUS)) {
 			debug::Hitboxes = !debug::Hitboxes;
-		} else if (input.debug_pressed[SDL_SCANCODE_EQUALS]) {
+		} else if (input_t::get_debug_pressed(SDL_SCANCODE_EQUALS)) {
 			if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
 				stack_gui.push(menu_t::Field, 0);
 			}

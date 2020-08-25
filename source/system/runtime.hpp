@@ -40,7 +40,7 @@ private:
 	void setup_load(renderer_t& renderer);
 	void setup_save();
 #ifdef LEVIATHAN_BUILD_DEBUG
-	void setup_debug(input_t& input, const renderer_t& renderer);
+	void setup_debug(const renderer_t& renderer);
 #endif
 private:
 	real64_t accum;
