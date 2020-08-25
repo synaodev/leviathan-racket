@@ -263,18 +263,18 @@ void input_t::advance() {
 	if (player != nullptr) {
 		if (player->recording()) {
 			player->store(pressed, holding);
-			synao_log(
-				"STORE(%s, %s)\n", 
-				pressed.to_string().c_str(),
-				holding.to_string().c_str()
-			);
+			// synao_log(
+			// 	"STORE(%s, %s)\n", 
+			// 	pressed.to_string().c_str(),
+			// 	holding.to_string().c_str()
+			// );
 		} else if (player->playing()) {
 			player->read(pressed, holding);
-			synao_log(
-				"READ(%s, %s)\n", 
-				pressed.to_string().c_str(),
-				holding.to_string().c_str()
-			);
+			// synao_log(
+			// 	"READ(%s, %s)\n", 
+			// 	pressed.to_string().c_str(),
+			// 	holding.to_string().c_str()
+			// );
 		} else {
 			synao_log("Demo has completed!\n");
 			player.reset();
