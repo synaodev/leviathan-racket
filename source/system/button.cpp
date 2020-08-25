@@ -22,14 +22,14 @@ demo_player_t::demo_player_t(bool_t record) :
 }
 
 bool demo_player_t::load(const std::string& name) {
-	const std::vector<uint64_t> buffer = vfs::uint64_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo");
+	const std::vector<uint16_t> buffer = vfs::uint16_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo");
 	if (buffer.empty()) {
 		synao_log("Error! Failed to load demo file!\n");
 		return false;
 	}
 	buttons.resize(buffer.size());
 	for (arch_t it = 0; it < buttons.size(); ++it) {
-		buttons[it] = std::bitset<btn_t::Total>(buffer[it]);
+		buttons[it] = std::bitset<btn_t::Total>(static_cast<arch_t>(buffer[it]));
 	}
 	index = 0;
 	return true;
@@ -40,10 +40,10 @@ bool demo_player_t::write(const std::string& name) {
 		return true;
 	}
 	const std::string path = vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo";
-	std::vector<uint64_t> buffer;
+	std::vector<uint16_t> buffer;
 	buffer.resize(buttons.size());
 	for (arch_t it = 0; it < buttons.size(); ++it) {
-		buffer[it] = buttons[it].to_ullong();
+		buffer[it] = static_cast<uint16_t>(buttons[it].to_ulong());
 	}
 	if (!vfs::create_recording(path, buffer)) {
 		return false;
