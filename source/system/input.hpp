@@ -34,7 +34,6 @@ public:
 	policy_t poll(policy_t policy);
 	void advance();
 	void flush();
-	void clear();
 	bool has_controller() const;
 	bool has_valid_scanner() const;
 	std::string get_scancode_name(arch_t index) const;

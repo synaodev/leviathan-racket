@@ -260,11 +260,21 @@ policy_t input_t::poll(policy_t policy) {
 }
 
 void input_t::advance() {
-	if (player != nullptr and !player->recording()) {
-		if (!player->finished()) {
-			auto pair = player->next();
-			pressed = pair.first;
-			holding = pair.second;
+	if (player != nullptr) {
+		if (player->recording()) {
+			player->store(pressed, holding);
+			synao_log(
+				"STORE(%s, %s)\n", 
+				pressed.to_string().c_str(),
+				holding.to_string().c_str()
+			);
+		} else if (player->playing()) {
+			player->read(pressed, holding);
+			synao_log(
+				"READ(%s, %s)\n", 
+				pressed.to_string().c_str(),
+				holding.to_string().c_str()
+			);
 		} else {
 			synao_log("Demo has completed!\n");
 			player.reset();
@@ -273,13 +283,6 @@ void input_t::advance() {
 }
 
 void input_t::flush() {
-	this->clear();
-	if (player != nullptr and player->recording()) {
-		player->push(pressed, holding);
-	}
-}
-
-void input_t::clear() {
 	pressed.reset();
 #ifdef LEVIATHAN_BUILD_DEBUG
 	debug_pressed.clear();

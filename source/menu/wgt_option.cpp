@@ -86,7 +86,7 @@ void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audi
 		active = false;
 	}
 	if (!active) {
-		input.clear();
+		input.flush();
 		if (reboot) {
 			audio.play(res::sfx::TitleBeg, 0);
 			headsup.fade_out();

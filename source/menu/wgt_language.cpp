@@ -80,7 +80,7 @@ void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audi
 		active = false;
 	}
 	if (!active) {
-		input.clear();
+		input.flush();
 		if (!selection) {
 			audio.play(res::sfx::Inven, 0);
 		} else if (vfs::try_language(languages[cursor])) {

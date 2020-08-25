@@ -89,7 +89,7 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 		active = false;
 	}
 	if (!active) {
-		input.clear();
+		input.flush();
 		audio.play(res::sfx::Inven, 0);
 	}
 }

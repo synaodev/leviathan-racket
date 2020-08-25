@@ -38,16 +38,14 @@ public:
 public:
 	bool load(const std::string& name);
 	bool write(const std::string& output);
-	void push(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding);
+	void read(std::bitset<btn_t::Total>& pressed, std::bitset<btn_t::Total>& holding);
+	void store(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding);
 	bool recording() const;
-	bool finished() const;
-	std::pair<std::bitset<btn_t::Total>, std::bitset<btn_t::Total> > next();
+	bool playing() const;
 private:
-	// Elements should be 8 bytes large.
-	static_assert(sizeof(std::bitset<btn_t::Total>) == sizeof(uint64_t));
 	bool_t record;
 	arch_t index;
-	std::vector<uint64_t> buttons;
+	std::vector<std::bitset<btn_t::Total> > buttons;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_BUTTON_HPP

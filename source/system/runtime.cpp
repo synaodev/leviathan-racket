@@ -67,8 +67,8 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 
 bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	while (this->viable()) {
-		input.advance();
 		accum = glm::max(accum - constants::MinInterval(), 0.0);
+		input.advance();
 		if (headsup.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
 				this->setup_boot(renderer);

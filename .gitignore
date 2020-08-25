@@ -14,5 +14,9 @@ out/
 # Game
 **/AS_DEBUG/
 **/save/
+
+*.dmo
+
 boot.cfg
 imgui.cfg
+

@@ -71,7 +71,7 @@ void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio,
 		file_op = wgt_file_op_t::Unknown;
 	}
 	if (!active) {
-		input.clear();
+		input.flush();
 		switch (file_op) {
 		case wgt_file_op_t::Unknown:
 			kernel.unlock();
