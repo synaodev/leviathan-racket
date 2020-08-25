@@ -31,7 +31,7 @@ public:
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
 	void flush();
-	bool has_joystick_connection() const;
+	bool has_controller() const;
 	bool has_valid_recording() const;
 	std::string get_scancode_name(arch_t index) const;
 	std::string get_joystick_button(arch_t index) const;
@@ -51,7 +51,7 @@ public:
 private:
 	std::map<sint_t, btn_t> key_bind, joy_bind;
 	sint_t recorder;
-	SDL_Joystick* joystick;
+	SDL_Joystick* device;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP

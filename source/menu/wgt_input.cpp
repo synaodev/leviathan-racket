@@ -71,7 +71,7 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 			flashed = false;
 			audio.play(res::sfx::TitleBeg, 9);
 			this->setup_text(input);
-		} else if (!input.has_joystick_connection() and siding) {
+		} else if (!input.has_controller() and siding) {
 			waiting = false;
 			flashed = false;
 			input.set_nothings_recording();
@@ -114,7 +114,7 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 		}
 	} else if (input.pressed[btn_t::Yes]) {
 		if (siding) {
-			if (input.has_joystick_connection()) {
+			if (input.has_controller()) {
 				waiting = true;
 				flashed = false;
 				input.set_joystick_recording();

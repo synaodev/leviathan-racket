@@ -21,7 +21,7 @@ input_t::input_t() :
 	key_bind(),
 	joy_bind(),
 	recorder(kRecordNothings),
-	joystick(nullptr)
+	device(nullptr)
 {
 
 }
@@ -31,22 +31,22 @@ input_t::~input_t() {
 	debug_pressed.clear();
 	debug_holding.clear();
 #endif
-	if (joystick != nullptr) {
-		SDL_JoystickClose(joystick);
-		joystick = nullptr;
+	if (device != nullptr) {
+		SDL_JoystickClose(device);
+		device = nullptr;
 	}
 }
 
 bool input_t::init(const setup_file_t& config) {
 	this->all_key_bindings(config);
 	this->all_joy_bindings(config);
-	if (joystick != nullptr) {
+	if (device != nullptr) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;
 	}
 	if (SDL_NumJoysticks() != 0) {
-		joystick = SDL_JoystickOpen(0);
-		if (joystick == nullptr) {
+		device = SDL_JoystickOpen(0);
+		if (device == nullptr) {
 			synao_log("Joystick cannot be created at startup! SDL Error: %s\n", SDL_GetError());
 			return false;
 		}
@@ -213,22 +213,19 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_JOYDEVICEADDED: {
-			if (evt.jdevice.which == 0 and joystick == nullptr) {
-				joystick = SDL_JoystickOpen(0);
-				if (joystick == nullptr) {
-					synao_log(
-						"Couldn't open joystick! SDL Error: %s\n",
-						SDL_GetError()
-					);
+			if (evt.jdevice.which == 0 and device == nullptr) {
+				device = SDL_JoystickOpen(0);
+				if (device == nullptr) {
+					synao_log("Couldn't open joystick! SDL Error: %s\n", SDL_GetError());
 				}
 			}
 			break;
 		}
 		case SDL_JOYDEVICEREMOVED: {
 			if (evt.jdevice.which == 0) {
-				if (joystick != nullptr) {
-					SDL_JoystickClose(joystick);
-					joystick = nullptr;
+				if (device != nullptr) {
+					SDL_JoystickClose(device);
+					device = nullptr;
 				}
 			}
 			break;
@@ -239,10 +236,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 	}
 	glm::ivec2 integral = glm::zero<glm::ivec2>();
-	SDL_GetMouseState(
-		&integral.x,
-		&integral.y
-	);
+	SDL_GetMouseState(&integral.x, &integral.y);
 	position = glm::vec2(integral);
 	return policy;
 }
@@ -258,8 +252,8 @@ void input_t::flush() {
 #endif
 }
 
-bool input_t::has_joystick_connection() const {
-	return joystick != nullptr;
+bool input_t::has_controller() const {
+	return device != nullptr;
 }
 
 bool input_t::has_valid_recording() const {
