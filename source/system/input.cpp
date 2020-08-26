@@ -501,16 +501,16 @@ void input_t::all_joystick_bindings(const setup_file_t& config) {
 }
 
 void input_t::all_demofile_settings(const setup_file_t& config) {
-	std::string demo;
-	bool_t output = false;
-	config.get("Input", "Demo", demo);
-	config.get("Input", "Output", output);
-	if (!demo.empty()) {
-		player = std::make_unique<demo_player_t>(output);
-		if (output) {
-			synao_log("Recording inputs into demofile: %s\n", demo.c_str());
-		} else if (player->load(demo)) {
-			synao_log("Playing inputs from demofile: %s\n", demo.c_str());
+	std::string demoname;
+	bool_t playback = false;
+	config.get("Setup", "DemoName", demoname);
+	config.get("Setup", "PlayBack", playback);
+	if (!demoname.empty()) {
+		player = std::make_unique<demo_player_t>(!playback);
+		if (!playback) {
+			synao_log("Recording inputs into demo: \"%s\"\n", demoname.c_str());
+		} else if (player->load(demoname)) {
+			synao_log("Playing inputs from demofile: \"%s\"\n", demoname.c_str());
 		} else {
 			player.reset();
 		}

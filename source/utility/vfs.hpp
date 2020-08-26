@@ -56,6 +56,7 @@ namespace vfs {
 	bool create_recording(const std::string& path, const std::vector<uint16_t>& buffer);
 	std::string working_directory();
 	std::string executable_directory();
+	std::string personal_directory();
 	std::string resource_path(vfs_resource_path_t path);
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
@@ -105,7 +106,7 @@ public:
 public:
 	std::unique_ptr<thread_pool_t> thread_pool;
 	std::mutex storage_mutex;
-	std::string language;
+	std::string personal, language;
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
 	std::unordered_map<std::string, texture_t> textures;
 	std::unordered_map<std::string, palette_t> palettes;

@@ -8,11 +8,13 @@
 **/venv/
 
 # CMake
-build/
-out/
+**/build/
 
 # Game
 **/AS_DEBUG/
 **/save/
 **/init/
 
+# Imgui
+imgui.ini
+imgui_log.txt

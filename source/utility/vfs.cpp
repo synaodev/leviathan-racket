@@ -8,6 +8,7 @@
 #include <sstream>
 #include <streambuf>
 #include <nlohmann/json.hpp>
+#include <SDL2/SDL_filesystem.h>
 
 #if defined(LEVIATHAN_PLATFORM_WINDOWS)
 	#include <windows.h>
@@ -29,18 +30,21 @@
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0] ))
 
-static const byte_t kEventPath[]	= "./data/event/";
-static const byte_t kFieldPath[]	= "./data/field/";
-static const byte_t kFontPath[]		= "./data/font/";
-static const byte_t kI18NPath[]		= "./data/i18n/";
-static const byte_t kImagePath[]	= "./data/image/";
-static const byte_t kInitPath[]		= "./data/init/";
-static const byte_t kNoisePath[]	= "./data/noise/";
-static const byte_t kPalettePath[]	= "./data/palette/";
-static const byte_t kSavePath[]		= "./data/save/";
-static const byte_t kSpritePath[]	= "./data/sprite/";
-static const byte_t kTileKeyPath[]	= "./data/tilekey/";
-static const byte_t kTunePath[]		= "./data/tune/";
+static constexpr byte_t kEventPath[]	= "./data/event/";
+static constexpr byte_t kFieldPath[]	= "./data/field/";
+static constexpr byte_t kFontPath[]		= "./data/font/";
+static constexpr byte_t kI18NPath[]		= "./data/i18n/";
+static constexpr byte_t kImagePath[]	= "./data/image/";
+static constexpr byte_t kNoisePath[]	= "./data/noise/";
+static constexpr byte_t kPalettePath[]	= "./data/palette/";
+static constexpr byte_t kSpritePath[]	= "./data/sprite/";
+static constexpr byte_t kTileKeyPath[]	= "./data/tilekey/";
+static constexpr byte_t kTunePath[]		= "./data/tune/";
+static constexpr byte_t kInitExt[]		= "init/";
+static constexpr byte_t kSaveExt[]		= "save/";
+
+static constexpr byte_t kOrgName[] = "studio-synao";
+static constexpr byte_t kAppName[] = "leviathan";
 
 static constexpr byte_t kDefaultLang[] 	= "english";
 static constexpr arch_t kTotalThreads 	= 4;
@@ -50,6 +54,7 @@ static constexpr arch_t kDebugFontIndex = 4;
 	vfs_t::vfs_t() :
 		thread_pool(),
 		storage_mutex(),
+		personal(),
 		language(kDefaultLang),
 		i18n(),
 		textures(),
@@ -62,6 +67,7 @@ static constexpr arch_t kDebugFontIndex = 4;
 	vfs_t::vfs_t() :
 		thread_pool(),
 		storage_mutex(),
+		personal(),
 		language(kDefaultLang),
 		i18n(),
 		textures(),
@@ -88,14 +94,19 @@ bool vfs_t::init(const setup_file_t& config) {
 		return false;
 	}
 	vfs::device = this;
-	config.get("Setup", "Language", language);
-	if (!vfs::try_language(language)) {
-		synao_log("Error! Could not load first language: %s\n", language.c_str());
+	config.get("Setup", "Language", vfs::device->language);
+	if (!vfs::try_language(vfs::device->language)) {
+		synao_log("Error! Couldn't load first language: %s\n", vfs::device->language.c_str());
 		return false;
 	}
 	vfs::device->thread_pool = std::make_unique<thread_pool_t>(kTotalThreads);
 	if (vfs::device->thread_pool == nullptr) {
 		synao_log("Error! Couldn't create thread pool!\n");
+		return false;
+	}
+	vfs::device->personal = vfs::personal_directory();
+	if (vfs::device->personal.empty()) {
+		synao_log("Error! Couldn't find directory to store persistent data!\n");
 		return false;
 	}
 	synao_log("Virtual filesystem initialized.\n");
@@ -276,63 +287,23 @@ std::string vfs::working_directory() {
 }
 
 std::string vfs::executable_directory() {
-	std::string result;
-#if defined(LEVIATHAN_PLATFORM_WINDOWS)
-	#if defined(UNICODE) || defined(_UNICODE)
-		wchar_t wide_buffer[MAX_PATH];
-		GetModuleFileNameW(NULL, wide_buffer, sizeof(wide_buffer) / sizeof(wchar_t));
-		byte_t buffer[MAX_PATH];
-		std::wcstombs(buffer, wide_buffer, sizeof(buffer));
-		if (std::strlen(buffer) > 0) {
-			result = buffer;
-		}
-	#else
-		byte_t buffer[MAX_PATH];
-		GetModuleFileNameA(NULL, buffer, sizeof(buffer));
-		if (std::strlen(buffer) > 0) {
-			result = buffer;
-		}
-	#endif
-#elif defined(LEVIATHAN_PLATFORM_MACOS)
-	byte_t buffer[PROC_PIDPATHINFO_MAXSIZE];
-	pid_t pid = getpid();
-	if (proc_pidpath(pid, buffer, sizeof(buffer)) > 0) {
-		result = buffer;
-	}
-#elif defined(LEVIATHAN_PLATFORM_LINUX)
-	byte_t buffer[PATH_MAX + 1];
-	if (readlink("/proc/self/exe", buffer, PATH_MAX) > 0) {
-		result = buffer;
-	}
-#elif defined(LEVIATHAN_PLATFORM_FREEBSD) || defined(LEVIATHAN_PLATFORM_OPENBSD)
-	byte_t buffer[1024];
-	arch_t length = sizeof(buffer);
-	sint_t params[4] = {
-		CTL_KERN,
-		KERN_PROC,
-		KERN_PROC_PATHNAME,
-		-1
-	};
-	if (sysctl(params, 4, buffer, &length, NULL, 0) != -1) {
-		result = buffer;
-	}
-#elif defined(LEVIATHAN_PLATFORM_NETBSD)
-	byte_t buffer[PATH_MAX + 1];
-	if (readlink("/proc/curproc/exe"), buffer, PATH_MAX) > 0) {
-		result = buffer;
-	}
-#elif defined(LEVIATHAN_PLATFORM_DRAGONFLY)
-	byte_t buffer[PATH_MAX + 1];
-	if (readlink("/proc/curproc/file"), buffer, PATH_MAX) > 0) {
-		result = buffer;
-	}
-#endif
-	arch_t position = result.find_last_of("\\/");
-	if (position == std::string::npos) {
-		synao_log("Failed get executable directory!\n");
+	byte_t* path = SDL_GetBasePath();
+	if (path == nullptr) {
 		return std::string();
 	}
-	return result.substr(0, position);
+	std::string result = path;
+	SDL_free(path);
+	return result;
+}
+
+std::string vfs::personal_directory() {
+	byte_t* path = SDL_GetPrefPath(kOrgName, kAppName);
+	if (path == nullptr) {
+		return std::string();
+	}
+	std::string result = path;
+	SDL_free(path);
+	return result;
 }
 
 std::string vfs::resource_path(vfs_resource_path_t path) {
@@ -348,13 +319,19 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	case vfs_resource_path_t::Image:
 		return kImagePath;
 	case vfs_resource_path_t::Init:
-		return kInitPath;
+		if (vfs::device != nullptr) {
+			return vfs::device->personal + kInitExt;
+		}
+		return vfs::personal_directory() + kInitExt;
 	case vfs_resource_path_t::Noise:
 		return kNoisePath;
 	case vfs_resource_path_t::Palette:
 		return kPalettePath;
 	case vfs_resource_path_t::Save:
-		return kSavePath;
+		if (vfs::device != nullptr) {
+			return vfs::device->personal + kSaveExt;
+		}
+		return vfs::personal_directory() + kSaveExt;
 	case vfs_resource_path_t::Sprite:
 		return kSpritePath;
 	case vfs_resource_path_t::TileKey:
