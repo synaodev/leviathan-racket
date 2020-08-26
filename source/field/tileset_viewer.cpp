@@ -3,27 +3,30 @@
 #include "../video/texture.hpp"
 #include "../system/input.hpp"
 #include "../system/renderer.hpp"
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
 #include <fstream>
 
 static constexpr arch_t kMaskLength = 256;
-
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
 
 tileset_viewer_t::tileset_viewer_t() :
 	amend(false),
 	select(false),
 	flash(false),
-	cursor(0.0f, 0.0f, 16.0f, 16.0f),
+	cursor(),
 	index(0),
 	timer(0.0),
 	texture(nullptr),
 	bitmasks(),
 	file()
 {
-
+	cursor = rect_t(
+		glm::zero<glm::vec2>(),
+		constants::TileDimensions<real_t>()
+	);
 }
 
 void tileset_viewer_t::reset() {
@@ -41,10 +44,10 @@ void tileset_viewer_t::handle(const input_t& input) {
 		if (select) {
 			bool pressed = false;
 			if (input.pressed[btn_t::Up]) {
-				index = glm::max(index - 16, (arch_t)0);
+				index = glm::max(index - constants::TileSize<arch_t>(), (arch_t)0);
 				pressed = true;
 			} else if (input.pressed[btn_t::Down]) {
-				index = glm::min(index + 16, kMaskLength - 1);
+				index = glm::min(index + constants::TileSize<arch_t>(), kMaskLength - 1);
 				pressed = true;
 			} else if (input.pressed[btn_t::Right]) {
 				index = glm::min(index + 1, kMaskLength - 1);
@@ -55,10 +58,10 @@ void tileset_viewer_t::handle(const input_t& input) {
 			}
 			if (pressed) {
 				amend = true;
-				index = glm::clamp(index, (arch_t)0, (arch_t)255);
+				index = glm::clamp(index, (arch_t)0, kMaskLength - 1);
 				glm::vec2 position = glm::vec2(
-					static_cast<real_t>(index % 16) * cursor.w,
-					static_cast<real_t>(index / 16) * cursor.h
+					static_cast<real_t>(index % constants::TileSize<arch_t>()) * cursor.w,
+					static_cast<real_t>(index / constants::TileSize<arch_t>()) * cursor.h
 				);
 				cursor.x = position.x + kDefaultPosition.x;
 				cursor.y = position.y + kDefaultPosition.y;
@@ -73,12 +76,12 @@ void tileset_viewer_t::handle(const input_t& input) {
 			if (bounds.contains(input_position)) {
 				glm::vec2 mouse_position = input_position - kDefaultPosition;
 				glm::ivec2 integral_coordinates = glm::ivec2(
-					static_cast<sint_t>(mouse_position.x) / 16,
-					static_cast<sint_t>(mouse_position.y) / 16
+					static_cast<sint_t>(mouse_position.x) / constants::TileSize<sint_t>(),
+					static_cast<sint_t>(mouse_position.y) / constants::TileSize<sint_t>()
 				);
 				glm::vec2 real_coordinates = glm::vec2(
-					static_cast<real_t>(integral_coordinates.x * 16),
-					static_cast<real_t>(integral_coordinates.y * 16)
+					static_cast<real_t>(integral_coordinates.x * constants::TileSize<sint_t>()),
+					static_cast<real_t>(integral_coordinates.y * constants::TileSize<sint_t>())
 				);
 				synao_log(
 					"(%d, %d)\n",
@@ -87,7 +90,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				);
 				amend = true;
 				select = true;
-				index = static_cast<arch_t>(integral_coordinates.x) + static_cast<arch_t>(integral_coordinates.y) * 16;
+				index = static_cast<arch_t>(integral_coordinates.x) + static_cast<arch_t>(integral_coordinates.y) * constants::TileSize<arch_t>();
 				cursor.x = real_coordinates.x + kDefaultPosition.x;
 				cursor.y = real_coordinates.y + kDefaultPosition.y;
 			}
@@ -108,7 +111,7 @@ void tileset_viewer_t::update(real64_t delta) {
 		timer -= delta;
 		if (timer <= 0.0) {
 			amend = true;
-			timer = 0.048;
+			timer = constants::MinInterval() * 3.0;
 			flash = !flash;
 		}
 	}

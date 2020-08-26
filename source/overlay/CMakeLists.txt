@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (leviathan PRIVATE
+target_sources (naomi PRIVATE
 	"draw_count.cpp" "draw_count.hpp"
 	"draw_hidden.cpp" "draw_hidden.hpp"
 	"draw_fade.cpp" "draw_fade.hpp"

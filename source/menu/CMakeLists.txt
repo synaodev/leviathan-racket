@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (leviathan PRIVATE
-	"attribute_gui.cpp" "attribute_gui.hpp"
+target_sources (naomi PRIVATE
 	"dialogue_gui.cpp" "dialogue_gui.hpp"
 	"inventory_gui.cpp" "inventory_gui.hpp"
 	"stack_gui.cpp" "stack_gui.hpp"
@@ -13,4 +12,8 @@ target_sources (leviathan PRIVATE
 	"wgt_option.cpp" "wgt_option.hpp"
 	"wgt_video.cpp" "wgt_video.hpp"
 	"widget.cpp" "widget.hpp"
+)
+
+target_sources (editor PRIVATE
+	"attribute_gui.cpp" "attribute_gui.hpp"
 )

@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (leviathan PRIVATE
+target_sources (naomi PRIVATE
 	"blinker.cpp" "blinker.hpp"
 	"common.hpp"
 	"health.cpp" "health.hpp"

@@ -41,7 +41,9 @@ input_t::~input_t() {
 bool input_t::init(const setup_file_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
+#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	this->all_demofile_settings(config);
+#endif
 	if (device != nullptr) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;

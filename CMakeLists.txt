@@ -17,14 +17,19 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Find packages and libraries
 
-include ("${PROJECT_SOURCE_DIR}/cmake/libraries.cmake")
+include ("${PROJECT_SOURCE_DIR}/cmake/platforms/libraries.cmake")
 
 # Define executable and target compile defitions
 
-add_executable (leviathan)
+add_executable (naomi)
+target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
+
+add_executable (editor)
+target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
 
 if (VCPKG_TOOLCHAIN)
-	target_compile_definitions (leviathan PRIVATE "-DLEVIATHAN_USES_VCPKG")
+	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_USES_VCPKG")
+	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_USES_VCPKG")
 endif ()
 
 # Platform specific
@@ -39,7 +44,7 @@ endif ()
 
 # Link/Include
 
-target_link_libraries (leviathan PRIVATE
+target_link_libraries (naomi PRIVATE
 	Angelscript::angelscript
 	${FMT_LIBRARY}
 	${OPENAL_LIBRARY}
@@ -49,13 +54,26 @@ target_link_libraries (leviathan PRIVATE
 	glm
 )
 
-target_include_directories (leviathan PRIVATE
+target_include_directories (naomi PRIVATE
 	${GLAD_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
+)
+
+target_link_libraries (editor PRIVATE
+	${FMT_LIBRARY}
+	${SDL2_LIBRARIES}
+	glm
+)
+
+target_include_directories (editor PRIVATE
+	${GLAD_INCLUDE_DIR}
+	${STB_INCLUDE_DIR}
+	${FMT_INCLUDE_DIR}
+	${SDL2_INCLUDE_DIR}
 )
 
 add_subdirectory("source")

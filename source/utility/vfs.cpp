@@ -1,8 +1,6 @@
 #include "./vfs.hpp"
 #include "./logger.hpp"
 #include "./setup_file.hpp"
-#include "./thread_pool.hpp"
-#include "../resource/tbl_entry.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -53,12 +51,14 @@ vfs_t::vfs_t() :
 	storage_mutex(),
 	language(kDefaultLang),
 	i18n(),
-	noises(),
 	textures(),
 	palettes(),
-	shaders(),
+	shaders()
+#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
+	,noises(),
 	fonts(),
 	animations()
+#endif
 {
 
 }
@@ -456,17 +456,6 @@ std::vector<uint16_t> vfs::uint16_buffer(const std::string& path) {
 	return std::vector<uint16_t>();
 }
 
-std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
-	if (vfs::device == nullptr) {
-		synao_log("Couldn't find path for event: %s!\n", name.c_str());
-		return std::string();
-	}
-	if (flags & rec_loading_t::Global) {
-		return kEventPath + name + ".cc";
-	}
-	return kEventPath + vfs::device->language + '/' + name + ".cc";
-}
-
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {
 	if (vfs::device == nullptr) {
 		return std::string();
@@ -527,49 +516,13 @@ bool vfs::try_language(const std::string& language) {
 		}
 		vfs::device->language = language;
 		vfs::device->i18n = std::move(i18n);
+#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 		vfs::device->fonts.clear();
+#endif
 		return true;
 	}
 	synao_log("Error! Couldn't load language file: %s\n", full_path.c_str());
 	return false;
-}
-
-const noise_t* vfs::noise(const std::string& name) {
-	const tbl_entry_t entry = tbl_entry_t(name.c_str());
-	return vfs::noise(entry);
-}
-
-const noise_t* vfs::noise(const tbl_entry_t& entry) {
-	if (vfs::device == nullptr) {
-		return nullptr;
-	}
-	// auto it = vfs::device->noises.find(entry.hash);
-	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
-	if (it == vfs::device->noises.end()) {
-		noise_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->noises);
-		ref.load(kNoisePath + std::string(entry.name) + ".wav", *vfs::device->thread_pool);
-		return &ref;
-	}
-	return &it->second;
-}
-
-const animation_t* vfs::animation(const tbl_entry_t& entry) {
-	if (vfs::device == nullptr) {
-		return nullptr;
-	}
-	// auto it = vfs::device->animations.find(entry.hash);
-	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
-	if (it == vfs::device->animations.end()) {
-		animation_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->animations);
-		ref.load(kSpritePath + std::string(entry.name) + ".cfg", *vfs::device->thread_pool);
-		return &ref;
-	}
-	return &it->second;
-}
-
-const animation_t* vfs::animation(const std::string& name) {
-	const tbl_entry_t entry = tbl_entry_t(name.c_str());
-	return vfs::animation(entry);
 }
 
 const texture_t* vfs::texture(const std::vector<std::string>& names, const std::string& directory) {
@@ -649,6 +602,57 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	return &it->second;
 }
 
+#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
+
+std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
+	if (vfs::device == nullptr) {
+		synao_log("Couldn't find path for event: %s!\n", name.c_str());
+		return std::string();
+	}
+	if (flags & rec_loading_t::Global) {
+		return kEventPath + name + ".cc";
+	}
+	return kEventPath + vfs::device->language + '/' + name + ".cc";
+}
+
+const noise_t* vfs::noise(const std::string& name) {
+	const tbl_entry_t entry = tbl_entry_t(name.c_str());
+	return vfs::noise(entry);
+}
+
+const noise_t* vfs::noise(const tbl_entry_t& entry) {
+	if (vfs::device == nullptr) {
+		return nullptr;
+	}
+	// auto it = vfs::device->noises.find(entry.hash);
+	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
+	if (it == vfs::device->noises.end()) {
+		noise_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->noises);
+		ref.load(kNoisePath + std::string(entry.name) + ".wav", *vfs::device->thread_pool);
+		return &ref;
+	}
+	return &it->second;
+}
+
+const animation_t* vfs::animation(const tbl_entry_t& entry) {
+	if (vfs::device == nullptr) {
+		return nullptr;
+	}
+	// auto it = vfs::device->animations.find(entry.hash);
+	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
+	if (it == vfs::device->animations.end()) {
+		animation_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->animations);
+		ref.load(kSpritePath + std::string(entry.name) + ".cfg", *vfs::device->thread_pool);
+		return &ref;
+	}
+	return &it->second;
+}
+
+const animation_t* vfs::animation(const std::string& name) {
+	const tbl_entry_t entry = tbl_entry_t(name.c_str());
+	return vfs::animation(entry);
+}
+
 const font_t* vfs::font(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return nullptr;
@@ -676,3 +680,5 @@ const font_t* vfs::font(arch_t index) {
 const font_t* vfs::debug_font() {
 	return vfs::font(kDebugFontIndex);
 }
+
+#endif

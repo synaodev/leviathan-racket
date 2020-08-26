@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_compile_definitions (leviathan PRIVATE "-DIMGUI_IMPL_OPENGL_LOADER_GLAD")
+target_compile_definitions (editor PRIVATE "-DIMGUI_IMPL_OPENGL_LOADER_GLAD")
 
-target_sources (leviathan PRIVATE
+target_sources (editor PRIVATE
 	"imconfig.h"
 	"imgui_draw.cpp"
 	"imgui_impl_opengl3.cpp" "imgui_impl_opengl3.h"
