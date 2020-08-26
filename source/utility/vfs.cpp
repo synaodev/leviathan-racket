@@ -46,22 +46,28 @@ static constexpr byte_t kDefaultLang[] 	= "english";
 static constexpr arch_t kTotalThreads 	= 4;
 static constexpr arch_t kDebugFontIndex = 4;
 
-vfs_t::vfs_t() :
-	thread_pool(),
-	storage_mutex(),
-	language(kDefaultLang),
-	i18n(),
-	textures(),
-	palettes(),
-	shaders()
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	,noises(),
-	fonts(),
-	animations()
+	vfs_t::vfs_t() :
+		thread_pool(),
+		storage_mutex(),
+		language(kDefaultLang),
+		i18n(),
+		textures(),
+		palettes(),
+		shaders(),
+		noises(),
+		fonts(),
+		animations() {}
+#else
+	vfs_t::vfs_t() :
+		thread_pool(),
+		storage_mutex(),
+		language(kDefaultLang),
+		i18n(),
+		textures(),
+		palettes(),
+		shaders() {}
 #endif
-{
-
-}
 
 vfs_t::~vfs_t() {
 	if (vfs::device != nullptr) {
