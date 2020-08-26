@@ -2,17 +2,17 @@
 This is the current official repository for Leviathan Racket.
 I hope to release in Winter 2020.
 ## Required Dependencies
-- [OpenAL-Soft](https://github.com/kcat/openal-soft)
+- [Fmt](https://github.com/fmtlib/fmt)
+- [OpenAL](https://github.com/kcat/openal-soft)
 - [Angelscript](https://github.com/codecat/angelscript-mirror)
-- [GLM](https://github.com/g-truc/glm)
+- [glm](https://github.com/g-truc/glm)
 - [EnTT](https://github.com/skypjack/entt)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [Tmxlite](https://github.com/fallahn/tmxlite)
 - [Nlohmann JSON](https://github.com/nlohmann/json)
-- [STB](https://github.com/nothings/stb)
-- [Fmt](https://github.com/fmtlib/fmt)
+- [stb](https://github.com/nothings/stb)
 ## Included Dependencies
-- [GLAD OpenGL Loader Generator](https://glad.dav1d.de)
+- [GLAD OpenGL Loader](https://glad.dav1d.de)
 - [Pxtone Source](https://pxtone.org/developer)
 ## Building From Source
 - General:
@@ -57,8 +57,8 @@ I hope to release in Winter 2020.
   - If vcpkg fails to build SDL2 using MinGW and cites the `-mwindows` flag as a problem for pkgconfig, open SDL2's portfile and comment out the call to `vcpkg_fixup_pkgconfig`.
   - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_RC_COMPILER=<mingw-windres> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-<linking-type>`
   - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
-## Python Scripts
-The dependencies required to run the python scripts are in `scripts/requirements.txt`.
-- `scripts/fix_fontatlas.py` fixes transparency problems in BFMC's auto-generated font atlases.
-- `scripts/make_config.py` generates a default 'boot.cfg' file in a given directory.
-- `scripts/make_palette.py` generates palettes and indexed textures from input textures.
+## Tools
+The dependencies required to run the python scripts are in `tools/requirements.txt`.
+- `tools/alpha.py` fixes transparency problems in an image. Mostly used to correct BFMC's auto-generated font atlases.
+- `tools/config.py` generates a default 'boot.cfg' file in a given directory.
+- `tools/palette.py` generates palettes and indexed textures from a given texture atlas.
