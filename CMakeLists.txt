@@ -46,31 +46,33 @@ endif ()
 
 target_link_libraries (naomi PRIVATE
 	Angelscript::angelscript
+	glm
+	EnTT::EnTT
+	${TMXLITE_LIBRARY}
 	${FMT_LIBRARY}
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}
-	${TMXLITE_LIBRARY}
-	EnTT::EnTT
-	glm
 )
 
 target_include_directories (naomi PRIVATE
 	${GLAD_INCLUDE_DIR}
+	${TMXLITE_INCLUDE_DIR}
+	${NLOHMANN_JSON_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
-	${TMXLITE_INCLUDE_DIR}
 )
 
 target_link_libraries (editor PRIVATE
+	glm
 	${FMT_LIBRARY}
 	${SDL2_LIBRARIES}
-	glm
 )
 
 target_include_directories (editor PRIVATE
 	${GLAD_INCLUDE_DIR}
+	${NLOHMANN_JSON_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
