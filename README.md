@@ -10,6 +10,7 @@ I hope to release in Winter 2020.
 - [Tmxlite](https://github.com/fallahn/tmxlite)
 - [Nlohmann JSON](https://github.com/nlohmann/json)
 - [STB](https://github.com/nothings/stb)
+- [Fmt](https://github.com/fmtlib/fmt)
 ## Included Dependencies
 - [GLAD OpenGL Loader Generator](https://glad.dav1d.de)
 - [Pxtone Source](https://pxtone.org/developer)
@@ -19,12 +20,12 @@ I hope to release in Winter 2020.
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
   - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
-  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb`.
+  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb fmt`.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Depending on your GPU, you may need to install non-free firmware to use OpenGL.
   - For OpenAL, GLM, SDL2, and Nlohmann-Json, you should use your package manager:
-    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev`
+    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev libfmt-dev`
     - Pacman: `pacman -S mesa openal glm sdl2 nlohmann-json`
     - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel json-devel`
   - For Angelscript and EnTT, build and install from source using cmake.
