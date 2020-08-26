@@ -59,31 +59,32 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/vec1.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <entt/entity/registry.hpp>
-#include <tmxlite/Map.hpp>
-#include <tmxlite/TileLayer.hpp>
-#include <tmxlite/ObjectGroup.hpp>
-#include <angelscript.h>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 #include <glad/glad.hpp>
 
-#ifdef LEVIATHAN_TOOLCHAIN_APPLECLANG
+#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG)
 	#include <filesystem>
 #endif
 
-#ifdef LEVIATHAN_USES_VCPKG
-	#include <al.h>
-	#include <alc.h>
-#else
-	#include <AL/al.h>
-	#include <AL/alc.h>
+#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
+	#if !defined(LEVIATHAN_USES_VCPKG)
+		#include <al.h>
+		#include <alc.h>
+	#else
+		#include <AL/al.h>
+		#include <AL/alc.h>
+	#endif
+	#include <entt/entity/registry.hpp>
+	#include <tmxlite/Map.hpp>
+	#include <tmxlite/TileLayer.hpp>
+	#include <tmxlite/ObjectGroup.hpp>
+	#include <angelscript.h>
+	#include "./pxtone/pxtnService.h"
+	#include "./menu/widget.hpp"
 #endif
 
-#include "./types.hpp"
 #include "./utility/setup_file.hpp"
 #include "./resource/icon.hpp"
-#include "./pxtone/pxtnService.h"
-#include "./menu/widget.hpp"
 
-#endif
+#endif // LEVIATHAN_INCLUDED_STDAFX_HPP
