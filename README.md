@@ -2,16 +2,16 @@
 This is the current official repository for Leviathan Racket.
 I hope to release in Winter 2020.
 ## Required Dependencies
-- [Fmt](https://github.com/fmtlib/fmt)
+- [fmt](https://github.com/fmtlib/fmt)
 - [OpenAL](https://github.com/kcat/openal-soft)
 - [Angelscript](https://github.com/codecat/angelscript-mirror)
 - [glm](https://github.com/g-truc/glm)
 - [EnTT](https://github.com/skypjack/entt)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [Tmxlite](https://github.com/fallahn/tmxlite)
+## Included Dependencies
 - [Nlohmann JSON](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
-## Included Dependencies
 - [GLAD OpenGL Loader](https://glad.dav1d.de)
 - [Pxtone Source](https://pxtone.org/developer)
 ## Building From Source
@@ -20,17 +20,16 @@ I hope to release in Winter 2020.
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
   - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
-  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite nlohmann-json stb fmt`.
+  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite fmt`.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Depending on your GPU, you may need to install non-free firmware to use OpenGL.
-  - For OpenAL, GLM, SDL2, and Nlohmann-Json, you should use your package manager:
-    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev nlohmann-json-dev libfmt-dev`
-    - Pacman: `pacman -S mesa openal glm sdl2 nlohmann-json`
-    - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel json-devel`
+  - For OpenAL, GLM, and SDL2, you should use your package manager:
+    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
+    - Pacman: `pacman -S mesa openal glm sdl2`
+    - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel`
   - For Angelscript and EnTT, build and install from source using cmake.
   - Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`.
-  - For STB, clone the [repository](https://github.com/nothings/stb) and copy `stb_image.h` to `/usr/local/include`.
 - MacOS:
   - Vcpkg is absolutely required.
   - Install Xcode and Xcode Command-Line Tools in order to use OpenGL.Framework (yes, seriously).

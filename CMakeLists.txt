@@ -15,67 +15,30 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Find packages and libraries
+# Define targets
 
-include ("${PROJECT_SOURCE_DIR}/cmake/platforms/libraries.cmake")
-
-# Define executable and target compile defitions
-
-add_executable (naomi)
-target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
-
-add_executable (editor)
-target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
-
-if (VCPKG_TOOLCHAIN)
-	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_USES_VCPKG")
-	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_USES_VCPKG")
+if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
+	message ("Defaulting to building only \"NAOMI\"...")
+	set (NAOMI ON)
+	set (EDITOR OFF)
+elseif (NOT NAOMI AND NOT EDITOR)
+	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
 endif ()
 
-# Platform specific
-
-if (WIN32 OR MINGW)
-	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
-elseif (UNIX)
-	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/unix.cmake")
-else ()
-	message (FATAL_ERROR "Undefined platform!")
+if (NAOMI)
+	add_executable (naomi)
+	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
 endif ()
 
-# Link/Include
+if (EDITOR)
+	add_executable (editor)
+	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
+endif ()
 
-target_link_libraries (naomi PRIVATE
-	Angelscript::angelscript
-	glm
-	EnTT::EnTT
-	${TMXLITE_LIBRARY}
-	${FMT_LIBRARY}
-	${OPENAL_LIBRARY}
-	${SDL2_LIBRARIES}
-)
+# Configure targets
 
-target_include_directories (naomi PRIVATE
-	${GLAD_INCLUDE_DIR}
-	${TMXLITE_INCLUDE_DIR}
-	${NLOHMANN_JSON_INCLUDE_DIR}
-	${STB_INCLUDE_DIR}
-	${FMT_INCLUDE_DIR}
-	${OPENAL_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-)
+add_subdirectory ("cmake")
 
-target_link_libraries (editor PRIVATE
-	glm
-	${FMT_LIBRARY}
-	${SDL2_LIBRARIES}
-)
+# Source code
 
-target_include_directories (editor PRIVATE
-	${GLAD_INCLUDE_DIR}
-	${NLOHMANN_JSON_INCLUDE_DIR}
-	${STB_INCLUDE_DIR}
-	${FMT_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-)
-
-add_subdirectory("source")
+add_subdirectory ("source")
