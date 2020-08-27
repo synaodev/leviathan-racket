@@ -9,32 +9,31 @@ struct kontext_t;
 struct routine_tuple_t;
 
 namespace ai {
+	struct shoshi_helper_t {
+	public:
+		shoshi_helper_t() : augment(false) {}
+		shoshi_helper_t(const shoshi_helper_t&) = default;
+		shoshi_helper_t& operator=(const shoshi_helper_t&) = default;
+		shoshi_helper_t(shoshi_helper_t&&) = default;
+		shoshi_helper_t& operator=(shoshi_helper_t&&) = default;
+		~shoshi_helper_t() = default;
+	public:
+		bool_t augment;
+	};
 	namespace shoshi_normal {
 		constexpr arch_t type = synao_hash("shoshi");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_carry {
-		constexpr arch_t type = synao_hash("shoshicarry");
+		constexpr arch_t type = synao_hash("shoshi_carry");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_follow {
-		constexpr arch_t type = synao_hash("shoshifollow");
+		constexpr arch_t type = synao_hash("shoshi_follow");
 		void ctor(entt::entity s, kontext_t& ktx);
 		void tick(entt::entity s, routine_tuple_t& rtp);
-		struct helper_t {
-		public:
-			helper_t() :
-				augment(false) {}
-			helper_t(const helper_t&) = default;
-			helper_t& operator=(const helper_t&) = default;
-			helper_t(helper_t&&) = default;
-			helper_t& operator=(helper_t&&) = default;
-			~helper_t() = default;
-		public:
-			bool_t augment;
-		};
 	}
 }
 

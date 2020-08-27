@@ -111,7 +111,7 @@ void ai::shoshi_follow::ctor(entt::entity s, kontext_t& ktx) {
 	ktx.assign_if<blinker_t>(s, 0, 4);
 	ktx.assign_if<routine_t>(s, tick);
 	ktx.assign_if<liquid_listener_t>(s, ai::splash::type, res::sfx::Splash);
-	ktx.assign_if<helper_t>(s);
+	ktx.assign_if<shoshi_helper_t>(s);
 
 	ktx.sort<sprite_t>(sprite_t::compare);
 }
@@ -120,7 +120,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.ktx.get<location_t>(s);
 	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
 	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	auto& helper = rtp.ktx.get<helper_t>(s);
+	auto& helper = rtp.ktx.get<shoshi_helper_t>(s);
 	auto& listener = rtp.ktx.get<liquid_listener_t>(s);
 	auto& naomi_location = rtp.ktx.get<location_t>(rtp.nao.actor);
 	auto& naomi_kinematics = rtp.ktx.get<kinematics_t>(rtp.nao.actor);
