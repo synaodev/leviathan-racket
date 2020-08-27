@@ -32,8 +32,6 @@ audio_t::~audio_t() {
 }
 
 bool audio_t::init(const setup_file_t& config) {
-	real_t volume = 1.0f;
-	config.get("Audio", "Volume", volume);
 	if (engine != nullptr) {
 		synao_log("OpenAL engine already exists!\n");
 		return false;
@@ -44,14 +42,12 @@ bool audio_t::init(const setup_file_t& config) {
 	}
 
 	engine = alcOpenDevice(nullptr);
-
 	if (engine == nullptr) {
 		synao_log("OpenAL engine creation failed!\n");
 		return false;
 	}
 
 	context = alcCreateContext(reinterpret_cast<ALCdevice*>(engine), nullptr);
-
 	if (context == nullptr) {
 		synao_log("OpenAL context creation failed!\n");
 		return false;
@@ -61,9 +57,12 @@ bool audio_t::init(const setup_file_t& config) {
 		return false;
 	}
 
+	real_t volume = 1.0f;
+	config.get("Audio", "Volume", volume);
 	for (auto&& channel : channels) {
 		channel.create(volume);
 	}
+
 	synao_log("Audio system initialized.\n");
 	return true;
 }
@@ -77,10 +76,16 @@ void audio_t::flush() {
 				channel.play();
 			}
 		}
-		tasks.erase(
-			std::remove_if(tasks.begin(), tasks.end(), [](auto& task) { return task.second == nullptr; }),
-			tasks.end()
-		);
+		auto remover = [](audio_task_t& task) {
+			if (task.second == nullptr) {
+				return true;
+			}
+			if (task.second->error()) {
+				return true;
+			}
+			return false;
+		};
+		tasks.erase(std::remove_if(tasks.begin(), tasks.end(), remover), tasks.end());
 	}
 }
 

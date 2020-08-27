@@ -71,6 +71,7 @@ void noise_t::load(const std::string& full_path) {
 		SDL_AudioSpec aospec;
 		if (!SDL_LoadWAV(full_path.c_str(), &aospec, &data, &length)) {
 			synao_log("Failed to load noise from %s!\nSDL Error: %s\n", full_path.c_str(), SDL_GetError());
+			ready = false;
 			return;
 		}
 		alCheck(alBufferData(
@@ -82,6 +83,8 @@ void noise_t::load(const std::string& full_path) {
 		));
 		SDL_FreeWAV(data);
 		ready = true;
+	} else {
+		ready = false;
 	}
 }
 
@@ -95,10 +98,10 @@ void noise_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
 bool noise_t::create() {
 	if (!handle) {
 		alCheck(alGenBuffers(1, &handle));
-		return true;
+		return handle != 0;
 	}
 	synao_log("Warning! Tried to overwrite existing noise!\n");
-	return false;
+	return true;
 }
 
 void noise_t::destroy() {
@@ -117,6 +120,13 @@ void noise_t::destroy() {
 		alCheck(alDeleteBuffers(1, &handle));
 		handle = 0;
 	}
+}
+
+bool noise_t::error() const {
+	if (!ready) {
+		return !future.valid();
+	}
+	return false;
 }
 
 void noise_t::assure() const {

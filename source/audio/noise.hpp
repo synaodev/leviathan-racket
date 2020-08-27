@@ -23,6 +23,7 @@ public:
 	bool create();
 	void destroy();
 	void assure() const;
+	bool error() const;
 private:
 	friend struct channel_t;
 	std::atomic<bool> ready;
