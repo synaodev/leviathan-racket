@@ -10,6 +10,7 @@
 
 #ifdef LEVIATHAN_POSIX_COMPLIANT
 	#include <dirent.h>
+	#include <unistd.h>
 	#include <sys/stat.h>
 	#include <sys/types.h>
 #endif
