@@ -1,26 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-# Check for ccache
-
-if (UNIX AND NOT APPLE)
-	find_program (CCACHE_PROGRAM "ccache")
-	if (CCACHE_PROGRAM)
-		message ("Found ccache!")
-		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
-	endif ()
-endif ()
-
-# Check arguments
-
-if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
-	message ("Defaulting to building only \"NAOMI\"...")
-	set (NAOMI ON)
-	set (EDITOR OFF)
-elseif (NOT NAOMI AND NOT EDITOR)
-	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
-endif ()
-
-# Check if precompiled headers can be used
+# Building with precompiled headers
 
 if (NOT DEFINED STDAFX)
 	message ("Defaulting to building without precompiled headers...")
@@ -32,9 +12,40 @@ elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
 	set (STDAFX OFF)
 endif ()
 
-# General settings
+# Building with ccache
 
-project (SYNAODEV_LEVIATHAN)
+if (WIN32 OR APPLE)
+	if (CCACHE)
+		message ("Cannot use ccache on this system! Sorry!")
+	endif ()
+	set (CCACHE OFF)
+elseif (NOT DEFINED CCACHE)
+	message ("Defaulting to building with ccache, if possible...")
+	set (CCACHE ON)
+endif ()
+
+if (CCACHE)
+	find_program (CCACHE_PROGRAM "ccache")
+	if (CCACHE_PROGRAM)
+		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+	else ()
+		message ("Couldn't find ccache! Sorry!")
+	endif ()
+endif ()
+
+# Building which executables
+
+if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
+	message ("Defaulting to building only \"NAOMI\"...")
+	set (NAOMI ON)
+	set (EDITOR OFF)
+elseif (NOT NAOMI AND NOT EDITOR)
+	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
+endif ()
+
+# Project definition
+
+project (SYNAODEV_LEVIATHAN_RACKET)
 
 set (SYNAODEV_LEVIATHAN_VERSION_MAJOR 0)
 set (SYNAODEV_LEVIATHAN_VERSION_MINOR 0)
