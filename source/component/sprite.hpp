@@ -4,14 +4,14 @@
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
 
-struct tbl_entry_t;
+struct table_entry_t;
 struct animation_t;
 struct renderer_t;
 struct kontext_t;
 
 struct sprite_t {
 public:
-	sprite_t(const tbl_entry_t& entry);
+	sprite_t(const table_entry_t& entry);
 	sprite_t();
 	sprite_t(const sprite_t&) = default;
 	sprite_t& operator=(const sprite_t&) = default;

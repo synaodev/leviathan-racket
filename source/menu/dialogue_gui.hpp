@@ -9,7 +9,7 @@
 
 class CScriptArray;
 
-struct tbl_entry_t;
+struct table_entry_t;
 struct input_t;
 struct audio_t;
 struct receiver_t;
@@ -60,7 +60,7 @@ private:
 	draw_text_t text;
 	draw_scheme_t faces, arrow;
 	std::function<void(void)> suspender;
-	std::function<void(const tbl_entry_t&, arch_t)> push_sound;
+	std::function<void(const table_entry_t&, arch_t)> push_sound;
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP

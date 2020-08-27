@@ -597,11 +597,11 @@ std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 }
 
 const noise_t* vfs::noise(const std::string& name) {
-	const tbl_entry_t entry = tbl_entry_t(name.c_str());
+	const table_entry_t entry = table_entry_t(name.c_str());
 	return vfs::noise(entry);
 }
 
-const noise_t* vfs::noise(const tbl_entry_t& entry) {
+const noise_t* vfs::noise(const table_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -615,7 +615,7 @@ const noise_t* vfs::noise(const tbl_entry_t& entry) {
 	return &it->second;
 }
 
-const animation_t* vfs::animation(const tbl_entry_t& entry) {
+const animation_t* vfs::animation(const table_entry_t& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -630,7 +630,7 @@ const animation_t* vfs::animation(const tbl_entry_t& entry) {
 }
 
 const animation_t* vfs::animation(const std::string& name) {
-	const tbl_entry_t entry = tbl_entry_t(name.c_str());
+	const table_entry_t entry = table_entry_t(name.c_str());
 	return vfs::animation(entry);
 }
 

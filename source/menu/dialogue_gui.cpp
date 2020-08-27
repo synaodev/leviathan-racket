@@ -54,7 +54,7 @@ bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
-	push_sound = [&audio](const tbl_entry_t& sound, arch_t index) {
+	push_sound = [&audio](const table_entry_t& sound, arch_t index) {
 		audio.play(sound, index);
 	};
 	synao_log("Dialogue GUI is ready.\n");

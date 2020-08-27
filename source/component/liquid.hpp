@@ -10,7 +10,7 @@ struct audio_t;
 struct renderer_t;
 struct kontext_t;
 struct location_t;
-struct tbl_entry_t;
+struct table_entry_t;
 
 struct liquid_body_t {
 public:
@@ -32,7 +32,7 @@ public:
 
 struct liquid_listener_t {
 public:
-	liquid_listener_t(arch_t particle_type, const tbl_entry_t& entry) :
+	liquid_listener_t(arch_t particle_type, const table_entry_t& entry) :
 		liquid(entt::null),
 		particle_type(particle_type),
 		sound(&entry) {}
@@ -48,7 +48,7 @@ public:
 public:
 	entt::entity liquid;
 	arch_t particle_type;
-	const tbl_entry_t* sound;
+	const table_entry_t* sound;
 };
 
 namespace liquid {

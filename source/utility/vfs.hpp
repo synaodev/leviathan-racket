@@ -7,7 +7,7 @@
 
 #include "./thread_pool.hpp"
 
-#include "../resource/tbl_entry.hpp"
+#include "../resource/table_entry.hpp"
 #include "../video/texture.hpp"
 #include "../video/palette.hpp"
 #include "../video/program.hpp"
@@ -19,7 +19,7 @@
 	#include "../event/receiver.hpp"
 #endif
 
-struct tbl_entry_t;
+struct table_entry_t;
 struct setup_file_t;
 struct vfs_t;
 
@@ -76,9 +76,9 @@ namespace vfs {
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::string event_path(const std::string& name, rec_loading_t flags);
 	const noise_t* noise(const std::string& name);
-	const noise_t* noise(const tbl_entry_t& entry);
+	const noise_t* noise(const table_entry_t& entry);
 	const animation_t* animation(const std::string& name);
-	const animation_t* animation(const tbl_entry_t& entry);
+	const animation_t* animation(const table_entry_t& entry);
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
 	const font_t* debug_font();
