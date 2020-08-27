@@ -48,24 +48,19 @@
 #include <thread>
 #include <mutex>
 #include <future>
-#include <glm/glm.hpp>
-#include <glm/common.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/trigonometric.hpp>
-#include <glm/geometric.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
-#include <glm/matrix.hpp>
-#include <glm/gtc/vec1.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <nlohmann/json.hpp>
-#include <SDL2/SDL.h>
-#include <glad/glad.hpp>
 
 #if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG)
 	#include <filesystem>
 #endif
+
+#include <glad/glad.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+#include <glm/gtc/vec1.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <nlohmann/json.hpp>
+#include <SDL2/SDL.h>
+#include <fmt/format.h>
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	#if !defined(LEVIATHAN_USES_VCPKG)
@@ -75,16 +70,12 @@
 		#include <AL/al.h>
 		#include <AL/alc.h>
 	#endif
-	#include <entt/entity/registry.hpp>
+	#include <angelscript.h>
+	#include <entt/entt.hpp>
 	#include <tmxlite/Map.hpp>
 	#include <tmxlite/TileLayer.hpp>
+	#include <tmxlite/ImageLayer.hpp>
 	#include <tmxlite/ObjectGroup.hpp>
-	#include <angelscript.h>
-	#include "./pxtone/pxtnService.h"
-	#include "./menu/widget.hpp"
 #endif
-
-#include "./utility/setup_file.hpp"
-#include "./resource/icon.hpp"
 
 #endif // LEVIATHAN_INCLUDED_STDAFX_HPP

@@ -1,5 +1,37 @@
 cmake_minimum_required (VERSION 3.15)
 
+# Check for ccache
+
+if (UNIX AND NOT APPLE)
+	find_program (CCACHE_PROGRAM "ccache")
+	if (CCACHE_PROGRAM)
+		message ("Found ccache!")
+		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+	endif ()
+endif ()
+
+# Check arguments
+
+if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
+	message ("Defaulting to building only \"NAOMI\"...")
+	set (NAOMI ON)
+	set (EDITOR OFF)
+elseif (NOT NAOMI AND NOT EDITOR)
+	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
+endif ()
+
+# Check if precompiled headers can be used
+
+if (NOT DEFINED STDAFX)
+	message ("Defaulting to building without precompiled headers...")
+	set (STDAFX OFF)
+elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
+	if (STDAFX)
+		message ("Precompiled headers are unavailable! Sorry!")
+	endif ()
+	set (STDAFX OFF)
+endif ()
+
 # General settings
 
 project (SYNAODEV_LEVIATHAN)
@@ -16,14 +48,6 @@ set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Define targets
-
-if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
-	message ("Defaulting to building only \"NAOMI\"...")
-	set (NAOMI ON)
-	set (EDITOR OFF)
-elseif (NOT NAOMI AND NOT EDITOR)
-	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
-endif ()
 
 if (NAOMI)
 	add_executable (naomi)

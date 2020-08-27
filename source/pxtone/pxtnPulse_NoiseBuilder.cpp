@@ -1,8 +1,9 @@
 ﻿
 #include "./pxtn.h"
-
 #include "./pxtnMem.h"
 #include "./pxtnPulse_NoiseBuilder.h"
+
+#include "../types.hpp"
 
 #ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push

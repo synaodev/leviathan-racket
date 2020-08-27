@@ -1,9 +1,10 @@
 ﻿// '12/03/03
 
 #include "./pxtn.h"
-
 #include "./pxtnMem.h"
 #include "./pxtnWoice.h"
+
+#include "../types.hpp"
 
 #ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push

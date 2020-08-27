@@ -1,10 +1,10 @@
 ﻿
 #include "./pxtn.h"
-
 #include "./pxtnMax.h"
 #include "./pxtnMem.h"
-
 #include "./pxtnDelay.h"
+
+#include "../types.hpp"
 
 #ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push

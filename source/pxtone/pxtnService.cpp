@@ -6,8 +6,9 @@
 // x4x : v.0.8.3.4 (-2007/10/20) unit has event-list.
 
 #include "./pxtn.h"
-
 #include "./pxtnService.h"
+
+#include "../types.hpp"
 
 #ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push

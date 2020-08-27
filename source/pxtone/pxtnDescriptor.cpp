@@ -1,7 +1,8 @@
 ﻿
 #include "./pxtn.h"
-
 #include "./pxtnDescriptor.h"
+
+#include "../types.hpp"
 
 #ifdef LEVIATHAN_COMPILER_LLVM
 	#pragma clang diagnostic push
