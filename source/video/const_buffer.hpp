@@ -14,9 +14,9 @@ public:
 	void create(arch_t length);
 	void create_immutable(arch_t length);
 	void destroy();
-	bool update(const optr_t pointer);
-	bool update(const optr_t pointer, arch_t count);
-	bool update(const optr_t pointer, arch_t count, arch_t offset);
+	bool update(const void_t pointer);
+	bool update(const void_t pointer, arch_t count);
+	bool update(const void_t pointer, arch_t count, arch_t offset);
 	bool valid() const;
 	bool immutable() const;
 	buffer_usage_t get_usage() const;

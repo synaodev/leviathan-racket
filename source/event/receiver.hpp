@@ -75,7 +75,7 @@ public:
 	std::string verify(asIScriptFunction* imported) const;
 private:
 	static void print_message(const std::string& message);
-	static void error_callback(const asSMessageInfo* msg, optr_t aux);
+	static void error_callback(const asSMessageInfo* msg, void_t aux);
 	static void calls_callback(asIScriptContext* ctx, uint_t* calls);
 	asIScriptFunction* find_from_index(const std::string& module_name, arch_t index) const;
 	asIScriptFunction* find_from_symbol(const std::string& module_name, const std::string& symbol) const;

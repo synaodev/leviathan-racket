@@ -82,7 +82,7 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 				0, glm::vec2::length(),
 				GL_FLOAT, GL_FALSE,
 				sizeof(vtx_minor_t),
-				(const optr_t)offsetof(vtx_minor_t, position)
+				(const void_t)offsetof(vtx_minor_t, position)
 			));
 		};
 	} else if (info == typeid(vtx_blank_t)) {
@@ -93,13 +93,13 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 				0, glm::vec2::length(),
 				GL_FLOAT, GL_FALSE,
 				sizeof(vtx_blank_t),
-				(const optr_t)offsetof(vtx_blank_t, position)
+				(const void_t)offsetof(vtx_blank_t, position)
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribPointer(
 				1, glm::vec4::length(),
 				GL_FLOAT, GL_FALSE, sizeof(vtx_blank_t),
-				(const optr_t)offsetof(vtx_blank_t, color)
+				(const void_t)offsetof(vtx_blank_t, color)
 			));
 		};
 	} else if (info == typeid(vtx_major_t)) {
@@ -109,21 +109,21 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 			glCheck(glVertexAttribPointer(
 				0, glm::vec2::length(),
 				GL_FLOAT, GL_FALSE, sizeof(vtx_major_t),
-				(const optr_t)offsetof(vtx_major_t, position)
+				(const void_t)offsetof(vtx_major_t, position)
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribPointer(
 				1, glm::vec3::length(),
 				GL_FLOAT, GL_FALSE,
 				sizeof(vtx_major_t),
-				(const optr_t)offsetof(vtx_major_t, uvcoords)
+				(const void_t)offsetof(vtx_major_t, uvcoords)
 			));
 			glCheck(glEnableVertexAttribArray(2));
 			glCheck(glVertexAttribPointer(
 				2, glm::vec1::length(),
 				GL_FLOAT, GL_FALSE,
 				sizeof(vtx_major_t),
-				(const optr_t)offsetof(vtx_major_t, alpha)
+				(const void_t)offsetof(vtx_major_t, alpha)
 			));
 		};
 	}

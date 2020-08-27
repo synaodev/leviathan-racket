@@ -108,8 +108,7 @@ using bool_t = int;
 using sint_t = signed int;
 using uint_t = unsigned int;
 using real_t = float;
-using void_t = void;
-using optr_t = void*;
+using void_t = void*;
 
 #ifdef LEVIATHAN_MACHINE_64BIT
 	using arch_t = uint64_t;

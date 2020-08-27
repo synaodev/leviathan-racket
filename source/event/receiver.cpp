@@ -41,7 +41,7 @@ receiver_t::receiver_t() :
 	boot(nullptr),
 	events()
 {
-	
+
 }
 
 receiver_t::~receiver_t() {
@@ -345,7 +345,7 @@ void receiver_t::print_message(const std::string& message) {
 	synao_log("%s\n", message.c_str());
 }
 
-void receiver_t::error_callback(const asSMessageInfo* msg, optr_t) {
+void receiver_t::error_callback(const asSMessageInfo* msg, void_t) {
 	const byte_t* type = nullptr;
 	switch (msg->type) {
 	case asMSGTYPE_ERROR:
@@ -515,7 +515,7 @@ void receiver_t::discard_all_events() {
 					if (std::strcmp(source_name, current_name) == 0) {
 						linked = true;
 						break;
-					} 
+					}
 				}
 				if (!linked) {
 					engine->DiscardModule(current_name);

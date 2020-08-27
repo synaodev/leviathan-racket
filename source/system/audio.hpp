@@ -31,7 +31,7 @@ public:
 private:
 	std::vector<audio_task_t> tasks;
 	std::vector<channel_t> channels;
-	optr_t engine, context;
+	void_t engine, context;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP

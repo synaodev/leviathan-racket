@@ -8,7 +8,7 @@ namespace icon {
 	sint_t height();
 	sint_t depth();
 	sint_t pitch();
-	optr_t pixels();
+	void_t pixels();
 }
 
 #endif // LEVIATHAN_INCLUDED_RESOURCE_ICON_HPP

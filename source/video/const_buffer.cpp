@@ -77,7 +77,7 @@ void const_buffer_t::destroy() {
 	length = 0;
 }
 
-bool const_buffer_t::update(const optr_t pointer, arch_t count, arch_t offset) {
+bool const_buffer_t::update(const void_t pointer, arch_t count, arch_t offset) {
 	if (!handle) {
 		return false;
 	} else if (!pointer) {
@@ -93,11 +93,11 @@ bool const_buffer_t::update(const optr_t pointer, arch_t count, arch_t offset) {
 	return true;
 }
 
-bool const_buffer_t::update(const optr_t pointer, arch_t count) {
+bool const_buffer_t::update(const void_t pointer, arch_t count) {
 	return this->update(pointer, count, 0);
 }
 
-bool const_buffer_t::update(const optr_t pointer) {
+bool const_buffer_t::update(const void_t pointer) {
 	return this->update(pointer, length, 0);
 }
 

@@ -5,7 +5,7 @@ namespace icon {
 		arch_t width;
 		arch_t height;
 		arch_t depth;
-		arch_t bytes_per_pixel; /* RGBA */ 
+		arch_t bytes_per_pixel; /* RGBA */
 		uint8_t pixels[64 * 64 * 4 + 1];
 	} image_data = {
 		64, 64, 32, 4,
@@ -534,11 +534,11 @@ namespace icon {
 	}
 	sint_t pitch() {
 		return static_cast<sint_t>(
-			image_data.bytes_per_pixel * 
+			image_data.bytes_per_pixel *
 			image_data.width
 		);
 	}
-	optr_t pixels() {
-		return (optr_t)image_data.pixels;
+	void_t pixels() {
+		return (void_t)image_data.pixels;
 	}
 }
