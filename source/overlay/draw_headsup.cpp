@@ -1,6 +1,6 @@
 #include "./draw_headsup.hpp"
 
-#include "../utility/debug.hpp"
+#include "../utility/meta.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 #include "../event/receiver.hpp"
@@ -18,7 +18,7 @@ draw_headsup_t::draw_headsup_t() :
 	item_view(),
 	fight_meter(),
 	fade()
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	,hidden()
 #endif
 {
@@ -64,7 +64,7 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	item_view.init(texture, palette, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	const font_t* font = vfs::debug_font();
 	if (font == nullptr) {
 		synao_log("Could not load debug font!\n");
@@ -91,7 +91,7 @@ void draw_headsup_t::handle(const kernel_t& kernel) {
 void draw_headsup_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	hidden.update(delta);
 #endif
 }
@@ -111,21 +111,21 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 		oxygen_count.invalidate();
 		item_view.invalidate();
 		fight_meter.invalidate();
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 		hidden.invalidate();
 #endif
 	}
 	if (fade.is_visible()) {
 		fade.render(renderer);
 	}
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	hidden.render(renderer);
 #endif
 }
 
 void draw_headsup_t::invalidate() const {
 	fade.invalidate();
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	hidden.invalidate();
 #endif
 }
@@ -143,10 +143,12 @@ void draw_headsup_t::set_fight_values(sint_t current, sint_t maximum) {
 	fight_meter.set_values(current, maximum);
 }
 
-#ifdef LEVIATHAN_BUILD_DEBUG
-	void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
-		hidden.set_state(state, radio);
-	}
+#ifdef LEVIATHAN_USES_META
+
+void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
+	hidden.set_state(state, radio);
+}
+
 #endif
 
 void draw_headsup_t::fade_in() {

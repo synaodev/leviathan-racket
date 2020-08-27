@@ -9,9 +9,9 @@ static constexpr sint_t kScancodeNothing = -1;
 static constexpr sint_t kScancodeKeyboard = -2;
 static constexpr sint_t kScancodeJoystick = -3;
 
-#ifdef LEVIATHAN_BUILD_DEBUG
-	static std::map<SDL_Scancode, bool_t> debug_pressed;
-	static std::map<SDL_Scancode, bool_t> debug_holding;
+#ifdef LEVIATHAN_USES_META
+	static std::map<SDL_Scancode, bool_t> meta_pressed;
+	static std::map<SDL_Scancode, bool_t> meta_holding;
 #endif
 
 input_t::input_t() :
@@ -28,9 +28,9 @@ input_t::input_t() :
 }
 
 input_t::~input_t() {
-#ifdef LEVIATHAN_BUILD_DEBUG
-	debug_pressed.clear();
-	debug_holding.clear();
+#ifdef LEVIATHAN_USES_META
+	meta_pressed.clear();
+	meta_holding.clear();
 #endif
 	if (device != nullptr) {
 		SDL_JoystickClose(device);
@@ -91,9 +91,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 					policy = policy_t::Stop;
 					pressed.reset();
 					holding.reset();
-#ifdef LEVIATHAN_BUILD_DEBUG
-					debug_pressed.clear();
-					debug_holding.clear();
+#ifdef LEVIATHAN_USES_META
+					meta_pressed.clear();
+					meta_holding.clear();
 #endif
 				}
 			}
@@ -110,9 +110,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			if (scanner == kScancodeKeyboard) {
 				scanner = code;
 			}
-#ifdef LEVIATHAN_BUILD_DEBUG
-			debug_pressed[code] = !debug_holding[code];
-			debug_holding[code] = true;
+#ifdef LEVIATHAN_USES_META
+			meta_pressed[code] = !meta_holding[code];
+			meta_holding[code] = true;
 #endif
 			break;
 		}
@@ -123,8 +123,8 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 				btn_t btn = it->second;
 				holding[btn] = false;
 			}
-#ifdef LEVIATHAN_BUILD_DEBUG
-			debug_holding[code] = false;
+#ifdef LEVIATHAN_USES_META
+			meta_holding[code] = false;
 #endif
 			break;
 		}
@@ -266,14 +266,14 @@ void input_t::advance() {
 		if (player->recording()) {
 			player->store(pressed, holding);
 			// synao_log(
-			// 	"STORE(%s, %s)\n", 
+			// 	"STORE(%s, %s)\n",
 			// 	pressed.to_string().c_str(),
 			// 	holding.to_string().c_str()
 			// );
 		} else if (player->playing()) {
 			player->read(pressed, holding);
 			// synao_log(
-			// 	"READ(%s, %s)\n", 
+			// 	"READ(%s, %s)\n",
 			// 	pressed.to_string().c_str(),
 			// 	holding.to_string().c_str()
 			// );
@@ -286,8 +286,8 @@ void input_t::advance() {
 
 void input_t::flush() {
 	pressed.reset();
-#ifdef LEVIATHAN_BUILD_DEBUG
-	debug_pressed.clear();
+#ifdef LEVIATHAN_USES_META
+	meta_pressed.clear();
 #endif
 }
 
@@ -414,21 +414,17 @@ btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 	return btn_t::Total;
 }
 
-bool input_t::get_debug_pressed(SDL_Scancode scancode) {
-#ifdef LEVIATHAN_BUILD_DEBUG
-	return debug_pressed[scancode];
-#else
-	return false;
-#endif
+#ifdef LEVIATHAN_USES_META
+
+bool input_t::get_meta_pressed(SDL_Scancode scancode) {
+	return meta_pressed[scancode];
 }
 
-bool input_t::get_debug_holding(SDL_Scancode scancode) {
-#ifdef LEVIATHAN_BUILD_DEBUG
-	return debug_holding[scancode];
-#else
-	return false;
-#endif
+bool input_t::get_meta_holding(SDL_Scancode scancode) {
+	return meta_holding[scancode];
 }
+
+#endif
 
 void input_t::all_keyboard_bindings(const setup_file_t& config) {
 	sint_t jump		= SDL_SCANCODE_Z;

@@ -15,7 +15,7 @@
 #include "../system/kernel.hpp"
 #include "../event/receiver.hpp"
 #include "../overlay/draw_headsup.hpp"
-#include "../utility/debug.hpp"
+#include "../utility/meta.hpp"
 #include "../utility/hash.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/tmx_convert.hpp"
@@ -86,8 +86,8 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 	if (liquid_flag) {
 		liquid::render(*this, renderer, viewport);
 	}
-#ifdef LEVIATHAN_BUILD_DEBUG
-	if (debug::Hitboxes) {
+#ifdef LEVIATHAN_USES_META
+	if (meta::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
 #endif

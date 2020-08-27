@@ -1,7 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_AUDIO_ALCHECK_HPP
 #define LEVIATHAN_INCLUDED_AUDIO_ALCHECK_HPP
 
-#ifdef LEVIATHAN_USES_VCPKG
+#ifndef LEVIATHAN_USES_VCPKG
 	#include <al.h>
 	#include <alc.h>
 #else

@@ -45,8 +45,10 @@ public:
 	btn_t set_keyboard_binding(sint_t code, arch_t btn);
 	void set_joystick_scanner();
 	btn_t set_joystick_binding(sint_t code, arch_t btn);
-	static bool get_debug_pressed(SDL_Scancode scancode);
-	static bool get_debug_holding(SDL_Scancode scancode);
+#ifdef LEVIATHAN_USES_META
+	static bool get_meta_pressed(SDL_Scancode scancode);
+	static bool get_meta_holding(SDL_Scancode scancode);
+#endif
 private:
 	void all_keyboard_bindings(const setup_file_t& config);
 	void all_joystick_bindings(const setup_file_t& config);

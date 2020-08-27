@@ -39,8 +39,8 @@ private:
 	void setup_boot(renderer_t& renderer);
 	void setup_load(renderer_t& renderer);
 	void setup_save();
-#ifdef LEVIATHAN_BUILD_DEBUG
-	void setup_debug(const renderer_t& renderer);
+#ifdef LEVIATHAN_USES_META
+	void setup_meta(const renderer_t& renderer);
 #endif
 private:
 	real64_t accum;

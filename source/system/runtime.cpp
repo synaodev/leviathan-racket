@@ -8,7 +8,7 @@
 #include "../system/audio.hpp"
 #include "../system/video.hpp"
 #include "../system/renderer.hpp"
-#include "../utility/debug.hpp"
+#include "../utility/meta.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/tmx_convert.hpp"
@@ -88,8 +88,8 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		if (kernel.has(kernel_state_t::Quit)) {
 			return false;
 		}
-#ifdef LEVIATHAN_BUILD_DEBUG
-		this->setup_debug(renderer);
+#ifdef LEVIATHAN_USES_META
+		this->setup_meta(renderer);
 #endif
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
 		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
@@ -283,35 +283,37 @@ void runtime_t::setup_save() {
 	kernel.finish_file_operation();
 }
 
-#ifdef LEVIATHAN_BUILD_DEBUG
-void runtime_t::setup_debug(const renderer_t& renderer) {
-	if (input_t::get_debug_holding(SDL_SCANCODE_BACKSPACE)) {
-		if (input_t::get_debug_pressed(SDL_SCANCODE_1)) {
-			debug::Framerate = false;
+#ifdef LEVIATHAN_USES_META
+
+void runtime_t::setup_meta(const renderer_t& renderer) {
+	if (input_t::get_meta_holding(SDL_SCANCODE_BACKSPACE)) {
+		if (input_t::get_meta_pressed(SDL_SCANCODE_1)) {
+			meta::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::None, nullptr);
-		} else if (input_t::get_debug_pressed(SDL_SCANCODE_2)) {
-			debug::Framerate = !debug::Framerate;
+		} else if (input_t::get_meta_pressed(SDL_SCANCODE_2)) {
+			meta::Framerate = !meta::Framerate;
 			headsup.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
-		} else if (input_t::get_debug_pressed(SDL_SCANCODE_3)) {
-			debug::Framerate = false;
+		} else if (input_t::get_meta_pressed(SDL_SCANCODE_3)) {
+			meta::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
 				sint_t total_calls = static_cast<sint_t>(renderer.get_draw_calls());
-				// rendering hidden debug stuff takes two draw calls,
-				// so subtract 2 from the total
+				// rendering hidden meta stuff takes two draw calls,
+				// so subtract 2 from the total.
 				return total_calls - 2;
 			});
-		} else if (input_t::get_debug_pressed(SDL_SCANCODE_4)) {
-			debug::Framerate = false;
+		} else if (input_t::get_meta_pressed(SDL_SCANCODE_4)) {
+			meta::Framerate = false;
 			headsup.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
 				return static_cast<sint_t>(kontext.active());
 			});
-		} else if (input_t::get_debug_pressed(SDL_SCANCODE_MINUS)) {
-			debug::Hitboxes = !debug::Hitboxes;
-		} else if (input_t::get_debug_pressed(SDL_SCANCODE_EQUALS)) {
+		} else if (input_t::get_meta_pressed(SDL_SCANCODE_MINUS)) {
+			meta::Hitboxes = !meta::Hitboxes;
+		} else if (input_t::get_meta_pressed(SDL_SCANCODE_EQUALS)) {
 			if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
 				stack_gui.push(menu_t::Field, 0);
 			}
 		}
 	}
 }
+
 #endif

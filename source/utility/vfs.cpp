@@ -2,14 +2,6 @@
 #include "./logger.hpp"
 #include "./setup_file.hpp"
 
-#include <cstdlib>
-#include <cstring>
-#include <fstream>
-#include <sstream>
-#include <streambuf>
-#include <nlohmann/json.hpp>
-#include <SDL2/SDL_filesystem.h>
-
 #if defined(LEVIATHAN_PLATFORM_WINDOWS)
 	#include <windows.h>
 #elif defined(LEVIATHAN_PLATFORM_MACOS)
@@ -18,15 +10,22 @@
 
 #ifdef LEVIATHAN_POSIX_COMPLIANT
 	#include <dirent.h>
-	#include <unistd.h>
 	#include <sys/stat.h>
 	#include <sys/types.h>
-	#include <sys/sysctl.h>
 #endif
+
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <streambuf>
 
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	#include <filesystem>
 #endif
+
+#include <nlohmann/json.hpp>
+#include <SDL2/SDL_filesystem.h>
 
 #define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0] ))
 
@@ -42,10 +41,8 @@ static constexpr byte_t kTileKeyPath[]	= "./data/tilekey/";
 static constexpr byte_t kTunePath[]		= "./data/tune/";
 static constexpr byte_t kInitExt[]		= "init/";
 static constexpr byte_t kSaveExt[]		= "save/";
-
-static constexpr byte_t kOrgName[] = "studio-synao";
-static constexpr byte_t kAppName[] = "leviathan";
-
+static constexpr byte_t kOrgName[] 		= "studio-synao";
+static constexpr byte_t kAppName[] 		= "leviathan";
 static constexpr byte_t kDefaultLang[] 	= "english";
 static constexpr arch_t kTotalThreads 	= 4;
 static constexpr arch_t kDebugFontIndex = 4;

@@ -1,5 +1,6 @@
 #include "./draw_hidden.hpp"
-#include "../utility/debug.hpp"
+
+#ifdef LEVIATHAN_USES_META
 
 static constexpr real64_t kFramerateDelay = 0.2;
 
@@ -94,3 +95,5 @@ void draw_hidden_t::set_state(draw_hidden_state_t state, std::function<sint_t()>
 		count.set_value(0);
 	}
 }
+
+#endif

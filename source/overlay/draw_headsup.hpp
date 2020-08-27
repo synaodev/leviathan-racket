@@ -53,7 +53,7 @@ public:
 	void invalidate() const;
 	void set_parameters(headsup_params_t params);
 	void set_fight_values(sint_t current, sint_t maximum);
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	void set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio);
 #endif
 	void fade_in();
@@ -70,7 +70,7 @@ private:
 	draw_item_view_t item_view;
 	draw_meter_t fight_meter;
 	draw_fade_t fade;
-#ifdef LEVIATHAN_BUILD_DEBUG
+#ifdef LEVIATHAN_USES_META
 	draw_hidden_t hidden;
 #endif
 };

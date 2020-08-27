@@ -43,6 +43,13 @@ elseif (NOT NAOMI AND NOT EDITOR)
 	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
 endif ()
 
+# Building with meta elements
+
+if (NOT DEFINED META)
+	message ("Defaulting to building without meta elements...")
+	set (META OFF)
+endif ()
+
 # Project definition
 
 project (SYNAODEV_LEVIATHAN_RACKET)

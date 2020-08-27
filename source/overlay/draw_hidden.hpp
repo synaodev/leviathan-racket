@@ -1,6 +1,8 @@
 #ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_HIDDEN_HPP
 #define LEVIATHAN_INCLUDED_OVERLAY_DRAW_HIDDEN_HPP
 
+#ifdef LEVIATHAN_USES_META
+
 #include <functional>
 
 #include "./draw_count.hpp"
@@ -36,5 +38,7 @@ private:
 	draw_count_t count;
 	draw_text_t text;
 };
+
+#endif
 
 #endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_HIDDEN_HPP
