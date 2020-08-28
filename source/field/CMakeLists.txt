@@ -2,15 +2,14 @@ cmake_minimum_required (VERSION 3.15)
 
 if (NAOMI)
 	target_sources (naomi PRIVATE
-		"camera.hpp" "camera.cpp"
-		"collision.cpp" "collision.hpp"
-		"parallax_background.cpp" "parallax_background.hpp"
-		"tileflag.hpp"
-		"tilemap_layer.cpp" "tilemap_layer.hpp"
-		"tilemap.cpp" "tilemap.hpp"
+		"camera.cpp"
+		"collision.cpp"
+		"parallax_background.cpp"
+		"tilemap_layer.cpp"
+		"tilemap.cpp"
 	)
 endif ()
 
 if (EDITOR)
-	target_sources (editor PRIVATE "tileset_viewer.cpp" "tileset_viewer.hpp")
+	target_sources (editor PRIVATE "tileset_viewer.cpp")
 endif ()

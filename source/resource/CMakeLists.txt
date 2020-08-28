@@ -1,22 +1,14 @@
 cmake_minimum_required (VERSION 3.15)
 
 if (NAOMI)
-	target_sources (naomi PRIVATE
-		"icon.cpp" "icon.hpp"
-		"table_entry.hpp" "id.hpp"
-		"pipeline.cpp" "pipeline.hpp"
-	)
+	target_sources (naomi PRIVATE "icon.cpp" "pipeline.cpp")
 	if (WIN32)
 		target_sources (naomi PRIVATE "icon.rc")
 	endif ()
 endif ()
 
 if (EDITOR)
-	target_sources (editor PRIVATE
-		"icon.cpp" "icon.hpp"
-		"table_entry.hpp"
-		"pipeline.cpp" "pipeline.hpp"
-	)
+	target_sources (editor PRIVATE "icon.cpp" "pipeline.cpp")
 	if (WIN32)
 		target_sources (editor PRIVATE "icon.rc")
 	endif ()
