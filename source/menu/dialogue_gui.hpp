@@ -9,7 +9,6 @@
 
 class CScriptArray;
 
-struct table_entry_t;
 struct input_t;
 struct audio_t;
 struct receiver_t;
@@ -21,6 +20,7 @@ namespace __enum_dialogue_flag {
 		Question,
 		Writing,
 		Delay,
+		Sound,
 		Total
 	};
 }
@@ -34,9 +34,9 @@ public:
 	dialogue_gui_t& operator=(dialogue_gui_t&&) = default;
 	~dialogue_gui_t() = default;
 public:
-	bool init(audio_t& audio, receiver_t& receiver);
+	bool init(receiver_t& receiver);
 	void reset();
-	void handle(const input_t& input);
+	void handle(const input_t& input, audio_t& audio);
 	void update(real64_t delta);
 	void render(renderer_t& renderer) const;
 	void open_textbox_high();
@@ -60,7 +60,6 @@ private:
 	draw_text_t text;
 	draw_scheme_t faces, arrow;
 	std::function<void(void)> suspender;
-	std::function<void(const table_entry_t&, arch_t)> push_sound;
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP

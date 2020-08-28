@@ -34,13 +34,12 @@ dialogue_gui_t::dialogue_gui_t() :
 	text(),
 	faces(),
 	arrow(),
-	suspender(),
-	push_sound()
+	suspender()
 {
 
 }
 
-bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
+bool dialogue_gui_t::init(receiver_t& receiver) {
 	const font_t* font = vfs::font(0);
 	const animation_t* animation = vfs::animation(res::anim::Heads);
 	if (font == nullptr or animation == nullptr) {
@@ -54,9 +53,6 @@ bool dialogue_gui_t::init(audio_t& audio, receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
-	push_sound = [&audio](const table_entry_t& sound, arch_t index) {
-		audio.play(sound, index);
-	};
 	synao_log("Dialogue GUI is ready.\n");
 	return true;
 }
@@ -65,9 +61,14 @@ void dialogue_gui_t::reset() {
 	this->close_textbox();
 }
 
-void dialogue_gui_t::handle(const input_t& input) {
+void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
 	if (flags[dialogue_flag_t::Textbox]) {
 		if (!text.finished()) {
+			if (flags[dialogue_flag_t::Sound]) {
+				flags[dialogue_flag_t::Sound] = false;
+				text.increment();
+				audio.play(res::sfx::Text, 7);
+			}
 			if (!flags[dialogue_flag_t::Delay]) {
 				delay = input.holding[btn_t::Yes] ? kKeyHeldDelay : kDefaultDelay;
 			}
@@ -76,18 +77,18 @@ void dialogue_gui_t::handle(const input_t& input) {
 				if (cursor_index > 0) {
 					--cursor_index;
 					arrow.mut_position(0.0f, -text.get_font_size().y);
-					std::invoke(push_sound, res::sfx::Select, 0);
+					audio.play(res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Down]) {
 				if (cursor_index < cursor_total) {
 					++cursor_index;
 					arrow.mut_position(0.0f, text.get_font_size().y);
-					std::invoke(push_sound, res::sfx::Select, 0);
+					audio.play(res::sfx::Select, 0);
 				}
 			} else if (input.pressed[btn_t::Jump]) {
 				cursor_total = 0;
 				flags[dialogue_flag_t::Question] = false;
-				std::invoke(push_sound, res::sfx::TitleBeg, 0);
+				audio.play(res::sfx::TitleBeg, 0);
 			}
 		} else {
 			flags[dialogue_flag_t::Writing] = false;
@@ -102,8 +103,7 @@ void dialogue_gui_t::update(real64_t delta) {
 			timer = glm::mod(timer, delay);
 			if (!text.finished()) {
 				flags[dialogue_flag_t::Writing] = true;
-				text.increment();
-				std::invoke(push_sound, res::sfx::Text, 7);
+				flags[dialogue_flag_t::Sound] = true;
 			}
 		}
 		if (flags[dialogue_flag_t::Facebox]) {
