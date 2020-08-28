@@ -70,7 +70,7 @@ void noise_t::load(const std::string& full_path) {
 		uint_t length = 0;
 		SDL_AudioSpec aospec;
 		if (!SDL_LoadWAV(full_path.c_str(), &aospec, &data, &length)) {
-			synao_log("Failed to load noise from %s!\nSDL Error: %s\n", full_path.c_str(), SDL_GetError());
+			synao_log("Failed to load noise from \"{}\"! SDL Error: {}\n", full_path, SDL_GetError());
 			ready = false;
 			return;
 		}

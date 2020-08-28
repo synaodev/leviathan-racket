@@ -213,7 +213,7 @@ void animation_t::load(const std::string& full_path) {
 		}
 		ready = true;
 	} else {
-		synao_log("Failed to load animation from %s!\n", full_path.c_str());
+		synao_log("Failed to load animation from {}!\n", full_path);
 	}
 }
 

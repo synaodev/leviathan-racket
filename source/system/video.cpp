@@ -60,24 +60,24 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	}
 #ifdef __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
-		synao_log("Setting context flags failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting context flags failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 #endif // __APPLE__
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
-		synao_log("Setting OpenGL Core profile failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting OpenGL Core profile failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 0) < 0) {
-		synao_log("Setting depth buffer size failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting depth buffer size failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 0) < 0) {
-		synao_log("Setting stencil buffer size failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting stencil buffer size failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1) < 0) {
-		synao_log("Setting double-buffering failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Setting double-buffering failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (start_imgui) {
@@ -100,20 +100,20 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		);
 	}
 	if (window == nullptr) {
-		synao_log("Window creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
-		synao_log("Fullscreen after window creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Fullscreen after window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	while (1) {
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, this->major) < 0) {
-			synao_log("Setting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
+			synao_log("Setting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, this->minor) < 0) {
-			synao_log("Setting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
+			synao_log("Setting OpenGL minor version failed! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
 		context = SDL_GL_CreateContext(window);
@@ -134,21 +134,21 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SDL_ShowSimpleMessageBox(
 			SDL_MESSAGEBOX_ERROR,
 			"OpenGL Error",
-			"Running Leviathan Racket requires at least OpenGL 3.3.\n",
+			"Running Leviathan Racket requires at least OpenGL 3.3!\n",
 			nullptr
 		);
-		synao_log("OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &this->major) < 0) {
-		synao_log("Getting OpenGL major version failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Getting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &this->minor) < 0) {
-		synao_log("Getting OpenGL minor version failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Getting OpenGL minor version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	synao_log("OpenGL Version is %d.%d!\n", this->major, this->minor);
+	synao_log("OpenGL Version is {}.{}!\n", this->major, this->minor);
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		synao_log("OpenGL Extension loading failed!\n");
 		return false;
@@ -166,7 +166,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 	}
 	SDL_GL_SwapWindow(window);
 	if (!start_imgui and SDL_GL_SetSwapInterval(params.vsync) < 0) {
-		synao_log("Vertical sync after OpenGL context creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Vertical sync after OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
@@ -182,7 +182,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		SDL_FreeSurface(surface);
 		surface = nullptr;
 	} else {
-		synao_log("Icon surface creation failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("Icon surface creation failed! SDL Error: {}\n", SDL_GetError());
 	}
 	synao_log("Video system initialized.\n");
 	return true;
@@ -208,13 +208,13 @@ void video_t::set_parameters(screen_params_t params) {
 	if (this->params.vsync != params.vsync) {
 		this->params.vsync = params.vsync;
 		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
-			synao_log("Vertical sync change failed! SDL Error: %s\n", SDL_GetError());
+			synao_log("Vertical sync change failed! SDL Error: {}\n", SDL_GetError());
 		}
 	}
 	if (this->params.full != params.full) {
 		this->params.full = params.full;
 		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
-			synao_log("Window mode change failed! SDL Error: %s\n", SDL_GetError());
+			synao_log("Window mode change failed! SDL Error: {}\n", SDL_GetError());
 		} else {
 			SDL_SetWindowPosition(
 				window,

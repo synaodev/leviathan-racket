@@ -53,7 +53,7 @@ bool input_t::init(const setup_file_t& config) {
 	if (SDL_NumJoysticks() != 0) {
 		device = SDL_JoystickOpen(0);
 		if (device == nullptr) {
-			synao_log("Joystick cannot be created at startup! SDL Error: %s\n", SDL_GetError());
+			synao_log("Joystick cannot be created at startup! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
 	}
@@ -234,7 +234,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			if (evt.jdevice.which == 0 and device == nullptr) {
 				device = SDL_JoystickOpen(0);
 				if (device == nullptr) {
-					synao_log("Couldn't open joystick! SDL Error: %s\n", SDL_GetError());
+					synao_log("Couldn't open joystick! SDL Error: {}\n", SDL_GetError());
 				}
 			}
 			break;
@@ -267,18 +267,8 @@ void input_t::advance() {
 	if (player != nullptr) {
 		if (player->recording()) {
 			player->store(pressed, holding);
-			// synao_log(
-			// 	"STORE(%s, %s)\n",
-			// 	pressed.to_string().c_str(),
-			// 	holding.to_string().c_str()
-			// );
 		} else if (player->playing()) {
 			player->read(pressed, holding);
-			// synao_log(
-			// 	"READ(%s, %s)\n",
-			// 	pressed.to_string().c_str(),
-			// 	holding.to_string().c_str()
-			// );
 		} else {
 			synao_log("Demo has completed!\n");
 			player.reset();
@@ -506,9 +496,9 @@ void input_t::all_demofile_settings(const setup_file_t& config) {
 	if (!demoname.empty()) {
 		player = std::make_unique<demo_player_t>(!playback);
 		if (!playback) {
-			synao_log("Recording inputs into demo: \"%s\"\n", demoname.c_str());
+			synao_log("Recording inputs into demo: \"{}\"...\n", demoname);
 		} else if (player->load(demoname)) {
-			synao_log("Playing inputs from demofile: \"%s\"\n", demoname.c_str());
+			synao_log("Playing inputs from demofile: \"{}\"...\n", demoname);
 		} else {
 			player.reset();
 		}

@@ -76,7 +76,7 @@ bool music_t::init(const setup_file_t& config) {
 	}
 	pxtnERR result = service->init();
 	if (result != pxtnERR::pxtnOK) {
-		synao_log("Pxtone service initialization failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone service initialization failed! Error: {}\n", pxtnError_get_string(result));
 		return false;
 	}
 	if (!service->set_destination_quality(channels, sampling_rate)) {
@@ -120,13 +120,13 @@ bool music_t::load(const std::string& title) {
 	}
 	pxtnERR result = service->read(&descriptor);
 	if (result != pxtnERR::pxtnOK) {
-		synao_log("Pxtone descriptor reading failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone descriptor reading failed! Error: {}\n", pxtnError_get_string(result));
 		service->clear();
 		return false;
 	}
 	result = service->tones_ready();
 	if (result != pxtnERR::pxtnOK) {
-		synao_log("Pxtone tone readying failed! PxtnErr: %d\n", result);
+		synao_log("Pxtone tone readying failed! Error: {}\n", pxtnError_get_string(result));
 		service->clear();
 		return false;
 	}
@@ -221,7 +221,7 @@ real_t music_t::get_volume() const {
 
 void music_t::process(music_t* music) {
 	if (music == nullptr) {
-		synao_log("Music thread should not print this message.\n");
+		synao_log("Music thread should not print this message!\n");
 		return;
 	}
 	// Initialize Necessary Data

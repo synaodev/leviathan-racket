@@ -160,7 +160,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	const std::string full_path = vfs::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
-		synao_log("Map file loading failed! Map Path: %s\n", full_path.c_str());
+		synao_log("Map file loading failed! Map Path: {}\n", full_path);
 		kernel.finish_field();
 		return false;
 	}

@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-setup_chunk_t::setup_chunk_t(const std::string& title) : 
+setup_chunk_t::setup_chunk_t(const std::string& title) :
 	title(title),
-	data() 
+	data()
 {
 
 }
@@ -79,9 +79,9 @@ void setup_chunk_t::write_to(std::string& buffer) const {
 setup_file_t::setup_file_t() :
 	origin(),
 	data(),
-	locale() 
+	locale()
 {
-	
+
 }
 
 bool setup_file_t::load(const std::string& full_path) {

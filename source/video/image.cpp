@@ -50,7 +50,7 @@ image_t image_t::generate(const std::string& full_path) {
 		std::memcpy(&image.pixels[0], data, image.pixels.size());
 		stbi_image_free(data);
 	} else {
-		synao_log("Failed to load image from %s!\n", full_path.c_str());
+		synao_log("Failed to load image from {}!\n", full_path);
 	}
 	return image;
 }

@@ -83,11 +83,11 @@ void tileset_viewer_t::handle(const input_t& input) {
 					static_cast<real_t>(integral_coordinates.x * constants::TileSize<sint_t>()),
 					static_cast<real_t>(integral_coordinates.y * constants::TileSize<sint_t>())
 				);
-				synao_log(
-					"(%d, %d)\n",
-					integral_coordinates.x,
-					integral_coordinates.y
-				);
+				// synao_log(
+				// 	"({}, {})\n",
+				// 	integral_coordinates.x,
+				// 	integral_coordinates.y
+				// );
 				amend = true;
 				select = true;
 				index = static_cast<arch_t>(integral_coordinates.x) + static_cast<arch_t>(integral_coordinates.y) * constants::TileSize<arch_t>();
@@ -212,7 +212,7 @@ bool tileset_viewer_t::save() {
 			synao_log("Save successful!\n");
 			return true;
 		} else {
-			synao_log("Error! Couldn't save attribute file: %s!\n", file.c_str());
+			synao_log("Error! Couldn't save attribute file: {}!\n", file);
 		}
 	} else {
 		synao_log("Error! Can't save file!\n");

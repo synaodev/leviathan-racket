@@ -94,7 +94,7 @@ bool vfs_t::init(const setup_file_t& config) {
 	vfs::device = this;
 	config.get("Setup", "Language", vfs::device->language);
 	if (!vfs::try_language(vfs::device->language)) {
-		synao_log("Error! Couldn't load first language: %s\n", vfs::device->language.c_str());
+		synao_log("Error! Couldn't load first language: {}\n", vfs::device->language);
 		return false;
 	}
 	vfs::device->thread_pool = std::make_unique<thread_pool_t>(kTotalThreads);
@@ -176,13 +176,13 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 	std::error_code code;
 	std::filesystem::current_path(directory, code);
 	if (code) {
-		synao_log("Failed to set working directory to \"%s\"!\n", directory.c_str());
+		synao_log("Failed to set working directory to \"{}\"!\n", directory);
 		return false;
 	}
 #else
 	sint_t result = chdir(directory.c_str());
 	if (result != 0) {
-		synao_log("Failed to set working directory to \"%s\"!\n", directory.c_str());
+		synao_log("Failed to set working directory to \"{}\"!\n", directory);
 		return false;
 	}
 #endif
@@ -199,7 +199,7 @@ bool vfs::directory_exists(const std::string& name, bool_t print) {
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	if (!std::filesystem::exists(name) or !std::filesystem::is_directory(name)) {
 		if (print) {
-			synao_log("\"%s\" isn't a valid directory!\n", name.c_str());
+			synao_log("\"{}\" isn't a valid directory!\n", name);
 		}
 		return false;
 	}
@@ -207,7 +207,7 @@ bool vfs::directory_exists(const std::string& name, bool_t print) {
 	struct stat sb;
 	if (stat(name.c_str(), &sb) != 0 or S_ISDIR(sb.st_mode) == 0) {
 		if (print) {
-			synao_log("\"%s\" isn't a valid directory!\n", name.c_str());
+			synao_log("\"{}\" isn't a valid directory!\n", name);
 		}
 		return false;
 	}
@@ -219,7 +219,7 @@ bool vfs::file_exists(const std::string& name, bool_t print) {
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	if (!std::filesystem::exists(name) or !std::filesystem::is_regular_file(name)) {
 		if (print) {
-			synao_log("\"%s\" isn't a valid file!\n", name.c_str());
+			synao_log("\"{}\" isn't a valid file!\n", name);
 		}
 		return false;
 	}
@@ -227,7 +227,7 @@ bool vfs::file_exists(const std::string& name, bool_t print) {
 	struct stat sb;
 	if (stat(name.c_str(), &sb) != 0 or S_ISREG(sb.st_mode) == 0) {
 		if (print) {
-			synao_log("\"%s\" isn't a valid file!\n", name.c_str());
+			synao_log("\"{}\" isn't a valid file!\n", name);
 		}
 		return false;
 	}
@@ -242,12 +242,12 @@ bool vfs::create_directory(const std::string& name) {
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	std::error_code code;
 	if (!std::filesystem::create_directory(name, code)) {
-		synao_log("Failed to create file at: \"%s\"\n", name.c_str());
+		synao_log("Failed to create file at: \"{}\"\n", name);
 		return false;
 	}
 #else
 	if (mkdir(name.c_str(), 0755) != 0) {
-		synao_log("Failed to create file at: \"%s\"\n", name.c_str());
+		synao_log("Failed to create file at: \"{}\"\n", name);
 		return false;
 	}
 #endif
@@ -261,7 +261,7 @@ bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>&
 		ofs.write(reinterpret_cast<const byte_t*>(buffer.data()), length);
 		return true;
 	}
-	synao_log("Failed to write file: %s!\n", path.c_str());
+	synao_log("Failed to write file: {}!\n", path);
 	return false;
 }
 
@@ -370,7 +370,7 @@ std::vector<std::string> vfs::file_list(const std::string& path) {
 }
 
 std::string vfs::string_buffer(const std::string& path) {
-	std::ifstream ifs(path);
+	std::ifstream ifs(path, std::ios::binary);
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios_base::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
@@ -382,7 +382,7 @@ std::string vfs::string_buffer(const std::string& path) {
 			return buffer;
 		}
 	}
-	synao_log("Failed to open file: %s!\n", path.c_str());
+	synao_log("Failed to open file: {}!\n", path);
 	return std::string();
 }
 
@@ -399,7 +399,7 @@ std::vector<byte_t> vfs::byte_buffer(const std::string& path) {
 			return buffer;
 		}
 	}
-	synao_log("Failed to open file: %s!\n", path.c_str());
+	synao_log("Failed to open file: {}!\n", path);
 	return std::vector<byte_t>();
 }
 
@@ -416,7 +416,7 @@ std::vector<sint_t> vfs::sint_buffer(const std::string& path) {
 			return buffer;
 		}
 	}
-	synao_log("Failed to open file: %s!\n", path.c_str());
+	synao_log("Failed to open file: {}!\n", path);
 	return std::vector<sint_t>();
 }
 
@@ -433,7 +433,7 @@ std::vector<uint16_t> vfs::uint16_buffer(const std::string& path) {
 			return buffer;
 		}
 	}
-	synao_log("Failed to open file: %s!\n", path.c_str());
+	synao_log("Failed to open file: {}!\n", path);
 	return std::vector<uint16_t>();
 }
 
@@ -502,7 +502,7 @@ bool vfs::try_language(const std::string& language) {
 #endif
 		return true;
 	}
-	synao_log("Error! Couldn't load language file: %s\n", full_path.c_str());
+	synao_log("Error! Couldn't load language file: {}\n", full_path);
 	return false;
 }
 
@@ -572,14 +572,14 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	if (it == vfs::device->shaders.end()) {
 		shader_t& ref = vfs::device->shaders[name];
 		if (!ref.from(source, stage)) {
-			synao_log("Failed to create shader from %s!\n", name.c_str());
+			synao_log("Failed to create shader from {}!\n", name);
 		}
 		return &ref;
 	} else if (!it->second.matches(stage)) {
-		synao_log("Found shader %s should have different stage!\n", name.c_str());
+		synao_log("Found shader \"{}\" should have different stage!\n", name);
 		return nullptr;
 	}
-	synao_log("Tried to create shader twice from source named %s!\n", name.c_str());
+	synao_log("Tried to create shader twice from source named {}!\n", name);
 	return &it->second;
 }
 
@@ -587,7 +587,7 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 
 std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 	if (vfs::device == nullptr) {
-		synao_log("Couldn't find path for event: %s!\n", name.c_str());
+		synao_log("Couldn't find path for event: {}!\n", name);
 		return std::string();
 	}
 	if (flags & rec_loading_t::Global) {

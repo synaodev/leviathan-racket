@@ -91,7 +91,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 		return false;
 	}
 	if (state->SetLineCallback(asFUNCTION(calls_callback), &calls, asCALL_CDECL) < 0) {
-		synao_log("Creating line callback for script context failed!\n");
+		synao_log("Creating line callback for script state failed!\n");
 		return false;
 	}
 	if (!this->load(kBootFile, rec_loading_t::Global)) {
@@ -154,7 +154,7 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 					timer = 0.0f;
 					calls = 0;
 					synao_log(
-						"Running script threw an exception!\n%s\n%s at line %d!\n",
+						"Running script threw an exception!\n{}\n{} at line {}!\n",
 						state->GetExceptionString(),
 						state->GetExceptionFunction()->GetName(),
 						state->GetExceptionLineNumber()
@@ -200,30 +200,29 @@ bool receiver_t::load(const std::string& name) {
 bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_ONLY_IF_EXISTS);
 	if (module != nullptr) {
-		synao_log("Module %s already exists!\n", name.c_str());
+		synao_log("Module \"{}\" already exists!\n", name);
 	} else {
 		module = engine->GetModule(name.c_str(), asGM_ALWAYS_CREATE);
 		if (module == nullptr) {
-			synao_log("Couldn't allocate script module %s during loading process!\n", name.c_str());
+			synao_log("Couldn't allocate script module \"{}\" during loading process!\n", name);
 			return false;
 		}
 		const std::string buffer = vfs::string_buffer(vfs::event_path(name, flags));
 		arch_t length = buffer.length();
 		if (module->AddScriptSection(name.c_str(), buffer.c_str(), length) != 0) {
 			current = nullptr;
-			synao_log("Adding script section %s failed!\n", name.c_str());
+			synao_log("Adding script section \"{}\" failed!\n", name);
 			return false;
 		}
 		if (module->Build() != 0) {
 			current = nullptr;
-			synao_log("Building module %s failed!\n", name.c_str());
+			synao_log("Building module \"{}\" failed!\n", name);
 			return false;
 		}
 		this->link_imported_functions(module);
 	}
 	if (flags == rec_loading_t::None) {
 		current = module;
-		synao_log("Module Count: %d\n", engine->GetModuleCount());
 	}
 	return true;
 }
@@ -338,7 +337,7 @@ std::string receiver_t::verify(asIScriptFunction* imported) const {
 }
 
 void receiver_t::print_message(const std::string& message) {
-	synao_log("%s\n", message.c_str());
+	synao_log("{}\n", message);
 }
 
 void receiver_t::error_callback(const asSMessageInfo* msg, void_t) {
@@ -358,7 +357,7 @@ void receiver_t::error_callback(const asSMessageInfo* msg, void_t) {
 		break;
 	}
 	synao_log(
-		"%s (%d, %d) : %s : %s\n",
+		"{} ({}, {}) : {} : {}\n",
 		msg->section,
 		msg->row, msg->col,
 		type, msg->message
@@ -442,15 +441,15 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 			timer = 0.0f;
 			calls = 0;
 		} else if (r == asCONTEXT_ACTIVE) {
-			synao_log("Prepare function failed!\nError: Context Active!\n");
+			synao_log("Prepare function failed! Error: Context Active!\n");
 		} else if (r == asNO_FUNCTION) {
-			synao_log("Prepare function failed!\nError: No Function!\n");
+			synao_log("Prepare function failed! Error: No Function!\n");
 		} else if (r == asINVALID_ARG) {
-			synao_log("Prepare function failed!\nError: Invalid Args!\n");
+			synao_log("Prepare function failed! Error: Invalid Args!\n");
 		} else if (r == asOUT_OF_MEMORY) {
-			synao_log("Prepare function failed!\nError: Out of memory!\n");
+			synao_log("Prepare function failed! Error: Out of memory!\n");
 		} else {
-			synao_log("Prepare function failed!\nError: Unknown!\n");
+			synao_log("Prepare function failed! Error: Unknown!\n");
 		}
 	}
 }
@@ -465,11 +464,11 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 		for (arch_t it = 0; it < args.size(); ++it) {
 			if constexpr (sizeof(arch_t) == 8) {
 				if (state->SetArgQWord(static_cast<uint_t>(it), args[it]) < 0) {
-					synao_log("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+					synao_log("Couldn't set argument {}!\n", it);
 				}
 			} else {
 				if (state->SetArgDWord(static_cast<uint_t>(it), args[it]) < 0) {
-					synao_log("Couldn't set argument %d!\n", static_cast<uint_t>(it));
+					synao_log("Couldn't set argument {}!\n", it);
 				}
 			}
 		}
@@ -540,17 +539,15 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
 		asIScriptFunction* function = source->GetFunctionByDecl(declaration);
 		if (function == nullptr) {
-			synao_log("Couldn't find imported script function with declaration: %s!\n", declaration);
+			synao_log("Couldn't find imported script function with declaration: {}!\n", declaration);
 			break;
 		}
 		sint_t r = module->BindImportedFunction(it, function);
 		if (r == asNO_FUNCTION) {
-			synao_log("\tLinking for declaration %s failed!\n", declaration);
-			synao_log("\tError: No function!\n");
+			synao_log("Linking for declaration \"{}\" failed! Error: No function!\n", declaration);
 			break;
 		} else if (r == asINVALID_INTERFACE) {
-			synao_log("\tLinking for declaration %s failed!\n", declaration);
-			synao_log("\tError: Invalid interface!\n");
+			synao_log("Linking for declaration \"{}\" failed! Error: Invalid interface!\n", declaration);
 			break;
 		}
 	}

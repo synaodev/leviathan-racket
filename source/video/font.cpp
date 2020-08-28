@@ -63,7 +63,7 @@ void font_t::load(const std::string& directory, const std::string& name) {
 			glyphs[id] = glyph;
 		}
 	} else {
-		synao_log("Failed to load font from %s!\n", full_path.c_str());
+		synao_log("Failed to load font from {}!\n", full_path);
 	}
 }
 

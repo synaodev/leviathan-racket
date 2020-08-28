@@ -34,10 +34,10 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 		}
 		std::string fstr = file;
 		synao_log(
-			"An internal OpenGL call failed in %s (%d)."
-			"\nExpression:\n   %s"
-			"\nError description:\n   %s\n   %s\n",
-			fstr.substr(fstr.find_last_of("\\/") + 1).c_str(),
+			"An internal OpenGL call failed in {} ({})!\n"
+			"Expression:\n\t{}\n"
+			"Error description:\n\t{}\n\t{}\n",
+			fstr.substr(fstr.find_last_of("\\/") + 1),
 			line, expression, error, description
 		);
 	}

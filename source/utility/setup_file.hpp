@@ -7,6 +7,7 @@
 #include <iosfwd>
 #include <sstream>
 #include <locale>
+#include <fmt/format.h>
 
 #include "../types.hpp"
 
@@ -61,7 +62,6 @@ public:
 	template<typename T> void set(const std::string& title, const std::string& key, const std::vector<T>& value);
 	template<typename T, glm::length_t L, glm::qualifier Q> void set(const std::string& title, const std::string& key, const glm::vec<L, T, Q>& value);
 	template<typename T> T convert_to(const std::string& input) const;
-	template<typename T> std::string make_string(T value) const;
 private:
 	std::string origin;
 	std::vector<setup_chunk_t> data;
@@ -185,13 +185,13 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 	// Find and set chunk key-value-pair if it exists
 	for (auto&& chunk : data) {
 		if (chunk.get_title() == title) {
-			chunk.set(key, make_string<T>(value));
+			chunk.set(key, fmt::format("{}", value));
 			return;
 		}
 	}
 	// If chunk doesn't exist, create it
 	setup_chunk_t chunk(title);
-	chunk.set(key, make_string<T>(value));
+	chunk.set(key, fmt::format("{}", value));
 	data.push_back(chunk);
 }
 
@@ -202,9 +202,9 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 		if (chunk.get_title() == title) {
 			std::string buffer;
 			for (arch_t i = 0; i < value.size() - 1; ++i) {
-				buffer += make_string<T>(value.at(i)) + ", ";
+				buffer += fmt::format("{}", value.at(i)) + ", ";
 			}
-			buffer += make_string<T>(value.back());
+			buffer += fmt::format("{}", value.back());
 			chunk.set(key, buffer);
 			return;
 		}
@@ -214,9 +214,9 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 	setup_chunk_t chunk(title);
 	std::string buffer;
 	for (arch_t i = 0; i < value.size() - 1; ++i) {
-		buffer += make_string<T>(value.at(i)) + ", ";
+		buffer += fmt::format("{}", value.at(i)) + ", ";
 	}
-	buffer += make_string<T>(value.back());
+	buffer += fmt::format("{}", value.back());
 	chunk.set(key, buffer);
 	data.push_back(chunk);
 }
@@ -228,9 +228,9 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 		if (chunk.get_title() == title) {
 			std::string buffer;
 			for (glm::length_t it = 0; it < L - 1; ++it) {
-				buffer += make_string<T>(value[it]) + ", ";
+				buffer += fmt::format("{}", value[it]) + ", ";
 			}
-			buffer += make_string<T>(value[L - 1]);
+			buffer += fmt::format("{}", value[L - 1]);
 			chunk.set(key, buffer);
 			return;
 		}
@@ -240,9 +240,9 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 	setup_chunk_t chunk(title);
 	std::string buffer;
 	for (glm::length_t it = 0; it < L - 1; ++it) {
-		buffer += make_string<T>(value[it]) + ", ";
+		buffer += fmt::format("{}", value[it]) + ", ";
 	}
-	buffer += make_string<T>(value[L - 1]);
+	buffer += fmt::format("{}", value[L - 1]);
 	chunk.set(key, buffer);
 	data.push_back(chunk);
 }
@@ -319,77 +319,6 @@ inline byte_t setup_file_t::convert_to<byte_t>(const std::string& input) const {
 template<>
 inline std::string setup_file_t::convert_to<std::string>(const std::string& input) const {
 	return input;
-}
-
-template<typename T>
-inline std::string setup_file_t::make_string(T) const {
-	return "[[PARSING-ERROR]]";
-}
-
-template<>
-inline std::string setup_file_t::make_string<std::string>(std::string value) const {
-	return value;
-}
-
-template<>
-inline std::string setup_file_t::make_string<const byte_t*>(const byte_t* value) const {
-	return std::string(value);
-}
-
-template<>
-inline std::string setup_file_t::make_string<byte_t>(byte_t value) const {
-	std::string temp = "";
-	temp = value;
-	return temp;
-}
-
-template<>
-inline std::string setup_file_t::make_string<sint32_t>(sint32_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<uint32_t>(uint32_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<real32_t>(real32_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<sint16_t>(sint16_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<real64_t>(real64_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<sint64_t>(sint64_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
-}
-
-template<>
-inline std::string setup_file_t::make_string<uint64_t>(uint64_t value) const {
-	std::stringstream ss;
-	ss << value;
-	return ss.str();
 }
 
 #endif // LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP

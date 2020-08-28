@@ -54,7 +54,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 			if (length > 0) {
 				byte_t log[1024];
 				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to create separable program! Error: %s", log);
+				synao_log("Failed to create separable program! Error: {}\n", log);
 				this->destroy();
 				return false;
 			}
@@ -68,7 +68,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 			if (!success) {
 				byte_t log[1024];
 				glCheck(glGetShaderInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to compile vertex shader: %s\n", log);
+				synao_log("Failed to compile vertex shader: {}\n", log);
 				this->destroy();
 				return false;
 			}
@@ -183,7 +183,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 			if (length > 0) {
 				byte_t log[1024];
 				glCheck(glGetProgramPipelineInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to create program pipeline! Error: %s", log);
+				synao_log("Failed to create program pipeline! Error: {}\n", log);
 				this->destroy();
 				return false;
 			}
@@ -209,7 +209,7 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 			if (!success) {
 				byte_t log[1024];
 				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to link program: %s\n", log);
+				synao_log("Failed to link program: {}\n", log);
 				this->destroy();
 				return false;
 			}

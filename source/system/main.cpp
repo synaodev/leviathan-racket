@@ -215,7 +215,7 @@ static void write_config(setup_file_t& config, const std::string& boot_path) {
 static void load_config(setup_file_t& config) {
 	const std::string boot_path = get_boot_path();
 	if (!config.load(boot_path)) {
-		synao_log("Couldn't find main configuration file at \"%s\"!\nGenerating new config file...\n", boot_path.c_str());
+		synao_log("Couldn't find main configuration file at \"{}\"! Generating new config file.\n", boot_path);
 		write_config(config, boot_path);
 	}
 }
@@ -227,7 +227,7 @@ static bool mount(const byte_t* provided_directory) {
 		if (vfs::mount(provided_directory, false)) {
 			return true;
 		} else {
-			synao_log("Warning! Couldn\'t mount filesystem at directory: \"%s\"\n", provided_directory);
+			synao_log("Warning! Couldn\'t mount filesystem at directory: \"{}\"!\n", provided_directory);
 		}
 	}
 	// Try to mount (initial) working directory
@@ -240,7 +240,7 @@ static bool mount(const byte_t* provided_directory) {
 		return true;
 	}
 	// If mounting is impossible, notify user of the initial working directory
-	synao_log("Warning! Working directory before mounting process was \"%s\"!\n", working_directory.c_str());
+	synao_log("Warning! Working directory before mounting process was \"{}\"!\n", working_directory);
 	return false;
 }
 
@@ -275,7 +275,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
-		synao_log("SDL Initialization failed!\nSDL Error: %s\n", SDL_GetError());
+		synao_log("SDL Initialization failed! SDL Error: {}\n", SDL_GetError());
 		return EXIT_FAILURE;
 	}
 	// Load config

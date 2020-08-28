@@ -16,7 +16,6 @@
 #include "../utility/hash.hpp"
 #include "../utility/logger.hpp"
 
-#include <cinttypes>
 #include <angelscript.h>
 #include <tmxlite/ObjectGroup.hpp>
 
@@ -151,7 +150,7 @@ bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t 
 		iter->second(actor, *this);
 		return true;
 	}
-	synao_log("Couldn't create %s!\n", name.c_str());
+	synao_log("Couldn't \"create\" actor \"{}\"!\n", name);
 	return false;
 }
 
@@ -170,11 +169,7 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		iter->second(actor, *this);
 		return true;
 	}
-	if constexpr (sizeof(arch_t) == 8) {
-		synao_log("Couldn't spawn actor %" PRIu64 "!\n", spawn.type);
-	} else {
-		synao_log("Couldn't spawn actor %d!\n", static_cast<uint_t>(spawn.type));
-	}
+	synao_log("Couldn't \"spawn\" actor #{}!\n", spawn.type);
 	return false;
 }
 

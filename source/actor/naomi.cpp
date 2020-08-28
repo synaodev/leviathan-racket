@@ -3,7 +3,7 @@
 #include "./weapons.hpp"
 #include "./shoshi.hpp"
 
-#include <sstream>
+#include <fmt/core.h>
 #include <entt/entity/registry.hpp>
 
 #include "../component/kontext.hpp"
@@ -477,9 +477,10 @@ glm::vec2 naomi_state_t::camera_placement() const {
 }
 
 std::string naomi_state_t::hexadecimal_equips() const {
-	std::ostringstream ss;
-	ss << "0x" << std::hex << equips.to_ullong() << std::dec;
-	return ss.str();
+	//std::ostringstream ss;
+	//ss << "0x" << std::hex << equips.to_ullong() << std::dec;
+	//return ss.str();
+	return fmt::format("{:x}", equips.to_ulong());
 }
 
 naomi_death_t naomi_state_t::get_death_type(const kinematics_t& kinematics, const health_t& health) const {
