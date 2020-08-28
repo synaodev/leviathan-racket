@@ -76,6 +76,7 @@
 	#include <tmxlite/TileLayer.hpp>
 	#include <tmxlite/ImageLayer.hpp>
 	#include <tmxlite/ObjectGroup.hpp>
+	#include <pxtone/pxtnService.h>
 #endif
 
 #endif // LEVIATHAN_INCLUDED_STDAFX_HPP
