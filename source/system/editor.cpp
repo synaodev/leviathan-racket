@@ -10,9 +10,9 @@
 	#define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_impl_opengl3.h"
-#include "../imgui/imgui_impl_sdl.h"
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui/imgui_impl_sdl.h>
 
 static constexpr arch_t kFirstSize = 12;
 static constexpr arch_t kSecondSize = 8;

@@ -1,12 +1,13 @@
 #include "./attribute_gui.hpp"
 
+#include "../utility/vfs.hpp"
+#include "../field/tileset_viewer.hpp"
+
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "../imgui/imgui.h"
-#include "../field/tileset_viewer.hpp"
-#include "../utility/vfs.hpp"
+#include <imgui/imgui.h>
 
 attribute_gui_t::attribute_gui_t() :
 	bitmask(0),

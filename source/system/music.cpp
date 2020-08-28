@@ -9,9 +9,8 @@
 	#define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include "../pxtone/pxtnService.h"
-#include "../pxtone/pxtnError.h"
-
+#include <pxtone/pxtnService.h>
+#include <pxtone/pxtnError.h>
 #include <SDL2/SDL.h>
 
 static constexpr arch_t kHeightLength = 10485760;

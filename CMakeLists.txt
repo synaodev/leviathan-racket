@@ -65,7 +65,7 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Define targets
+# Targets
 
 if (NAOMI)
 	add_executable (naomi)
@@ -77,14 +77,14 @@ if (EDITOR)
 	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
 endif ()
 
-# Configure targets
+# Configure
 
 add_subdirectory ("cmake")
 
-# Included libraries
-
-add_subdirectory ("libraries")
-
-# Source code
+# Source
 
 add_subdirectory ("source")
+
+# Libraries
+
+add_subdirectory ("libraries")

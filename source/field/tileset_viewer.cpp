@@ -1,11 +1,11 @@
 #include "./tileset_viewer.hpp"
 
-#include "../video/texture.hpp"
-#include "../system/input.hpp"
-#include "../system/renderer.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
+#include "../video/texture.hpp"
+#include "../system/input.hpp"
+#include "../system/renderer.hpp"
 
 #include <fstream>
 
