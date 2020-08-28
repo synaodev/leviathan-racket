@@ -81,6 +81,10 @@ endif ()
 
 add_subdirectory ("cmake")
 
+# Included libraries
+
+add_subdirectory ("libraries")
+
 # Source code
 
 add_subdirectory ("source")
