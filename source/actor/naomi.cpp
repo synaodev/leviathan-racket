@@ -13,16 +13,15 @@
 #include "../component/health.hpp"
 #include "../component/blinker.hpp"
 #include "../component/liquid.hpp"
-#include "../overlay/draw_headsup.hpp"
-#include "../event/receiver.hpp"
 #include "../field/collision.hpp"
 #include "../field/camera.hpp"
+#include "../overlay/draw_headsup.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
+#include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
-
-#include "../resource/id.hpp"
 
 namespace kNao {
 	static constexpr real_t BoxGood = 0;

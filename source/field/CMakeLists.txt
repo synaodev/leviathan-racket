@@ -5,6 +5,7 @@ if (NAOMI)
 		"camera.cpp"
 		"collision.cpp"
 		"parallax_background.cpp"
+		"properties.cpp"
 		"tilemap_layer.cpp"
 		"tilemap.cpp"
 	)

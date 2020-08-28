@@ -1,29 +1,25 @@
 #include "./receiver.hpp"
-#include "./string.hpp"
-#include "./array.hpp"
+#include "./input.hpp"
+#include "./audio.hpp"
+#include "./music.hpp"
+#include "./kernel.hpp"
 
-#include <angelscript.h>
-#include <cstring>
-
-#include "../system/input.hpp"
-#include "../system/audio.hpp"
-#include "../system/music.hpp"
-#include "../system/kernel.hpp"
-
+#include "../actor/naomi.hpp"
+#include "../component/kontext.hpp"
+#include "../field/camera.hpp"
+#include "../menu/stack_gui.hpp"
+#include "../menu/dialogue_gui.hpp"
+#include "../menu/inventory_gui.hpp"
+#include "../overlay/draw_headsup.hpp"
+#include "../overlay/draw_title_view.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
-#include "../overlay/draw_headsup.hpp"
-#include "../overlay/draw_title_view.hpp"
-
-#include "../menu/stack_gui.hpp"
-#include "../menu/dialogue_gui.hpp"
-#include "../menu/inventory_gui.hpp"
-
-#include "../field/camera.hpp"
-#include "../component/kontext.hpp"
-#include "../actor/naomi.hpp"
+#include <cstring>
+#include <angelscript.h>
+#include <add_on/scriptstdstring.h>
+#include <add_on/scriptarray.h>
 
 static const byte_t kBootFile[]	 = "boot";
 static const byte_t kDeathDecl[] = "void death(arch_t type)";

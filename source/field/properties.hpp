@@ -1,14 +1,14 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP
+#ifndef LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP
+#define LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP
 
 #include <vector>
 #include <string>
 #include <tmxlite/Property.hpp>
 
-#include "./rect.hpp"
-#include "./enums.hpp"
+#include "../utility/rect.hpp"
+#include "../utility/enums.hpp"
 
-namespace tmx_convert {
+namespace ftcv {
 	void prop_to_stats(const std::vector<tmx::Property>& properties, direction_t& direction, std::string& event, arch_t& flags, sint_t& idnum, arch_t& deter);
 	bool_t prop_to_bool(const tmx::Property& property);
 	sint_t prop_to_sint(const tmx::Property& property);
@@ -23,4 +23,4 @@ namespace tmx_convert {
 	rect_t rect_to_rect(const tmx::FloatRect& rect);
 }
 
-#endif // LEVIATHAN_INCLUDED_UTILITY_TMX_CONVERT_HPP
+#endif // LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP

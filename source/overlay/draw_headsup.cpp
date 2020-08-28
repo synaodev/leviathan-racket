@@ -1,13 +1,13 @@
 #include "./draw_headsup.hpp"
 
+#include "../resource/id.hpp"
+#include "../system/kernel.hpp"
+#include "../system/receiver.hpp"
 #include "../utility/meta.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../event/receiver.hpp"
-#include "../event/array.hpp"
-#include "../system/kernel.hpp"
 
-#include "../resource/id.hpp"
+#include <add_on/scriptarray.h>
 
 draw_headsup_t::draw_headsup_t() :
 	suspender(),

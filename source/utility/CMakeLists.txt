@@ -6,7 +6,6 @@ if (NAOMI)
 		"rect.cpp"
 		"setup_file.cpp"
 		"thread_pool.cpp"
-		"tmx_convert.cpp"
 		"vfs.cpp"
 		"watch.cpp"
 	)

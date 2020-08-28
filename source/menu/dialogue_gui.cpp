@@ -1,15 +1,14 @@
 #include "./dialogue_gui.hpp"
 
-#include "../utility/vfs.hpp"
-#include "../utility/logger.hpp"
-#include "../utility/constants.hpp"
-#include "../event/receiver.hpp"
-#include "../event/array.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/renderer.hpp"
+#include "../utility/constants.hpp"
+#include "../utility/logger.hpp"
+#include "../utility/vfs.hpp"
 
-#include "../resource/id.hpp"
+#include <add_on/scriptarray.h>
 
 static const glm::vec2 kDefaultRect = glm::vec2(256.0f, 56.0f);
 static const glm::vec2 kFacesOffset = glm::vec2(10.0f, 4.0f);

@@ -7,18 +7,18 @@
 #include "./blinker.hpp"
 #include "./liquid.hpp"
 
-#include <cinttypes>
-#include <angelscript.h>
-#include <tmxlite/ObjectGroup.hpp>
-
 #include "../actor/particles.hpp"
-#include "../system/kernel.hpp"
-#include "../event/receiver.hpp"
+#include "../field/properties.hpp"
 #include "../overlay/draw_headsup.hpp"
+#include "../system/kernel.hpp"
+#include "../system/receiver.hpp"
 #include "../utility/meta.hpp"
 #include "../utility/hash.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/tmx_convert.hpp"
+
+#include <cinttypes>
+#include <angelscript.h>
+#include <tmxlite/ObjectGroup.hpp>
 
 kontext_t::kontext_t() :
 	panic_draw(false),
@@ -199,13 +199,13 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 			arch_t flags = 0;
 			sint_t identity = 0;
 			arch_t deterrent = 0;
-			tmx_convert::prop_to_stats(
+			ftcv::prop_to_stats(
 				object.getProperties(),
 				direction, symbol,
 				flags, identity, deterrent
 			);
 			if (kernel.get_flag(deterrent) == (flags & (1 << trigger_flags_t::Deterred))) {
-				glm::vec2 position = tmx_convert::vec_to_vec(object.getPosition());
+				glm::vec2 position = ftcv::vec_to_vec(object.getPosition());
 				if (this->create(name, position, direction, identity, flags)) {
 					if (identity != 0) {
 						const std::string& field = kernel.get_field();
@@ -215,7 +215,7 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 			}
 		} else if (type == kMapWater) {
 			liquid_flag = true;
-			rect_t hitbox = tmx_convert::rect_to_rect(object.getAABB());
+			rect_t hitbox = ftcv::rect_to_rect(object.getAABB());
 			entt::entity actor = registry.create();
 			registry.emplace<actor_header_t>(actor);
 			registry.emplace<liquid_body_t>(actor, hitbox);

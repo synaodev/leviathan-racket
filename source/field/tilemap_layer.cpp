@@ -1,7 +1,7 @@
 #include "./tilemap_layer.hpp"
+#include "./properties.hpp"
 
 #include "../utility/constants.hpp"
-#include "../utility/tmx_convert.hpp"
 #include "../system/renderer.hpp"
 
 #include <tmxlite/TileLayer.hpp>
@@ -60,10 +60,10 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 	for (auto&& property : layer->getProperties()) {
 		auto& name = property.getName();
 		if (name == kCollideLayer) {
-			colliding = tmx_convert::prop_to_bool(property);
+			colliding = ftcv::prop_to_bool(property);
 			priority = layer_value::TileFront;
 		} else if (name == kPriorityType) {
-			if (tmx_convert::prop_to_bool(property)) {
+			if (ftcv::prop_to_bool(property)) {
 				priority = layer_value::TileFront;
 			}
 		}

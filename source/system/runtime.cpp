@@ -4,6 +4,7 @@
 
 #include "../component/location.hpp"
 #include "../component/health.hpp"
+#include "../field/properties.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/video.hpp"
@@ -11,7 +12,6 @@
 #include "../utility/meta.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/tmx_convert.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/vfs.hpp"
 
@@ -165,7 +165,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 		return false;
 	}
 	camera.set_view_limits(
-		tmx_convert::rect_to_rect(tmxmap.getBounds())
+		ftcv::rect_to_rect(tmxmap.getBounds())
 	);
 	tilemap.push_properties(tmxmap);
 	for (auto&& layer : tmxmap.getLayers()) {

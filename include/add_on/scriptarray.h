@@ -1,5 +1,5 @@
-#ifndef LEVIATHAN_INCLUDED_EVENT_ARRAY_HPP
-#define LEVIATHAN_INCLUDED_EVENT_ARRAY_HPP
+#ifndef SCRIPTARRAY_H
+#define SCRIPTARRAY_H
 
 #ifndef ANGELSCRIPT_H
 // Avoid having to inform include path if header is already include before
@@ -140,4 +140,4 @@ void RegisterScriptArray(asIScriptEngine* engine, bool defaultArray);
 
 END_AS_NAMESPACE
 
-#endif // LEVIATHAN_INCLUDED_EVENT_ARRAY_HPP
+#endif // SCRIPTARRAY_H

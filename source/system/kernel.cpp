@@ -1,7 +1,7 @@
 #include "./kernel.hpp"
 #include "./input.hpp"
 
-#include "../event/receiver.hpp"
+#include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup_file.hpp"
 
@@ -28,7 +28,7 @@ kernel_t::kernel_t() :
 	items(kMaxItemList, glm::zero<glm::ivec4>()),
 	flags(kMaxFlagList, 0)
 {
-	
+
 }
 
 bool kernel_t::init(const receiver_t& receiver) {

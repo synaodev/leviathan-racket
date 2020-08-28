@@ -1,6 +1,6 @@
 #include "./parallax_background.hpp"
+#include "./properties.hpp"
 
-#include "../utility/tmx_convert.hpp"
 #include "../system/renderer.hpp"
 
 static const byte_t kBoundsXProp[] = "rect.x";
@@ -51,19 +51,19 @@ void parallax_background_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::
 	for (auto&& property : layer->getProperties()) {
 		auto& name = property.getName();
 		if (name == kBoundsXProp) {
-			this->bounding.x = tmx_convert::prop_to_real(property) * inv.x;
+			this->bounding.x = ftcv::prop_to_real(property) * inv.x;
 		} else if (name == kBoundsYProp) {
-			this->bounding.y = tmx_convert::prop_to_real(property) * inv.y;
+			this->bounding.y = ftcv::prop_to_real(property) * inv.y;
 		} else if (name == kBoundsWProp) {
-			this->dimensions.x = tmx_convert::prop_to_real(property);
+			this->dimensions.x = ftcv::prop_to_real(property);
 			this->bounding.w = this->dimensions.x * inv.x;
 		} else if (name == kBoundsHProp) {
-			this->dimensions.y = tmx_convert::prop_to_real(property);
+			this->dimensions.y = ftcv::prop_to_real(property);
 			this->bounding.h = this->dimensions.y * inv.y;
 		} else if (name == kScrollXProp) {
-			this->scrolling.x = tmx_convert::prop_to_real(property);
+			this->scrolling.x = ftcv::prop_to_real(property);
 		} else if (name == kScrollYProp) {
-			this->scrolling.y = tmx_convert::prop_to_real(property);
+			this->scrolling.y = ftcv::prop_to_real(property);
 		}
 	}
 }

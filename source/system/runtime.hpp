@@ -2,11 +2,10 @@
 #define LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP
 
 #include "./kernel.hpp"
+#include "./receiver.hpp"
 
-#include "../utility/enums.hpp"
-#include "../component/kontext.hpp"
 #include "../actor/naomi.hpp"
-#include "../event/receiver.hpp"
+#include "../component/kontext.hpp"
 #include "../field/camera.hpp"
 #include "../field/tilemap.hpp"
 #include "../menu/stack_gui.hpp"

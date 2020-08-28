@@ -16,7 +16,7 @@
 	#include "../audio/noise.hpp"
 	#include "../video/animation.hpp"
 	#include "../video/font.hpp"
-	#include "../event/receiver.hpp"
+	#include "../system/receiver.hpp"
 #endif
 
 struct table_entry_t;

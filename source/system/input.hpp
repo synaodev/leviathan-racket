@@ -1,15 +1,20 @@
 #ifndef LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 #define LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
 
-#include <map>
 #include <memory>
+#include <bitset>
+#include <vector>
+#include <string>
+#include <map>
+
 #include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_scancode.h>
 
-#include "./button.hpp"
+#include "../utility/enums.hpp"
 
 struct setup_file_t;
+struct demo_player_t;
 
 namespace __enum_policy {
 	enum type : arch_t {
@@ -20,6 +25,27 @@ namespace __enum_policy {
 }
 
 using policy_t = __enum_policy::type;
+
+namespace __enum_btn {
+	enum type : arch_t {
+		Jump, Yes = Jump,
+		Hammer, No = Hammer,
+		Item,
+		Dash,
+		Context,
+		Strafe,
+		Inventory,
+		Options,
+		Up,
+		Down,
+		Left,
+		Right,
+		Click,
+		Total = 16
+	};
+}
+
+using btn_t = __enum_btn::type;
 
 struct input_t : public not_copyable_t {
 public:
@@ -61,6 +87,26 @@ private:
 	std::unique_ptr<demo_player_t> player;
 	sint_t scanner;
 	SDL_Joystick* device;
+};
+
+struct demo_player_t : public not_copyable_t {
+public:
+	demo_player_t();
+	demo_player_t(bool_t record);
+	demo_player_t(demo_player_t&&) = default;
+	demo_player_t& operator=(demo_player_t&&) = default;
+	~demo_player_t() = default;
+public:
+	bool load(const std::string& name);
+	bool write(const std::string& output);
+	void read(std::bitset<btn_t::Total>& pressed, std::bitset<btn_t::Total>& holding);
+	void store(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding);
+	bool recording() const;
+	bool playing() const;
+private:
+	bool_t record;
+	arch_t index;
+	std::vector<std::bitset<btn_t::Total> > buttons;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP

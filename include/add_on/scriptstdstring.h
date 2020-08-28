@@ -8,8 +8,8 @@
 // not cause any problem for most applications.
 //
 
-#ifndef LEVIATHAN_INCLUDED_EVENT_STRING_HPP
-#define LEVIATHAN_INCLUDED_EVENT_STRING_HPP
+#ifndef SCRIPTSTDSTRING_H
+#define SCRIPTSTDSTRING_H
 
 #ifndef ANGELSCRIPT_H
 // Avoid having to inform include path if header is already include before
@@ -39,4 +39,4 @@ void RegisterStdString(asIScriptEngine* engine);
 
 END_AS_NAMESPACE
 
-#endif // LEVIATHAN_INCLUDED_EVENT_STRING_HPP
+#endif // SCRIPTSTDSTRING_H

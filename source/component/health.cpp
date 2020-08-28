@@ -3,7 +3,7 @@
 #include "./kontext.hpp"
 
 #include "../actor/naomi.hpp"
-#include "../event/receiver.hpp"
+#include "../system/receiver.hpp"
 
 void health_t::reset(sint_t current, sint_t maximum, sint_t leviathan, sint_t damage) {
 	flags.reset();

@@ -1,4 +1,4 @@
-#include "./string.hpp"
+#include <add_on/scriptstdstring.h>
 
 #include <assert.h> // assert()
 #include <sstream>  // std::stringstream
@@ -8,8 +8,6 @@
 #ifndef __psp2__
 #include <locale.h> // setlocale()
 #endif // __psp2__
-
-#include "../types.hpp"
 
 using namespace std;
 
@@ -37,7 +35,7 @@ public:
 	CStdStringFactory() {}
 	~CStdStringFactory()
 	{
-		// The script engine must release each string 
+		// The script engine must release each string
 		// constant that it has requested
 		assert(stringCache.size() == 0);
 	}
@@ -89,14 +87,14 @@ public:
 
 static CStdStringFactory* stringFactory = 0;
 
-// TODO: Make this public so the application can also use the string 
+// TODO: Make this public so the application can also use the string
 //       factory and share the string constants if so desired, or to
 //       monitor the size of the string factory cache.
 CStdStringFactory* GetStdStringFactorySingleton()
 {
 	if (stringFactory == 0)
 	{
-		// The following instance will be destroyed by the global 
+		// The following instance will be destroyed by the global
 		// CStdStringFactoryCleaner instance upon application shutdown
 		stringFactory = new CStdStringFactory();
 	}
@@ -314,9 +312,9 @@ static string AddBoolString(bool b, const string& str)
 	return stream.str() + str;
 }
 
-static char* StringCharAt(arch_t i, string& str)
+static char* StringCharAt(asUINT i, string& str)
 {
-	if (i >= str.size())
+	if (i >= (asUINT)str.size())
 	{
 		// Set a script exception
 		asIScriptContext* ctx = asGetActiveContext();
@@ -326,7 +324,7 @@ static char* StringCharAt(arch_t i, string& str)
 		return 0;
 	}
 
-	return &str[i];
+	return &str[(size_t)i];
 }
 
 // AngelScript signature:
@@ -341,20 +339,20 @@ static int StringCmp(const string& a, const string& b)
 
 
 // AngelScript signature:
-// arch_t string::length() const
-static arch_t StringLength(const string& str)
+// uint string::length() const
+static asUINT StringLength(const string& str)
 {
 	// We don't register the method directly because the return type changes between 32bit and 64bit platforms
-	return str.length();
+	return (asUINT)str.length();
 }
 
 
 // AngelScript signature:
-// void string::resize(arch_t l)
-static void StringResize(arch_t l, string& str)
+// void string::resize(uint l)
+static void StringResize(asUINT l, string& str)
 {
 	// We don't register the method directly because the argument types change between 32bit and 64bit platforms
-	str.resize(l);
+	str.resize((size_t)l);
 }
 
 static bool StringEquals(const std::string& lhs, const std::string& rhs)
@@ -390,15 +388,15 @@ void RegisterStdString(asIScriptEngine* engine)
 	r = engine->RegisterObjectMethod("string", "string opAdd(const string &in) const", asFUNCTIONPR(operator +, (const string&, const string&), string), asCALL_CDECL_OBJFIRST); assert(r >= 0);
 
 	// The string length can be accessed through methods or through virtual property
-	r = engine->RegisterObjectMethod("string", "arch_t length() const", asFUNCTION(StringLength), asCALL_CDECL_OBJLAST); assert(r >= 0);
-	r = engine->RegisterObjectMethod("string", "void resize(arch_t)", asFUNCTION(StringResize), asCALL_CDECL_OBJLAST); assert(r >= 0);
-	r = engine->RegisterObjectMethod("string", "arch_t get_length() const", asFUNCTION(StringLength), asCALL_CDECL_OBJLAST); assert(r >= 0);
-	r = engine->RegisterObjectMethod("string", "void set_length(arch_t)", asFUNCTION(StringResize), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "uint length() const", asFUNCTION(StringLength), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "void resize(uint)", asFUNCTION(StringResize), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "uint get_length() const", asFUNCTION(StringLength), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "void set_length(uint)", asFUNCTION(StringResize), asCALL_CDECL_OBJLAST); assert(r >= 0);
 	r = engine->RegisterObjectMethod("string", "bool isEmpty() const", asFUNCTION(StringIsEmpty), asCALL_CDECL_OBJLAST); assert(r >= 0);
 
 	// Note that we don't register the operator[] directly, as it doesn't do bounds checking
-	r = engine->RegisterObjectMethod("string", "uint8 &opIndex(arch_t)", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert(r >= 0);
-	r = engine->RegisterObjectMethod("string", "const uint8 &opIndex(arch_t) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "uint8 &opIndex(uint)", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert(r >= 0);
+	r = engine->RegisterObjectMethod("string", "const uint8 &opIndex(uint) const", asFUNCTION(StringCharAt), asCALL_CDECL_OBJLAST); assert(r >= 0);
 
 	// Automatic conversion from values
 	r = engine->RegisterObjectMethod("string", "string &opAssign(double)", asFUNCTION(AssignDoubleToString), asCALL_CDECL_OBJLAST); assert(r >= 0);
