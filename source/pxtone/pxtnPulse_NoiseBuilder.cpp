@@ -3,9 +3,7 @@
 #include "./pxtnMem.h"
 #include "./pxtnPulse_NoiseBuilder.h"
 
-#include "../types.hpp"
-
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wunused-value"
 #endif
@@ -527,6 +525,6 @@ End:
 	return p_pcm;
 }
 
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic pop
 #endif

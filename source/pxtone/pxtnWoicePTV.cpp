@@ -4,9 +4,7 @@
 #include "./pxtnMem.h"
 #include "./pxtnWoice.h"
 
-#include "../types.hpp"
-
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wswitch"
 #endif
@@ -295,7 +293,6 @@ term:
 	return res;
 }
 
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic pop
 #endif
-

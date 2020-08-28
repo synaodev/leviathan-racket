@@ -8,9 +8,7 @@
 #include "./pxtn.h"
 #include "./pxtnService.h"
 
-#include "../types.hpp"
-
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic push
 	#pragma clang diagnostic ignored "-Wunused-value"
 #endif
@@ -1306,6 +1304,6 @@ bool pxtnService::_x1x_Project_Read( pxtnDescriptor *p_doc )
 	return true;
 }
 
-#ifdef LEVIATHAN_COMPILER_LLVM
+#ifdef __clang__
 	#pragma clang diagnostic pop
 #endif

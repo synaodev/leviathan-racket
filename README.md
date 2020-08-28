@@ -10,6 +10,7 @@ I hope to release in Winter 2020.
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [Tmxlite](https://github.com/fallahn/tmxlite)
 ## Included Dependencies
+- [ImGui](https://github.com/ocornut/imgui)
 - [Nlohmann JSON](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
 - [GLAD OpenGL Loader](https://glad.dav1d.de)
