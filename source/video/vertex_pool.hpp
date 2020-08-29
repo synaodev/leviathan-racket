@@ -13,12 +13,6 @@ public:
 	vertex_pool_t& operator=(vertex_pool_t&& that) noexcept;
 	~vertex_pool_t() = default;
 public:
-	// template<typename V>
-	// void setup() {
-	// 	static_assert(std::is_base_of<vertex_t, V>::value);
-	// 	vertex_spec_t specify = vertex_spec_t::from(typeid(V));
-	// 	this->setup(specify);
-	// }
 	void setup(vertex_spec_t specify);
 	void clear();
 	void resize(arch_t length);

@@ -9,21 +9,28 @@
 
 #include <add_on/scriptarray.h>
 
-draw_headsup_t::draw_headsup_t() :
-	suspender(),
-	main_scheme(),
-	leviathan_count(),
-	barrier_units(),
-	oxygen_count(),
-	item_view(),
-	fight_meter(),
-	fade()
 #ifdef LEVIATHAN_USES_META
-	,hidden()
+	draw_headsup_t::draw_headsup_t() :
+		suspender(),
+		main_scheme(),
+		leviathan_count(),
+		barrier_units(),
+		oxygen_count(),
+		item_view(),
+		fight_meter(),
+		fade() {}
+#else
+	draw_headsup_t::draw_headsup_t() :
+		suspender(),
+		main_scheme(),
+		leviathan_count(),
+		barrier_units(),
+		oxygen_count(),
+		item_view(),
+		fight_meter(),
+		fade()
+		hidden() {}
 #endif
-{
-
-}
 
 bool draw_headsup_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
