@@ -18,7 +18,8 @@
 		oxygen_count(),
 		item_view(),
 		fight_meter(),
-		fade() {}
+		fade(),
+		hidden() {}
 #else
 	draw_headsup_t::draw_headsup_t() :
 		suspender(),
@@ -28,8 +29,7 @@
 		oxygen_count(),
 		item_view(),
 		fight_meter(),
-		fade()
-		hidden() {}
+		fade() {}
 #endif
 
 bool draw_headsup_t::init(receiver_t& receiver) {
