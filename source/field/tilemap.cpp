@@ -131,7 +131,7 @@ void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
 
 void tilemap_t::push_parallax_background(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
-	const std::string& path = dynamic_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
+	const std::string& path = static_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
 	parallax_texture = vfs::texture(ftcv::path_to_name(path));
 	glm::vec2 parallax_dimensions = parallax_texture != nullptr ?
 		parallax_texture->get_dimensions() :

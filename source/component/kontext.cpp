@@ -184,7 +184,7 @@ bool kontext_t::create_minimally(const std::string& name, real_t x, real_t y, si
 }
 
 void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kernel_t& kernel, receiver_t& receiver) {
-	auto& objects = dynamic_cast<tmx::ObjectGroup*>(layer.get())->getObjects();
+	auto& objects = static_cast<tmx::ObjectGroup*>(layer.get())->getObjects();
 	for (auto&& object : objects) {
 		const std::string& name = object.getName();
 		const std::string& type = object.getType();

@@ -68,7 +68,7 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 			}
 		}
 	}
-	auto& array = dynamic_cast<tmx::TileLayer*>(layer.get())->getTiles();
+	auto& array = static_cast<tmx::TileLayer*>(layer.get())->getTiles();
 	for (arch_t it = 0; it < array.size(); ++it) {
 		sint_t type = static_cast<sint_t>(array[it].ID) - 1;
 		tiles[it] = type >= 0 ?

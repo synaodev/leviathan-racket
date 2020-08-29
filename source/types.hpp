@@ -84,14 +84,9 @@
 #include <cstdint>
 #include <type_traits>
 
-#include <glm/common.hpp>
+#include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include <glm/trigonometric.hpp>
-#include <glm/geometric.hpp>
 #include <glm/gtc/vec1.hpp>
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <glm/vec4.hpp>
 
 using sint8_t  = signed char;
 using bool16_t = short;
