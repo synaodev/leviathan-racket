@@ -63,18 +63,18 @@ vertex_spec_t vertex_spec_t::from(const uint_t* list) {
 	static const uint_t kMajor[] = { GL_FLOAT_VEC2, GL_FLOAT_VEC3, GL_FLOAT, 0 };
 	vertex_spec_t result;
 	if (vertex_spec_t::compare(list, kMinor)) {
-		result = vertex_spec_t::from(typeid(vtx_minor_t));
+		result = vertex_spec_t::from(vtx_minor_t::name());
 	} else if (vertex_spec_t::compare(list, kBlank)) {
-		result = vertex_spec_t::from(typeid(vtx_blank_t));
+		result = vertex_spec_t::from(vtx_blank_t::name());
 	} else if (vertex_spec_t::compare(list, kMajor)) {
-		result = vertex_spec_t::from(typeid(vtx_major_t));
+		result = vertex_spec_t::from(vtx_major_t::name());
 	}
 	return result;
 }
 
-vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
+vertex_spec_t vertex_spec_t::from(arch_t name) {
 	vertex_spec_t result;
-	if (info == typeid(vtx_minor_t)) {
+	if (name == vtx_minor_t::name()) {
 		result.length = sizeof(vtx_minor_t);
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));
@@ -85,7 +85,7 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 				(const void_t)offsetof(vtx_minor_t, position)
 			));
 		};
-	} else if (info == typeid(vtx_blank_t)) {
+	} else if (name == vtx_blank_t::name()) {
 		result.length = sizeof(vtx_blank_t);
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));
@@ -102,7 +102,7 @@ vertex_spec_t vertex_spec_t::from(const std::type_info& info) {
 				(const void_t)offsetof(vtx_blank_t, color)
 			));
 		};
-	} else if (info == typeid(vtx_major_t)) {
+	} else if (name == vtx_major_t::name()) {
 		result.length = sizeof(vtx_major_t);
 		result.detail = [] {
 			glCheck(glEnableVertexAttribArray(0));

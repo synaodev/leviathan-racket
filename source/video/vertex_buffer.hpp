@@ -11,12 +11,12 @@ public:
 	vertex_buffer_t& operator=(vertex_buffer_t&& that) noexcept;
 	~vertex_buffer_t();
 public:
-	template<typename V>
-	inline void setup(primitive_t primitive, buffer_usage_t usage) {
-		static_assert(std::is_base_of<vertex_t, V>::value);
-		vertex_spec_t specify = vertex_spec_t::from(typeid(V));
-		this->setup(primitive, usage, specify);
-	}
+	// template<typename V>
+	// inline void setup(primitive_t primitive, buffer_usage_t usage) {
+	// 	static_assert(std::is_base_of<vertex_t, V>::value);
+	// 	vertex_spec_t specify = vertex_spec_t::from(typeid(V));
+	// 	this->setup(primitive, usage, specify);
+	// }
 	void setup(primitive_t primitive, buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t vertex_count, arch_t index_count);
 	void create_immutable(arch_t vertex_count, arch_t index_count);

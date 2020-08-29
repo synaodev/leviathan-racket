@@ -16,7 +16,8 @@ draw_units_t::draw_units_t() :
 	palette(nullptr),
 	quads()
 {
-	quads.setup<vtx_major_t>();
+	auto specify = vertex_spec_t::from(vtx_major_t::name());
+	quads.setup(specify);
 }
 
 void draw_units_t::invalidate() const {

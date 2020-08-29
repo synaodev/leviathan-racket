@@ -15,7 +15,6 @@
 #include <cfloat>
 
 // C++ standard libraries
-#include <typeinfo>
 #include <type_traits>
 #include <bitset>
 #include <functional>

@@ -17,7 +17,8 @@ draw_text_t::draw_text_t() :
 	buffer(),
 	quads()
 {
-	quads.setup<vtx_major_t>();
+	auto specify = vertex_spec_t::from(vtx_major_t::name());
+	quads.setup(specify);
 }
 
 void draw_text_t::invalidate() const {

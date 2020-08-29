@@ -16,7 +16,8 @@ tilemap_layer_t::tilemap_layer_t(glm::ivec2 map_size) : tilemap_layer_t() {
 		static_cast<arch_t>(map_size.x) *
 		static_cast<arch_t>(map_size.y)
 	);
-	quads.setup<vtx_major_t>();
+	auto specify = vertex_spec_t::from(vtx_major_t::name());
+	quads.setup(specify);
 	quads.resize(kMinimumVerts);
 }
 
@@ -27,7 +28,8 @@ tilemap_layer_t::tilemap_layer_t() :
 	tiles(),
 	quads()
 {
-	quads.setup<vtx_major_t>();
+	auto specify = vertex_spec_t::from(vtx_major_t::name());
+	quads.setup(specify);
 }
 
 tilemap_layer_t::tilemap_layer_t(tilemap_layer_t&& that) noexcept : tilemap_layer_t() {

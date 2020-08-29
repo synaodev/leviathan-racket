@@ -37,12 +37,12 @@ public:
 	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept;
 	~quad_buffer_t();
 public:
-	template<typename V>
-	inline void setup(const quad_buffer_allocator_t* allocator, buffer_usage_t usage) {
-		static_assert(std::is_base_of<vertex_t, V>::value);
-		vertex_spec_t specify = vertex_spec_t::from(typeid(V));
-		this->setup(allocator, usage, specify);
-	}
+	// template<typename V>
+	// inline void setup(const quad_buffer_allocator_t* allocator, buffer_usage_t usage) {
+	// 	static_assert(std::is_base_of<vertex_t, V>::value);
+	// 	vertex_spec_t specify = vertex_spec_t::from(typeid(V));
+	// 	this->setup(allocator, usage, specify);
+	// }
 	void setup(const quad_buffer_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t length);
 	void destroy();
