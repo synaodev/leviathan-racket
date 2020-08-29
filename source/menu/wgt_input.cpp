@@ -1,11 +1,10 @@
 #include "./wgt_input.hpp"
 
-#include "../utility/vfs.hpp"
-#include "../utility/setup_file.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
-
-#include "../resource/id.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/setup_file.hpp"
 
 static constexpr arch_t kTotalOptionsA = 11;
 static constexpr arch_t kTotalOptionsB = 7;
@@ -41,12 +40,12 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		left_text.get_font_size().x, 
+		left_text.get_font_size().x,
 		(left_text.get_font_size().y * 2.0f) - 3.0f
 	);
 }
 
-void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, draw_headsup_t&) {
+void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
 	if (waiting) {
 		flashed = !flashed;
 		if (input.has_valid_scanner()) {
@@ -99,7 +98,7 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 				const glm::vec2 position = arrow.get_position();
 				arrow.set_position(
 					position.x + (kRightsPositions.x - 3.0f),
-					(static_cast<real_t>(kTotalOptionsB) * left_text.get_font_size().y) + 
+					(static_cast<real_t>(kTotalOptionsB) * left_text.get_font_size().y) +
 					((left_text.get_font_size().y * 2.0f) - 3.0f)
 				);
 			} else {

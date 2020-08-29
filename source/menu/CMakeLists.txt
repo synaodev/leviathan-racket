@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.15)
 
 target_sources (naomi PRIVATE
 	"dialogue_gui.cpp"
+	"headsup_gui.cpp"
 	"inventory_gui.cpp"
 	"stack_gui.cpp"
 	"wgt_audio.cpp"

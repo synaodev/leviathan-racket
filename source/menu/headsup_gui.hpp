@@ -1,16 +1,16 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP
+#ifndef LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP
+#define LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP
 
 #include <functional>
 
-#include "./draw_title_view.hpp"
-#include "./draw_count.hpp"
-#include "./draw_units.hpp"
-#include "./draw_scheme.hpp"
-#include "./draw_fade.hpp"
-#include "./draw_item_view.hpp"
-#include "./draw_meter.hpp"
-#include "./draw_hidden.hpp"
+#include "../overlay/draw_title_view.hpp"
+#include "../overlay/draw_count.hpp"
+#include "../overlay/draw_units.hpp"
+#include "../overlay/draw_scheme.hpp"
+#include "../overlay/draw_fade.hpp"
+#include "../overlay/draw_item_view.hpp"
+#include "../overlay/draw_meter.hpp"
+#include "../overlay/draw_hidden.hpp"
 
 struct input_t;
 struct audio_t;
@@ -39,12 +39,12 @@ public:
 	~headsup_params_t() = default;
 };
 
-struct draw_headsup_t : public not_copyable_t {
+struct headsup_gui_t : public not_copyable_t {
 public:
-	draw_headsup_t();
-	draw_headsup_t(draw_headsup_t&&) = default;
-	draw_headsup_t& operator=(draw_headsup_t&&) = default;
-	~draw_headsup_t() = default;
+	headsup_gui_t();
+	headsup_gui_t(headsup_gui_t&&) = default;
+	headsup_gui_t& operator=(headsup_gui_t&&) = default;
+	~headsup_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);
 	void reset();
@@ -83,4 +83,4 @@ private:
 #endif
 };
 
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_HEADSUP_HPP
+#endif // LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP

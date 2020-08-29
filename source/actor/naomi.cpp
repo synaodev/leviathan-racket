@@ -15,7 +15,7 @@
 #include "../component/liquid.hpp"
 #include "../field/collision.hpp"
 #include "../field/camera.hpp"
-#include "../overlay/draw_headsup.hpp"
+#include "../menu/headsup_gui.hpp"
 #include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
@@ -185,7 +185,7 @@ void naomi_state_t::setup(audio_t& audio, const kernel_t& kernel, camera_t& came
 	}
 }
 
-void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, draw_headsup_t& headsup, kontext_t& kontext, const tilemap_t& tilemap) {
+void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, kontext_t& kontext, const tilemap_t& tilemap) {
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
 	auto& sprite = kontext.get<sprite_t>(actor);
@@ -224,7 +224,7 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 	this->do_cam_move(location);
 	this->do_death(receiver, kinematics, health);
 	this->do_animation(location, sprite, health);
-	this->do_headsup(headsup, health);
+	this->do_headsup(headsup_gui, health);
 }
 
 void naomi_state_t::damage(entt::entity other, audio_t& audio, kontext_t& kontext) {
@@ -498,8 +498,8 @@ naomi_death_t naomi_state_t::get_death_type(const kinematics_t& kinematics, cons
 	return naomi_death_t::Error;
 }
 
-real_t naomi_state_t::get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
-	if (headsup.get_main_index() != kNao::BoxHeal) {
+real_t naomi_state_t::get_box_data(const headsup_gui_t& headsup_gui, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
+	if (headsup_gui.get_main_index() != kNao::BoxHeal) {
 		if (flags[naomi_flags_t::HealthIncrement]) {
 			return kNao::BoxHeal;
 		} else if (params.current_leviathan >= 650) {
@@ -1152,12 +1152,12 @@ void naomi_state_t::do_death(receiver_t& receiver, const kinematics_t& kinematic
 	}
 }
 
-void naomi_state_t::do_headsup(draw_headsup_t& headsup, const health_t& health) {
+void naomi_state_t::do_headsup(headsup_gui_t& headsup_gui, const health_t& health) {
 	headsup_params_t params = {};
 	params.current_barrier = health.current;
 	params.maximum_barrier = health.maximum;
 	params.current_leviathan = health.leviathan;
-	params.main_state = naomi_state_t::get_box_data(headsup, flags, params);
+	params.main_state = naomi_state_t::get_box_data(headsup_gui, flags, params);
 	params.main_direction = flags[naomi_flags_t::Strafing] ?
 		direction_t::Left :
 		direction_t::Right;
@@ -1165,5 +1165,5 @@ void naomi_state_t::do_headsup(draw_headsup_t& headsup, const health_t& health) 
 		static_cast<sint_t>(kNao::Oxygens / 15) :
 		static_cast<sint_t>(chroniker[naomi_timer_t::Oxygen] / 15);
 	params.maximum_oxygen = static_cast<sint_t>(kNao::Oxygens / 15);
-	headsup.set_parameters(params);
+	headsup_gui.set_parameters(params);
 }

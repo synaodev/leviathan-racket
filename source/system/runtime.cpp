@@ -25,7 +25,7 @@ runtime_t::runtime_t() :
 	stack_gui(),
 	dialogue_gui(),
 	inventory_gui(),
-	headsup(),
+	headsup_gui(),
 	camera(),
 	naomi_state(),
 	kontext(),
@@ -38,7 +38,7 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!kernel.init(receiver)) {
 		return false;
 	}
-	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, headsup, camera, naomi_state, kontext)) {
+	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, headsup_gui, camera, naomi_state, kontext)) {
 		return false;
 	}
 	if (!dialogue_gui.init(receiver)) {
@@ -47,10 +47,10 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!inventory_gui.init()) {
 		return false;
 	}
-	if (!headsup.init(receiver)) {
+	if (!headsup_gui.init(receiver)) {
 		return false;
 	}
-	if (!kontext.init(receiver, headsup)) {
+	if (!kontext.init(receiver, headsup_gui)) {
 		return false;
 	}
 	if (!naomi_state.init(kontext)) {
@@ -65,7 +65,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 	while (this->viable()) {
 		accum = glm::max(accum - constants::MinInterval(), 0.0);
 		input.advance();
-		if (headsup.is_fade_done()) {
+		if (headsup_gui.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
 				this->setup_boot(renderer);
 			}
@@ -87,14 +87,14 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 #ifdef LEVIATHAN_USES_META
 		this->setup_meta(renderer);
 #endif
-		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
-		stack_gui.handle(config, input, video, audio, music, kernel, headsup);
+		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup_gui);
+		stack_gui.handle(config, input, video, audio, music, kernel, headsup_gui);
 		dialogue_gui.handle(input, audio);
-		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup);
-		headsup.handle(kernel);
+		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup_gui);
+		headsup_gui.handle(kernel);
 		if (!kernel.has(kernel_state_t::Freeze)) {
 			camera.handle(kontext, naomi_state);
-			naomi_state.handle(input, audio, kernel, receiver, headsup, kontext, tilemap);
+			naomi_state.handle(input, audio, kernel, receiver, headsup_gui, kontext, tilemap);
 			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
 			tilemap.handle(camera);
 		}
@@ -111,7 +111,7 @@ void runtime_t::update(real64_t delta) {
 	stack_gui.update(delta);
 	dialogue_gui.update(delta);
 	inventory_gui.update(delta);
-	headsup.update(delta);
+	headsup_gui.update(delta);
 	if (!kernel.has(kernel_state_t::Freeze)) {
 		camera.update(delta);
 		kontext.update(delta);
@@ -122,8 +122,8 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 	stack_gui.render(renderer, inventory_gui);
 	dialogue_gui.render(renderer);
 	inventory_gui.render(renderer, kernel);
-	headsup.render(renderer, kernel);
-	if (!headsup.is_fade_done()) {
+	headsup_gui.render(renderer, kernel);
+	if (!headsup_gui.is_fade_done()) {
 		const rect_t viewport = camera.get_viewport();
 		kontext.render(renderer, viewport);
 		tilemap.render(renderer, viewport);
@@ -141,7 +141,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	kernel.lock();
 	receiver.reset();
 	stack_gui.reset();
-	headsup.invalidate();
+	headsup_gui.invalidate();
 	camera.reset();
 	kontext.reset();
 	tilemap.reset();
@@ -187,7 +187,7 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 	kernel.reset();
 	stack_gui.reset();
 	dialogue_gui.reset();
-	headsup.reset();
+	headsup_gui.reset();
 	naomi_state.reset(kontext);
 	synao_log("Boot successful.\n");
 	receiver.run_function(kernel);
@@ -218,7 +218,7 @@ void runtime_t::setup_load(renderer_t& renderer) {
 			kernel.reset(field_name);
 			stack_gui.reset();
 			dialogue_gui.reset();
-			headsup.reset();
+			headsup_gui.reset();
 			naomi_state.reset(
 				kontext, position * 16.0f,
 				static_cast<direction_t>(direction),
@@ -282,13 +282,13 @@ void runtime_t::setup_meta(const renderer_t& renderer) {
 	if (input_t::get_meta_holding(SDL_SCANCODE_BACKSPACE)) {
 		if (input_t::get_meta_pressed(SDL_SCANCODE_1)) {
 			meta::Framerate = false;
-			headsup.set_hidden_state(draw_hidden_state_t::None, nullptr);
+			headsup_gui.set_hidden_state(draw_hidden_state_t::None, nullptr);
 		} else if (input_t::get_meta_pressed(SDL_SCANCODE_2)) {
 			meta::Framerate = !meta::Framerate;
-			headsup.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
+			headsup_gui.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
 		} else if (input_t::get_meta_pressed(SDL_SCANCODE_3)) {
 			meta::Framerate = false;
-			headsup.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
+			headsup_gui.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
 				sint_t total_calls = static_cast<sint_t>(renderer.get_draw_calls());
 				// rendering hidden meta stuff takes two draw calls,
 				// so subtract 2 from the total.
@@ -296,7 +296,7 @@ void runtime_t::setup_meta(const renderer_t& renderer) {
 			});
 		} else if (input_t::get_meta_pressed(SDL_SCANCODE_4)) {
 			meta::Framerate = false;
-			headsup.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
+			headsup_gui.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
 				return static_cast<sint_t>(kontext.active());
 			});
 		} else if (input_t::get_meta_pressed(SDL_SCANCODE_MINUS)) {

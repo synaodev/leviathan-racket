@@ -10,7 +10,7 @@
 #include "../menu/stack_gui.hpp"
 #include "../menu/dialogue_gui.hpp"
 #include "../menu/inventory_gui.hpp"
-#include "../overlay/draw_headsup.hpp"
+#include "../menu/headsup_gui.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
@@ -59,7 +59,7 @@ receiver_t::~receiver_t() {
 	}
 }
 
-bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
+bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	if (engine != nullptr) {
 		synao_log("Scripting engine already exists!\n");
 		return false;
@@ -79,10 +79,9 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	}
 	this->generate_properties();
 	this->generate_functions(
-		input, audio, music,
-		kernel, stack_gui, dialogue_gui,
-		headsup, camera,
-		naomi_state, kontext
+		input, audio, music, kernel,
+		stack_gui, dialogue_gui, headsup_gui,
+		camera, naomi_state, kontext
 	);
 	state = engine->CreateContext();
 	if (state == nullptr) {
@@ -121,9 +120,9 @@ void receiver_t::reset() {
 	this->discard_all_events();
 }
 
-void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, draw_headsup_t& headsup) {
+void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, headsup_gui_t& headsup_gui) {
 	if (bitmask[rec_bits_t::Running]) {
-		if (!headsup.is_fade_moving() and !dialogue_gui.get_flag(dialogue_flag_t::Question)) {
+		if (!headsup_gui.is_fade_moving() and !dialogue_gui.get_flag(dialogue_flag_t::Question)) {
 			if (bitmask[rec_bits_t::Stalled]) {
 				if (!dialogue_gui.get_flag(dialogue_flag_t::Writing) and input.pressed[btn_t::Yes]) {
 					bitmask[rec_bits_t::Running] = true;
@@ -649,7 +648,7 @@ void receiver_t::generate_properties() {
 	assert(r >= 0);
 }
 
-void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
+void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	sint_t r = 0;
 	// Set Namespace
 	r = engine->SetDefaultNamespace("sys");
@@ -776,13 +775,13 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->SetDefaultNamespace("msg");
 	assert(r >= 0);
 	// Fade In
-	r = engine->RegisterGlobalFunction("void fade_in()", WRAP_MFN(draw_headsup_t, fade_in), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_in()", WRAP_MFN(headsup_gui_t, fade_in), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Fade Out
-	r = engine->RegisterGlobalFunction("void fade_out()", WRAP_MFN(draw_headsup_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void fade_out()", WRAP_MFN(headsup_gui_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(draw_headsup_t, set_field_text, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(headsup_gui_t, set_field_text, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Set Facebox
 	r = engine->RegisterGlobalFunction("void set_face(arch_t index, arch_t type)", WRAP_MFN_PR(dialogue_gui_t, set_face, (arch_t, direction_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
@@ -797,16 +796,16 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void set_delay()", WRAP_MFN_PR(dialogue_gui_t, set_delay, (void), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Push Titlecard
-	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_headsup_t, push_card), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(headsup_gui_t, push_card), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Clear Titlecard
-	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(draw_headsup_t, clear_cards), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(headsup_gui_t, clear_cards), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Set Titlecard Position
-	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(draw_headsup_t, set_card_position, (arch_t, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(headsup_gui_t, set_card_position, (arch_t, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Set Titlecard Centered
-	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(draw_headsup_t, set_card_centered), asCALL_THISCALL_ASGLOBAL, &headsup);
+	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(headsup_gui_t, set_card_centered), asCALL_THISCALL_ASGLOBAL, &headsup_gui);
 	assert(r >= 0);
 	// Open Textbox Top
 	r = engine->RegisterGlobalFunction("void top_box()", WRAP_MFN(dialogue_gui_t, open_textbox_high), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);

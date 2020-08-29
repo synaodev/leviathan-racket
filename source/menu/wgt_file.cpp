@@ -1,14 +1,13 @@
 #include "./wgt_file.hpp"
+#include "./headsup_gui.hpp"
 
-#include "../utility/vfs.hpp"
-#include "../utility/setup_file.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../overlay/draw_headsup.hpp"
-
-#include "../resource/id.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/setup_file.hpp"
 
 static constexpr arch_t kTotalOptions = 2;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
@@ -38,17 +37,17 @@ void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, 
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		text.get_font_size().x, 
-		4.0f + kDefaultPosition.y + 
+		text.get_font_size().x,
+		4.0f + kDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 	arrow.mut_position(
-		0.0f, static_cast<real_t>(cursor) * 
+		0.0f, static_cast<real_t>(cursor) *
 		text.get_font_size().y
 	);
 }
 
-void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t&, draw_headsup_t& headsup) {
+void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t&, headsup_gui_t& headsup_gui) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
@@ -77,7 +76,7 @@ void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio,
 			kernel.unlock();
 			break;
 		case wgt_file_op_t::Loading:
-			headsup.fade_out();
+			headsup_gui.fade_out();
 			kernel.load_progress();
 			break;
 		case wgt_file_op_t::Saving:

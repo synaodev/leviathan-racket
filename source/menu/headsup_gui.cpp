@@ -1,4 +1,4 @@
-#include "./draw_headsup.hpp"
+#include "./headsup_gui.hpp"
 
 #include "../resource/id.hpp"
 #include "../system/kernel.hpp"
@@ -12,7 +12,7 @@
 static constexpr arch_t kHeadFontIndex = 2;
 
 #ifdef LEVIATHAN_USES_META
-	draw_headsup_t::draw_headsup_t() :
+	headsup_gui_t::headsup_gui_t() :
 		suspender(),
 		title_view(),
 		main_scheme(),
@@ -24,7 +24,7 @@ static constexpr arch_t kHeadFontIndex = 2;
 		fade(),
 		hidden() {}
 #else
-	draw_headsup_t::draw_headsup_t() :
+	headsup_gui_t::headsup_gui_t() :
 		suspender(),
 		title_view(),
 		main_scheme(),
@@ -36,7 +36,7 @@ static constexpr arch_t kHeadFontIndex = 2;
 		fade() {}
 #endif
 
-bool draw_headsup_t::init(receiver_t& receiver) {
+bool headsup_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();
 	};
@@ -91,20 +91,20 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	return true;
 }
 
-void draw_headsup_t::reset() {
+void headsup_gui_t::reset() {
 	main_scheme.set_state(0);
 	main_scheme.set_direction(direction_t::Right);
 	fight_meter.reset();
 	fade.reset();
 }
 
-void draw_headsup_t::handle(const kernel_t& kernel) {
+void headsup_gui_t::handle(const kernel_t& kernel) {
 	title_view.handle();
 	item_view.handle(kernel);
 	fade.handle();
 }
 
-void draw_headsup_t::update(real64_t delta) {
+void headsup_gui_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
 #ifdef LEVIATHAN_USES_META
@@ -112,7 +112,7 @@ void draw_headsup_t::update(real64_t delta) {
 #endif
 }
 
-void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const {
+void headsup_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const {
 	title_view.render(renderer);
 	if (!kernel.has(kernel_state_t::Lock)) {
 		main_scheme.render(renderer);
@@ -140,7 +140,7 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 #endif
 }
 
-void draw_headsup_t::invalidate() const {
+void headsup_gui_t::invalidate() const {
 	title_view.invalidate();
 	fade.invalidate();
 #ifdef LEVIATHAN_USES_META
@@ -148,7 +148,7 @@ void draw_headsup_t::invalidate() const {
 #endif
 }
 
-void draw_headsup_t::set_parameters(headsup_params_t params) {
+void headsup_gui_t::set_parameters(headsup_params_t params) {
 	main_scheme.set_index(params.main_state);
 	main_scheme.set_direction(params.main_direction);
 	leviathan_count.set_value(params.current_leviathan);
@@ -157,60 +157,60 @@ void draw_headsup_t::set_parameters(headsup_params_t params) {
 	oxygen_count.set_value(params.current_oxygen);
 }
 
-void draw_headsup_t::set_fight_values(sint_t current, sint_t maximum) {
+void headsup_gui_t::set_fight_values(sint_t current, sint_t maximum) {
 	fight_meter.set_values(current, maximum);
 }
 
 #ifdef LEVIATHAN_USES_META
 
-void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
+void headsup_gui_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
 	hidden.set_state(state, radio);
 }
 
 #endif
 
-void draw_headsup_t::set_field_text(const std::string& text) {
+void headsup_gui_t::set_field_text(const std::string& text) {
 	title_view.set_head(text);
 }
 
-void draw_headsup_t::set_field_text() {
+void headsup_gui_t::set_field_text() {
 	title_view.set_head();
 }
 
-void draw_headsup_t::push_card(const std::string& text, arch_t font_index) {
+void headsup_gui_t::push_card(const std::string& text, arch_t font_index) {
 	title_view.push(text, font_index);
 }
 
-void draw_headsup_t::clear_cards() {
+void headsup_gui_t::clear_cards() {
 	title_view.clear();
 }
 
-void draw_headsup_t::set_card_position(arch_t index, real_t x, real_t y) {
+void headsup_gui_t::set_card_position(arch_t index, real_t x, real_t y) {
 	title_view.set_position(index, x, y);
 }
 
-void draw_headsup_t::set_card_centered(arch_t index, bool horizontal, bool vertical) {
+void headsup_gui_t::set_card_centered(arch_t index, bool horizontal, bool vertical) {
 	title_view.set_centered(index, horizontal, vertical);
 }
 
-void draw_headsup_t::fade_in() {
+void headsup_gui_t::fade_in() {
 	fade.fade_in();
 	std::invoke(suspender);
 }
 
-void draw_headsup_t::fade_out() {
+void headsup_gui_t::fade_out() {
 	fade.fade_out();
 	std::invoke(suspender);
 }
 
-bool draw_headsup_t::is_fade_done() const {
+bool headsup_gui_t::is_fade_done() const {
 	return fade.is_done();
 }
 
-bool draw_headsup_t::is_fade_moving() const {
+bool headsup_gui_t::is_fade_moving() const {
 	return fade.is_moving();
 }
 
-real_t draw_headsup_t::get_main_index() const {
+real_t headsup_gui_t::get_main_index() const {
 	return main_scheme.get_index();
 }

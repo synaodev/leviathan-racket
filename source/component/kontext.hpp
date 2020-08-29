@@ -22,7 +22,7 @@ struct receiver_t;
 struct camera_t;
 struct naomi_state_t;
 struct tilemap_t;
-struct draw_headsup_t;
+struct headsup_gui_t;
 
 struct kontext_t : public not_copyable_t {
 public:
@@ -31,7 +31,7 @@ public:
 	kontext_t& operator=(kontext_t&&) = default;
 	~kontext_t() = default;
 public:
-	bool init(receiver_t& receiver, draw_headsup_t& headsup);
+	bool init(receiver_t& receiver, headsup_gui_t& headsup_gui);
 	void reset();
 	void handle(audio_t& audio, receiver_t& receiver, camera_t& camera, naomi_state_t& naomi_state, tilemap_t& tilemap);
 	void update(real64_t delta);

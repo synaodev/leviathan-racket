@@ -9,7 +9,7 @@
 
 #include "../actor/particles.hpp"
 #include "../field/properties.hpp"
-#include "../overlay/draw_headsup.hpp"
+#include "../menu/headsup_gui.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
 #include "../utility/meta.hpp"
@@ -32,15 +32,15 @@ kontext_t::kontext_t() :
 
 }
 
-bool kontext_t::init(receiver_t& receiver, draw_headsup_t& headsup) {
+bool kontext_t::init(receiver_t& receiver, headsup_gui_t& headsup_gui) {
 	run_event = [&receiver](sint_t id) {
 		receiver.run_event(id);
 	};
 	push_event = [&receiver](sint_t id, asIScriptFunction* function) {
 		receiver.push_from_function(id, function);
 	};
-	push_meter = [&headsup](sint_t current, sint_t maximum) {
-		headsup.set_fight_values(current, maximum);
+	push_meter = [&headsup_gui](sint_t current, sint_t maximum) {
+		headsup_gui.set_fight_values(current, maximum);
 	};
 	if (!routine_generator_t::init(ctor_table)) {
 		synao_log("Actor constructor table generation failed!\n");

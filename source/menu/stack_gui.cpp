@@ -1,4 +1,6 @@
 #include "./stack_gui.hpp"
+#include "./inventory_gui.hpp"
+#include "./headsup_gui.hpp"
 #include "./wgt_option.hpp"
 #include "./wgt_file.hpp"
 #include "./wgt_input.hpp"
@@ -6,15 +8,12 @@
 #include "./wgt_audio.hpp"
 #include "./wgt_language.hpp"
 #include "./wgt_field.hpp"
-#include "./inventory_gui.hpp"
 
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
 #include "../system/renderer.hpp"
 #include "../system/kernel.hpp"
-
-#include "../overlay/draw_headsup.hpp"
 
 stack_gui_t::stack_gui_t() :
 	amend(true),
@@ -30,17 +29,17 @@ void stack_gui_t::reset() {
 	widgets.clear();
 }
 
-void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, draw_headsup_t& headsup) {
+void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, headsup_gui_t& headsup_gui) {
 	if (!widgets.empty()) {
 		if (!widgets.back()->is_ready()) {
 			widgets.back()->init(input, video, audio, music, kernel);
-			headsup.set_field_text();
+			headsup_gui.set_field_text();
 		}
 		widgets.back()->handle(
 			config, input,
 			video, audio,
 			music, kernel,
-			*this, headsup
+			*this, headsup_gui
 		);
 		if (release) {
 			release = false;

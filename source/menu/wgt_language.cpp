@@ -1,14 +1,13 @@
 #include "./wgt_language.hpp"
 #include "./stack_gui.hpp"
+#include "./headsup_gui.hpp"
 
-#include "../utility/vfs.hpp"
-#include "../utility/setup_file.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../overlay/draw_headsup.hpp"
-
-#include "../resource/id.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/setup_file.hpp"
 
 static constexpr arch_t kTotalVisible = 9;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
@@ -35,14 +34,14 @@ void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		text.get_font_size().x, 
-		4.0f + kDefaultPosition.y + 
+		text.get_font_size().x,
+		4.0f + kDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 	this->setup_text();
 }
 
-void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, draw_headsup_t& headsup) {
+void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, headsup_gui_t& headsup_gui) {
 	bool selection = false;
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
@@ -86,7 +85,7 @@ void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audi
 		} else if (vfs::try_language(languages[cursor])) {
 			config.set("Setup", "Language", languages[cursor]);
 			audio.play(res::sfx::TitleBeg, 0);
-			headsup.fade_out();
+			headsup_gui.fade_out();
 			stack_gui.clear();
 			kernel.boot();
 		}

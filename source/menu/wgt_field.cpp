@@ -1,11 +1,10 @@
 #include "./wgt_field.hpp"
-
-#include "../utility/vfs.hpp"
-#include "../system/input.hpp"
-#include "../system/kernel.hpp"
-#include "../overlay/draw_headsup.hpp"
+#include "./headsup_gui.hpp"
 
 #include "../resource/id.hpp"
+#include "../system/input.hpp"
+#include "../system/kernel.hpp"
+#include "../utility/vfs.hpp"
 
 static constexpr arch_t kTotalVisible = 9;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
@@ -38,15 +37,15 @@ void wgt_field_t::init(const input_t&, const video_t&, audio_t&, const music_t&,
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		text_listing.get_font_size().x, 
-		4.0f + kDefaultPosition.y + 
+		text_listing.get_font_size().x,
+		4.0f + kDefaultPosition.y +
 		(text_listing.get_font_size().y * 2.0f)
 	);
 	this->setup_listing();
 	this->setup_identity();
 }
 
-void wgt_field_t::handle(setup_file_t&, input_t& input, video_t&, audio_t&, music_t&, kernel_t& kernel, stack_gui_t&, draw_headsup_t& headsup) {
+void wgt_field_t::handle(setup_file_t&, input_t& input, video_t&, audio_t&, music_t&, kernel_t& kernel, stack_gui_t&, headsup_gui_t& headsup_gui) {
 	bool selection = false;
 	if (input.pressed[btn_t::Right] or input.pressed[btn_t::Left]) {
 		scrolling = !scrolling;
@@ -100,7 +99,7 @@ void wgt_field_t::handle(setup_file_t&, input_t& input, video_t&, audio_t&, musi
 		if (!selection) {
 			kernel.unlock();
 		} else {
-			headsup.fade_out();
+			headsup_gui.fade_out();
 			kernel.buffer_field(fields[cursor], identity);
 		}
 	}

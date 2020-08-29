@@ -4,7 +4,6 @@ target_sources (naomi PRIVATE
 	"draw_count.cpp"
 	"draw_hidden.cpp"
 	"draw_fade.cpp"
-	"draw_headsup.cpp"
 	"draw_item_view.cpp"
 	"draw_meter.cpp"
 	"draw_scheme.cpp"

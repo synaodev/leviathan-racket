@@ -1,12 +1,11 @@
 #include "./wgt_video.hpp"
 
-#include "../utility/vfs.hpp"
-#include "../utility/setup_file.hpp"
+#include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
-
-#include "../resource/id.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/setup_file.hpp"
 
 static constexpr arch_t kTotalOptions = 2;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
@@ -28,13 +27,13 @@ void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const mus
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		text.get_font_size().x, 
-		4.0f + kDefaultPosition.y + 
+		text.get_font_size().x,
+		4.0f + kDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 }
 
-void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, draw_headsup_t&) {
+void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
@@ -59,14 +58,14 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 			case 1: {
 				if (input.pressed[btn_t::Right]) {
 					params.scaling = glm::clamp(
-						params.scaling + 1, 
-						screen_params_t::kDefaultScaling, 
+						params.scaling + 1,
+						screen_params_t::kDefaultScaling,
 						screen_params_t::kHighestScaling
 					);
 				} else {
 					params.scaling = glm::clamp(
-						params.scaling - 1, 
-						screen_params_t::kDefaultScaling, 
+						params.scaling - 1,
+						screen_params_t::kDefaultScaling,
 						screen_params_t::kHighestScaling
 					);
 				}

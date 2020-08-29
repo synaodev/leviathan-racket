@@ -12,7 +12,7 @@ struct input_t;
 struct audio_t;
 struct kernel_t;
 struct receiver_t;
-struct draw_headsup_t;
+struct headsup_gui_t;
 struct camera_t;
 struct kontext_t;
 struct tilemap_t;
@@ -162,7 +162,7 @@ public:
 	void reset(kontext_t& kontext);
 	void reset(kontext_t& kontext, glm::vec2 position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips);
 	void setup(audio_t& audio, const kernel_t& kernel, camera_t& camera, kontext_t& kontext);
-	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, draw_headsup_t& headsup, kontext_t& kontext, const tilemap_t& tilemap);
+	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, kontext_t& kontext, const tilemap_t& tilemap);
 	void damage(entt::entity other, audio_t& audio, kontext_t& kontext);
 	void solids(entt::entity other, kontext_t& kontext, const tilemap_t& tilemap);
 	void set_phys_const(bool submerged);
@@ -179,7 +179,7 @@ public:
 	glm::vec2 camera_placement() const;
 	std::string hexadecimal_equips() const;
 	naomi_death_t get_death_type(const kinematics_t& kinematics, const health_t& health) const;
-	static real_t get_box_data(const draw_headsup_t& headsup, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params);
+	static real_t get_box_data(const headsup_gui_t& headsup_gui, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params);
 private:
 	void do_begin(audio_t& audio, kinematics_t& kinematics);
 	void do_killed(location_t& location, kinematics_t& kinematics);
@@ -203,7 +203,7 @@ private:
 	void do_submerge(kontext_t& kontext, liquid_listener_t& listener);
 	void do_animation(location_t& location, sprite_t& sprite, const health_t& health);
 	void do_death(receiver_t& receiver, const kinematics_t& kinematics, const health_t& health);
-	void do_headsup(draw_headsup_t& headsup, const health_t& health);
+	void do_headsup(headsup_gui_t& headsup_gui, const health_t& health);
 public:
 	entt::entity actor;
 private:
