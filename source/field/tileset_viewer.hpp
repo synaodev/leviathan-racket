@@ -25,8 +25,8 @@ public:
 	bool load(const std::string& path, renderer_t& renderer);
 	bool save();
 	bool selected() const;
-	void set_bitmask(sint_t mask);
-	sint_t get_bitmask() const;
+	void set_bitmask(uint_t mask);
+	uint_t get_bitmask() const;
 private:
 	mutable bool_t amend;
 	bool_t select, flash;
@@ -34,7 +34,7 @@ private:
 	arch_t index;
 	real64_t timer;
 	const texture_t* texture;
-	std::vector<sint_t> bitmasks;
+	std::vector<uint_t> bitmasks;
 	std::string file;
 };
 

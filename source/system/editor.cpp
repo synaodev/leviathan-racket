@@ -5,6 +5,7 @@
 
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
+#include "../field/tileflag.hpp"
 
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS
@@ -24,9 +25,18 @@ static const byte_t* kTileFlagNames[kFirstSize] = {
 };
 
 static const uint_t kTileFlagInts[kFirstSize] = {
-	0x0001, 0x0002, 0x0004, 0x0008,
-	0x0010, 0x0020, 0x0040, 0x0080,
-	0x0100, 0x0200, 0x0400, 0x0800
+	tileflag_t::Block,
+	tileflag_t::Slope,
+	tileflag_t::Positive,
+	tileflag_t::Negative,
+	tileflag_t::Floor,
+	tileflag_t::Ceiling,
+	tileflag_t::Short,
+	tileflag_t::Tall,
+	tileflag_t::Harmful,
+	tileflag_t::OutBounds,
+	tileflag_t::FallThrough,
+	tileflag_t::Hooked
 };
 
 static const byte_t* kSlopeFlagNames[kSecondSize] = {
@@ -35,8 +45,14 @@ static const byte_t* kSlopeFlagNames[kSecondSize] = {
 };
 
 static const uint_t kSlopeFlagInts[kSecondSize] = {
-	0x0096, 0x0056, 0x005A, 0x009A,
-	0x00AA, 0x006A, 0x0066, 0x00A6
+	tileflag_t::Slope_1,
+	tileflag_t::Slope_2,
+	tileflag_t::Slope_3,
+	tileflag_t::Slope_4,
+	tileflag_t::Slope_5,
+	tileflag_t::Slope_6,
+	tileflag_t::Slope_7,
+	tileflag_t::Slope_8
 };
 
 editor_t::editor_t() :
@@ -101,14 +117,14 @@ void editor_t::handle(input_t& input, renderer_t& renderer) {
 				ImGuiWindowFlags_NoMove |
 				ImGuiWindowFlags_NoResize
 			);
-			sint_t bitmask = tileset_viewer.get_bitmask();
+			uint_t bitmask = tileset_viewer.get_bitmask();
 			if (ImGui::Button("Reset")) {
 				bitmask = 0;
 			}
 			for (arch_t it = 0; it < kFirstSize; ++it) {
 				ImGui::CheckboxFlags(
 					kTileFlagNames[it],
-					reinterpret_cast<uint_t*>(&bitmask),
+					&bitmask,
 					kTileFlagInts[it]
 				);
 			}
@@ -116,7 +132,7 @@ void editor_t::handle(input_t& input, renderer_t& renderer) {
 			for (arch_t it = 0; it < kSecondSize; ++it) {
 				ImGui::CheckboxFlags(
 					kSlopeFlagNames[it],
-					reinterpret_cast<uint_t*>(&bitmask),
+					&bitmask,
 					kSlopeFlagInts[it]
 				);
 			}

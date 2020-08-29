@@ -53,7 +53,7 @@ tilemap_layer_t& tilemap_layer_t::operator=(tilemap_layer_t&& that) noexcept {
 	return *this;
 }
 
-void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<sint_t>& attributes, const std::vector<sint_t>& attribute_key) {
+void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<uint_t>& attributes, const std::vector<uint_t>& attribute_key) {
 	if (inverse_dimensions.x == 0.0f or inverse_dimensions.y == 0.0f) {
 		inverse_dimensions = glm::one<glm::vec2>();
 	}

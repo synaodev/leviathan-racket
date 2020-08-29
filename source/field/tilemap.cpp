@@ -109,7 +109,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 		const std::string& name = ftcv::path_to_name(tileset.getImagePath());
 		tilemap_layer_texture = vfs::texture(name);
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		attribute_key = vfs::sint_buffer(tilekey_path + name + ".atr");
+		attribute_key = vfs::uint32_buffer(tilekey_path + name + ".atr");
 	}
 }
 
@@ -140,7 +140,7 @@ void tilemap_t::push_parallax_background(const std::unique_ptr<tmx::Layer>& laye
 	recent.init(layer, parallax_dimensions);
 }
 
-sint_t tilemap_t::get_attribute(sint_t x, sint_t y) const {
+uint_t tilemap_t::get_attribute(sint_t x, sint_t y) const {
 	if (x >= 0 and y >= 0 and x < dimensions.x and y < dimensions.y) {
 		return attributes[
 			static_cast<arch_t>(x) +
@@ -153,7 +153,7 @@ sint_t tilemap_t::get_attribute(sint_t x, sint_t y) const {
 	return tileflag_t::Empty;
 }
 
-sint_t tilemap_t::get_attribute(glm::ivec2 index) const {
+uint_t tilemap_t::get_attribute(glm::ivec2 index) const {
 	return this->get_attribute(index.x, index.y);
 }
 

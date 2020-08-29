@@ -187,7 +187,7 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 			return false;
 		}
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		bitmasks = vfs::sint_buffer(tilekey_path + path + ".atr");
+		bitmasks = vfs::uint32_buffer(tilekey_path + path + ".atr");
 		if (bitmasks.empty()) {
 			return false;
 		}
@@ -207,7 +207,7 @@ bool tileset_viewer_t::save() {
 		if (ofs.is_open()) {
 			ofs.write(
 				reinterpret_cast<byte_t*>(&bitmasks[0]),
-				sizeof(sint_t) * kMaskLength
+				sizeof(uint_t) * kMaskLength
 			);
 			synao_log("Save successful!\n");
 			return true;
@@ -224,10 +224,10 @@ bool tileset_viewer_t::selected() const {
 	return select;
 }
 
-void tileset_viewer_t::set_bitmask(sint_t mask) {
+void tileset_viewer_t::set_bitmask(uint_t mask) {
 	bitmasks[index] = mask;
 }
 
-sint_t tileset_viewer_t::get_bitmask() const {
+uint_t tileset_viewer_t::get_bitmask() const {
 	return bitmasks[index];
 }

@@ -13,7 +13,7 @@ struct tilemap_t;
 namespace collision {
 	struct info_t {
 	public:
-		info_t(glm::ivec2 index, sint_t attribute);
+		info_t(glm::ivec2 index, uint_t attribute);
 		info_t();
 		info_t(const info_t&) = default;
 		info_t& operator=(const info_t&) = default;
@@ -24,7 +24,7 @@ namespace collision {
 		rect_t hitbox() const;
 	public:
 		glm::ivec2 index;
-		sint_t attribute;
+		uint_t attribute;
 		real_t coordinate;
 	};
 	std::optional<info_t> attempt(rect_t delta, std::bitset<phy_t::Total>& flags, const tilemap_t& tilemap, side_t side);

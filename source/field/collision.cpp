@@ -5,7 +5,7 @@
 
 #include <limits>
 
-collision::info_t::info_t(glm::ivec2 index, sint_t attribute) :
+collision::info_t::info_t(glm::ivec2 index, uint_t attribute) :
 	index(index),
 	attribute(attribute),
 	coordinate(0.0f)
@@ -162,7 +162,7 @@ std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<ph
 		for (sint_t secondary = first_secondary; secondary != final_secondary + incrm_secondary; secondary += incrm_secondary) {
 			sint_t y = !horizontal ? primary : secondary;
 			sint_t x = horizontal ? primary : secondary;
-			sint_t a = tilemap.get_attribute(x, y);
+			uint_t a = tilemap.get_attribute(x, y);
 			collision::info_t info = collision::info_t(glm::ivec2(x, y), a);
 			if (info.attribute & tileflag_t::OutBounds) {
 				return info;
@@ -233,7 +233,7 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 		maxdelta[I] += deltalen[I];
 		sint_t xpos = tilemap_t::round(index.x);
 		sint_t ypos = tilemap_t::round(index.y);
-		sint_t attr = tilemap.get_attribute(xpos, ypos);
+		uint_t attr = tilemap.get_attribute(xpos, ypos);
 		if (attr != tileflag_t::Empty and !(attr & (tileflag_t::FallThrough | tileflag_t::OutBounds))) {
 			if (attr & tileflag_t::Block) {
 				if (attr & tileflag_t::Hooked) {

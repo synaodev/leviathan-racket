@@ -4,7 +4,7 @@
 #include "../types.hpp"
 
 namespace __enum_tileflag {
-	enum type : sint_t {
+	enum type : uint_t {
 		Empty		= (0 << 0),  // 0x0000
 		Block		= (1 << 0),  // 0x0001
 		Slope		= (1 << 1),  // 0x0002

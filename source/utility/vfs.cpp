@@ -403,21 +403,21 @@ std::vector<byte_t> vfs::byte_buffer(const std::string& path) {
 	return std::vector<byte_t>();
 }
 
-std::vector<sint_t> vfs::sint_buffer(const std::string& path) {
+std::vector<uint_t> vfs::uint32_buffer(const std::string& path) {
 	std::ifstream ifs(path, std::ios::binary);
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios_base::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
 		if (length > 0) {
 			ifs.seekg(0, std::ios_base::beg);
-			std::vector<sint_t> buffer;
-			buffer.resize(length / sizeof(sint_t));
+			std::vector<uint_t> buffer;
+			buffer.resize(length / sizeof(uint_t));
 			ifs.read(reinterpret_cast<byte_t*>(buffer.data()), length);
 			return buffer;
 		}
 	}
 	synao_log("Failed to open file: {}!\n", path);
-	return std::vector<sint_t>();
+	return std::vector<uint_t>();
 }
 
 std::vector<uint16_t> vfs::uint16_buffer(const std::string& path) {

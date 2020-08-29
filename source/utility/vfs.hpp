@@ -61,7 +61,7 @@ namespace vfs {
 	std::vector<std::string> file_list(const std::string& directory);
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);
-	std::vector<sint_t> sint_buffer(const std::string& path);
+	std::vector<uint_t> uint32_buffer(const std::string& path);
 	std::vector<uint16_t> uint16_buffer(const std::string& path);
 	std::string i18n_find(const std::string& segment, arch_t index);
 	std::string i18n_find(const std::string& segment, arch_t first, arch_t last);

@@ -19,7 +19,7 @@ public:
 	tilemap_layer_t& operator=(tilemap_layer_t&& that) noexcept/*= default */;
 	~tilemap_layer_t() = default;
 public:
-	void init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<sint_t>& attributes, const std::vector<sint_t>& attribute_key);
+	void init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 inverse_dimensions, std::vector<uint_t>& attributes, const std::vector<uint_t>& attribute_key);
 	void handle(arch_t range, glm::ivec2 first, glm::ivec2 last, glm::ivec2 map_size);
 	void render(renderer_t& renderer, bool_t amend, const texture_t* texture, const palette_t* palette) const;
 private:
