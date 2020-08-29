@@ -2,7 +2,6 @@
 
 #include "../utility/constants.hpp"
 #include "../utility/vfs.hpp"
-#include "../utility/logger.hpp"
 
 static constexpr real64_t kFadeTime = 0.048;
 
@@ -13,21 +12,6 @@ draw_title_view_t::draw_title_view_t() :
 	cards()
 {
 
-}
-
-bool draw_title_view_t::init() {
-	const font_t* font = vfs::font(2);
-	if (font == nullptr) {
-		synao_log("Title-View overlay is missing resources and cannot be rendered!\n");
-		return false;
-	}
-	head.set_font(font);
-	head.set_position(160.0f, 24.0f);
-	lite.set_font(font);
-	lite.set_position(160.0f, 24.0f);
-	lite.set_params(1.0f);
-	synao_log("Title-View overlay is ready.\n");
-	return true;
 }
 
 void draw_title_view_t::handle() {
@@ -61,14 +45,30 @@ void draw_title_view_t::invalidate() const {
 	}
 }
 
-void draw_title_view_t::push(const std::string& string, arch_t font) {
+void draw_title_view_t::push(const std::string& string, arch_t font_index) {
 	auto& recent = cards.emplace_back();
-	recent.set_font(vfs::font(font));
+	recent.set_font(vfs::font(font_index));
 	recent.set_string(string);
 }
 
 void draw_title_view_t::clear() {
 	cards.clear();
+}
+
+void draw_title_view_t::set_font(const font_t* font) {
+	head.set_font(font);
+	lite.set_font(font);
+}
+
+void draw_title_view_t::set_persistent(glm::vec2 position, real_t table) {
+	head.set_position(position);
+	lite.set_position(position);
+	lite.set_params(table);
+}
+
+void draw_title_view_t::set_persistent(real_t x, real_t y, real_t table) {
+	glm::vec2 position = glm::vec2(x, y);
+	this->set_persistent(position, table);
 }
 
 void draw_title_view_t::set_position(arch_t index, glm::vec2 position) {

@@ -11,7 +11,6 @@
 #include "../menu/dialogue_gui.hpp"
 #include "../menu/inventory_gui.hpp"
 #include "../overlay/draw_headsup.hpp"
-#include "../overlay/draw_title_view.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
@@ -60,7 +59,7 @@ receiver_t::~receiver_t() {
 	}
 }
 
-bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
+bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	if (engine != nullptr) {
 		synao_log("Scripting engine already exists!\n");
 		return false;
@@ -82,7 +81,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	this->generate_functions(
 		input, audio, music,
 		kernel, stack_gui, dialogue_gui,
-		title_view, headsup, camera,
+		headsup, camera,
 		naomi_state, kontext
 	);
 	state = engine->CreateContext();
@@ -650,7 +649,7 @@ void receiver_t::generate_properties() {
 	assert(r >= 0);
 }
 
-void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
+void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
 	sint_t r = 0;
 	// Set Namespace
 	r = engine->SetDefaultNamespace("sys");
@@ -783,10 +782,7 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void fade_out()", WRAP_MFN(draw_headsup_t, fade_out), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Set Room Text
-	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(draw_title_view_t, set_head, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &title_view);
-	assert(r >= 0);
-	// Set Room Text
-	r = engine->RegisterGlobalFunction("void set_field_text()", WRAP_MFN_PR(draw_title_view_t, set_head, (void), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_field_text(const std::string &in text)", WRAP_MFN_PR(draw_headsup_t, set_field_text, (const std::string&), void), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Set Facebox
 	r = engine->RegisterGlobalFunction("void set_face(arch_t index, arch_t type)", WRAP_MFN_PR(dialogue_gui_t, set_face, (arch_t, direction_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
@@ -801,16 +797,16 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("void set_delay()", WRAP_MFN_PR(dialogue_gui_t, set_delay, (void), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
 	// Push Titlecard
-	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_title_view_t, push), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void push_card(const std::string &in text, arch_t font)", WRAP_MFN(draw_headsup_t, push_card), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Clear Titlecard
-	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(draw_title_view_t, clear), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void clear_cards()", WRAP_MFN(draw_headsup_t, clear_cards), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Set Titlecard Position
-	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(draw_title_view_t, set_position, (arch_t, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card_position(arch_t index, real32_t x, real32_t y)", WRAP_MFN_PR(draw_headsup_t, set_card_position, (arch_t, real_t, real_t), void), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Set Titlecard Centered
-	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(draw_title_view_t, set_centered), asCALL_THISCALL_ASGLOBAL, &title_view);
+	r = engine->RegisterGlobalFunction("void set_card_centered(arch_t index, bool x, bool y)", WRAP_MFN(draw_headsup_t, set_card_centered), asCALL_THISCALL_ASGLOBAL, &headsup);
 	assert(r >= 0);
 	// Open Textbox Top
 	r = engine->RegisterGlobalFunction("void top_box()", WRAP_MFN(dialogue_gui_t, open_textbox_high), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);

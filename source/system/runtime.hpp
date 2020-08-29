@@ -11,7 +11,6 @@
 #include "../menu/stack_gui.hpp"
 #include "../menu/dialogue_gui.hpp"
 #include "../menu/inventory_gui.hpp"
-#include "../overlay/draw_title_view.hpp"
 #include "../overlay/draw_headsup.hpp"
 
 struct setup_file_t;
@@ -48,7 +47,6 @@ private:
 	stack_gui_t stack_gui;
 	dialogue_gui_t dialogue_gui;
 	inventory_gui_t inventory_gui;
-	draw_title_view_t title_view;
 	draw_headsup_t headsup;
 	camera_t camera;
 	naomi_state_t naomi_state;

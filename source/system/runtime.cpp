@@ -25,7 +25,6 @@ runtime_t::runtime_t() :
 	stack_gui(),
 	dialogue_gui(),
 	inventory_gui(),
-	title_view(),
 	headsup(),
 	camera(),
 	naomi_state(),
@@ -39,16 +38,13 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!kernel.init(receiver)) {
 		return false;
 	}
-	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, title_view, headsup, camera, naomi_state, kontext)) {
+	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, headsup, camera, naomi_state, kontext)) {
 		return false;
 	}
 	if (!dialogue_gui.init(receiver)) {
 		return false;
 	}
 	if (!inventory_gui.init()) {
-		return false;
-	}
-	if (!title_view.init()) {
 		return false;
 	}
 	if (!headsup.init(receiver)) {
@@ -92,10 +88,9 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		this->setup_meta(renderer);
 #endif
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup);
-		stack_gui.handle(config, input, video, audio, music, kernel, title_view, headsup);
+		stack_gui.handle(config, input, video, audio, music, kernel, headsup);
 		dialogue_gui.handle(input, audio);
-		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, title_view);
-		title_view.handle();
+		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup);
 		headsup.handle(kernel);
 		if (!kernel.has(kernel_state_t::Freeze)) {
 			camera.handle(kontext, naomi_state);
@@ -127,7 +122,6 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 	stack_gui.render(renderer, inventory_gui);
 	dialogue_gui.render(renderer);
 	inventory_gui.render(renderer, kernel);
-	title_view.render(renderer);
 	headsup.render(renderer, kernel);
 	if (!headsup.is_fade_done()) {
 		const rect_t viewport = camera.get_viewport();
@@ -147,7 +141,6 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	kernel.lock();
 	receiver.reset();
 	stack_gui.reset();
-	title_view.invalidate();
 	headsup.invalidate();
 	camera.reset();
 	kontext.reset();

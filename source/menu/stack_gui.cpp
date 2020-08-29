@@ -14,7 +14,7 @@
 #include "../system/renderer.hpp"
 #include "../system/kernel.hpp"
 
-#include "../overlay/draw_title_view.hpp"
+#include "../overlay/draw_headsup.hpp"
 
 stack_gui_t::stack_gui_t() :
 	amend(true),
@@ -30,11 +30,11 @@ void stack_gui_t::reset() {
 	widgets.clear();
 }
 
-void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, draw_title_view_t& title_view, draw_headsup_t& headsup) {
+void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, draw_headsup_t& headsup) {
 	if (!widgets.empty()) {
 		if (!widgets.back()->is_ready()) {
 			widgets.back()->init(input, video, audio, music, kernel);
-			title_view.set_head();
+			headsup.set_field_text();
 		}
 		widgets.back()->handle(
 			config, input,

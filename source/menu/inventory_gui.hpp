@@ -10,7 +10,7 @@ struct kernel_t;
 struct receiver_t;
 struct stack_gui_t;
 struct dialogue_gui_t;
-struct draw_title_view_t;
+struct draw_headsup_t;
 
 struct inventory_gui_element_t : public not_copyable_t {
 public:
@@ -37,7 +37,7 @@ public:
 	~inventory_gui_t() = default;
 public:
 	bool init();
-	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, const stack_gui_t& stack_gui, const dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view);
+	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, const stack_gui_t& stack_gui, const dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	bool open() const;

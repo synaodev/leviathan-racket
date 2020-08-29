@@ -10,12 +10,14 @@ public:
 	draw_title_view_t& operator=(draw_title_view_t&&) = default;
 	~draw_title_view_t() = default;
 public:
-	bool init();
 	void handle();
 	void render(renderer_t& renderer) const;
 	void invalidate() const;
-	void push(const std::string& string, arch_t font);
+	void push(const std::string& string, arch_t font_index);
 	void clear();
+	void set_font(const font_t* font);
+	void set_persistent(glm::vec2 position, real_t table);
+	void set_persistent(real_t x, real_t y, real_t table);
 	void set_position(arch_t index, glm::vec2 position);
 	void set_position(arch_t index, real_t x, real_t y);
 	void set_centered(arch_t index, bool horizontal, bool vertical);

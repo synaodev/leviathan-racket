@@ -2,7 +2,7 @@
 #include "./stack_gui.hpp"
 #include "./dialogue_gui.hpp"
 
-#include "../overlay/draw_title_view.hpp"
+#include "../overlay/draw_headsup.hpp"
 #include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
@@ -97,7 +97,7 @@ bool inventory_gui_t::init() {
 	return true;
 }
 
-void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, const stack_gui_t& stack_gui, const dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view) {
+void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, const stack_gui_t& stack_gui, const dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup) {
 	if (stack_gui.empty()) {
 		if (!ready) {
 			if (input.pressed[btn_t::Inventory] and !receiver.running()) {
@@ -108,7 +108,7 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 				for (arch_t it = 0; it < elements.size(); ++it) {
 					elements[it].reset(kernel.get_item_at(it));
 				}
-				title_view.set_head();
+				headsup.set_field_text();
 			}
 		} else if (input.pressed[btn_t::Inventory]) {
 			if (!receiver.running()) {

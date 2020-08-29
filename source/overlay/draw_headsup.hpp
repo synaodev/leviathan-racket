@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include "./draw_title_view.hpp"
 #include "./draw_count.hpp"
 #include "./draw_units.hpp"
 #include "./draw_scheme.hpp"
@@ -58,11 +59,18 @@ public:
 #endif
 	void fade_in();
 	void fade_out();
+	void set_field_text(const std::string& text);
+	void set_field_text();
+	void push_card(const std::string& text, arch_t font_index);
+	void clear_cards();
+	void set_card_position(arch_t index, real_t x, real_t y);
+	void set_card_centered(arch_t index, bool horizontal, bool vertical);
 	bool is_fade_done() const;
 	bool is_fade_moving() const;
 	real_t get_main_index() const;
 private:
 	std::function<void(void)> suspender;
+	draw_title_view_t title_view;
 	draw_scheme_t main_scheme;
 	draw_count_t leviathan_count;
 	draw_units_t barrier_units;

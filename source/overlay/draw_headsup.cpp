@@ -9,9 +9,12 @@
 
 #include <add_on/scriptarray.h>
 
+static constexpr arch_t kHeadFontIndex = 2;
+
 #ifdef LEVIATHAN_USES_META
 	draw_headsup_t::draw_headsup_t() :
 		suspender(),
+		title_view(),
 		main_scheme(),
 		leviathan_count(),
 		barrier_units(),
@@ -23,6 +26,7 @@
 #else
 	draw_headsup_t::draw_headsup_t() :
 		suspender(),
+		title_view(),
 		main_scheme(),
 		leviathan_count(),
 		barrier_units(),
@@ -40,10 +44,14 @@ bool draw_headsup_t::init(receiver_t& receiver) {
 	const animation_t* items_animation = vfs::animation(res::anim::Items);
 	const texture_t* texture = vfs::texture(res::img::Heads);
 	const palette_t* palette = vfs::palette(res::pal::Heads);
-	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr) {
+	const font_t* font = vfs::font(kHeadFontIndex);
+	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr or font == nullptr) {
 		synao_log("HeadsUp overlay is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
+	title_view.set_font(font);
+	title_view.set_persistent(160.0f, 24.0f, 1.0f);
+
 	main_scheme.set_file(heads_animation);
 	main_scheme.set_index(0.0f);
 	main_scheme.set_position(2.0f, 2.0f);
@@ -91,6 +99,7 @@ void draw_headsup_t::reset() {
 }
 
 void draw_headsup_t::handle(const kernel_t& kernel) {
+	title_view.handle();
 	item_view.handle(kernel);
 	fade.handle();
 }
@@ -104,6 +113,7 @@ void draw_headsup_t::update(real64_t delta) {
 }
 
 void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const {
+	title_view.render(renderer);
 	if (!kernel.has(kernel_state_t::Lock)) {
 		main_scheme.render(renderer);
 		leviathan_count.render(renderer);
@@ -131,6 +141,7 @@ void draw_headsup_t::render(renderer_t& renderer, const kernel_t& kernel) const 
 }
 
 void draw_headsup_t::invalidate() const {
+	title_view.invalidate();
 	fade.invalidate();
 #ifdef LEVIATHAN_USES_META
 	hidden.invalidate();
@@ -157,6 +168,30 @@ void draw_headsup_t::set_hidden_state(draw_hidden_state_t state, std::function<s
 }
 
 #endif
+
+void draw_headsup_t::set_field_text(const std::string& text) {
+	title_view.set_head(text);
+}
+
+void draw_headsup_t::set_field_text() {
+	title_view.set_head();
+}
+
+void draw_headsup_t::push_card(const std::string& text, arch_t font_index) {
+	title_view.push(text, font_index);
+}
+
+void draw_headsup_t::clear_cards() {
+	title_view.clear();
+}
+
+void draw_headsup_t::set_card_position(arch_t index, real_t x, real_t y) {
+	title_view.set_position(index, x, y);
+}
+
+void draw_headsup_t::set_card_centered(arch_t index, bool horizontal, bool vertical) {
+	title_view.set_centered(index, horizontal, vertical);
+}
 
 void draw_headsup_t::fade_in() {
 	fade.fade_in();

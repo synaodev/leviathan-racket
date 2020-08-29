@@ -44,7 +44,6 @@ struct kernel_t;
 struct stack_gui_t;
 struct dialogue_gui_t;
 struct inventory_gui_t;
-struct draw_title_view_t;
 struct draw_headsup_t;
 struct camera_t;
 struct naomi_state_t;
@@ -57,7 +56,7 @@ public:
 	receiver_t& operator=(receiver_t&&) = default;
 	~receiver_t();
 public:
-	bool init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
+	bool init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
 	void reset();
 	void handle(const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, draw_headsup_t& headsup);
 	void update(real64_t delta);
@@ -90,7 +89,7 @@ private:
 	void set_stalled_period();
 	void set_waiting_period(real_t seconds);
 	void generate_properties();
-	void generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_title_view_t& title_view, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
+	void generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, draw_headsup_t& headsup, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
 private:
 	std::bitset<rec_bits_t::Total> bitmask;
 	real_t timer;
