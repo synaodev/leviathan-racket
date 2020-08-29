@@ -1,7 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_VIDEO_GLCHECK_HPP
 #define LEVIATHAN_INCLUDED_VIDEO_GLCHECK_HPP
 
-#include <glad/glad.hpp>
+#include <glad/glad.h>
 
 #include "../types.hpp"
 

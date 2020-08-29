@@ -49,11 +49,11 @@
 #include <mutex>
 #include <future>
 
-#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG)
+#if defined(__clang__) && defined(__apple_build_version__)
 	#include <filesystem>
 #endif
 
-#include <glad/glad.hpp>
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/vec1.hpp>
