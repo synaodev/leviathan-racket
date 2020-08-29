@@ -33,16 +33,6 @@ if (CCACHE)
 	endif ()
 endif ()
 
-# Building which executables
-
-if (NOT DEFINED NAOMI AND NOT DEFINED EDITOR)
-	message ("Defaulting to building only \"NAOMI\"...")
-	set (NAOMI ON)
-	set (EDITOR OFF)
-elseif (NOT NAOMI AND NOT EDITOR)
-	message (FATAL_ERROR "Error! Neither \"NAOMI\" nor \"EDITOR\" will be built!")
-endif ()
-
 # Building with meta elements
 
 if (NOT DEFINED META)
@@ -67,15 +57,11 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Targets
 
-if (NAOMI)
-	add_executable (naomi)
-	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
-endif ()
+add_executable (naomi)
+target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
 
-if (EDITOR)
-	add_executable (editor)
-	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
-endif ()
+add_executable (editor)
+target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
 
 # Configure
 
