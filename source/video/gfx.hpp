@@ -41,11 +41,11 @@ enum class shader_stage_t {
 	Fragment
 };
 
+struct program_t;
 struct sampler_t;
 struct texture_t;
 struct palette_t;
 struct depth_buffer_t;
-struct program_t;
 struct const_buffer_t;
 struct frame_buffer_t;
 

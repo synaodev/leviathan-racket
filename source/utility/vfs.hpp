@@ -9,7 +9,6 @@
 
 #include "../resource/table_entry.hpp"
 #include "../video/texture.hpp"
-#include "../video/palette.hpp"
 #include "../video/program.hpp"
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)

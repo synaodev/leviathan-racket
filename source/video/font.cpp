@@ -1,6 +1,5 @@
 #include "./font.hpp"
 #include "./texture.hpp"
-#include "./palette.hpp"
 
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"

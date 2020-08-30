@@ -2,12 +2,91 @@
 #include "./glcheck.hpp"
 
 static const uint_t kDrawAttach[] = {
-	GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, 
+	GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 	GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
-	GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5, 
+	GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,
 	GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7,
 	GL_COLOR_ATTACHMENT8, GL_COLOR_ATTACHMENT9
 };
+
+depth_buffer_t::depth_buffer_t() :
+	handle(0),
+	dimensions(0),
+	compress(false)
+{
+
+}
+
+depth_buffer_t::depth_buffer_t(depth_buffer_t&& that) noexcept : depth_buffer_t() {
+	if (this != &that) {
+		std::swap(handle, that.handle);
+		std::swap(dimensions, that.dimensions);
+		std::swap(compress, that.compress);
+	}
+}
+
+depth_buffer_t& depth_buffer_t::operator=(depth_buffer_t&& that) noexcept {
+	if (this != &that) {
+		std::swap(handle, that.handle);
+		std::swap(dimensions, that.dimensions);
+		std::swap(compress, that.compress);
+	}
+	return *this;
+}
+
+depth_buffer_t::~depth_buffer_t() {
+	this->destroy();
+}
+
+void depth_buffer_t::destroy() {
+	if (!handle) {
+		if (compress) {
+			glCheck(glDeleteRenderbuffers(1, &handle));
+		} else {
+			glCheck(glDeleteTextures(1, &handle));
+		}
+		handle = 0;
+	}
+	dimensions = glm::zero<glm::ivec2>();
+	compress = false;
+}
+
+bool depth_buffer_t::create(glm::ivec2 dimensions, bool_t compress) {
+	if (!handle) {
+		this->compress = compress;
+		this->dimensions = dimensions;
+		if (compress) {
+			glCheck(glGenRenderbuffers(1, &handle));
+			glCheck(glBindRenderbuffer(GL_RENDERBUFFER, handle));
+			glCheck(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y));
+			glCheck(glBindRenderbuffer(GL_RENDERBUFFER, 0));
+			glCheck(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, handle));
+		} else {
+			glCheck(glGenTextures(1, &handle));
+			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
+
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y));
+			} else {
+				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_BYTE, nullptr));
+			}
+
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+
+			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+			glCheck(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, handle, 0));
+		}
+		return true;
+	}
+	return false;
+}
+
+bool depth_buffer_t::valid() const {
+	return handle != 0;
+}
 
 frame_buffer_t::frame_buffer_t() :
 	ready(false),
@@ -46,7 +125,7 @@ void frame_buffer_t::push(glm::ivec2 dimensions, arch_t length, pixel_format_t f
 		if (!handle) {
 			glCheck(glGenFramebuffers(1, &handle));
 		}
-		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, handle));		
+		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, handle));
 		color_buffer.color_buffer(dimensions, length, format);
 	}
 }
@@ -151,9 +230,9 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer) {
 
 void frame_buffer_t::blit(glm::ivec2 source_position, glm::ivec2 source_dimensions, glm::ivec2 destination_position, glm::ivec2 destination_dimensions) {
 	glCheck(glBlitFramebuffer(
-		source_position.x, source_position.y, 
+		source_position.x, source_position.y,
 		source_dimensions.x, source_dimensions.y,
-		destination_position.x, destination_position.y, 
+		destination_position.x, destination_position.y,
 		destination_dimensions.x, destination_dimensions.y,
 		GL_COLOR_BUFFER_BIT, GL_NEAREST
 	));

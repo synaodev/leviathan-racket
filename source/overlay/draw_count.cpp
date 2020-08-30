@@ -1,7 +1,6 @@
 #include "./draw_count.hpp"
 
 #include "../video/texture.hpp"
-#include "../video/palette.hpp"
 #include "../system/renderer.hpp"
 
 static constexpr sint_t kFirst = -4735916;
