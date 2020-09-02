@@ -6,6 +6,7 @@
 #include <memory>
 #include <thread>
 #include <atomic>
+#include <array>
 
 #include "../types.hpp"
 
