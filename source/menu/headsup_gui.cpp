@@ -80,12 +80,12 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	fight_meter.init(heads_animation);
 	fade.init();
 #ifdef LEVIATHAN_USES_META
-	const font_t* font = vfs::debug_font();
-	if (font == nullptr) {
+	const font_t* debug_font = vfs::debug_font();
+	if (debug_font == nullptr) {
 		synao_log("Could not load debug font!\n");
 		return false;
 	}
-	hidden.init(texture, palette, font);
+	hidden.init(texture, palette, debug_font);
 #endif
 	synao_log("HeadsUp overlay is ready.\n");
 	return true;

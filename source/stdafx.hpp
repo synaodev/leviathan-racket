@@ -52,7 +52,7 @@
 	#include <filesystem>
 #endif
 
-#include <glad/glad.h>
+//#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/vec1.hpp>
