@@ -1,6 +1,6 @@
 # Leviathan Racket
 This is the current official repository for Leviathan Racket.
-I hope to release in Winter 2020.
+I hope to release in Winter 2021.
 ## Required Dependencies
 - [fmt](https://github.com/fmtlib/fmt)
 - [OpenAL](https://github.com/kcat/openal-soft)
@@ -11,10 +11,10 @@ I hope to release in Winter 2020.
 - [Tmxlite](https://github.com/fallahn/tmxlite)
 ## Included Dependencies
 - [ImGui](https://github.com/ocornut/imgui)
-- [Nlohmann JSON](https://github.com/nlohmann/json)
+- [Nlohmann-JSON](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
-- [GLAD OpenGL Loader](https://glad.dav1d.de)
-- [Pxtone Source](https://pxtone.org/developer)
+- [GLAD](https://glad.dav1d.de)
+- [Pxtone](https://pxtone.org/developer)
 ## Building From Source
 - General:
   - CMake version must be at least 3.15.
@@ -24,7 +24,7 @@ I hope to release in Winter 2020.
   - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite fmt`.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
-  - Depending on your GPU, you may need to install non-free firmware to use OpenGL.
+  - Depending on your GPU, you may need to install non-free firmware.
   - For OpenAL, GLM, and SDL2, you should use your package manager:
     - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
     - Pacman: `pacman -S mesa openal glm sdl2`
@@ -34,8 +34,8 @@ I hope to release in Winter 2020.
 - MacOS:
   - Vcpkg is absolutely required.
   - Install Xcode and Xcode Command-Line Tools in order to use OpenGL.Framework (yes, seriously).
-  - Supports only AppleClang for now. GCC support is coming soon, and it might require the use of [homebrew](https://brew.sh/), but we'll see.
-  - When installing dependencies with vcpkg, leave out openal-soft. It often exhibits strange behavior, and it also usually gets ignored in favor of OpenAL.Framework.
+  - Supports only AppleClang.
+  - When installing dependencies with vcpkg, leave out openal-soft. It usually gets ignored in favor of OpenAL.Framework.
 - Windows:
   - Vcpkg is absolutely required.
   - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin environment is not supported. You can also use MinGW & vcpkg on Linux for cross-compiling.
