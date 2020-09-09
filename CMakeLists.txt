@@ -3,8 +3,8 @@ cmake_minimum_required (VERSION 3.15)
 # Building with precompiled headers
 
 if (NOT DEFINED STDAFX)
-	message ("Defaulting to building without precompiled headers...")
-	set (STDAFX OFF)
+	message ("Defaulting to building with precompiled headers...")
+	set (STDAFX ON)
 elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
 	if (STDAFX)
 		message ("Precompiled headers are unavailable! Sorry!")
