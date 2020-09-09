@@ -1,3 +1,5 @@
+#include "./main.hpp"
+
 #include <cstdlib>
 #include <cstring>
 #include <SDL2/SDL.h>
@@ -245,23 +247,37 @@ static bool mount(const byte_t* provided_directory) {
 }
 
 int main(int argc, char** argv) {
-	// Check arguments
+	// Print version information
+	synao_log(
+		"====== Leviathan Racket ======\n"
+		"\tVersion: {}.{}.{}.{}\n"
+		"\tAuthor: Tyler Cadena\n"
+		"\tPlatform: {} {}\n"
+		"\tCompiler: {}\n"
+		"\tToolchain: {}\n"
+		"\tExecutable: {} {}\n"
+		"==============================\n",
+		LEVIATHAN_VERSION_INFORMATION_MAJOR,
+		LEVIATHAN_VERSION_INFORMATION_MINOR,
+		LEVIATHAN_VERSION_INFORMATION_PATCH,
+		LEVIATHAN_VERSION_INFORMATION_TWEAK,
+		version_information::platform,
+		version_information::architecture,
+		version_information::compiler,
+		version_information::toolchain,
+		version_information::executable,
+		version_information::build_type
+	);
+	// Handle arguments
 	{
 		const byte_t* directory = nullptr;
-		bool_t show_version = false;
 		for (sint_t it = 1; it < argc; ++it) {
 			const byte_t* option = argv[it];
-			if (!show_version and std::strcmp(option, "--version") == 0) {
-				show_version = true;
-			} else if (directory == nullptr) {
+			if (directory == nullptr) {
 				directory = option;
 			} else {
 				break;
 			}
-		}
-		// Print Version
-		if (show_version) {
-			synao_log("Leviathan Racket Version: 0.0.0.0\n");
 		}
 		// Set "mounting" directory for virtual filesystem
 		if (!mount(directory)) {

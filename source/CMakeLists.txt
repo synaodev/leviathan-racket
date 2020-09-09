@@ -13,6 +13,13 @@ if (STDAFX)
 	target_precompile_headers (editor PRIVATE "stdafx.hpp")
 endif ()
 
+configure_file ("version.inc" "leviathan_racket.hpp" @ONLY)
+
+target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_DEFINES_VERSION")
+target_compile_definitions (editor PRIVATE "-DLEVIATHAN_DEFINES_VERSION")
+target_include_directories (naomi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories (editor PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+
 target_sources (naomi PRIVATE "types.cpp")
 target_sources (editor PRIVATE "types.cpp")
 

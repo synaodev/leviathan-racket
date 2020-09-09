@@ -67,6 +67,7 @@ target_link_libraries (naomi PRIVATE
 	${SDL2_LIBRARIES}
 )
 target_include_directories (naomi PRIVATE
+	${CMAKE_CURRENT_BINARY_DIR}
 	${GENERAL_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
@@ -80,6 +81,7 @@ target_link_libraries (editor PRIVATE
 )
 
 target_include_directories (editor PRIVATE
+	${CMAKE_CURRENT_BINARY_DIR}
 	${GENERAL_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}

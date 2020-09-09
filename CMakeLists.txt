@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.15)
 
 # Building with precompiled headers
 
-if (NOT DEFINED STDAFX)
+if (NOT DEFINED STDAFX AND NOT MINGW)
 	message ("Defaulting to building with precompiled headers...")
 	set (STDAFX ON)
 elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
@@ -42,10 +42,12 @@ endif ()
 
 # Project definition
 
-project (SYNAODEV_LEVIATHAN_RACKET)
+project (LeviathanRacket)
 
-set (SYNAODEV_LEVIATHAN_VERSION_MAJOR 0)
-set (SYNAODEV_LEVIATHAN_VERSION_MINOR 0)
+set (LeviathanRacket_VERSION_MAJOR 0)
+set (LeviathanRacket_VERSION_MINOR 0)
+set (LeviathanRacket_VERSION_PATCH 0)
+set (LeviathanRacket_VERSION_TWEAK 0)
 
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
