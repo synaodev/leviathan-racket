@@ -84,7 +84,6 @@ public:
 	void sort(Compare compare, Args&& ...args);
 private:
 	mutable bool_t panic_draw;
-	bool_t liquid_flag;
 	entt::registry registry;
 	std::vector<actor_spawn_t> spawn_commands;
 	std::unordered_map<arch_t, routine_ctor_fn> ctor_table;

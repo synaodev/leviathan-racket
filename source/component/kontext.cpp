@@ -21,7 +21,6 @@
 
 kontext_t::kontext_t() :
 	panic_draw(false),
-	liquid_flag(false),
 	registry(),
 	spawn_commands(),
 	ctor_table(),
@@ -52,7 +51,6 @@ bool kontext_t::init(receiver_t& receiver, headsup_gui_t& headsup_gui) {
 
 void kontext_t::reset() {
 	panic_draw = true;
-	liquid_flag = false;
 	auto view = registry.view<actor_header_t>();
 	for (auto&& actor : view) {
 		registry.destroy(actor);
@@ -64,9 +62,7 @@ void kontext_t::handle(audio_t& audio, receiver_t& receiver, camera_t& camera, n
 	kinematics_t::handle(*this, tilemap);
 	routine_t::handle(audio, camera, naomi_state, *this, tilemap);
 	health_t::handle(audio, receiver, naomi_state, *this);
-	if (liquid_flag) {
-		liquid::handle(audio, *this);
-	}
+	liquid::handle(audio, *this);
 	if (!spawn_commands.empty()) {
 		for (auto&& spawn : spawn_commands) {
 			this->create(spawn);
@@ -82,9 +78,7 @@ void kontext_t::update(real64_t delta) {
 
 void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 	sprite_t::render(*this, renderer, viewport, panic_draw);
-	if (liquid_flag) {
-		liquid::render(*this, renderer, viewport);
-	}
+	liquid::render(*this, renderer, viewport);
 #ifdef LEVIATHAN_USES_META
 	if (meta_state_t::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
@@ -209,7 +203,6 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 				}
 			}
 		} else if (type == kMapWater) {
-			liquid_flag = true;
 			rect_t hitbox = ftcv::rect_to_rect(object.getAABB());
 			entt::entity actor = registry.create();
 			registry.emplace<actor_header_t>(actor);
