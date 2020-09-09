@@ -42,14 +42,14 @@ public:
 	video_t& operator=(video_t&&) = default;
 	~video_t();
 public:
-	bool init(const setup_file_t& config, bool start_imgui = false);
+	bool init(const setup_file_t& config, bool editor = false);
 	void submit(const frame_buffer_t* frame_buffer, arch_t index) const;
 	void flush() const;
 	void set_parameters(screen_params_t params);
-	screen_params_t get_parameters() const;
+	const screen_params_t& get_parameters() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
-	glm::ivec2 get_imgui_dimensions() const;
+	glm::ivec2 get_editor_dimensions() const;
 	glm::ivec2 get_opengl_version() const;
 	auto get_device() const {
 		return std::make_tuple(window, context);

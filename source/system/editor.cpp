@@ -3,9 +3,9 @@
 #include "./video.hpp"
 #include "./renderer.hpp"
 
+#include "../field/tileflag.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../field/tileflag.hpp"
 
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS
@@ -86,16 +86,17 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 			std::get<SDL_Window*>(device),
 			std::get<SDL_GLContext>(device)
 		)) {
-		synao_log("Error! Failed to initialize SDL2 for ImGui!\n");
+		synao_log("Error! Failed to initialize ImGui SDL2!\n");
 		return false;
 	}
 	window = std::get<SDL_Window*>(device);
-	if (!ImGui_ImplOpenGL3_Init("#version 330")) {
-		synao_log("Error! Failed to initialize OpenGL for ImGui!\n");
+	const std::string directive = pipeline::directive(video.get_opengl_version());
+	if (!ImGui_ImplOpenGL3_Init(directive.c_str())) {
+		synao_log("Error! Failed to initialize ImGui OpenGL!\nGLSL Version: \"{}\"", directive);
 		return false;
 	}
 	context = std::get<SDL_GLContext>(device);
-	renderer.ortho(video.get_imgui_dimensions());
+	renderer.ortho(video.get_editor_dimensions());
 	synao_log("Editor subsystems initialized.\n");
 	return true;
 }
@@ -151,7 +152,7 @@ void editor_t::update(real64_t delta) {
 
 void editor_t::render(const video_t& video, renderer_t& renderer) const {
 	tileset_viewer.render(renderer);
-	renderer.flush(video.get_imgui_dimensions());
+	renderer.flush(video.get_editor_dimensions());
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	video.flush();
 }

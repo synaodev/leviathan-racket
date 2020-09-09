@@ -1,5 +1,7 @@
 #include "./pipeline.hpp"
 
+#include <fmt/format.h>
+
 static constexpr byte_t kBlankVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
 	mat4 viewport;
@@ -141,6 +143,13 @@ void main() {
 })";
 
 namespace pipeline {
+	std::string directive(glm::ivec2 version) {
+		return fmt::format(
+			"#version {}{}0",
+			version[0],
+			version[1]
+		);
+	}
 	std::string blank_vert(glm::ivec2 version) {
 		if (version[0] == 4 and version[1] >= 2) {
 			return kBlankVert420;

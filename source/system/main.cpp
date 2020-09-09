@@ -37,7 +37,7 @@ static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audi
 			if (runtime.viable()) {
 				if (runtime.handle(config, input, video, audio, music, renderer)) {
 					runtime.render(video, renderer);
-					const screen_params_t params = video.get_parameters();
+					auto& params = video.get_parameters();
 					if (params.vsync != 0) {
 						SDL_Delay(kNormDelay);
 					} else {

@@ -17,6 +17,7 @@ namespace __enum_pipeline {
 using pipeline_t = __enum_pipeline::type;
 
 namespace pipeline {
+	std::string directive(glm::ivec2 version);
 	std::string blank_vert(glm::ivec2 version);
 	std::string major_vert(glm::ivec2 version);
 	std::string colors_frag(glm::ivec2 version);

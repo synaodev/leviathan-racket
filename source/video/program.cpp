@@ -283,11 +283,12 @@ const vertex_spec_t& program_t::get_specify() const {
 }
 
 bool program_t::has_separable() {
-#ifndef __APPLE__
-	return glBindProgramPipeline != nullptr;
-#else // __APPLE__
+#if defined(LEVIATHAN_PLATFORM_MACOS)
+	// MacOS is dumb
 	return glTexStorage2D != nullptr;
-#endif // __APPLE__
+#else
+	return glBindProgramPipeline != nullptr;
+#endif
 }
 
 bool program_t::has_uniform_azdo() {

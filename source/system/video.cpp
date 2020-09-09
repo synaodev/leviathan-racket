@@ -30,17 +30,19 @@ video_t::~video_t() {
 	}
 }
 
-bool video_t::init(const setup_file_t& config, bool start_imgui) {
+bool video_t::init(const setup_file_t& config, bool editor) {
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
+	// Use OpenGL 4.X by default.
 	bool_t use_opengl_4 = true;
 	config.get("Video", "UseOpenGL4", use_opengl_4);
 	if (!use_opengl_4) {
 		this->major = 3;
 		this->minor = 3;
 	}
+	// Setup parameters.
 	params.scaling = glm::clamp(
 		params.scaling,
 		screen_params_t::kDefaultScaling,
@@ -58,12 +60,13 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		synao_log("OpenGL context already created!\n");
 		return false;
 	}
-#ifdef __APPLE__
+#if defined(LEVIATHAN_PLATFORM_MACOS)
+	// MacOS build needs to set Forward Compatible Flags.
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
 		synao_log("Setting context flags failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-#endif // __APPLE__
+#endif
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE) < 0) {
 		synao_log("Setting OpenGL Core profile failed! SDL Error: {}\n", SDL_GetError());
 		return false;
@@ -80,18 +83,19 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		synao_log("Setting double-buffering failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	if (start_imgui) {
+	// Create window.
+	if (editor) {
 		window = SDL_CreateWindow(
-			constants::WindowName,
+			constants::EditorName,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
-			constants::ImguiWidth<sint_t>(),
-			constants::ImguiWidth<sint_t>(),
+			constants::EditorWidth<sint_t>(),
+			constants::EditorHeight<sint_t>(),
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
 		);
 	} else {
 		window = SDL_CreateWindow(
-			constants::WindowName,
+			constants::NormalName,
 			SDL_WINDOWPOS_CENTERED,
 			SDL_WINDOWPOS_CENTERED,
 			constants::NormalWidth<sint_t>() * params.scaling,
@@ -103,10 +107,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		synao_log("Window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
+	// Try to set fullscreen.
 	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
 		synao_log("Fullscreen after window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
+	// Try every OpenGL version from 4.6 to 3.3 and break when no errors.
 	while (1) {
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, this->major) < 0) {
 			synao_log("Setting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
@@ -140,6 +146,7 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		synao_log("OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
+	// Confirm OpenGL version.
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &this->major) < 0) {
 		synao_log("Getting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
@@ -149,13 +156,15 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		return false;
 	}
 	synao_log("OpenGL Version is {}.{}!\n", this->major, this->minor);
+	// Load OpenGL extensions with GLAD
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		synao_log("OpenGL Extension loading failed!\n");
 		return false;
 	}
-	if (start_imgui) {
+	// Clear and swap so the screen isn't left blank.
+	if (editor) {
 		frame_buffer_t::clear(
-			constants::ImguiDimensions<sint_t>(),
+			constants::EditorDimensions<sint_t>(),
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 		);
 	} else {
@@ -165,10 +174,12 @@ bool video_t::init(const setup_file_t& config, bool start_imgui) {
 		);
 	}
 	SDL_GL_SwapWindow(window);
-	if (!start_imgui and SDL_GL_SetSwapInterval(params.vsync) < 0) {
+	// Try to set v-sync state.
+	if (!editor and SDL_GL_SetSwapInterval(params.vsync) < 0) {
 		synao_log("Vertical sync after OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
+	// Set window icon.
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
 		icon::pixels(),
 		icon::width(),
@@ -249,7 +260,7 @@ void video_t::set_parameters(screen_params_t params) {
 	}
 }
 
-screen_params_t video_t::get_parameters() const {
+const screen_params_t& video_t::get_parameters() const {
 	return params;
 }
 
@@ -261,8 +272,8 @@ glm::ivec2 video_t::get_integral_dimensions() const {
 	return constants::NormalDimensions<sint_t>() * params.scaling;
 }
 
-glm::ivec2 video_t::get_imgui_dimensions() const {
-	return constants::ImguiDimensions<sint_t>();
+glm::ivec2 video_t::get_editor_dimensions() const {
+	return constants::EditorDimensions<sint_t>();
 }
 
 glm::ivec2 video_t::get_opengl_version() const {
