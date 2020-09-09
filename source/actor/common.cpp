@@ -38,7 +38,7 @@ void ai::hv_trigger::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& trigger = rtp.kontext.get<actor_trigger_t>(s);
 	if (trigger.bitmask[trigger_flags_t::InteractionEvent]) {
 		auto& this_location = rtp.kontext.get<location_t>(s);
-		auto& that_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
+		auto& that_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
 		if (this_location.overlap(that_location)) {
 			rtp.kontext.run(trigger);
 		}

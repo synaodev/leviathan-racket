@@ -320,14 +320,14 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 				reticule.x - location.position.x
 			);
 			kinematics.accel_angle(angle, 10.0f);
-			glm::vec2 naomi_center = rtp.kontext.get<location_t>(rtp.naomi.actor).center();
+			glm::vec2 naomi_center = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center();
 			glm::vec2 actor_center = location.center();
 			if (kinematics.flags[phy_t::Hooked]) {
 				kinematics.flags[phy_t::Noclip] = true;
 				kinematics.velocity = glm::zero<glm::vec2>();
 				timer[0] = 0;
 				routine.state = 3;
-				auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
+				auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
 				naomi_kinematics.anchor = actor_center;
 				naomi_kinematics.tether = glm::distance(actor_center, naomi_center);
 				return;
@@ -339,7 +339,7 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 				kinematics.velocity = glm::zero<glm::vec2>();
 				timer[0] = 0;
 				routine.state = 1;
-				auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
+				auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
 				naomi_kinematics.anchor = actor_center;
 				naomi_kinematics.tether = glm::distance(actor_center, naomi_center);
 			}
@@ -349,7 +349,7 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 		break;
 	}
 	case 1: /* Actor Hooked */ {
-		auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
+		auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
 		if (rtp.kontext.valid(header.attach)) {
 			auto& attach_location = rtp.kontext.get<location_t>(header.attach);
 			auto& attach_health = rtp.kontext.get<health_t>(header.attach);
@@ -364,8 +364,8 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 		break;
 	}
 	case 2: /* Return */ {
-		auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
-		auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
+		auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
+		auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
 		if (location.overlap(naomi_location)) {
 			rtp.kontext.dispose(s);
 		} else {
@@ -409,7 +409,7 @@ void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	entt::entity lance = rtp.kontext.search_type(ai::holy_lance::type);
 	if (lance != entt::null) {
-		glm::vec2 naomi_center = rtp.kontext.get<location_t>(rtp.naomi.actor).center();
+		glm::vec2 naomi_center = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center();
 		glm::vec2 actor_center = location.center();
 		real_t angle = glm::atan(
 			naomi_center.y - actor_center.y,

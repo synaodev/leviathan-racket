@@ -80,7 +80,7 @@ void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
 }
 
 void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
-	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
+	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
 	auto& location = rtp.kontext.get<location_t>(s);
 	location.position = naomi_location.position;
 	location.hori(
@@ -88,7 +88,7 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 		direction_t::Left : direction_t::Right
 	);
 
-	auto& naomi_sprite = rtp.kontext.get<sprite_t>(rtp.naomi.actor);
+	auto& naomi_sprite = rtp.kontext.get<sprite_t>(rtp.naomi.get_actor());
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	if (sprite.mirroring != naomi_sprite.mirroring) {
 		sprite.amend = true;
@@ -121,8 +121,8 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	auto& helper = rtp.kontext.get<shoshi_helper_t>(s);
 	auto& listener = rtp.kontext.get<liquid_listener_t>(s);
-	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
-	auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
+	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
+	auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
 
 	bool should_jump = false;
 	glm::vec2 naomi_center = naomi_location.center();

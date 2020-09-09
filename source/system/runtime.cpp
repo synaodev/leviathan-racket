@@ -231,7 +231,7 @@ void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 			dialogue_gui.reset();
 			headsup_gui.reset();
 			naomi_state.reset(
-				kontext, position * 16.0f,
+				kontext, position * constants::TileSize<real_t>(),
 				static_cast<direction_t>(direction),
 				static_cast<sint_t>(current),
 				static_cast<sint_t>(maximum),
@@ -264,13 +264,13 @@ void runtime_t::setup_save() {
 	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
-		auto& location = kontext.get<location_t>(naomi_state.actor);
-		auto& health = kontext.get<health_t>(naomi_state.actor);
+		auto& location = kontext.get<location_t>(naomi_state.get_actor());
+		auto& health = kontext.get<health_t>(naomi_state.get_actor());
 		file.set("Status", "MaxHp", health.maximum);
 		file.set("Status", "CurHp", health.current);
 		file.set("Status", "CurAp", health.leviathan);
 		file.set("Status", "Field", kernel.get_field());
-		file.set("Status", "Position", location.position / 16.0f);
+		file.set("Status", "Position", location.position / constants::TileSize<real_t>());
 		file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
 		file.set("Status", "Equips", naomi_state.hexadecimal_equips());
 		kernel.write_data(file);

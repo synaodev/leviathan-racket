@@ -46,7 +46,7 @@ public:
 	void reset();
 	void attack(health_t& victim) const;
 public:
-	static void handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi_state, kontext_t& kontext);
+	static void handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi, kontext_t& kontext);
 public:
 	std::bitset<health_flags_t::Total> flags;
 	sint_t current, maximum;

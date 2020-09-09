@@ -175,6 +175,7 @@ public:
 	void boost_maximum_barrer(sint_t amount);
 	void mut_leviathan_power(sint_t amount);
 	bool interacting() const;
+	entt::entity get_actor() const;
 	glm::vec2 get_reticule() const;
 	glm::vec2 camera_placement() const;
 	std::string hexadecimal_equips() const;
@@ -204,9 +205,8 @@ private:
 	void do_animation(location_t& location, sprite_t& sprite, const health_t& health);
 	void do_death(receiver_t& receiver, const kinematics_t& kinematics, const health_t& health);
 	void do_headsup(headsup_gui_t& headsup_gui, const health_t& health);
-public:
-	entt::entity actor;
 private:
+	entt::entity actor;
 	std::bitset<naomi_flags_t::Total> flags;
 	std::bitset<naomi_equips_t::Total> equips;
 	std::vector<sint64_t> chroniker;

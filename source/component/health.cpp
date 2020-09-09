@@ -27,9 +27,9 @@ void health_t::attack(health_t& victim) const {
 	victim.leviathan += leviathan;
 }
 
-void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi_state, kontext_t& kontext) {
-	const auto& naomi_location = kontext.get<location_t>(naomi_state.actor);
-	kontext.slice<actor_header_t, health_t, location_t>().each([&audio, &receiver, &naomi_state, &kontext, &naomi_location](entt::entity actor, const actor_header_t&, health_t& health, const location_t& location) {
+void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi, kontext_t& kontext) {
+	const auto& naomi_location = kontext.get<location_t>(naomi.get_actor());
+	kontext.slice<actor_header_t, health_t, location_t>().each([&audio, &receiver, &naomi, &kontext, &naomi_location](entt::entity actor, const actor_header_t&, health_t& health, const location_t& location) {
 		if (health.current <= 0) {
 			if (kontext.has<actor_trigger_t>(actor)) {
 				auto& trigger = kontext.get<actor_trigger_t>(actor);
@@ -46,7 +46,7 @@ void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi
 			}
 		} else if (health.flags[health_flags_t::Attack]) {
 			if (health.damage > 0 and location.overlap(naomi_location)) {
-				naomi_state.damage(actor, audio, kontext);
+				naomi.damage(actor, audio, kontext);
 			}
 		} else if (health.flags[health_flags_t::MajorFight]) {
 			kontext.meter(health.current, health.maximum);

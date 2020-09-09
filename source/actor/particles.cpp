@@ -257,6 +257,6 @@ void ai::barrier::tick(entt::entity s, routine_tuple_t& rtp) {
 	} else {
 		glm::vec2 scale = sprite.scale / 2.0f;
 		glm::vec2 dimensions = glm::vec2(32.0f, 22.0f) * scale;
-		location.position = rtp.kontext.get<location_t>(rtp.naomi.actor).center() - dimensions;
+		location.position = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center() - dimensions;
 	}
 }

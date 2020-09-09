@@ -468,6 +468,10 @@ bool naomi_state_t::interacting() const {
 	return flags[naomi_flags_t::Interacting];
 }
 
+entt::entity naomi_state_t::get_actor() const {
+	return actor;
+}
+
 glm::vec2 naomi_state_t::get_reticule() const {
 	return reticule;
 }
