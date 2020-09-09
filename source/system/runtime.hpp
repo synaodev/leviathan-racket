@@ -12,6 +12,7 @@
 #include "../menu/dialogue_gui.hpp"
 #include "../menu/inventory_gui.hpp"
 #include "../menu/headsup_gui.hpp"
+#include "../menu/meta_state.hpp"
 
 struct setup_file_t;
 struct input_t;
@@ -27,19 +28,16 @@ public:
 	runtime_t& operator=(runtime_t&&) = default;
 	~runtime_t() = default;
 public:
-	bool init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer);
+	bool init(input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer);
 	bool handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer);
 	void update(real64_t delta);
 	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 private:
 	bool setup_field(audio_t& audio, renderer_t& renderer);
-	void setup_boot(renderer_t& renderer);
-	void setup_load(renderer_t& renderer);
+	void setup_boot(const video_t& video, renderer_t& renderer);
+	void setup_load(const video_t& video, renderer_t& renderer);
 	void setup_save();
-#ifdef LEVIATHAN_USES_META
-	void setup_meta(const renderer_t& renderer);
-#endif
 private:
 	real64_t accum;
 	kernel_t kernel;
@@ -52,6 +50,7 @@ private:
 	naomi_state_t naomi_state;
 	kontext_t kontext;
 	tilemap_t tilemap;
+	meta_state_t meta_state;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP

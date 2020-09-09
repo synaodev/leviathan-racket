@@ -10,7 +10,6 @@
 #include "../overlay/draw_fade.hpp"
 #include "../overlay/draw_item_view.hpp"
 #include "../overlay/draw_meter.hpp"
-#include "../overlay/draw_hidden.hpp"
 
 struct input_t;
 struct audio_t;
@@ -54,9 +53,6 @@ public:
 	void invalidate() const;
 	void set_parameters(headsup_params_t params);
 	void set_fight_values(sint_t current, sint_t maximum);
-#ifdef LEVIATHAN_USES_META
-	void set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio);
-#endif
 	void fade_in();
 	void fade_out();
 	void set_field_text(const std::string& text);
@@ -78,9 +74,6 @@ private:
 	draw_item_view_t item_view;
 	draw_meter_t fight_meter;
 	draw_fade_t fade;
-#ifdef LEVIATHAN_USES_META
-	draw_hidden_t hidden;
-#endif
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP

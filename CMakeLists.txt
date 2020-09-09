@@ -2,29 +2,29 @@ cmake_minimum_required (VERSION 3.15)
 
 # Building with precompiled headers
 
-if (NOT DEFINED STDAFX AND NOT MINGW)
+if (NOT DEFINED STDAFX_BUILD AND NOT MINGW)
 	message ("Defaulting to building with precompiled headers...")
-	set (STDAFX ON)
+	set (STDAFX_BUILD ON)
 elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
-	if (STDAFX)
+	if (STDAFX_BUILD)
 		message ("Precompiled headers are unavailable! Sorry!")
 	endif ()
-	set (STDAFX OFF)
+	set (STDAFX_BUILD OFF)
 endif ()
 
 # Building with ccache
 
 if (WIN32 OR APPLE)
-	if (CCACHE)
+	if (CCACHE_BUILD)
 		message ("Cannot use ccache on this system! Sorry!")
 	endif ()
-	set (CCACHE OFF)
-elseif (NOT DEFINED CCACHE)
+	set (CCACHE_BUILD OFF)
+elseif (NOT DEFINED CCACHE_BUILD)
 	message ("Defaulting to building with ccache, if possible...")
-	set (CCACHE ON)
+	set (CCACHE_BUILD ON)
 endif ()
 
-if (CCACHE)
+if (CCACHE_BUILD)
 	find_program (CCACHE_PROGRAM "ccache")
 	if (CCACHE_PROGRAM)
 		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
@@ -35,9 +35,9 @@ endif ()
 
 # Building with meta elements
 
-if (NOT DEFINED META)
+if (NOT DEFINED META_BUILD)
 	message ("Defaulting to building without meta elements...")
-	set (META OFF)
+	set (META_BUILD OFF)
 endif ()
 
 # Project definition

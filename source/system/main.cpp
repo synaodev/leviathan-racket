@@ -24,14 +24,14 @@ static constexpr uint_t kNormDelay = 10;
 static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	runtime_t runtime;
-	if (!runtime.init(input, audio, music, renderer)) {
+	if (!runtime.init(input, video, audio, music, renderer)) {
 		synao_log("Runtime initialization failed!\n");
 		return false;
 	}
 	synao_log("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
-		policy = input.poll(policy);
+		policy = input.poll(policy, meta_state_t::get_event_callback());
 		if (policy != policy_t::Stop) {
 			runtime.update(head_watch.restart());
 			if (runtime.viable()) {
@@ -177,6 +177,8 @@ static std::string get_boot_path() {
 
 static void write_config(setup_file_t& config, const std::string& boot_path) {
 	config.clear(boot_path);
+	config.set("Setup", "MetaMenu", 0);
+	config.set("Setup", "OpenGL4X", 1);
 	config.set("Setup", "Language", std::string("english"));
 	config.set("Video", "VerticalSync", 0);
 	config.set("Video", "Fullscreen", 0);

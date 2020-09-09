@@ -9,7 +9,6 @@
 #include "../system/audio.hpp"
 #include "../system/video.hpp"
 #include "../system/renderer.hpp"
-#include "../utility/meta.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup_file.hpp"
@@ -29,12 +28,13 @@ runtime_t::runtime_t() :
 	camera(),
 	naomi_state(),
 	kontext(),
-	tilemap()
+	tilemap(),
+	meta_state()
 {
 
 }
 
-bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t& renderer) {
+bool runtime_t::init(input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	if (!kernel.init(receiver)) {
 		return false;
 	}
@@ -56,7 +56,12 @@ bool runtime_t::init(input_t& input, audio_t& audio, music_t& music, renderer_t&
 	if (!naomi_state.init(kontext)) {
 		return false;
 	}
-	this->setup_boot(renderer);
+#ifdef LEVIATHAN_USES_META
+	if (!meta_state.init(video)) {
+		return false;
+	}
+#endif
+	this->setup_boot(video, renderer);
 	synao_log("Runtime subsystems initialized.\n");
 	return true;
 }
@@ -67,10 +72,10 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		input.advance();
 		if (headsup_gui.is_fade_done()) {
 			if (kernel.has(kernel_state_t::Boot)) {
-				this->setup_boot(renderer);
+				this->setup_boot(video, renderer);
 			}
 			if (kernel.has(kernel_state_t::Load)) {
-				this->setup_load(renderer);
+				this->setup_load(video, renderer);
 			}
 			if (kernel.has(kernel_state_t::Field)) {
 				if (!this->setup_field(audio, renderer)) {
@@ -84,9 +89,6 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		if (kernel.has(kernel_state_t::Quit)) {
 			return false;
 		}
-#ifdef LEVIATHAN_USES_META
-		this->setup_meta(renderer);
-#endif
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup_gui);
 		stack_gui.handle(config, input, video, audio, music, kernel, headsup_gui);
 		dialogue_gui.handle(input, audio);
@@ -98,6 +100,9 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
 			tilemap.handle(camera);
 		}
+#ifdef LEVIATHAN_USES_META
+		meta_state.handle(input);
+#endif
 		input.flush();
 		audio.flush();
 	}
@@ -129,6 +134,9 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 		tilemap.render(renderer, viewport);
 	}
 	renderer.flush(video, camera.get_matrix());
+#ifdef LEVIATHAN_USES_META
+	meta_state.flush();
+#endif
 	video.flush();
 }
 
@@ -182,7 +190,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	return true;
 }
 
-void runtime_t::setup_boot(renderer_t& renderer) {
+void runtime_t::setup_boot(const video_t&, renderer_t& renderer) {
 	renderer.clear();
 	kernel.reset();
 	stack_gui.reset();
@@ -194,7 +202,7 @@ void runtime_t::setup_boot(renderer_t& renderer) {
 }
 
 // If loading fails, run setup_boot() to make sure the game doesn't get stuck.
-void runtime_t::setup_load(renderer_t& renderer) {
+void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 	bool failure = false;
 	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
 	if (vfs::create_directory(save_path)) {
@@ -244,7 +252,7 @@ void runtime_t::setup_load(renderer_t& renderer) {
 	}
 	kernel.finish_file_operation();
 	if (failure) {
-		this->setup_boot(renderer);
+		this->setup_boot(video, renderer);
 	}
 }
 
@@ -275,38 +283,3 @@ void runtime_t::setup_save() {
 	}
 	kernel.finish_file_operation();
 }
-
-#ifdef LEVIATHAN_USES_META
-
-void runtime_t::setup_meta(const renderer_t& renderer) {
-	if (input_t::get_meta_holding(SDL_SCANCODE_BACKSPACE)) {
-		if (input_t::get_meta_pressed(SDL_SCANCODE_1)) {
-			meta::Framerate = false;
-			headsup_gui.set_hidden_state(draw_hidden_state_t::None, nullptr);
-		} else if (input_t::get_meta_pressed(SDL_SCANCODE_2)) {
-			meta::Framerate = !meta::Framerate;
-			headsup_gui.set_hidden_state(draw_hidden_state_t::Framerate, nullptr);
-		} else if (input_t::get_meta_pressed(SDL_SCANCODE_3)) {
-			meta::Framerate = false;
-			headsup_gui.set_hidden_state(draw_hidden_state_t::DrawCalls, [&renderer] {
-				sint_t total_calls = static_cast<sint_t>(renderer.get_draw_calls());
-				// rendering hidden meta stuff takes two draw calls,
-				// so subtract 2 from the total.
-				return total_calls - 2;
-			});
-		} else if (input_t::get_meta_pressed(SDL_SCANCODE_4)) {
-			meta::Framerate = false;
-			headsup_gui.set_hidden_state(draw_hidden_state_t::ActorCount, [this] {
-				return static_cast<sint_t>(kontext.active());
-			});
-		} else if (input_t::get_meta_pressed(SDL_SCANCODE_MINUS)) {
-			meta::Hitboxes = !meta::Hitboxes;
-		} else if (input_t::get_meta_pressed(SDL_SCANCODE_EQUALS)) {
-			if (!kernel.has(kernel_state_t::Lock) and stack_gui.empty()) {
-				stack_gui.push(menu_t::Field, 0);
-			}
-		}
-	}
-}
-
-#endif

@@ -51,6 +51,7 @@ public:
 	glm::ivec2 get_integral_dimensions() const;
 	glm::ivec2 get_editor_dimensions() const;
 	glm::ivec2 get_opengl_version() const;
+	bool get_meta_option() const;
 	auto get_device() const {
 		return std::make_tuple(window, context);
 	}
@@ -59,6 +60,7 @@ private:
 	SDL_GLContext context;
 	screen_params_t params;
 	sint_t major, minor;
+	bool_t meta;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_VIDEO_HPP

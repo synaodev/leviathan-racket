@@ -12,8 +12,7 @@ namespace __enum_menu {
 		Input,
 		Video,
 		Audio,
-		Language,
-		Field
+		Language
 	};
 }
 

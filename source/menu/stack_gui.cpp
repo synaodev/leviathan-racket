@@ -7,7 +7,6 @@
 #include "./wgt_video.hpp"
 #include "./wgt_audio.hpp"
 #include "./wgt_language.hpp"
-#include "./wgt_field.hpp"
 
 #include "../system/input.hpp"
 #include "../system/video.hpp"
@@ -112,9 +111,6 @@ void stack_gui_t::push(menu_t type, arch_t flags) {
 		break;
 	case menu_t::Language:
 		widgets.emplace_back(std::make_unique<wgt_language_t>(flags));
-		break;
-	case menu_t::Field:
-		widgets.emplace_back(std::make_unique<wgt_field_t>(flags));
 		break;
 	default:
 		break;

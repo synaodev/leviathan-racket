@@ -4,11 +4,11 @@ if (VCPKG_TOOLCHAIN)
 	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_USES_VCPKG")
 endif ()
 
-if (META)
+if (META_BUILD)
 	target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_USES_META")
 endif ()
 
-if (STDAFX)
+if (STDAFX_BUILD)
 	target_precompile_headers (naomi PRIVATE "stdafx.hpp")
 	target_precompile_headers (editor PRIVATE "stdafx.hpp")
 endif ()

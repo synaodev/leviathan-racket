@@ -3,7 +3,6 @@
 #include "../resource/id.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
-#include "../utility/meta.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
@@ -11,30 +10,19 @@
 
 static constexpr arch_t kHeadFontIndex = 2;
 
-#ifdef LEVIATHAN_USES_META
-	headsup_gui_t::headsup_gui_t() :
-		suspender(),
-		title_view(),
-		main_scheme(),
-		leviathan_count(),
-		barrier_units(),
-		oxygen_count(),
-		item_view(),
-		fight_meter(),
-		fade(),
-		hidden() {}
-#else
-	headsup_gui_t::headsup_gui_t() :
-		suspender(),
-		title_view(),
-		main_scheme(),
-		leviathan_count(),
-		barrier_units(),
-		oxygen_count(),
-		item_view(),
-		fight_meter(),
-		fade() {}
-#endif
+headsup_gui_t::headsup_gui_t() :
+	suspender(),
+	title_view(),
+	main_scheme(),
+	leviathan_count(),
+	barrier_units(),
+	oxygen_count(),
+	item_view(),
+	fight_meter(),
+	fade()
+{
+
+}
 
 bool headsup_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
@@ -79,14 +67,6 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	item_view.init(texture, palette, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
-#ifdef LEVIATHAN_USES_META
-	const font_t* debug_font = vfs::debug_font();
-	if (debug_font == nullptr) {
-		synao_log("Could not load debug font!\n");
-		return false;
-	}
-	hidden.init(texture, palette, debug_font);
-#endif
 	synao_log("HeadsUp overlay is ready.\n");
 	return true;
 }
@@ -107,9 +87,6 @@ void headsup_gui_t::handle(const kernel_t& kernel) {
 void headsup_gui_t::update(real64_t delta) {
 	main_scheme.update(delta);
 	fight_meter.update(delta);
-#ifdef LEVIATHAN_USES_META
-	hidden.update(delta);
-#endif
 }
 
 void headsup_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const {
@@ -128,24 +105,15 @@ void headsup_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const {
 		oxygen_count.invalidate();
 		item_view.invalidate();
 		fight_meter.invalidate();
-#ifdef LEVIATHAN_USES_META
-		hidden.invalidate();
-#endif
 	}
 	if (fade.is_visible()) {
 		fade.render(renderer);
 	}
-#ifdef LEVIATHAN_USES_META
-	hidden.render(renderer);
-#endif
 }
 
 void headsup_gui_t::invalidate() const {
 	title_view.invalidate();
 	fade.invalidate();
-#ifdef LEVIATHAN_USES_META
-	hidden.invalidate();
-#endif
 }
 
 void headsup_gui_t::set_parameters(headsup_params_t params) {
@@ -160,14 +128,6 @@ void headsup_gui_t::set_parameters(headsup_params_t params) {
 void headsup_gui_t::set_fight_values(sint_t current, sint_t maximum) {
 	fight_meter.set_values(current, maximum);
 }
-
-#ifdef LEVIATHAN_USES_META
-
-void headsup_gui_t::set_hidden_state(draw_hidden_state_t state, std::function<sint_t()> radio) {
-	hidden.set_state(state, radio);
-}
-
-#endif
 
 void headsup_gui_t::set_field_text(const std::string& text) {
 	title_view.set_head(text);

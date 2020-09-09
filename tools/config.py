@@ -31,6 +31,8 @@ def main():
 		os.mkdir(config_path, 493) # 0775
 	with open(config_file, 'x') as file:
 		file.write('\n[Setup]\n\n')
+		file.write('MetaMenu = 0\n')
+		file.write('OpenGL4X = 1\n')
 		file.write('Language = english\n')
 		file.write('\n[Video]\n\n')
 		file.write('VerticalSync = 1\n')

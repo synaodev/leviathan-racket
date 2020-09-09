@@ -10,9 +10,9 @@
 #include "../actor/particles.hpp"
 #include "../field/properties.hpp"
 #include "../menu/headsup_gui.hpp"
+#include "../menu/meta_state.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
-#include "../utility/meta.hpp"
 #include "../utility/hash.hpp"
 #include "../utility/logger.hpp"
 
@@ -86,7 +86,7 @@ void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
 		liquid::render(*this, renderer, viewport);
 	}
 #ifdef LEVIATHAN_USES_META
-	if (meta::Hitboxes) {
+	if (meta_state_t::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
 #endif

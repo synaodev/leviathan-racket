@@ -14,7 +14,8 @@ video_t::video_t() :
 	context(nullptr),
 	params(),
 	major(4),
-	minor(6)
+	minor(6),
+	meta(false)
 {
 
 }
@@ -31,16 +32,19 @@ video_t::~video_t() {
 }
 
 bool video_t::init(const setup_file_t& config, bool editor) {
+	// Raw screen parameters retrieved.
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
-	// Use OpenGL 4.X by default.
-	bool_t use_opengl_4 = true;
-	config.get("Video", "UseOpenGL4", use_opengl_4);
-	if (!use_opengl_4) {
-		this->major = 3;
-		this->minor = 3;
+	config.get("Setup", "MetaMenu", meta);
+	{
+		bool_t opengl_4 = true;
+		config.get("Setup", "OpenGL4X", opengl_4);
+		if (!opengl_4) {
+			this->major = 3;
+			this->minor = 3;
+		}
 	}
 	// Setup parameters.
 	params.scaling = glm::clamp(
@@ -278,4 +282,8 @@ glm::ivec2 video_t::get_editor_dimensions() const {
 
 glm::ivec2 video_t::get_opengl_version() const {
 	return glm::ivec2(major, minor);
+}
+
+bool video_t::get_meta_option() const {
+	return meta;
 }
