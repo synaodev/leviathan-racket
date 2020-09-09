@@ -8,9 +8,8 @@
 #include "../component/sprite.hpp"
 #include "../component/blinker.hpp"
 #include "../component/liquid.hpp"
-#include "../system/audio.hpp"
-
 #include "../resource/id.hpp"
+#include "../system/audio.hpp"
 
 LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
 	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_normal::type, 	ai::shoshi_normal::ctor);
@@ -25,25 +24,25 @@ static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t dire
 	);
 }
 
-void ai::shoshi_normal::ctor(entt::entity s, kontext_t& ktx) {
-	auto& location = ktx.get<location_t>(s);
+void ai::shoshi_normal::ctor(entt::entity s, kontext_t& kontext) {
+	auto& location = kontext.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Shoshi);
+	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
-	ktx.assign_if<blinker_t>(s, 0, 4);
-	ktx.assign_if<routine_t>(s, tick);
-	ktx.sort<sprite_t>(sprite_t::compare);
+	kontext.assign_if<blinker_t>(s, 0, 4);
+	kontext.assign_if<routine_t>(s, tick);
+	kontext.sort<sprite_t>(sprite_t::compare);
 }
 
 void ai::shoshi_normal::tick(entt::entity s, routine_tuple_t& rtp) {
-	auto& location = rtp.ktx.get<location_t>(s);
-	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
-	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	auto& routine = rtp.ktx.get<routine_t>(s);
+	auto& location = rtp.kontext.get<location_t>(s);
+	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
+	auto& sprite = rtp.kontext.get<sprite_t>(s);
+	auto& routine = rtp.kontext.get<routine_t>(s);
 	if (!routine.state) {
 		if (kinematics.velocity.x != 0.0f) {
 			location.direction = kinematics.velocity.x > 0.0f ? direction_t::Right : direction_t::Left;
@@ -65,32 +64,32 @@ void ai::shoshi_normal::tick(entt::entity s, routine_tuple_t& rtp) {
 	kinematics.accel_y(0.1f, 6.0f);
 }
 
-void ai::shoshi_carry::ctor(entt::entity s, kontext_t& ktx) {
-	auto& location = ktx.get<location_t>(s);
+void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
+	auto& location = kontext.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Shoshi);
+	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.state = 3;
 	sprite.table = 0.0f;
 	sprite.layer = 0.22f;
 	sprite.position = location.position;
 
-	ktx.assign_if<blinker_t>(s, 3, 5);
-	ktx.assign_if<routine_t>(s, tick);
-	ktx.sort<sprite_t>(sprite_t::compare);
+	kontext.assign_if<blinker_t>(s, 3, 5);
+	kontext.assign_if<routine_t>(s, tick);
+	kontext.sort<sprite_t>(sprite_t::compare);
 }
 
 void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
-	auto& naomi_location = rtp.ktx.get<location_t>(rtp.nao.actor);
-	auto& location = rtp.ktx.get<location_t>(s);
+	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
+	auto& location = rtp.kontext.get<location_t>(s);
 	location.position = naomi_location.position;
 	location.hori(
 		naomi_location.direction & direction_t::Left ?
 		direction_t::Left : direction_t::Right
 	);
 
-	auto& naomi_sprite = rtp.ktx.get<sprite_t>(rtp.nao.actor);
-	auto& sprite = rtp.ktx.get<sprite_t>(s);
+	auto& naomi_sprite = rtp.kontext.get<sprite_t>(rtp.naomi.actor);
+	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	if (sprite.mirroring != naomi_sprite.mirroring) {
 		sprite.amend = true;
 		sprite.mirroring = naomi_sprite.mirroring;
@@ -98,32 +97,32 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 }
 
 
-void ai::shoshi_follow::ctor(entt::entity s, kontext_t& ktx) {
-	auto& location = ktx.get<location_t>(s);
+void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
+	auto& location = kontext.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
-	auto& sprite = ktx.assign_if<sprite_t>(s, res::anim::Shoshi);
+	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0.0f;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
-	ktx.assign_if<kinematics_t>(s);
-	ktx.assign_if<blinker_t>(s, 0, 4);
-	ktx.assign_if<routine_t>(s, tick);
-	ktx.assign_if<liquid_listener_t>(s, ai::splash::type, res::sfx::Splash);
-	ktx.assign_if<shoshi_helper_t>(s);
+	kontext.assign_if<kinematics_t>(s);
+	kontext.assign_if<blinker_t>(s, 0, 4);
+	kontext.assign_if<routine_t>(s, tick);
+	kontext.assign_if<liquid_listener_t>(s, ai::splash::type, res::sfx::Splash);
+	kontext.assign_if<shoshi_helper_t>(s);
 
-	ktx.sort<sprite_t>(sprite_t::compare);
+	kontext.sort<sprite_t>(sprite_t::compare);
 }
 
 void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
-	auto& location = rtp.ktx.get<location_t>(s);
-	auto& kinematics = rtp.ktx.get<kinematics_t>(s);
-	auto& sprite = rtp.ktx.get<sprite_t>(s);
-	auto& helper = rtp.ktx.get<shoshi_helper_t>(s);
-	auto& listener = rtp.ktx.get<liquid_listener_t>(s);
-	auto& naomi_location = rtp.ktx.get<location_t>(rtp.nao.actor);
-	auto& naomi_kinematics = rtp.ktx.get<kinematics_t>(rtp.nao.actor);
+	auto& location = rtp.kontext.get<location_t>(s);
+	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
+	auto& sprite = rtp.kontext.get<sprite_t>(s);
+	auto& helper = rtp.kontext.get<shoshi_helper_t>(s);
+	auto& listener = rtp.kontext.get<liquid_listener_t>(s);
+	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.actor);
+	auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.actor);
 
 	bool should_jump = false;
 	glm::vec2 naomi_center = naomi_location.center();
@@ -141,7 +140,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	real_t kJumpHd = 0.16f;
 	real_t kGravSp = 0.28f;
 
-	if (listener.liquid != entt::null and rtp.ktx.valid(listener.liquid)) {
+	if (listener.liquid != entt::null and rtp.kontext.valid(listener.liquid)) {
 		kMaxHsp /= 2.0f;
 		kMaxVsp /= 2.0f;
 		kAccelX /= 2.0f;
@@ -183,7 +182,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 			helper.augment = false;
 			kinematics.velocity.y = -kJumpPw;
 			should_jump = true;
-			rtp.aud.play(res::sfx::Jump, 0);
+			rtp.audio.play(res::sfx::Jump, 0);
 		} else {
 			sprite.new_state(2);
 		}

@@ -14,29 +14,27 @@ struct naomi_state_t;
 struct kontext_t;
 struct tilemap_t;
 
-struct routine_tuple_t;
-
-using routine_ctor_fn = void(*)(entt::entity, kontext_t&);
-using routine_tick_fn = void(*)(entt::entity, routine_tuple_t&);
-
 struct routine_tuple_t : public not_copyable_t {
 public:
-	routine_tuple_t(audio_t& aud, camera_t& cam, naomi_state_t& nao, kontext_t& ktx, tilemap_t& map) :
-		aud(aud),
-		cam(cam),
-		nao(nao),
-		ktx(ktx),
-		map(map) {}
+	routine_tuple_t(audio_t& audio, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, tilemap_t& tilemap) :
+		audio(audio),
+		camera(camera),
+		naomi(naomi),
+		kontext(kontext),
+		tilemap(tilemap) {}
 	routine_tuple_t(routine_tuple_t&&) = delete;
 	routine_tuple_t& operator=(routine_tuple_t&&) = delete;
 	~routine_tuple_t() = default;
 public:
-	audio_t& aud;
-	camera_t& cam;
-	naomi_state_t& nao;
-	kontext_t& ktx;
-	tilemap_t& map;
+	audio_t& audio;
+	camera_t& camera;
+	naomi_state_t& naomi;
+	kontext_t& kontext;
+	tilemap_t& tilemap;
 };
+
+using routine_ctor_fn = void(*)(entt::entity, kontext_t&);
+using routine_tick_fn = void(*)(entt::entity, routine_tuple_t&);
 
 struct routine_generator_t {
 public:

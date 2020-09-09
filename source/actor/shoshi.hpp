@@ -22,17 +22,17 @@ namespace ai {
 	};
 	namespace shoshi_normal {
 		constexpr arch_t type = synao_hash("shoshi");
-		void ctor(entt::entity s, kontext_t& ktx);
+		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_carry {
 		constexpr arch_t type = synao_hash("shoshi_carry");
-		void ctor(entt::entity s, kontext_t& ktx);
+		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_follow {
 		constexpr arch_t type = synao_hash("shoshi_follow");
-		void ctor(entt::entity s, kontext_t& ktx);
+		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 }
