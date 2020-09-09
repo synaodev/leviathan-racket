@@ -52,7 +52,7 @@ namespace vfs {
 	bool directory_exists(const std::string& name, bool_t print = true);
 	bool file_exists(const std::string& name, bool_t print = true);
 	bool create_directory(const std::string& name);
-	bool create_recording(const std::string& path, const std::vector<uint16_t>& buffer);
+	bool create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed);
 	std::string working_directory();
 	std::string executable_directory();
 	std::string personal_directory();
@@ -61,7 +61,7 @@ namespace vfs {
 	std::string string_buffer(const std::string& path);
 	std::vector<byte_t> byte_buffer(const std::string& path);
 	std::vector<uint_t> uint32_buffer(const std::string& path);
-	std::vector<uint16_t> uint16_buffer(const std::string& path);
+	bool record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed);
 	std::string i18n_find(const std::string& segment, arch_t index);
 	std::string i18n_find(const std::string& segment, arch_t first, arch_t last);
 	arch_t i18n_size(const std::string& segment);

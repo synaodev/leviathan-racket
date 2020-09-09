@@ -254,10 +254,11 @@ bool vfs::create_directory(const std::string& name) {
 	return true;
 }
 
-bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>& buffer) {
+bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed) {
 	std::ofstream ofs(path, std::ios::binary);
 	if (ofs.is_open()) {
 		arch_t length = buffer.size() * sizeof(uint16_t);
+		ofs.write(reinterpret_cast<const byte_t*>(&seed), sizeof(sint64_t));
 		ofs.write(reinterpret_cast<const byte_t*>(buffer.data()), length);
 		return true;
 	}
@@ -420,21 +421,24 @@ std::vector<uint_t> vfs::uint32_buffer(const std::string& path) {
 	return std::vector<uint_t>();
 }
 
-std::vector<uint16_t> vfs::uint16_buffer(const std::string& path) {
+bool vfs::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed) {
 	std::ifstream ifs(path, std::ios::binary);
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
-		if (length > 0) {
+		if (length > 0 and ((length / sizeof(uint16_t)) > sizeof(sint64_t))) {
 			ifs.seekg(0, std::ios::beg);
-			std::vector<uint16_t> buffer;
-			buffer.resize(length / sizeof(uint16_t));
+			buffer.resize(
+				(length / sizeof(uint16_t)) -
+				sizeof(sint64_t)
+			);
+			ifs.read(reinterpret_cast<byte_t*>(&seed), sizeof(sint64_t));
 			ifs.read(reinterpret_cast<byte_t*>(buffer.data()), length);
-			return buffer;
+			return true;
 		}
 	}
 	synao_log("Failed to open file: {}!\n", path);
-	return std::vector<uint16_t>();
+	return false;
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {

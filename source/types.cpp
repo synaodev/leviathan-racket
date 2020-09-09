@@ -3,26 +3,36 @@
 #include <random>
 #include <chrono>
 
-#ifdef LEVIATHAN_MACHINE_64BIT
-	using mersenne_t = std::mt19937_64;
-#else
-	using mersenne_t = std::mt19937;
-#endif
-
-static mersenne_t& get_mersenne() {
-	static const sint64_t seed = std::chrono::high_resolution_clock::now()
-		.time_since_epoch()
-		.count();
-	static mersenne_t generator(static_cast<uint_t>(seed));
-	return generator;
-}
-
-sint_t rng::next(sint_t low, sint_t high) {
-	std::uniform_int_distribution<sint_t> distribution(low, high);
-	return distribution(get_mersenne());
-}
-
-real_t rng::next(real_t low, real_t high) {
-	std::uniform_real_distribution<real_t> distribution(low, high);
-	return distribution(get_mersenne());
+namespace rng {
+	static sint64_t& current() {
+		static sint64_t s = std::chrono::high_resolution_clock::now()
+			.time_since_epoch()
+			.count();
+		return s;
+	}
+	static std::mt19937& mersenne() {
+		auto& s = rng::current();
+		static std::mt19937 generator(static_cast<uint_t>(s));
+		return generator;
+	}
+	sint64_t seed() {
+		auto& s = rng::current();
+		return s;
+	}
+	void seed(sint64_t value) {
+		auto& s = rng::current();
+		s = value;
+		auto& m = rng::mersenne();
+		m.seed(static_cast<uint_t>(s));
+	}
+	sint_t next(sint_t low, sint_t high) {
+		auto& m = rng::mersenne();
+		std::uniform_int_distribution<sint_t> distribution(low, high);
+		return distribution(m);
+	}
+	real_t next(real_t low, real_t high) {
+		auto& m = rng::mersenne();
+		std::uniform_real_distribution<real_t> distribution(low, high);
+		return distribution(m);
+	}
 }
