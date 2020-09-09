@@ -1,15 +1,15 @@
 #ifndef LEVIATHAN_INCLUDED_AUDIO_ALCHECK_HPP
 #define LEVIATHAN_INCLUDED_AUDIO_ALCHECK_HPP
 
-#ifndef LEVIATHAN_USES_VCPKG
-	#include <al.h>
-	#include <alc.h>
-#else
+#include "../types.hpp"
+
+#if defined(LEVIATHAN_PLATFORM_LINUX) || defined(LEVIATHAN_USES_VCPKG)
 	#include <AL/al.h>
 	#include <AL/alc.h>
+#else
+	#include <al.h>
+	#include <alc.h>
 #endif
-
-#include "../types.hpp"
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 	namespace priv {
