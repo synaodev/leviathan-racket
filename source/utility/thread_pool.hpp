@@ -3,13 +3,11 @@
 
 #include <functional>
 #include <future>
-#include <mutex>
 #include <atomic>
-#include <queue>
 #include <thread>
 #include <vector>
 
-#include "../types.hpp"
+#include "./safe_queue.hpp"
 
 struct thread_pool_t : public not_copyable_t {
 public:
@@ -38,40 +36,6 @@ public:
 		return task_pointer->get_future();
 	}
 private:
-template<typename T>
-	struct safe_queue_t {
-	public:
-		safe_queue_t() = default;
-		safe_queue_t(const safe_queue_t&) = default;
-		safe_queue_t(safe_queue_t&&) = default;
-		safe_queue_t& operator=(const safe_queue_t&) = default;
-		safe_queue_t& operator=(safe_queue_t&&) = default;
-		~safe_queue_t() = default;
-		bool empty() {
-			std::unique_lock<std::mutex> lock{ mutex };
-			return queue.empty();
-		}
-		size_t size() {
-			std::unique_lock<std::mutex> lock{ mutex };
-			return queue.size();
-		}
-		void enqueue(T& t) {
-			std::unique_lock<std::mutex> lock{ mutex };
-			queue.push(t);
-		}
-		bool dequeue(T& t) {
-			std::unique_lock<std::mutex> lock{ mutex };
-			if (queue.empty()) {
-				return false;
-			}
-			t = std::move(queue.front());
-			queue.pop();
-			return true;
-		}
-	private:
-		std::queue<T> queue;
-		std::mutex mutex;
-	};
 	struct worker_t {
 	public:
 		worker_t(thread_pool_t* thread_pool) : thread_pool(thread_pool) {}
