@@ -175,13 +175,13 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 	for (auto&& layer : tmxmap.getLayers()) {
 		switch (layer->getType()) {
 		case tmx::Layer::Type::Tile:
-			tilemap.push_tile_layer(layer);
+			tilemap.push_layer(layer);
 			break;
 		case tmx::Layer::Type::Object:
 			kontext.setup_layer(layer, kernel, receiver);
 			break;
 		case tmx::Layer::Type::Image:
-			tilemap.push_parallax_background(layer);
+			tilemap.push_parallax(layer);
 			break;
 		default:
 			break;

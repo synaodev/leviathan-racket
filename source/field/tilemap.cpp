@@ -22,7 +22,7 @@ tilemap_t::tilemap_t() :
 	tilemap_layer_texture(nullptr),
 	tilemap_layer_palette(nullptr),
 	parallax_texture(nullptr),
-	backgrounds(),
+	tilemap_parallaxes(),
 	tilemap_layers()
 {
 
@@ -39,14 +39,14 @@ void tilemap_t::reset() {
 	tilemap_layer_texture = nullptr;
 	tilemap_layer_palette = nullptr;
 	parallax_texture = nullptr;
-	backgrounds.clear();
+	tilemap_parallaxes.clear();
 	tilemap_layers.clear();
 }
 
 void tilemap_t::handle(const camera_t& camera) {
 	rect_t viewport = camera.get_viewport();
-	for (auto&& background : backgrounds) {
-		background.handle(viewport);
+	for (auto&& parallax : tilemap_parallaxes) {
+		parallax.handle(viewport);
 	}
 	if (!previous_viewport.cmp_round(viewport)) {
 		previous_viewport = viewport;
@@ -60,22 +60,22 @@ void tilemap_t::handle(const camera_t& camera) {
 			glm::min(tilemap_t::ceiling(viewport.bottom() + constants::TileSize<real_t>()), dimensions.y)
 		);
 		arch_t range = camera.get_tile_range(first, last);
-		for (auto&& tilemap_layer : tilemap_layers) {
-			tilemap_layer.handle(range, first, last, dimensions);
+		for (auto&& layer : tilemap_layers) {
+			layer.handle(range, first, last, dimensions);
 		}
 	}
 }
 
 void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
-	for (auto&& background : backgrounds) {
-		background.render(
+	for (auto&& parallax : tilemap_parallaxes) {
+		parallax.render(
 			renderer,
 			viewport,
 			parallax_texture
 		);
 	}
-	for (auto&& tilemap_layer : tilemap_layers) {
-		tilemap_layer.render(
+	for (auto&& layer : tilemap_layers) {
+		layer.render(
 			renderer,
 			amend,
 			tilemap_layer_texture,
@@ -113,7 +113,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 	}
 }
 
-void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
+void tilemap_t::push_layer(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	if (!attribute_key.empty()) {
 		glm::vec2 inverse = tilemap_layer_texture != nullptr ?
@@ -129,14 +129,14 @@ void tilemap_t::push_tile_layer(const std::unique_ptr<tmx::Layer>& layer) {
 	}
 }
 
-void tilemap_t::push_parallax_background(const std::unique_ptr<tmx::Layer>& layer) {
+void tilemap_t::push_parallax(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	const std::string& path = static_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
 	parallax_texture = vfs::texture(ftcv::path_to_name(path));
 	glm::vec2 parallax_dimensions = parallax_texture != nullptr ?
 		parallax_texture->get_dimensions() :
 		glm::zero<glm::vec2>();
-	auto& recent = backgrounds.emplace_back();
+	auto& recent = tilemap_parallaxes.emplace_back();
 	recent.init(layer, parallax_dimensions);
 }
 

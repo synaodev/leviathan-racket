@@ -1,7 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
 #define LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
 
-#include "./parallax_background.hpp"
+#include "./tilemap_parallax.hpp"
 #include "./tilemap_layer.hpp"
 
 struct camera_t;
@@ -17,8 +17,8 @@ public:
 	void handle(const camera_t& camera);
 	void render(renderer_t& renderer, rect_t viewport) const;
 	void push_properties(const tmx::Map& tmxmap);
-	void push_tile_layer(const std::unique_ptr<tmx::Layer>& layer);
-	void push_parallax_background(const std::unique_ptr<tmx::Layer>& layer);
+	void push_layer(const std::unique_ptr<tmx::Layer>& layer);
+	void push_parallax(const std::unique_ptr<tmx::Layer>& layer);
 	uint_t get_attribute(sint_t x, sint_t y) const;
 	uint_t get_attribute(glm::ivec2 index) const;
 public:
@@ -34,7 +34,7 @@ private:
 	const texture_t* tilemap_layer_texture;
 	const palette_t* tilemap_layer_palette;
 	const texture_t* parallax_texture;
-	std::vector<parallax_background_t> backgrounds;
+	std::vector<tilemap_parallax_t> tilemap_parallaxes;
 	std::vector<tilemap_layer_t> tilemap_layers;
 };
 

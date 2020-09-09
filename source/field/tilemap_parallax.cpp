@@ -1,4 +1,4 @@
-#include "./parallax_background.hpp"
+#include "./tilemap_parallax.hpp"
 #include "./properties.hpp"
 
 #include "../system/renderer.hpp"
@@ -10,7 +10,7 @@ static const byte_t kBoundsHProp[] = "rect.h";
 static const byte_t kScrollXProp[] = "scroll.x";
 static const byte_t kScrollYProp[] = "scroll.y";
 
-parallax_background_t::parallax_background_t() :
+tilemap_parallax_t::tilemap_parallax_t() :
 	indices(0),
 	position(0.0f),
 	scrolling(0.0f),
@@ -20,7 +20,7 @@ parallax_background_t::parallax_background_t() :
 
 }
 
-parallax_background_t::parallax_background_t(parallax_background_t&& that) noexcept : parallax_background_t() {
+tilemap_parallax_t::tilemap_parallax_t(tilemap_parallax_t&& that) noexcept : tilemap_parallax_t() {
 	if (this != &that) {
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);
@@ -30,7 +30,7 @@ parallax_background_t::parallax_background_t(parallax_background_t&& that) noexc
 	}
 }
 
-parallax_background_t& parallax_background_t::operator=(parallax_background_t&& that) noexcept {
+tilemap_parallax_t& tilemap_parallax_t::operator=(tilemap_parallax_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(indices, that.indices);
 		std::swap(position, that.position);
@@ -41,7 +41,7 @@ parallax_background_t& parallax_background_t::operator=(parallax_background_t&& 
 	return *this;
 }
 
-void parallax_background_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 dimensions) {
+void tilemap_parallax_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 dimensions) {
 	if (dimensions.x == 0.0f or dimensions.y == 0.0f) {
 		dimensions = glm::one<glm::vec2>();
 	}
@@ -68,7 +68,7 @@ void parallax_background_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::
 	}
 }
 
-void parallax_background_t::handle(rect_t viewport) {
+void tilemap_parallax_t::handle(rect_t viewport) {
 	glm::vec2 next = glm::mod(
 		viewport.left_top() * -scrolling,
 		dimensions
@@ -79,7 +79,7 @@ void parallax_background_t::handle(rect_t viewport) {
 	}
 }
 
-void parallax_background_t::render(renderer_t& renderer, rect_t viewport, const texture_t* texture) const {
+void tilemap_parallax_t::render(renderer_t& renderer, rect_t viewport, const texture_t* texture) const {
 	auto& list = renderer.get_normal_quads(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
