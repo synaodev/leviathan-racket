@@ -50,7 +50,7 @@ void liquid::handle(audio_t& audio, kontext_t& kontext) {
 void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
 	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
-		auto& list = renderer.get_normal_quads(
+		auto& list = renderer.working_list(
 			layer_value::TileFront,
 			blend_mode_t::Add,
 			buffer_usage_t::Dynamic,

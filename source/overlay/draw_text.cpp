@@ -39,7 +39,7 @@ void draw_text_t::increment() {
 
 void draw_text_t::render(renderer_t& renderer) const {
 	if (!quads.empty() and font != nullptr) {
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

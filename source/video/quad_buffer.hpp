@@ -8,12 +8,12 @@
 
 struct quad_buffer_t;
 
-struct quad_buffer_allocator_t : public not_copyable_t {
+struct quad_allocator_t : public not_copyable_t {
 public:
-	quad_buffer_allocator_t();
-	quad_buffer_allocator_t(quad_buffer_allocator_t&& that) noexcept;
-	quad_buffer_allocator_t& operator=(quad_buffer_allocator_t&& that) noexcept;
-	~quad_buffer_allocator_t();
+	quad_allocator_t();
+	quad_allocator_t(quad_allocator_t&& that) noexcept;
+	quad_allocator_t& operator=(quad_allocator_t&& that) noexcept;
+	~quad_allocator_t();
 public:
 	bool create(primitive_t primitive, arch_t length);
 	void destroy();
@@ -37,7 +37,7 @@ public:
 	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept;
 	~quad_buffer_t();
 public:
-	void setup(const quad_buffer_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify);
+	void setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t length);
 	void destroy();
 	bool update(const vertex_t* vertices, arch_t count, arch_t offset);
@@ -49,7 +49,7 @@ public:
 	arch_t get_length() const;
 private:
 	friend struct gfx_t;
-	const quad_buffer_allocator_t* allocator;
+	const quad_allocator_t* allocator;
 	buffer_usage_t usage;
 	vertex_spec_t specify;
 	uint_t arrays, buffer;

@@ -170,7 +170,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 		for (auto&& element : elements) {
 			element.render(renderer);
 		}
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

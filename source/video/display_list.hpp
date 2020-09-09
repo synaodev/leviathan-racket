@@ -14,7 +14,7 @@ struct rect_t;
 
 struct display_list_t : public not_copyable_t {
 public:
-	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_buffer_allocator_t* allocator);
+	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_allocator_t* allocator);
 	display_list_t();
 	display_list_t(display_list_t&& that) noexcept;
 	display_list_t& operator=(display_list_t&& that) noexcept;

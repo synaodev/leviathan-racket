@@ -225,7 +225,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 				pipeline = pipeline_t::VtxMajorIndexed;
 				index = palette->convert(index);
 			}
-			auto& list = renderer.get_normal_quads(
+			auto& list = renderer.working_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -258,7 +258,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 				pipeline = pipeline_t::VtxMajorIndexed;
 				index = palette->convert(index);
 			}
-			auto& list = renderer.get_normal_quads(
+			auto& list = renderer.working_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -287,7 +287,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 			pipeline = pipeline_t::VtxMajorIndexed;
 			index = palette->convert(index);
 		}
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

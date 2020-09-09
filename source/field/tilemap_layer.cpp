@@ -125,7 +125,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 }
 
 void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const texture_t* texture, const palette_t* palette) const {
-	auto& list = renderer.get_normal_quads(
+	auto& list = renderer.working_list(
 		priority,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,

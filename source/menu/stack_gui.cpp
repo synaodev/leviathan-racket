@@ -67,7 +67,7 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 		widgets.back()->render(renderer);
 	}
 	if (!widgets.empty() or inventory_gui.open()) {
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

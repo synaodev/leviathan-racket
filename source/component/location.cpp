@@ -68,7 +68,7 @@ void location_t::vert(direction_t bits) {
 
 void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
 	const glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
-	auto& list = renderer.get_normal_quads(
+	auto& list = renderer.working_list(
 		layer_value::HeadsUp,
 		blend_mode_t::Add,
 		buffer_usage_t::Dynamic,

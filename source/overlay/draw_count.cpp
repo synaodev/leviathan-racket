@@ -32,7 +32,7 @@ void draw_count_t::invalidate() const {
 
 void draw_count_t::render(renderer_t& renderer) const {
 	if (visible and !quads.empty()) {
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

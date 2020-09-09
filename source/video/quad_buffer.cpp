@@ -4,7 +4,7 @@
 
 #include <limits>
 
-quad_buffer_allocator_t::quad_buffer_allocator_t() :
+quad_allocator_t::quad_allocator_t() :
 	primitive(primitive_t::Triangles),
 	handle(0),
 	length(0)
@@ -12,7 +12,7 @@ quad_buffer_allocator_t::quad_buffer_allocator_t() :
 
 }
 
-quad_buffer_allocator_t::quad_buffer_allocator_t(quad_buffer_allocator_t&& that) noexcept : quad_buffer_allocator_t() {
+quad_allocator_t::quad_allocator_t(quad_allocator_t&& that) noexcept : quad_allocator_t() {
 	if (this != &that) {
 		std::swap(primitive, that.primitive);
 		std::swap(handle, that.handle);
@@ -20,7 +20,7 @@ quad_buffer_allocator_t::quad_buffer_allocator_t(quad_buffer_allocator_t&& that)
 	}
 }
 
-quad_buffer_allocator_t& quad_buffer_allocator_t::operator=(quad_buffer_allocator_t&& that) noexcept {
+quad_allocator_t& quad_allocator_t::operator=(quad_allocator_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(primitive, that.primitive);
 		std::swap(handle, that.handle);
@@ -29,11 +29,11 @@ quad_buffer_allocator_t& quad_buffer_allocator_t::operator=(quad_buffer_allocato
 	return *this;
 }
 
-quad_buffer_allocator_t::~quad_buffer_allocator_t() {
+quad_allocator_t::~quad_allocator_t() {
 	this->destroy();
 }
 
-bool quad_buffer_allocator_t::create(primitive_t primitive, arch_t length) {
+bool quad_allocator_t::create(primitive_t primitive, arch_t length) {
 	if (handle != 0) {
 		return false;
 	}
@@ -46,7 +46,7 @@ bool quad_buffer_allocator_t::create(primitive_t primitive, arch_t length) {
 	this->primitive = primitive;
 	this->length = length;
 
-	auto indices = quad_buffer_allocator_t::generate(length, 0, primitive);
+	auto indices = quad_allocator_t::generate(length, 0, primitive);
 
 	glCheck(glGenBuffers(1, &handle));
 	glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, handle));
@@ -70,7 +70,7 @@ bool quad_buffer_allocator_t::create(primitive_t primitive, arch_t length) {
 	return true;
 }
 
-void quad_buffer_allocator_t::destroy() {
+void quad_allocator_t::destroy() {
 	if (handle != 0) {
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 		glCheck(glDeleteBuffers(1, &handle));
@@ -80,30 +80,30 @@ void quad_buffer_allocator_t::destroy() {
 	length = 0;
 }
 
-void quad_buffer_allocator_t::bind(bool_t value) const {
+void quad_allocator_t::bind(bool_t value) const {
 	if (handle != 0) {
 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, value ? handle : 0));
 	}
 }
 
-bool quad_buffer_allocator_t::valid() const {
+bool quad_allocator_t::valid() const {
 	return handle != 0;
 }
 
-arch_t quad_buffer_allocator_t::get_length() const {
+arch_t quad_allocator_t::get_length() const {
 	return length;
 }
 
-primitive_t quad_buffer_allocator_t::get_primitive() const {
+primitive_t quad_allocator_t::get_primitive() const {
 	return primitive;
 }
 
-arch_t quad_buffer_allocator_t::convert(arch_t length) {
+arch_t quad_allocator_t::convert(arch_t length) {
 	return (length * 6) / 4;
 }
 
-std::vector<uint16_t> quad_buffer_allocator_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
-	std::vector<uint16_t> result(quad_buffer_allocator_t::convert(length));
+std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
+	std::vector<uint16_t> result(quad_allocator_t::convert(length));
 	arch_t it = 0;
 	uint16_t ut = static_cast<uint16_t>(offset);
 	while (it < result.size()) {
@@ -125,46 +125,6 @@ std::vector<uint16_t> quad_buffer_allocator_t::generate(arch_t length, arch_t of
 	}
 	return result;
 }
-
-// bool quad_buffer_t::allocate_indexer(arch_t length, primitive_t primitive) {
-// 	if (primitive != primitive_t::Triangles and primitive != primitive_t::TriangleStrip) {
-// 		return false;
-// 	}
-// 	if (!quad_buffer_t::elemts and length != 0) {
-// 		quad_buffer_t::primitive = primitive;
-// 		auto indices = quad_buffer_t::generate(length, 0, primitive);
-// 		glCheck(glGenBuffers(1, &quad_buffer_t::elemts));
-// 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, quad_buffer_t::elemts));
-// 		if (const_buffer_t::has_immutable_option()) {
-// 			glCheck(glBufferStorage(
-// 				GL_ELEMENT_ARRAY_BUFFER,
-// 				sizeof(decltype(indices)::value_type) * indices.size(),
-// 				indices.data(), 0
-// 			));
-// 		} else {
-// 			glCheck(glBufferData(
-// 				GL_ELEMENT_ARRAY_BUFFER,
-// 				sizeof(decltype(indices)::value_type) * indices.size(),
-// 				indices.data(),
-// 				GL_STATIC_DRAW
-// 			));
-// 		}
-// 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-// 		return true;
-// 	}
-// 	return false;
-// }
-
-// bool quad_buffer_t::release_indexer() {
-// 	if (quad_buffer_t::elemts != 0) {
-// 		glCheck(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
-// 		glCheck(glDeleteBuffers(1, &quad_buffer_t::elemts));
-// 		quad_buffer_t::elemts = 0;
-// 		quad_buffer_t::primitive = primitive_t::Triangles;
-// 		return true;
-// 	}
-// 	return false;
-// }
 
 quad_buffer_t::quad_buffer_t() :
 	allocator(nullptr),
@@ -204,7 +164,7 @@ quad_buffer_t::~quad_buffer_t() {
 	this->destroy();
 }
 
-void quad_buffer_t::setup(const quad_buffer_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify) {
+void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify) {
 	if (allocator != nullptr and allocator->valid()) {
 		this->destroy();
 		this->allocator = allocator;
@@ -285,7 +245,7 @@ bool quad_buffer_t::update(const vertex_t* vertices) {
 
 void quad_buffer_t::draw(arch_t count) const {
 	if (allocator != nullptr and allocator->valid() and arrays != 0) {
-		count = quad_buffer_allocator_t::convert(count);
+		count = quad_allocator_t::convert(count);
 		glCheck(glBindVertexArray(arrays));
 		glCheck(glDrawElements(
 			gfx_t::get_primitive_gl_enum(allocator->get_primitive()),

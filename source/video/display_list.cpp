@@ -4,7 +4,7 @@
 #include "../utility/watch.hpp"
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_buffer_allocator_t* allocator) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_allocator_t* allocator) :
 	layer(layer),
 	blend_mode(blend_mode),
 	texture(texture),

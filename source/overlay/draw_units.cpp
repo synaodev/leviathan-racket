@@ -26,7 +26,7 @@ void draw_units_t::invalidate() const {
 
 void draw_units_t::render(renderer_t& renderer) const {
 	if (!quads.empty()) {
-		auto& list = renderer.get_overlay_quads(
+		auto& list = renderer.overlay_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
