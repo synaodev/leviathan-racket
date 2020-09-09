@@ -1,11 +1,12 @@
 #include "./video.hpp"
 
+#include "../video/image.hpp"
 #include "../video/frame_buffer.hpp"
 #include "../video/glcheck.hpp"
-#include "../resource/icon.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
+#include "../utility/vfs.hpp"
 
 #include <SDL2/SDL.h>
 
@@ -183,13 +184,20 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		synao_log("Vertical sync after OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Set window icon.
+	// Load window icon image.
+	const image_t image = image_t::generate(vfs::resource_path(vfs_resource_path_t::Image) + "icon.png");
+	if (image.empty()) {
+		synao_log("Loading icon data failed!\n");
+		return false;
+	}
+	const glm::ivec2 image_dimensions = image.get_dimensions();
+	// Generate surface from loaded image.
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
-		icon::pixels(),
-		icon::width(),
-		icon::height(),
-		icon::depth(),
-		icon::pitch(),
+		(void_t)&image[0],
+		image_dimensions.x,
+		image_dimensions.y,
+		sizeof(uint_t) * 8,
+		sizeof(uint_t) * image_dimensions.x,
 		SDL_PIXELFORMAT_RGBA32
 	);
 	if (surface != nullptr) {
