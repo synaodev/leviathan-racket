@@ -7,6 +7,7 @@
 #endif
 
 #include "../resource/pipeline.hpp"
+#include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../utility/logger.hpp"
 
@@ -19,6 +20,8 @@ bool_t meta_state_t::Framerate = false;
 bool_t meta_state_t::Ready = false;
 
 meta_state_t::meta_state_t() :
+	active(false),
+	amend(false),
 	window(nullptr),
 	context(nullptr)
 {
@@ -69,17 +72,35 @@ bool meta_state_t::init(const video_t& video) {
 }
 
 void meta_state_t::handle(const input_t& input) {
-	if (Ready) {
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplSDL2_NewFrame(window);
-		ImGui::NewFrame();
-		// Everything
-		ImGui::Render();
+	if (Ready and !amend) {
+		if (input.get_meta_pressed(SDL_SCANCODE_BACKSPACE)) {
+			active = !active;
+		}
+		if (active) {
+			amend = true;
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplSDL2_NewFrame(window);
+			ImGui::NewFrame();
+			// Begin
+			ImGui::BeginMainMenuBar();
+			ImGui::EndMainMenuBar();
+			// End
+			ImGui::Render();
+		} else {
+			amend = false;
+		}
+	}
+}
+
+void meta_state_t::update(real64_t delta) {
+	if (active) {
+
 	}
 }
 
 void meta_state_t::flush() const {
-	if (Ready) {
+	if (active and amend) {
+		amend = false;
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 }

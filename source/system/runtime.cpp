@@ -121,6 +121,9 @@ void runtime_t::update(real64_t delta) {
 		camera.update(delta);
 		kontext.update(delta);
 	}
+#ifdef LEVIATHAN_USES_META
+	meta_state.update(delta);
+#endif
 }
 
 void runtime_t::render(const video_t& video, renderer_t& renderer) const {

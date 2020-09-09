@@ -21,6 +21,7 @@ public:
 public:
 	bool init(const video_t& video);
 	void handle(const input_t& input);
+	void update(real64_t delta);
 	void flush() const;
 public:
 	typedef bool(*event_callback_t)(const SDL_Event*);
@@ -28,6 +29,7 @@ public:
 	static bool_t Hitboxes, Framerate;
 private:
 	static bool_t Ready;
+	mutable bool_t active, amend;
 	SDL_Window* window;
 	SDL_GLContext context;
 };
