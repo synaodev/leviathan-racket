@@ -1,10 +1,10 @@
 #include "./animation.hpp"
 
+#include "../system/renderer.hpp"
 #include "../utility/thread_pool.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
-#include "../system/renderer.hpp"
 
 animation_sequence_t::animation_sequence_t() :
 	frames(),

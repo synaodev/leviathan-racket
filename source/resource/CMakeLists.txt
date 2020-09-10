@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (naomi PRIVATE "program.cpp")
+target_sources (naomi PRIVATE "animation.cpp" "program.cpp")
 target_sources (editor PRIVATE "program.cpp")
 
 if (WIN32)

@@ -1,6 +1,6 @@
 #include "./draw_scheme.hpp"
 
-#include "../video/animation.hpp"
+#include "../resource/animation.hpp"
 #include "../system/renderer.hpp"
 
 draw_scheme_t::draw_scheme_t() :
@@ -20,10 +20,10 @@ draw_scheme_t::draw_scheme_t() :
 void draw_scheme_t::update(real64_t delta) {
 	if (file != nullptr) {
 		file->update(
-			delta, 
-			amend, 
-			state, 
-			timer, 
+			delta,
+			amend,
+			state,
+			timer,
 			frame
 		);
 	}

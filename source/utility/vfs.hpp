@@ -13,9 +13,9 @@
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	#include "../audio/noise.hpp"
-	#include "../video/animation.hpp"
-	#include "../video/font.hpp"
+	#include "../resource/animation.hpp"
 	#include "../system/receiver.hpp"
+	#include "../video/font.hpp"
 #endif
 
 struct table_entry_t;
