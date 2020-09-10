@@ -32,7 +32,6 @@ namespace kNao {
 }
 
 naomi_state_t::naomi_state_t() :
-	actor(entt::null),
 	flags(0),
 	equips(0),
 	chroniker(),
@@ -55,8 +54,9 @@ naomi_state_t::naomi_state_t() :
 }
 
 bool naomi_state_t::init(kontext_t& kontext) {
+	// First instance of entt::entity will always be zero.
 	backend = kontext.backend();
-	actor = backend->create();
+	entt::entity actor = backend->create();
 	if (actor == entt::null) {
 		synao_log("First actor allocation failed!\n");
 		return false;
@@ -76,6 +76,8 @@ bool naomi_state_t::init(kontext_t& kontext) {
 }
 
 void naomi_state_t::reset(kontext_t& kontext) {
+	entt::entity actor = this->get_actor();
+
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
 	auto& sprite = kontext.get<sprite_t>(actor);
@@ -110,6 +112,8 @@ void naomi_state_t::reset(kontext_t& kontext) {
 }
 
 void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips) {
+	entt::entity actor = this->get_actor();
+
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
 	auto& sprite = kontext.get<sprite_t>(actor);
@@ -145,6 +149,8 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 }
 
 void naomi_state_t::setup(audio_t& audio, const kernel_t& kernel, camera_t& camera, kontext_t& kontext) {
+	entt::entity actor = this->get_actor();
+
 	last_direction = direction_t::Right;
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
@@ -186,6 +192,8 @@ void naomi_state_t::setup(audio_t& audio, const kernel_t& kernel, camera_t& came
 }
 
 void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, kontext_t& kontext, const tilemap_t& tilemap) {
+	entt::entity actor = this->get_actor();
+
 	auto& location = kontext.get<location_t>(actor);
 	auto& kinematics = kontext.get<kinematics_t>(actor);
 	auto& sprite = kontext.get<sprite_t>(actor);
@@ -228,6 +236,8 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 }
 
 void naomi_state_t::damage(entt::entity other, audio_t& audio, kontext_t& kontext) {
+	entt::entity actor = this->get_actor();
+
 	if (!flags[naomi_flags_t::Invincible] and !flags[naomi_flags_t::Damaged]) {
 		flags[naomi_flags_t::Damaged] = true;
 		auto& naomi_location = kontext.get<location_t>(actor);
@@ -301,6 +311,8 @@ void naomi_state_t::damage(entt::entity other, audio_t& audio, kontext_t& kontex
 void naomi_state_t::solids(entt::entity other, kontext_t& kontext, const tilemap_t& tilemap) {
 	static constexpr real_t kStandMargin = 2.0f;
 	static constexpr real_t kPushyMargin = 6.0f;
+
+	entt::entity actor = this->get_actor();
 
 	auto& naomi_location = kontext.get<location_t>(actor);
 	rect_t naomi_hitbox	= naomi_location.hitbox();
@@ -389,6 +401,8 @@ void naomi_state_t::set_phys_const(bool submerged) {
 }
 
 void naomi_state_t::set_visible(bool visible) {
+	entt::entity actor = this->get_actor();
+
 	auto& sprite = backend->get<sprite_t>(actor);
 	sprite.layer = visible ?
 		layer_value::Automatic :
@@ -400,11 +414,15 @@ void naomi_state_t::set_equips(naomi_equips_t flag, bool value) {
 }
 
 void naomi_state_t::set_teleport_location(real_t x, real_t y) {
+	entt::entity actor = this->get_actor();
+
 	auto& location = backend->get<location_t>(actor);
 	location.position = glm::vec2(x, y) * 16.0f;
 }
 
 void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
+	entt::entity actor = this->get_actor();
+
 	flags[naomi_flags_t::Scripted] = true;
 	auto& sprite = backend->get<sprite_t>(actor);
 	if (direction != direction_t::Neutral) {
@@ -426,6 +444,8 @@ void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
 }
 
 void naomi_state_t::bump_kinematics(direction_t direction) {
+	entt::entity actor = this->get_actor();
+
 	auto& location = backend->get<location_t>(actor);
 	auto& kinematics = backend->get<kinematics_t>(actor);
 	if (direction & direction_t::Left) {
@@ -438,6 +458,8 @@ void naomi_state_t::bump_kinematics(direction_t direction) {
 }
 
 void naomi_state_t::boost_current_barrier(sint_t amount) {
+	entt::entity actor = this->get_actor();
+
 	auto& health = backend->get<health_t>(actor);
 	health.current = glm::max(
 		health.current + amount,
@@ -449,6 +471,8 @@ void naomi_state_t::boost_current_barrier(sint_t amount) {
 }
 
 void naomi_state_t::boost_maximum_barrer(sint_t amount) {
+	entt::entity actor = this->get_actor();
+
 	auto& health = backend->get<health_t>(actor);
 	health.maximum = glm::clamp(
 		health.maximum + amount,
@@ -457,6 +481,8 @@ void naomi_state_t::boost_maximum_barrer(sint_t amount) {
 }
 
 void naomi_state_t::mut_leviathan_power(sint_t amount) {
+	entt::entity actor = this->get_actor();
+
 	auto& health = backend->get<health_t>(actor);
 	health.leviathan = glm::clamp(
 		health.leviathan + amount,
@@ -469,7 +495,10 @@ bool naomi_state_t::interacting() const {
 }
 
 entt::entity naomi_state_t::get_actor() const {
-	return actor;
+	// Naomi is always the first actor created,
+	// and is never destroyed until the kontext dtor,
+	// so I can always safely assume her ID to be zero.
+	return entt::entity{0};
 }
 
 glm::vec2 naomi_state_t::get_reticule() const {
@@ -477,13 +506,11 @@ glm::vec2 naomi_state_t::get_reticule() const {
 }
 
 glm::vec2 naomi_state_t::camera_placement() const {
+	entt::entity actor = this->get_actor();
 	return view_point + backend->get<location_t>(actor).center();
 }
 
 std::string naomi_state_t::hexadecimal_equips() const {
-	//std::ostringstream ss;
-	//ss << "0x" << std::hex << equips.to_ullong() << std::dec;
-	//return ss.str();
 	return fmt::format("{:x}", equips.to_ulong());
 }
 

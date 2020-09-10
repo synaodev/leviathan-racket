@@ -206,7 +206,6 @@ private:
 	void do_death(receiver_t& receiver, const kinematics_t& kinematics, const health_t& health);
 	void do_headsup(headsup_gui_t& headsup_gui, const health_t& health);
 private:
-	entt::entity actor;
 	std::bitset<naomi_flags_t::Total> flags;
 	std::bitset<naomi_equips_t::Total> equips;
 	std::vector<sint64_t> chroniker;
