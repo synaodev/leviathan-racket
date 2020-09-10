@@ -136,13 +136,13 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 		return false;
 	}
 #endif
-	bool problem = true;
+	bool success = true;
 	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
 		if (!vfs::directory_exists(kDirList[it], print)) {
-			problem = false;
+			success = false;
 		}
 	}
-	return problem;
+	return success;
 }
 
 bool vfs::directory_exists(const std::string& name, bool_t print) {
@@ -190,8 +190,7 @@ bool vfs::create_directory(const std::string& name) {
 		return true;
 	}
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	std::error_code code;
-	if (!std::filesystem::create_directory(name, code)) {
+	if (!std::filesystem::create_directory(name)) {
 		synao_log("Failed to create file at: \"{}\"\n", name);
 		return false;
 	}
