@@ -12,6 +12,7 @@
 #include "../field/collision.hpp"
 #include "../resource/id.hpp"
 #include "../system/audio.hpp"
+#include "../utility/rng.hpp"
 
 LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
 	LEVIATHAN_CTOR_TABLE_PUSH(ai::frontier::type, 		ai::frontier::ctor);

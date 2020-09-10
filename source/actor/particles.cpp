@@ -7,6 +7,7 @@
 #include "../component/sprite.hpp"
 #include "../resource/id.hpp"
 #include "../utility/enums.hpp"
+#include "../utility/rng.hpp"
 
 LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
 	LEVIATHAN_CTOR_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);

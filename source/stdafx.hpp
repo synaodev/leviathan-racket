@@ -4,6 +4,7 @@
 // C standard libraries
 #include <cstdlib>
 #include <cstddef>
+#include <cstdarg>
 #include <cstdint>
 #include <cinttypes>
 #include <cassert>
@@ -13,6 +14,8 @@
 #include <clocale>
 #include <cmath>
 #include <cfloat>
+#include <climits>
+#include <ciso646>
 
 // C++ standard libraries
 #include <type_traits>
@@ -52,7 +55,6 @@
 	#include <filesystem>
 #endif
 
-//#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/vec1.hpp>
@@ -62,12 +64,12 @@
 #include <fmt/format.h>
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	#if !defined(LEVIATHAN_USES_VCPKG)
-		#include <al.h>
-		#include <alc.h>
-	#else
+	#if defined(LEVIATHAN_PLATFORM_LINUX) || defined(LEVIATHAN_USES_VCPKG)
 		#include <AL/al.h>
 		#include <AL/alc.h>
+	#else
+		#include <al.h>
+		#include <alc.h>
 	#endif
 	#include <angelscript.h>
 	#include <entt/entt.hpp>

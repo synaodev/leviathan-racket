@@ -14,7 +14,7 @@
 #include "../utility/enums.hpp"
 
 struct setup_file_t;
-struct demo_player_t;
+struct macro_player_t;
 
 namespace __enum_policy {
 	enum type : arch_t {
@@ -72,30 +72,30 @@ public:
 	void set_joystick_scanner();
 	btn_t set_joystick_binding(sint_t code, arch_t btn);
 #ifdef LEVIATHAN_USES_META
-	static bool get_meta_pressed(SDL_Scancode scancode);
-	static bool get_meta_holding(SDL_Scancode scancode);
+	bool get_meta_pressed(SDL_Scancode scancode) const;
+	bool get_meta_holding(SDL_Scancode scancode) const;
 #endif
 private:
 	void all_keyboard_bindings(const setup_file_t& config);
 	void all_joystick_bindings(const setup_file_t& config);
-	void all_demofile_settings(const setup_file_t& config);
+	void all_macrofile_settings(const setup_file_t& config);
 public:
 	std::bitset<btn_t::Total> pressed, holding;
 	glm::vec2 position;
 private:
 	std::map<sint_t, btn_t> keyboard, joystick;
-	std::unique_ptr<demo_player_t> player;
+	std::unique_ptr<macro_player_t> player;
 	sint_t scanner;
 	SDL_Joystick* device;
 };
 
-struct demo_player_t : public not_copyable_t {
+struct macro_player_t : public not_copyable_t {
 public:
-	demo_player_t();
-	demo_player_t(bool_t record);
-	demo_player_t(demo_player_t&&) = default;
-	demo_player_t& operator=(demo_player_t&&) = default;
-	~demo_player_t() = default;
+	macro_player_t();
+	macro_player_t(bool_t record);
+	macro_player_t(macro_player_t&&) = default;
+	macro_player_t& operator=(macro_player_t&&) = default;
+	~macro_player_t() = default;
 public:
 	bool load(const std::string& name);
 	bool write(const std::string& output);

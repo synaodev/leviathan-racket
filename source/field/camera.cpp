@@ -1,10 +1,11 @@
 #include "./camera.hpp"
 
-#include "../utility/constants.hpp"
-#include "../video/display_list.hpp"
+#include "../actor/naomi.hpp"
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
-#include "../actor/naomi.hpp"
+#include "../utility/constants.hpp"
+#include "../utility/rng.hpp"
+#include "../video/display_list.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -20,9 +20,6 @@ target_compile_definitions (editor PRIVATE "-DLEVIATHAN_DEFINES_VERSION")
 target_include_directories (naomi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories (editor PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-target_sources (naomi PRIVATE "types.cpp")
-target_sources (editor PRIVATE "types.cpp")
-
 add_subdirectory("actor")
 add_subdirectory("audio")
 add_subdirectory("component")

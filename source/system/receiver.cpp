@@ -14,6 +14,7 @@
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
+#include "../utility/rng.hpp"
 
 #include <cstring>
 #include <angelscript.h>

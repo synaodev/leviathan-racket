@@ -3,6 +3,7 @@
 #include "../utility/logger.hpp"
 #include "../utility/setup_file.hpp"
 #include "../utility/vfs.hpp"
+#include "../utility/rng.hpp"
 
 #include <functional>
 
@@ -44,7 +45,7 @@ bool input_t::init(const setup_file_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	this->all_demofile_settings(config);
+	this->all_macrofile_settings(config);
 #endif
 	if (device != nullptr) {
 		synao_log("Error! Joystick already exists!\n");
@@ -63,9 +64,9 @@ bool input_t::init(const setup_file_t& config) {
 
 bool input_t::save(const setup_file_t& config) {
 	if (player != nullptr and player->recording()) {
-		std::string demo;
-		config.get("Input", "Demo", demo);
-		if (!player->write(demo)) {
+		std::string macro;
+		config.get("Setup", "MacroFile", macro);
+		if (!player->write(macro)) {
 			return false;
 		}
 		player.reset();
@@ -270,7 +271,7 @@ void input_t::advance() {
 		} else if (player->playing()) {
 			player->read(pressed, holding);
 		} else {
-			synao_log("Demo has completed!\n");
+			synao_log("Macro has completed!\n");
 			player.reset();
 		}
 	}
@@ -408,11 +409,11 @@ btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 
 #ifdef LEVIATHAN_USES_META
 
-bool input_t::get_meta_pressed(SDL_Scancode scancode) {
+bool input_t::get_meta_pressed(SDL_Scancode scancode) const {
 	return meta_pressed[scancode];
 }
 
-bool input_t::get_meta_holding(SDL_Scancode scancode) {
+bool input_t::get_meta_holding(SDL_Scancode scancode) const {
 	return meta_holding[scancode];
 }
 
@@ -488,24 +489,24 @@ void input_t::all_joystick_bindings(const setup_file_t& config) {
 	joystick[options] 	= btn_t::Options;
 }
 
-void input_t::all_demofile_settings(const setup_file_t& config) {
-	std::string demoname;
+void input_t::all_macrofile_settings(const setup_file_t& config) {
+	std::string macro;
 	bool_t playback = false;
-	config.get("Setup", "DemoName", demoname);
+	config.get("Setup", "MacroFile", macro);
 	config.get("Setup", "PlayBack", playback);
-	if (!demoname.empty()) {
-		player = std::make_unique<demo_player_t>(!playback);
+	if (!macro.empty()) {
+		player = std::make_unique<macro_player_t>(!playback);
 		if (!playback) {
-			synao_log("Recording inputs into demo: \"{}\"...\n", demoname);
-		} else if (player->load(demoname)) {
-			synao_log("Playing inputs from demofile: \"{}\"...\n", demoname);
+			synao_log("Recording inputs into macro: \"{}\"...\n", macro);
+		} else if (player->load(macro)) {
+			synao_log("Playing inputs from macro: \"{}\"...\n", macro);
 		} else {
 			player.reset();
 		}
 	}
 }
 
-demo_player_t::demo_player_t() :
+macro_player_t::macro_player_t() :
 	record(false),
 	index(kNotReady),
 	buttons()
@@ -513,7 +514,7 @@ demo_player_t::demo_player_t() :
 
 }
 
-demo_player_t::demo_player_t(bool_t record) :
+macro_player_t::macro_player_t(bool_t record) :
 	record(record),
 	index(kNotReady),
 	buttons()
@@ -521,11 +522,11 @@ demo_player_t::demo_player_t(bool_t record) :
 
 }
 
-bool demo_player_t::load(const std::string& name) {
+bool macro_player_t::load(const std::string& name) {
 	std::vector<uint16_t> buffer;
 	sint64_t seed = 0;
-	if (!vfs::record_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo", buffer, seed)) {
-		synao_log("Error! Failed to load demo file!\n");
+	if (!vfs::record_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".macro", buffer, seed)) {
+		synao_log("Error! Failed to load macro file!\n");
 		return false;
 	}
 	buttons.resize(buffer.size());
@@ -537,11 +538,11 @@ bool demo_player_t::load(const std::string& name) {
 	return true;
 }
 
-bool demo_player_t::write(const std::string& name) {
+bool macro_player_t::write(const std::string& name) {
 	if (!record) {
 		return true;
 	}
-	const std::string path = vfs::resource_path(vfs_resource_path_t::Init) + name + ".dmo";
+	const std::string path = vfs::resource_path(vfs_resource_path_t::Init) + name + ".macro";
 	std::vector<uint16_t> buffer;
 	buffer.resize(buttons.size());
 	for (arch_t it = 0; it < buttons.size(); ++it) {
@@ -549,7 +550,7 @@ bool demo_player_t::write(const std::string& name) {
 	}
 	sint64_t seed = rng::seed();
 	if (!vfs::create_recording(path, buffer, seed)) {
-		synao_log("Error! Failed to save demo file!\n");
+		synao_log("Error! Failed to save macro file!\n");
 		return false;
 	}
 	buttons.clear();
@@ -557,25 +558,25 @@ bool demo_player_t::write(const std::string& name) {
 	return true;
 }
 
-void demo_player_t::read(std::bitset<btn_t::Total>& pressed, std::bitset<btn_t::Total>& holding) {
+void macro_player_t::read(std::bitset<btn_t::Total>& pressed, std::bitset<btn_t::Total>& holding) {
 	if (this->playing()) {
 		pressed = buttons[index++];
 		holding = buttons[index++];
 	}
 }
 
-void demo_player_t::store(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding) {
+void macro_player_t::store(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding) {
 	if (this->recording()) {
 		buttons.push_back(pressed);
 		buttons.push_back(holding);
 	}
 }
 
-bool demo_player_t::recording() const {
+bool macro_player_t::recording() const {
 	return record;
 }
 
-bool demo_player_t::playing() const {
+bool macro_player_t::playing() const {
 	if (record) {
 		return false;
 	}

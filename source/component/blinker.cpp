@@ -2,6 +2,8 @@
 #include "./sprite.hpp"
 #include "./kontext.hpp"
 
+#include "../utility/rng.hpp"
+
 blinker_t::blinker_t(arch_t first_state, arch_t blink_state) :
 	enable(true),
 	timer(0.0),

@@ -57,7 +57,7 @@ static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audi
 		}
 	}
 	if (!input.save(config)) {
-		synao_log("Warning! Something went wrong when trying to write inputs to demo file!\n");
+		synao_log("Warning! Something went wrong when trying to save inputs to macro file!\n");
 	}
 	return config.save();
 }
@@ -252,12 +252,12 @@ int main(int argc, char** argv) {
 	// Print version information
 	synao_log(
 		"====== Leviathan Racket ======\n"
-		"\tVersion: {}.{}.{}.{}\n"
-		"\tAuthor: Tyler Cadena\n"
-		"\tPlatform: {} {}\n"
-		"\tCompiler: {}\n"
-		"\tToolchain: {}\n"
-		"\tExecutable: {} {}\n"
+		"   Version: {}.{}.{}.{}\n"
+		"   Author: Tyler Cadena\n"
+		"   Platform: {} {}\n"
+		"   Compiler: {}\n"
+		"   Toolchain: {}\n"
+		"   Executable: {} {}\n"
 		"==============================\n",
 		LEVIATHAN_VERSION_INFORMATION_MAJOR,
 		LEVIATHAN_VERSION_INFORMATION_MINOR,
