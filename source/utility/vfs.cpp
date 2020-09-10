@@ -111,56 +111,6 @@ bool vfs_t::init(const setup_file_t& config) {
 	return true;
 }
 
-// Copied from SFML
-static std::string::const_iterator decode(std::string::const_iterator begin, std::string::const_iterator end, uint_t& output, uint_t replacement = 0) {
-	static const sint_t trailing[256] = {
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-		2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5
-	};
-
-	static const uint_t offsets[6] = {
-		0x00000000, 0x00003080, 0x000E2080, 0x03C82080, 0xFA082080, 0x82082080
-	};
-
-	sint_t trailingBytes = trailing[static_cast<uint8_t>(*begin)];
-
-	if (begin + trailingBytes < end) {
-		output = 0;
-		switch (trailingBytes) {
-			case 5: output += static_cast<uint8_t>(*begin++); output <<= 6;
-			case 4: output += static_cast<uint8_t>(*begin++); output <<= 6;
-			case 3: output += static_cast<uint8_t>(*begin++); output <<= 6;
-			case 2: output += static_cast<uint8_t>(*begin++); output <<= 6;
-			case 1: output += static_cast<uint8_t>(*begin++); output <<= 6;
-			case 0: output += static_cast<uint8_t>(*begin++);
-		}
-		output -= offsets[trailingBytes];
-	} else {
-		begin = end;
-		output = replacement;
-	}
-
-	return begin;
-}
-
-std::back_insert_iterator<std::u32string> vfs::to_utf32(
-	std::string::const_iterator begin,
-	std::string::const_iterator end,
-	std::back_insert_iterator<std::u32string> output) {
-	while (begin < end) {
-		uint_t point;
-		begin = ::decode(begin, end, point);
-		*output++ = point;
-	}
-	return output;
-}
-
 bool vfs::mount(const std::string& directory, bool_t print) {
 	static const byte_t* kDirList[] = {
 		kEventPath, kFieldPath,

@@ -26,12 +26,6 @@ rect_t collision::info_t::hitbox() const {
 		glm::vec2(index) * constants::TileSize<real_t>(),
 		constants::TileDimensions<real_t>()
 	);
-	// return rect_t(
-	// 	static_cast<real_t>(index.x * kSintTileSize),
-	// 	static_cast<real_t>(index.y * kSintTileSize),
-	// 	kRealTileSize,
-	// 	kRealTileSize
-	// );
 }
 
 static bool is_slope_opposing_side(const collision::info_t& info, side_t side) {

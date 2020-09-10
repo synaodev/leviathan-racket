@@ -48,7 +48,7 @@ void tilemap_t::handle(const camera_t& camera) {
 	for (auto&& parallax : tilemap_parallaxes) {
 		parallax.handle(viewport);
 	}
-	if (!previous_viewport.cmp_round(viewport)) {
+	if (!previous_viewport.round_compare(viewport)) {
 		previous_viewport = viewport;
 		amend = true;
 		glm::ivec2 first = glm::ivec2(

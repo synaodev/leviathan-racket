@@ -55,7 +55,7 @@ void camera_t::handle(const kontext_t& kontext, const naomi_state_t& naomi_state
 		center = naomi_state.camera_placement();
 	}
 	position += (center - position) / kDefaultSpeed;
-	view_limits.push_fix(&position, dimensions);
+	view_limits.push_fix(position, dimensions);
 }
 
 void camera_t::update(real64_t delta) {
@@ -88,14 +88,14 @@ void camera_t::update(real64_t delta) {
 }
 
 void camera_t::set_view_limits(rect_t view_limits) {
-	this->view_limits.w = view_limits.w - 16.0f;
-	this->view_limits.h = view_limits.h - 12.0f;
+	this->view_limits.w = view_limits.w - constants::TileSize<real_t>();
+	this->view_limits.h = view_limits.h - constants::TileSize<real_t>() - 4.0f;
 	position = kDefaultCenter;
 	dimensions = constants::NormalDimensions<real_t>();
 }
 
 void camera_t::set_focus(glm::vec2 position) {
-	view_limits.push_fix(&position, dimensions);
+	view_limits.push_fix(position, dimensions);
 	this->position = position;
 }
 
@@ -138,16 +138,25 @@ rect_t camera_t::get_viewport() const {
 
 arch_t camera_t::get_tile_range(glm::ivec2 first, glm::ivec2 last) const {
 	glm::ivec2 result = last - first;
-	return static_cast<arch_t>(result.x) * static_cast<arch_t>(result.y) * display_list_t::SingleQuad;
+	return
+		static_cast<arch_t>(result.x) *
+		static_cast<arch_t>(result.y) *
+		display_list_t::SingleQuad;
 }
 
 glm::mat4 camera_t::get_matrix() const {
-	glm::vec2 result = glm::round(position + offsets);
-	glm::mat4 matrix = glm::mat4(1.0f);
-	matrix = glm::scale(matrix, glm::vec3(2.0f / dimensions.x, 2.0f / -dimensions.y, 0.0f));
+	glm::mat4 result = glm::scale(
+		glm::mat4(1.0f), glm::vec3(2.0f / dimensions.x, 2.0f / -dimensions.y, 0.0f)
+	);
 	if (view_angle != 0.0f) {
-		matrix = glm::rotate(matrix, view_angle, glm::vec3(0.0f, 0.0f, 1.0f));
+		result = glm::rotate(
+			result,
+			view_angle,
+			glm::vec3(0.0f, 0.0f, 1.0f)
+		);
 	}
-	matrix = glm::translate(matrix, -glm::vec3(result, 0.0f));
-	return matrix;
+	result = glm::translate(
+		result, -glm::vec3(glm::round(position + offsets), 0.0f)
+	);
+	return result;
 }

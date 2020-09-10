@@ -1,8 +1,9 @@
 #include "./draw_text.hpp"
 
-#include "../video/font.hpp"
-#include "../utility/vfs.hpp"
 #include "../system/renderer.hpp"
+#include "../utility/vfs.hpp"
+#include "../utility/utf32.hpp"
+#include "../video/font.hpp"
 
 #include <algorithm>
 
@@ -65,7 +66,7 @@ void draw_text_t::set_font(const font_t* font) {
 
 void draw_text_t::set_string(std::string words, bool immediate) {
 	buffer.clear();
-	vfs::to_utf32(
+	utf8_to_utf32(
 		words.begin(),
 		words.end(),
 		std::back_inserter(buffer)
@@ -77,7 +78,7 @@ void draw_text_t::set_string(std::string words, bool immediate) {
 }
 
 void draw_text_t::append_string(std::string words, bool immediate) {
-	vfs::to_utf32(
+	utf8_to_utf32(
 		words.begin(),
 		words.end(),
 		std::back_inserter(buffer)
