@@ -7,13 +7,7 @@
 #include "../component/blinker.hpp"
 #include "../resource/id.hpp"
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::kyoko::type, 		ai::kyoko::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::nauzika::type, 	ai::nauzika::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::senma::type, 		ai::senma::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::fox::type, 		ai::fox::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::gyo::type, 		ai::gyo::ctor);
-}
+// Functions
 
 void ai::friends::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
@@ -93,4 +87,22 @@ void ai::gyo::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.assign_if<blinker_t>(s, 0, 2);
 	kontext.assign_if<routine_t>(s, friends::tick);
 	kontext.sort<sprite_t>(sprite_t::compare);
+}
+
+// Tables
+
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::kyoko::type, 	ai::kyoko::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::nauzika::type, ai::nauzika::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::senma::type, 	ai::senma::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::fox::type, 	ai::fox::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::gyo::type, 	ai::gyo::ctor);
+}
+
+LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::kyoko::type, 	"Kyoko");
+	LEVIATHAN_TABLE_PUSH(ai::nauzika::type, "Nauzika");
+	LEVIATHAN_TABLE_PUSH(ai::senma::type, 	"Senma");
+	LEVIATHAN_TABLE_PUSH(ai::fox::type, 	"Fox");
+	LEVIATHAN_TABLE_PUSH(ai::gyo::type, 	"Gyo");
 }

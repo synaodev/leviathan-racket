@@ -1,12 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_ACTOR_SHOSHI_HPP
 #define LEVIATHAN_INCLUDED_ACTOR_SHOSHI_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include "../utility/hash.hpp"
-
-struct kontext_t;
-struct routine_tuple_t;
+#include "../component/routine.hpp"
 
 namespace ai {
 	struct shoshi_helper_t {
@@ -20,7 +15,7 @@ namespace ai {
 	public:
 		bool_t augment;
 	};
-	namespace shoshi_normal {
+	namespace shoshi {
 		constexpr arch_t type = synao_hash("shoshi");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);

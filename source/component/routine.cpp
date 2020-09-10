@@ -3,36 +3,68 @@
 
 #include "../utility/logger.hpp"
 
-static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)>& get_callback_list() {
-	static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)> callback_list;
-	return callback_list;
+// Ctor Table
+static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)>& get_ctor_callback_list() {
+	static std::vector<void(*)(std::unordered_map<arch_t, routine_ctor_fn>&)> ctor_callback_list;
+	return ctor_callback_list;
 }
 
-routine_generator_t::routine_generator_t(void(*callback)(std::unordered_map<arch_t, routine_ctor_fn>&)) {
-	auto& callback_list = get_callback_list();
-	callback_list.emplace_back(callback);
+routine_ctor_generator_t::routine_ctor_generator_t(void(*callback)(std::unordered_map<arch_t, routine_ctor_fn>&)) {
+	auto& ctor_callback_list = get_ctor_callback_list();
+	ctor_callback_list.emplace_back(callback);
 }
 
-bool routine_generator_t::init(std::unordered_map<arch_t, routine_ctor_fn>& ctor_table) {
+bool routine_ctor_generator_t::init(std::unordered_map<arch_t, routine_ctor_fn>& ctor_table) {
 	bool result = true;
-	auto& callback_list = get_callback_list();
-	if (!callback_list.empty()) {
-		for (auto&& callback : callback_list) {
-			if (callback != nullptr) {
-				std::invoke(callback, ctor_table);
-			} else {
-				synao_log("Constructor table should not have null entries!\n");
-				result = false;
-				break;
-			}
+	auto& callback_list = get_ctor_callback_list();
+	for (auto&& callback : callback_list) {
+		if (callback != nullptr) {
+			std::invoke(callback, ctor_table);
+		} else {
+			synao_log("Constructor table should not have null entries!\n");
+			result = false;
+			break;
 		}
-	} else {
-		synao_log("Constructor callback list is empty!\n");
-		result = false;
 	}
 	callback_list.clear();
 	callback_list.shrink_to_fit();
 	return result;
+}
+
+// Name Table
+static std::vector<void(*)(std::unordered_map<arch_t, std::string>&)>& get_name_callback_list() {
+	static std::vector<void(*)(std::unordered_map<arch_t, std::string>&)> name_callback_list;
+	return name_callback_list;
+}
+
+routine_name_generator_t::routine_name_generator_t(void(*callback)(std::unordered_map<arch_t, std::string>&)) {
+	auto& name_callback_list = get_name_callback_list();
+	name_callback_list.emplace_back(callback);
+}
+
+std::string routine_name_generator_t::search(arch_t hash) {
+	static bool first_time = true;
+	static std::unordered_map<arch_t, std::string> name_table;
+	if (first_time) {
+		first_time = false;
+		auto& callback_list = get_name_callback_list();
+		for (auto&& callback : callback_list) {
+			if (callback != nullptr) {
+				std::invoke(callback, name_table);
+			} else {
+				synao_log("Name table should not have null entries!\n");
+				break;
+			}
+		}
+		callback_list.clear();
+		callback_list.shrink_to_fit();
+	}
+	auto it = name_table.find(hash);
+	if (it == name_table.end()) {
+		synao_log("Couldn't retrieve name with hash value: {}!\n", hash);
+		return std::string();
+	}
+	return it->second;
 }
 
 routine_t::routine_t(routine_tick_fn tick) :

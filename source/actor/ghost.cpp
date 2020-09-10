@@ -8,9 +8,7 @@
 #include "../resource/id.hpp"
 #include "../system/audio.hpp"
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::ghost::type, ai::ghost::ctor);
-}
+// Functions
 
 void ai::ghost::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
@@ -54,4 +52,14 @@ void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
 		sprite.shake = 0.3f;
 		sprite.new_state(1);
 	}
+}
+
+// Tables
+
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::ghost::type, ai::ghost::ctor);
+}
+
+LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::ghost::type, "Ghost");
 }

@@ -1,12 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_ACTOR_PARTICLES_HPP
 #define LEVIATHAN_INCLUDED_ACTOR_PARTICLES_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include "../utility/hash.hpp"
-
-struct routine_tuple_t;
-struct kontext_t;
+#include "../component/routine.hpp"
 
 namespace ai {
 	namespace particles {
@@ -32,23 +27,23 @@ namespace ai {
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_small {
-		constexpr arch_t type = synao_hash("sblast");
+		constexpr arch_t type = synao_hash("blast_small");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_medium {
-		constexpr arch_t type = synao_hash("mblast");
+		constexpr arch_t type = synao_hash("blast_medium");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_large {
-		constexpr arch_t type = synao_hash("lblast");
+		constexpr arch_t type = synao_hash("blast_large");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace energy_trail {
-		constexpr arch_t type = synao_hash("engtrail");
+		constexpr arch_t type = synao_hash("energy_trail");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace dash_flash {
-		constexpr arch_t type = synao_hash("dashflash");
+		constexpr arch_t type = synao_hash("dash_flash");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace barrier {

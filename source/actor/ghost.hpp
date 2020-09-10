@@ -1,12 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
 #define LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include "../utility/hash.hpp"
-
-struct routine_tuple_t;
-struct kontext_t;
+#include "../component/routine.hpp"
 
 namespace ai {
 	namespace ghost {

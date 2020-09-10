@@ -11,11 +11,7 @@
 #include "../resource/id.hpp"
 #include "../system/audio.hpp"
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_normal::type, 	ai::shoshi_normal::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
-}
+// Functions
 
 static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t direction) {
 	return (
@@ -24,7 +20,7 @@ static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t dire
 	);
 }
 
-void ai::shoshi_normal::ctor(entt::entity s, kontext_t& kontext) {
+void ai::shoshi::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
@@ -38,7 +34,7 @@ void ai::shoshi_normal::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.sort<sprite_t>(sprite_t::compare);
 }
 
-void ai::shoshi_normal::tick(entt::entity s, routine_tuple_t& rtp) {
+void ai::shoshi::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
@@ -206,4 +202,18 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 			sprite.mirroring = mirroring_t::None;
 		}
 	}
+}
+
+// Tables
+
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::shoshi::type, 			ai::shoshi::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
+}
+
+LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::shoshi::type, 			"Shoshi (Idle)");
+	LEVIATHAN_TABLE_PUSH(ai::shoshi_carry::type, 	"Shoshi (Carried)");
+	LEVIATHAN_TABLE_PUSH(ai::shoshi_follow::type, 	"Shoshi (Following)");
 }

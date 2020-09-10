@@ -41,7 +41,7 @@ bool kontext_t::init(receiver_t& receiver, headsup_gui_t& headsup_gui) {
 	push_meter = [&headsup_gui](sint_t current, sint_t maximum) {
 		headsup_gui.set_fight_values(current, maximum);
 	};
-	if (!routine_generator_t::init(ctor_table)) {
+	if (!routine_ctor_generator_t::init(ctor_table)) {
 		synao_log("Actor constructor table generation failed!\n");
 		return false;
 	}
@@ -144,7 +144,7 @@ bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t 
 		iter->second(actor, *this);
 		return true;
 	}
-	synao_log("Couldn't \"create\" actor \"{}\"!\n", name);
+	synao_log("Couldn't create actor \"{}\"!\n", name);
 	return false;
 }
 
@@ -163,7 +163,12 @@ bool kontext_t::create(const actor_spawn_t& spawn) {
 		iter->second(actor, *this);
 		return true;
 	}
-	synao_log("Couldn't \"spawn\" actor #{}!\n", spawn.type);
+	const std::string name = routine_name_generator_t::search(spawn.type);
+	if (name.empty()) {
+		synao_log("Couldn't spawn actor #{}!\n", spawn.type);
+	} else {
+		synao_log("Couldn't spawn actor \"{}\"!\n", name);
+	}
 	return false;
 }
 

@@ -1,12 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
 #define LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include "../utility/hash.hpp"
-
-struct routine_tuple_t;
-struct kontext_t;
+#include "../component/routine.hpp"
 
 namespace ai {
 	namespace null {
@@ -14,16 +9,16 @@ namespace ai {
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace hv_trigger {
-		constexpr arch_t type = synao_hash("hvtrig");
+		constexpr arch_t type = synao_hash("hv_trigger");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
-	namespace chest_full {
-		constexpr arch_t type = synao_hash("chest");
+	namespace full_chest {
+		constexpr arch_t type = synao_hash("full_chest");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
-	namespace chest_empty {
-		constexpr arch_t type = synao_hash("empty");
+	namespace empty_chest {
+		constexpr arch_t type = synao_hash("empty_chest");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace door {
@@ -43,14 +38,14 @@ namespace ai {
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace ammo_station {
-		constexpr arch_t type = synao_hash("ammostn");
+		constexpr arch_t type = synao_hash("ammo_station");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace computer {
-		constexpr arch_t type = synao_hash("cmptr");
+		constexpr arch_t type = synao_hash("computer");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
-	namespace fireplace {
+	namespace fire {
 		constexpr arch_t type = synao_hash("fire");
 		void ctor(entt::entity s, kontext_t& kontext);
 	}

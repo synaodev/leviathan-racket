@@ -8,22 +8,9 @@
 #include "../resource/id.hpp"
 #include "../utility/enums.hpp"
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::null::type, 			ai::null::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::hv_trigger::type, 	ai::hv_trigger::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::chest_full::type, 	ai::chest_full::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::chest_empty::type, 	ai::chest_empty::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::door::type, 			ai::door::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::death_spikes::type, 	ai::death_spikes::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::bed::type, 			ai::bed::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::ammo_station::type, 	ai::ammo_station::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::computer::type, 		ai::computer::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::fireplace::type, 		ai::fireplace::ctor);
-}
+// Functions
 
-void ai::null::ctor(entt::entity, kontext_t&) {
-
-}
+void ai::null::ctor(entt::entity, kontext_t&) {}
 
 void ai::hv_trigger::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
@@ -45,11 +32,11 @@ void ai::hv_trigger::tick(entt::entity s, routine_tuple_t& rtp) {
 	}
 }
 
-void ai::chest_full::ctor(entt::entity s, kontext_t& kontext) {
+void ai::full_chest::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.assign_if<sprite_t>(s, res::anim::Chest);
 }
 
-void ai::chest_empty::ctor(entt::entity s, kontext_t& kontext) {
+void ai::empty_chest::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Chest);
 	sprite.variation = 1;
 }
@@ -103,6 +90,34 @@ void ai::computer::ctor(entt::entity s, kontext_t& kontext) {
 	sprite.position = location.position;
 }
 
-void ai::fireplace::ctor(entt::entity s, kontext_t& kontext) {
+void ai::fire::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.assign_if<sprite_t>(s, res::anim::Fireplace);
+}
+
+// Tables
+
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::null::type, 			ai::null::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::hv_trigger::type, 		ai::hv_trigger::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::full_chest::type, 		ai::full_chest::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::empty_chest::type, 	ai::empty_chest::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::door::type, 			ai::door::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::death_spikes::type, 	ai::death_spikes::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::bed::type, 			ai::bed::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::ammo_station::type, 	ai::ammo_station::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::computer::type, 		ai::computer::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::fire::type, 			ai::fire::ctor);
+}
+
+LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::null::type, 			"Null");
+	LEVIATHAN_TABLE_PUSH(ai::hv_trigger::type, 		"Event Trigger");
+	LEVIATHAN_TABLE_PUSH(ai::full_chest::type, 		"Full Chest");
+	LEVIATHAN_TABLE_PUSH(ai::empty_chest::type, 	"Empty Chest");
+	LEVIATHAN_TABLE_PUSH(ai::door::type, 			"Door");
+	LEVIATHAN_TABLE_PUSH(ai::death_spikes::type, 	"Instant Death Spikes");
+	LEVIATHAN_TABLE_PUSH(ai::bed::type, 			"Bed");
+	LEVIATHAN_TABLE_PUSH(ai::ammo_station::type, 	"Ammo Refill Station");
+	LEVIATHAN_TABLE_PUSH(ai::computer::type, 		"Computer");
+	LEVIATHAN_TABLE_PUSH(ai::fire::type, 			"Fire");
 }

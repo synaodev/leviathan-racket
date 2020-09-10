@@ -9,18 +9,7 @@
 #include "../utility/enums.hpp"
 #include "../utility/rng.hpp"
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_generator_t) {
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::shrapnel::type, 		ai::shrapnel::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::dust::type, 			ai::dust::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::splash::type, 		ai::splash::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_small::type, 	ai::blast_small::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_medium::type, 	ai::blast_medium::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::blast_large::type, 	ai::blast_large::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::energy_trail::type, 	ai::energy_trail::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::dash_flash::type, 	ai::dash_flash::ctor);
-	LEVIATHAN_CTOR_TABLE_PUSH(ai::barrier::type, 		ai::barrier::ctor);
-}
+// Functions
 
 void ai::particles::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
@@ -260,4 +249,32 @@ void ai::barrier::tick(entt::entity s, routine_tuple_t& rtp) {
 		glm::vec2 dimensions = glm::vec2(32.0f, 22.0f) * scale;
 		location.position = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center() - dimensions;
 	}
+}
+
+// Tables
+
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::shrapnel::type, 		ai::shrapnel::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::dust::type, 			ai::dust::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::splash::type, 			ai::splash::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::blast_small::type, 	ai::blast_small::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::blast_medium::type, 	ai::blast_medium::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::blast_large::type, 	ai::blast_large::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::energy_trail::type, 	ai::energy_trail::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::dash_flash::type, 		ai::dash_flash::ctor);
+	LEVIATHAN_TABLE_PUSH(ai::barrier::type, 		ai::barrier::ctor);
+}
+
+LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
+	LEVIATHAN_TABLE_PUSH(ai::smoke::type, 			"Smoke");
+	LEVIATHAN_TABLE_PUSH(ai::shrapnel::type, 		"Shrapnel");
+	LEVIATHAN_TABLE_PUSH(ai::dust::type, 			"Dust");
+	LEVIATHAN_TABLE_PUSH(ai::splash::type, 			"Splash");
+	LEVIATHAN_TABLE_PUSH(ai::blast_small::type, 	"Small Blast");
+	LEVIATHAN_TABLE_PUSH(ai::blast_medium::type, 	"Medium Blast");
+	LEVIATHAN_TABLE_PUSH(ai::blast_large::type, 	"Large Blast");
+	LEVIATHAN_TABLE_PUSH(ai::energy_trail::type, 	"Energy Trail");
+	LEVIATHAN_TABLE_PUSH(ai::dash_flash::type, 		"Dash Flash");
+	LEVIATHAN_TABLE_PUSH(ai::barrier::type, 		"Barrier");
 }

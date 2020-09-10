@@ -1,12 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_ACTOR_WEAPONS_HPP
 #define LEVIATHAN_INCLUDED_ACTOR_WEAPONS_HPP
 
-#include <entt/entity/registry.hpp>
-
-#include "../utility/hash.hpp"
-
-struct routine_tuple_t;
-struct kontext_t;
+#include "../component/routine.hpp"
 
 namespace ai {
 	namespace weapons {
@@ -27,22 +22,22 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace weak_hammer {
-		constexpr arch_t type = synao_hash("wkhammer");
+		constexpr arch_t type = synao_hash("weak_hammer");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace strong_hammer {
-		constexpr arch_t type = synao_hash("sthammer");
+		constexpr arch_t type = synao_hash("strong_hammer");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace holy_lance {
-		constexpr arch_t type = synao_hash("hylance");
+		constexpr arch_t type = synao_hash("holy_lance");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace holy_tether {
-		constexpr arch_t type = synao_hash("hytethr");
+		constexpr arch_t type = synao_hash("holy_tether");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
@@ -52,12 +47,12 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace nail_ray {
-		constexpr arch_t type = synao_hash("nailray");
+		constexpr arch_t type = synao_hash("nail_ray");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace wolf_vulcan {
-		constexpr arch_t type = synao_hash("wlfvulc");
+		constexpr arch_t type = synao_hash("wolf_vulcan");
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
