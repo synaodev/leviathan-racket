@@ -36,8 +36,17 @@ endif ()
 # Building with meta elements
 
 if (NOT DEFINED META_BUILD)
-	message ("Defaulting to building without meta elements...")
+	message ("Defaulting to building without meta menu...")
 	set (META_BUILD OFF)
+endif ()
+
+# Building with RTTI (building without is usually not possible)
+
+if (NOT DEFINED RTTI_BUILD)
+	message ("Defaulting to building with RTTI...")
+	set (RTTI_BUILD ON)
+elseif (NOT RTTI_BUILD)
+	message ("Warning! Building without RTTI might fail!")
 endif ()
 
 # Project definition

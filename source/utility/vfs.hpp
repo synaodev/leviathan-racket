@@ -9,7 +9,7 @@
 
 #include "../resource/table_entry.hpp"
 #include "../video/texture.hpp"
-#include "../video/program.hpp"
+#include "../video/pipeline.hpp"
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	#include "../audio/noise.hpp"

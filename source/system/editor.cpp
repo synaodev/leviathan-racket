@@ -90,7 +90,7 @@ bool editor_t::init(const video_t& video, renderer_t& renderer) {
 		return false;
 	}
 	window = std::get<SDL_Window*>(device);
-	const std::string directive = pipeline::directive(video.get_opengl_version());
+	const std::string directive = program::directive(video.get_opengl_version());
 	if (!ImGui_ImplOpenGL3_Init(directive.c_str())) {
 		synao_log("Error! Failed to initialize ImGui OpenGL!\nGLSL Version: \"{}\"", directive);
 		return false;

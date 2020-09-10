@@ -30,7 +30,7 @@ void draw_units_t::render(renderer_t& renderer) const {
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			pipeline_t::VtxMajorIndexed,
+			program_t::Indexed,
 			texture,
 			palette
 		);

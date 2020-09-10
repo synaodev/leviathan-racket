@@ -9,12 +9,12 @@
 
 struct texture_t;
 struct palette_t;
-struct program_t;
+struct pipeline_t;
 struct rect_t;
 
 struct display_list_t : public not_copyable_t {
 public:
-	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_allocator_t* allocator);
+	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline, const quad_allocator_t* allocator);
 	display_list_t();
 	display_list_t(display_list_t&& that) noexcept;
 	display_list_t& operator=(display_list_t&& that) noexcept;
@@ -35,7 +35,7 @@ public:
 	void flush(gfx_t& gfx);
 	sint64_t capture(const gfx_t& gfx);
 	bool release(const gfx_t& gfx);
-	bool matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const;
+	bool matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline) const;
 	bool matches(sint64_t timestamp) const;
 	bool rendered() const;
 	bool persists() const;
@@ -47,7 +47,7 @@ private:
 	blend_mode_t blend_mode;
 	const texture_t* texture;
 	const palette_t* palette;
-	const program_t* program;
+	const pipeline_t* pipeline;
 	bool_t visible, amend;
 	sint64_t timestamp;
 	arch_t current, account;

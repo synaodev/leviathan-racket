@@ -72,7 +72,7 @@ void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t v
 		layer_value::HeadsUp,
 		blend_mode_t::Add,
 		buffer_usage_t::Dynamic,
-		pipeline_t::VtxBlankColors
+		program_t::Colors
 	);
 	kontext.slice<location_t>().each([&list, &viewport, &color](entt::entity, const location_t& location) {
 		rect_t hitbox = location.hitbox();

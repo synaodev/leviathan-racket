@@ -71,7 +71,7 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			pipeline_t::VtxBlankColors
+			program_t::Colors
 		);
 		if (amend) {
 			amend = false;

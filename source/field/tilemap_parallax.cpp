@@ -84,7 +84,7 @@ void tilemap_parallax_t::render(renderer_t& renderer, rect_t viewport, const tex
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,
-		pipeline_t::VtxMajorSprites,
+		program_t::Sprites,
 		texture,
 		nullptr
 	);

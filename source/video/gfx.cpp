@@ -1,6 +1,6 @@
 #include "./gfx.hpp"
 #include "./glcheck.hpp"
-#include "./program.hpp"
+#include "./pipeline.hpp"
 #include "./texture.hpp"
 #include "./const_buffer.hpp"
 #include "./frame_buffer.hpp"
@@ -8,7 +8,7 @@
 gfx_t::gfx_t() :
 	depth_func(compare_func_t::Disable),
 	blend_mode(blend_mode_t::Disable),
-	program(nullptr),
+	pipeline(nullptr),
 	samplers{},
 	const_buffers{}
 {
@@ -66,14 +66,14 @@ void gfx_t::set_blend_mode(blend_mode_t blend_mode) {
 	}
 }
 
-void gfx_t::set_program(const program_t* program) {
-	if (this->program != program) {
-		this->program = program;
-		if (program != nullptr) {
-			if (program_t::has_separable()) {
-				glCheck(glBindProgramPipeline(program->handle));
+void gfx_t::set_pipeline(const pipeline_t* pipeline) {
+	if (this->pipeline != pipeline) {
+		this->pipeline = pipeline;
+		if (pipeline != nullptr) {
+			if (pipeline_t::has_separable()) {
+				glCheck(glBindProgramPipeline(pipeline->handle));
 			} else {
-				glCheck(glUseProgram(program->handle));
+				glCheck(glUseProgram(pipeline->handle));
 			}
 		}
 	}

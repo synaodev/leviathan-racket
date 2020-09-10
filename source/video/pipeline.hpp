@@ -1,5 +1,5 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP
+#ifndef LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP
+#define LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP
 
 #include <string>
 #include <vector>
@@ -20,17 +20,17 @@ public:
 	bool matches(shader_stage_t _stage) const;
 	static vertex_spec_t attributes(uint_t program_handle);
 private:
-	friend struct program_t;
+	friend struct pipeline_t;
 	uint_t handle;
 	shader_stage_t stage;
 };
 
-struct program_t : public not_copyable_t {
+struct pipeline_t : public not_copyable_t {
 public:
-	program_t();
-	program_t(program_t&& that) noexcept;
-	program_t& operator=(program_t&& that) noexcept;
-	~program_t();
+	pipeline_t();
+	pipeline_t(pipeline_t&& that) noexcept;
+	pipeline_t& operator=(pipeline_t&& that) noexcept;
+	~pipeline_t();
 public:
 	bool create(const shader_t* vert, const shader_t* frag, const shader_t* geom);
 	bool create(const shader_t* vert, const shader_t* frag);
@@ -46,4 +46,4 @@ private:
 	vertex_spec_t specify;
 };
 
-#endif // LEVIATHAN_INCLUDED_VIDEO_PROGRAM_HPP
+#endif // LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP

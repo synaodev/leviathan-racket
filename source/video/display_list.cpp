@@ -1,15 +1,15 @@
 #include "./display_list.hpp"
-#include "./program.hpp"
+#include "./pipeline.hpp"
 
 #include "../utility/watch.hpp"
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program, const quad_allocator_t* allocator) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
 	layer(layer),
 	blend_mode(blend_mode),
 	texture(texture),
 	palette(palette),
-	program(program),
+	pipeline(pipeline),
 	visible(false),
 	amend(false),
 	timestamp(0),
@@ -19,8 +19,8 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_us
 	quad_buffer()
 {
 	vertex_spec_t specify;
-	if (program != nullptr) {
-		specify = program->get_specify();
+	if (pipeline != nullptr) {
+		specify = pipeline->get_specify();
 	}
 	quad_pool.setup(specify);
 	quad_buffer.setup(allocator, usage, specify);
@@ -31,7 +31,7 @@ display_list_t::display_list_t() :
 	blend_mode(blend_mode_t::None),
 	texture(nullptr),
 	palette(nullptr),
-	program(nullptr),
+	pipeline(nullptr),
 	visible(false),
 	amend(false),
 	timestamp(0),
@@ -49,7 +49,7 @@ display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t(
 		std::swap(blend_mode, that.blend_mode);
 		std::swap(texture, that.texture);
 		std::swap(palette, that.palette);
-		std::swap(program, that.program);
+		std::swap(pipeline, that.pipeline);
 		std::swap(visible, that.visible);
 		std::swap(amend, that.amend);
 		std::swap(timestamp, that.timestamp);
@@ -66,7 +66,7 @@ display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
 		std::swap(blend_mode, that.blend_mode);
 		std::swap(texture, that.texture);
 		std::swap(palette, that.palette);
-		std::swap(program, that.program);
+		std::swap(pipeline, that.pipeline);
 		std::swap(visible, that.visible);
 		std::swap(amend, that.amend);
 		std::swap(timestamp, that.timestamp);
@@ -210,7 +210,7 @@ void display_list_t::flush(gfx_t& gfx) {
 			quad_buffer.update(quad_pool[0], current);
 		}
 		gfx.set_blend_mode(blend_mode);
-		gfx.set_program(program);
+		gfx.set_pipeline(pipeline);
 		gfx.set_sampler(texture, 0);
 		gfx.set_sampler(palette, 1);
 		quad_buffer.draw(current);
@@ -234,14 +234,14 @@ bool display_list_t::release(const gfx_t& /*gfx*/) {
 	return false;
 }
 
-bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const program_t* program) const {
+bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline) const {
 	return (
 		layer_value::equal(this->layer, layer) and
 		this->blend_mode == blend_mode and
 		this->quad_buffer.get_usage() == usage and
 		this->texture == texture and
 		this->palette == palette and
-		this->program == program
+		this->pipeline == pipeline
 	);
 }
 
@@ -265,7 +265,7 @@ bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 			if (lhu == rhu) {
 				if (lhv.texture == rhv.texture) {
 					if (lhv.palette == rhv.palette) {
-						return lhv.program < rhv.program;
+						return lhv.pipeline < rhv.pipeline;
 					}
 					return lhv.palette < rhv.palette;
 				}

@@ -19,3 +19,8 @@ target_link_libraries (editor PRIVATE
 	${STLFS_LIBS}
 	${CMAKE_DL_LIBS}
 )
+
+if (NOT RTTI_BUILD)
+	target_compile_options (naomi PRIVATE "-fno-rtti")
+	target_compile_options (editor PRIVATE "-fno-rtti")
+endif ()

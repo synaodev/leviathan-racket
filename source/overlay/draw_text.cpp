@@ -43,7 +43,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			pipeline_t::VtxMajorIndexed,
+			program_t::Indexed,
 			font->get_texture(),
 			font->get_palette()
 		);

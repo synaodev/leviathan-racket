@@ -220,16 +220,16 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
 		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+			program_t program = program_t::Sprites;
 			if (palette != nullptr) {
-				pipeline = pipeline_t::VtxMajorIndexed;
+				program = program_t::Indexed;
 				index = palette->convert(index);
 			}
 			auto& list = renderer.working_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline,
+				program,
 				texture,
 				palette
 			);
@@ -253,16 +253,16 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
 		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+			program_t program = program_t::Sprites;
 			if (palette != nullptr) {
-				pipeline = pipeline_t::VtxMajorIndexed;
+				program = program_t::Indexed;
 				index = palette->convert(index);
 			}
 			auto& list = renderer.working_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline,
+				program,
 				texture,
 				palette
 			);
@@ -282,16 +282,16 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const {
 	this->assure();
 	if (state < sequences.size()) {
-		pipeline_t pipeline = pipeline_t::VtxMajorSprites;
+		program_t program = program_t::Sprites;
 		if (palette != nullptr) {
-			pipeline = pipeline_t::VtxMajorIndexed;
+			program = program_t::Indexed;
 			index = palette->convert(index);
 		}
 		auto& list = renderer.overlay_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			pipeline,
+			program,
 			texture,
 			palette
 		);

@@ -5,8 +5,9 @@
 #include <optional>
 
 #include "./tileflag.hpp"
-#include "../utility/rect.hpp"
+
 #include "../component/common.hpp"
+#include "../utility/rect.hpp"
 
 struct tilemap_t;
 

@@ -1,4 +1,4 @@
-#include "./pipeline.hpp"
+#include "./program.hpp"
 
 #include <fmt/format.h>
 
@@ -142,7 +142,7 @@ void main() {
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
-namespace pipeline {
+namespace program {
 	std::string directive(glm::ivec2 version) {
 		return fmt::format(
 			"#version {}{}0",

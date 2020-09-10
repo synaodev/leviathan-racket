@@ -41,7 +41,7 @@ enum class shader_stage_t {
 	Fragment
 };
 
-struct program_t;
+struct pipeline_t;
 struct sampler_t;
 struct texture_t;
 struct palette_t;
@@ -58,7 +58,7 @@ public:
 public:
 	void set_depth_func(compare_func_t depth_func);
 	void set_blend_mode(blend_mode_t blend_mode);
-	void set_program(const program_t* program);
+	void set_pipeline(const pipeline_t* pipeline);
 	void set_sampler(const texture_t* texture, arch_t index);
 	void set_sampler(const palette_t* palette, arch_t index);
 	void set_sampler(const depth_buffer_t* depth_buffer, arch_t index);
@@ -73,7 +73,7 @@ public:
 private:
 	compare_func_t depth_func;
 	blend_mode_t blend_mode;
-	const program_t* program;
+	const pipeline_t* pipeline;
 	std::array<const sampler_t*, 4> samplers;
 	std::array<const const_buffer_t*, 4> const_buffers;
 };

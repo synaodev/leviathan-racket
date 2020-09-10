@@ -1,4 +1,4 @@
-#include "./program.hpp"
+#include "./pipeline.hpp"
 #include "./glcheck.hpp"
 
 #include "../utility/logger.hpp"
@@ -7,10 +7,10 @@
 /*
 	When separable programs are available:
 	- shader_t's handle is an OGL program object.
-	- program_t's handle is an OGL program pipeline object.
+	- pipeline_t's handle is an OGL program pipeline object.
 	If separable programs are not available:
 	- shader_t's handle is an OGL shader object.
-	- program_t's handle is an OGL program object.
+	- pipeline_t's handle is an OGL program object.
 */
 
 shader_t::shader_t() :
@@ -46,7 +46,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 
 		uint_t gl_enum = gfx_t::get_shader_stage_gl_enum(stage);
 
-		if (program_t::has_separable()) {
+		if (pipeline_t::has_separable()) {
 			glCheck(handle = glCreateShaderProgramv(gl_enum, 1, &source_pointer));
 			glCheck(glValidateProgram(handle));
 			sint_t length = 0;
@@ -87,7 +87,7 @@ bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 
 void shader_t::destroy() {
 	if (handle != 0) {
-		if (program_t::has_separable()) {
+		if (pipeline_t::has_separable()) {
 			glCheck(glUseProgram(0));
 			glCheck(glDeleteProgram(handle));
 		} else {
@@ -131,21 +131,21 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 	return desc;
 }
 
-program_t::program_t() :
+pipeline_t::pipeline_t() :
 	handle(0),
 	specify()
 {
 
 }
 
-program_t::program_t(program_t&& that) noexcept : program_t() {
+pipeline_t::pipeline_t(pipeline_t&& that) noexcept : pipeline_t() {
 	if (this != &that) {
 		std::swap(handle, that.handle);
 		std::swap(specify, that.specify);
 	}
 }
 
-program_t& program_t::operator=(program_t&& that) noexcept {
+pipeline_t& pipeline_t::operator=(pipeline_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(handle, that.handle);
 		std::swap(specify, that.specify);
@@ -153,13 +153,13 @@ program_t& program_t::operator=(program_t&& that) noexcept {
 	return *this;
 }
 
-program_t::~program_t() {
+pipeline_t::~pipeline_t() {
 	this->destroy();
 }
 
-bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
+bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {
 	if (!handle) {
-		if (program_t::has_separable()) {
+		if (pipeline_t::has_separable()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
 			glCheck(glBindProgramPipeline(handle));
@@ -219,13 +219,13 @@ bool program_t::create(const shader_t* vert, const shader_t* frag, const shader_
 	return specify.length != 0;
 }
 
-bool program_t::create(const shader_t* vert, const shader_t* frag) {
+bool pipeline_t::create(const shader_t* vert, const shader_t* frag) {
 	return this->create(vert, frag, nullptr);
 }
 
-void program_t::destroy() {
+void pipeline_t::destroy() {
 	if (handle != 0) {
-		if (program_t::has_separable()) {
+		if (pipeline_t::has_separable()) {
 			glCheck(glBindProgramPipeline(0));
 			glCheck(glDeleteProgramPipelines(1, &handle));
 		} else {
@@ -237,8 +237,8 @@ void program_t::destroy() {
 	}
 }
 
-void program_t::set_block(const byte_t* name, arch_t binding) const {
-	if (program_t::has_separable()) {
+void pipeline_t::set_block(const byte_t* name, arch_t binding) const {
+	if (pipeline_t::has_separable()) {
 		synao_log("Warning! OpenGL version is 4.2^! Don't manually set constant buffer bindings!\n");
 	} else if (handle != 0) {
 		uint_t index = GL_INVALID_INDEX;
@@ -253,14 +253,14 @@ void program_t::set_block(const byte_t* name, arch_t binding) const {
 	}
 }
 
-void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
-	if (program_t::has_separable()) {
+void pipeline_t::set_sampler(const byte_t* name, arch_t sampler) const {
+	if (pipeline_t::has_separable()) {
 		synao_log("Warning! OpenGL version is 4.2^! Don't manually set sampler bindings!\n");
 	} else if (handle != 0) {
 		sint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformLocation(handle, name));
 		if (index != GL_INVALID_INDEX) {
-			if (program_t::has_uniform_azdo()) {
+			if (pipeline_t::has_uniform_azdo()) {
 				glCheck(glProgramUniform1i(
 					handle,
 					index,
@@ -278,11 +278,11 @@ void program_t::set_sampler(const byte_t* name, arch_t sampler) const {
 	}
 }
 
-const vertex_spec_t& program_t::get_specify() const {
+const vertex_spec_t& pipeline_t::get_specify() const {
 	return specify;
 }
 
-bool program_t::has_separable() {
+bool pipeline_t::has_separable() {
 #if defined(LEVIATHAN_PLATFORM_MACOS)
 	// MacOS is dumb
 	return glTexStorage2D != nullptr;
@@ -291,6 +291,6 @@ bool program_t::has_separable() {
 #endif
 }
 
-bool program_t::has_uniform_azdo() {
+bool pipeline_t::has_uniform_azdo() {
 	return glProgramUniform1i != nullptr;
 }

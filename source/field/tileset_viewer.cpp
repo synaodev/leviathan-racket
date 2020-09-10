@@ -125,7 +125,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline_t::VtxBlankColors
+				program_t::Colors
 			);
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
@@ -140,7 +140,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline_t::VtxMajorSprites,
+				program_t::Sprites,
 				texture,
 				nullptr
 			);
@@ -160,7 +160,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline_t::VtxBlankColors
+				program_t::Colors
 			);
 			list.skip(display_list_t::SingleQuad);
 		}
@@ -169,7 +169,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				pipeline_t::VtxMajorSprites,
+				program_t::Sprites,
 				texture,
 				nullptr
 			);

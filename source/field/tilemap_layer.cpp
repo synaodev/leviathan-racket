@@ -129,7 +129,7 @@ void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const texture_t
 		priority,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,
-		palette != nullptr ? pipeline_t::VtxMajorIndexed : pipeline_t::VtxMajorSprites,
+		palette != nullptr ? program_t::Indexed : program_t::Sprites,
 		texture,
 		palette
 	);

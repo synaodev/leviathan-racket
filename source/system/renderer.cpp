@@ -13,7 +13,7 @@ renderer_t::renderer_t() :
 	quad_allocator(),
 	overlay_lists(),
 	working_lists(),
-	programs(pipeline_t::Total),
+	pipelines(program_t::Total),
 	projection_buffer(),
 	viewport_buffer(),
 	internal_state(),
@@ -82,51 +82,51 @@ bool renderer_t::init(glm::ivec2 version) {
 
 	const shader_t* blank = vfs::shader(
 		"blank",
-		pipeline::blank_vert(version),
+		program::blank_vert(version),
 		shader_stage_t::Vertex
 	);
 	const shader_t* major = vfs::shader(
 		"major",
-		pipeline::major_vert(version),
+		program::major_vert(version),
 		shader_stage_t::Vertex
 	);
 	const shader_t* colors = vfs::shader(
 		"colors",
-		pipeline::colors_frag(version),
+		program::colors_frag(version),
 		shader_stage_t::Fragment
 	);
 	const shader_t* sprites = vfs::shader(
 		"sprites",
-		pipeline::sprites_frag(version),
+		program::sprites_frag(version),
 		shader_stage_t::Fragment
 	);
 	const shader_t* indexed = vfs::shader(
 		"indexed",
-		pipeline::indexed_frag(version),
+		program::indexed_frag(version),
 		shader_stage_t::Fragment
 	);
-	bool result = programs[pipeline_t::VtxBlankColors].create(blank, colors);
+	bool result = pipelines[program_t::Colors].create(blank, colors);
 	if (!result) {
-		synao_log("VtxBlankColors program creation failed!\n");
+		synao_log("\"Colors\" program creation failed!\n");
 		return false;
 	}
-	result = programs[pipeline_t::VtxMajorSprites].create(major, sprites);
+	result = pipelines[program_t::Sprites].create(major, sprites);
 	if (!result) {
-		synao_log("VtxMajorSprites program creation failed!\n");
+		synao_log("\"Sprites\" program creation failed!\n");
 		return false;
 	}
-	result = programs[pipeline_t::VtxMajorIndexed].create(major, indexed);
+	result = pipelines[program_t::Indexed].create(major, indexed);
 	if (!result) {
-		synao_log("VtxMajorIndexed program creation failed!\n");
+		synao_log("\"Indexed\" program creation failed!\n");
 		return false;
 	}
-	if (!program_t::has_separable()) {
-		programs[pipeline_t::VtxBlankColors].set_block("transforms", 0);
-		programs[pipeline_t::VtxMajorSprites].set_block("transforms", 0);
-		programs[pipeline_t::VtxMajorSprites].set_sampler("diffuse_map", 0);
-		programs[pipeline_t::VtxMajorIndexed].set_block("transforms", 0);
-		programs[pipeline_t::VtxMajorIndexed].set_sampler("indexed_map", 0);
-		programs[pipeline_t::VtxMajorIndexed].set_sampler("palette_map", 1);
+	if (!pipeline_t::has_separable()) {
+		pipelines[program_t::Colors].set_block("transforms", 0);
+		pipelines[program_t::Sprites].set_block("transforms", 0);
+		pipelines[program_t::Sprites].set_sampler("diffuse_map", 0);
+		pipelines[program_t::Indexed].set_block("transforms", 0);
+		pipelines[program_t::Indexed].set_sampler("indexed_map", 0);
+		pipelines[program_t::Indexed].set_sampler("palette_map", 1);
 	}
 	synao_log("Rendering service is ready.\n");
 	return true;
@@ -253,68 +253,68 @@ void renderer_t::release(display_list_t& list) {
 #endif
 }
 
-display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : overlay_lists) {
-		if (list.matches(layer, blend_mode, usage, texture, palette, program)) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, pipeline)) {
 			return list;
 		}
 	}
 	overlay_lists.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		program, &quad_allocator
+		pipeline, &quad_allocator
 	);
 	std::sort(overlay_lists.begin(), overlay_lists.end());
 	return this->overlay_list(
 		layer, blend_mode, usage,
-		program, texture, palette
+		pipeline, texture, palette
 	);
 }
 
-display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
 	return this->overlay_list(
 		layer, blend_mode, usage,
-		&programs[pipeline],
+		&pipelines[program],
 		texture, palette
 	);
 }
 
-display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline) {
+display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program) {
 	return this->overlay_list(
 		layer, blend_mode, usage,
-		pipeline, nullptr, nullptr
+		program, nullptr, nullptr
 	);
 }
 
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const program_t* program, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const texture_t* texture, const palette_t* palette) {
 	for (auto&& list : working_lists) {
-		if (list.matches(layer, blend_mode, usage, texture, palette, program)) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, pipeline)) {
 			return list;
 		}
 	}
 	working_lists.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		program, &quad_allocator
+		pipeline, &quad_allocator
 	);
 	std::sort(working_lists.begin(), working_lists.end());
 	return this->working_list(
 		layer, blend_mode, usage,
-		program, texture, palette
+		pipeline, texture, palette
 	);
 }
 
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline, const texture_t* texture, const palette_t* palette) {
+display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
 	return this->working_list(
 		layer, blend_mode, usage,
-		&programs[pipeline],
+		&pipelines[program],
 		texture, palette
 	);
 }
 
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, pipeline_t pipeline) {
+display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program) {
 	return this->working_list(
 		layer, blend_mode, usage,
-		pipeline, nullptr, nullptr
+		program, nullptr, nullptr
 	);
 }

@@ -217,38 +217,38 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 		direction[0] > 0.0f ? 1.0f : -1.0f,
 		direction[1] > 0.0f ? 1.0f : -1.0f
 	);
-	glm::vec2 deltalen = glm::abs(1.0f / direction);
+	glm::vec2 len_delta = glm::abs(1.0f / direction);
 	glm::vec2 distance(
 		step[0] > 0.0f ? index[0] + 1.0f - origin[0] : origin[0] - index[0],
 		step[1] > 0.0f ? index[1] + 1.0f - origin[1] : origin[1] - index[1]
 	);
-	glm::vec2 maxdelta(
-		deltalen[0] < std::numeric_limits<real_t>::infinity() ? deltalen[0] * distance[0] : std::numeric_limits<real_t>::infinity(),
-		deltalen[1] < std::numeric_limits<real_t>::infinity() ? deltalen[1] * distance[1] : std::numeric_limits<real_t>::infinity()
+	glm::vec2 max_delta(
+		len_delta[0] < std::numeric_limits<real_t>::infinity() ? len_delta[0] * distance[0] : std::numeric_limits<real_t>::infinity(),
+		len_delta[1] < std::numeric_limits<real_t>::infinity() ? len_delta[1] * distance[1] : std::numeric_limits<real_t>::infinity()
 	);
 	while (len <= max_length) {
-		glm::length_t I = maxdelta[0] < maxdelta[1] ? 0 : 1;
+		glm::length_t I = max_delta[0] < max_delta[1] ? 0 : 1;
 		index[I] += step[I];
-		len = maxdelta[I];
-		maxdelta[I] += deltalen[I];
-		sint_t xpos = tilemap_t::round(index.x);
-		sint_t ypos = tilemap_t::round(index.y);
-		uint_t attr = tilemap.get_attribute(xpos, ypos);
+		len = max_delta[I];
+		max_delta[I] += len_delta[I];
+		sint_t x_pos = tilemap_t::round(index.x);
+		sint_t y_pos = tilemap_t::round(index.y);
+		uint_t attr = tilemap.get_attribute(x_pos, y_pos);
 		if (attr != tileflag_t::Empty and !(attr & (tileflag_t::FallThrough | tileflag_t::OutBounds))) {
 			if (attr & tileflag_t::Block) {
 				if (attr & tileflag_t::Hooked) {
 					return glm::vec2(
-						tilemap_t::extend(xpos) + (constants::HalfTile<real_t>()),
-						tilemap_t::extend(ypos) + (constants::HalfTile<real_t>())
+						tilemap_t::extend(x_pos) + (constants::HalfTile<real_t>()),
+						tilemap_t::extend(y_pos) + (constants::HalfTile<real_t>())
 					);
 				}
 				return origin + len * direction;
 			} else if (attr & tileflag_t::Slope) {
 				std::optional<glm::vec2> intersect;
-				real_t left = tilemap_t::extend(xpos);
-				real_t top = tilemap_t::extend(ypos);
-				real_t right = tilemap_t::extend(xpos + 1);
-				real_t bottom = tilemap_t::extend(ypos + 1);
+				real_t left = tilemap_t::extend(x_pos);
+				real_t top = tilemap_t::extend(y_pos);
+				real_t right = tilemap_t::extend(x_pos + 1);
+				real_t bottom = tilemap_t::extend(y_pos + 1);
 				real_t center = top + (constants::HalfTile<real_t>());
 				switch (attr) {
 				case tileflag_t::Slope_1:
