@@ -1,7 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
 #define LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
 
-#include "./table_entry.hpp"
+#include "./table-entry.hpp"
 
 #define LEVIATHAN_RES_BYTES_DEF(NAME, STR) constexpr byte_t NAME[] = STR
 #define LEVIATHAN_RES_ENTRY_DEF(TAG, FILE) constexpr table_entry_t TAG(FILE)

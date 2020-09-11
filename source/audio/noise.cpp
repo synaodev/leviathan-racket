@@ -1,8 +1,8 @@
 #include "./noise.hpp"
-#include "./alcheck.hpp"
+#include "./al-check.hpp"
 #include "./channel.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/thread_pool.hpp"
+#include "../utility/thread-pool.hpp"
 
 #include <cstring>
 #include <SDL2/SDL_audio.h>

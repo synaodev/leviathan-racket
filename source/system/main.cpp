@@ -7,7 +7,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup_file.hpp"
+#include "../utility/setup-file.hpp"
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 

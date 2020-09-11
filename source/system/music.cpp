@@ -1,9 +1,9 @@
 #include "./music.hpp"
 
-#include "../utility/setup_file.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
-#include "../audio/alcheck.hpp"
+#include "../audio/al-check.hpp"
 
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS

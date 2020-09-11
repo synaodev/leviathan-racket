@@ -5,7 +5,7 @@
 #include "../component/location.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/rng.hpp"
-#include "../video/display_list.hpp"
+#include "../video/display-list.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

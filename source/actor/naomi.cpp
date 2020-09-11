@@ -15,7 +15,7 @@
 #include "../component/liquid.hpp"
 #include "../field/collision.hpp"
 #include "../field/camera.hpp"
-#include "../menu/headsup_gui.hpp"
+#include "../menu/headsup-gui.hpp"
 #include "../resource/id.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"

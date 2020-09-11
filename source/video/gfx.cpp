@@ -1,9 +1,9 @@
 #include "./gfx.hpp"
-#include "./glcheck.hpp"
+#include "./gl-check.hpp"
 #include "./pipeline.hpp"
 #include "./texture.hpp"
-#include "./const_buffer.hpp"
-#include "./frame_buffer.hpp"
+#include "./const-buffer.hpp"
+#include "./frame-buffer.hpp"
 
 gfx_t::gfx_t() :
 	depth_func(compare_func_t::Disable),

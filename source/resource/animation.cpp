@@ -1,8 +1,8 @@
 #include "./animation.hpp"
 
 #include "../system/renderer.hpp"
-#include "../utility/thread_pool.hpp"
-#include "../utility/setup_file.hpp"
+#include "../utility/thread-pool.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 

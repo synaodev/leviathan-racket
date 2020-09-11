@@ -1,5 +1,5 @@
 #include "./vertex.hpp"
-#include "./glcheck.hpp"
+#include "./gl-check.hpp"
 
 #include "../utility/logger.hpp"
 

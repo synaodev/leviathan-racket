@@ -1,8 +1,8 @@
 #include "./texture.hpp"
-#include "./glcheck.hpp"
+#include "./gl-check.hpp"
 
 #include "../utility/logger.hpp"
-#include "../utility/thread_pool.hpp"
+#include "../utility/thread-pool.hpp"
 
 bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;

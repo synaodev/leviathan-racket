@@ -1,10 +1,10 @@
 #include "./video.hpp"
 
 #include "../video/image.hpp"
-#include "../video/frame_buffer.hpp"
-#include "../video/glcheck.hpp"
+#include "../video/frame-buffer.hpp"
+#include "../video/gl-check.hpp"
 #include "../utility/constants.hpp"
-#include "../utility/setup_file.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 

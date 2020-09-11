@@ -4,8 +4,8 @@
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_events.h>
 
-#include "../field/tileset_viewer.hpp"
-#include "../menu/attribute_gui.hpp"
+#include "../field/tileset-viewer.hpp"
+#include "../menu/attribute-gui.hpp"
 
 struct video_t;
 struct renderer_t;

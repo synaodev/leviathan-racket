@@ -5,8 +5,8 @@
 
 #include "../resource/program.hpp"
 #include "../utility/enums.hpp"
-#include "../video/const_buffer.hpp"
-#include "../video/display_list.hpp"
+#include "../video/const-buffer.hpp"
+#include "../video/display-list.hpp"
 
 struct setup_file_t;
 struct video_t;

@@ -1,6 +1,6 @@
 #include "./vfs.hpp"
 #include "./logger.hpp"
-#include "./setup_file.hpp"
+#include "./setup-file.hpp"
 
 #if defined(LEVIATHAN_PLATFORM_WINDOWS)
 	#include <windows.h>

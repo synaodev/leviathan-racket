@@ -9,8 +9,8 @@
 
 #include "../actor/particles.hpp"
 #include "../field/properties.hpp"
-#include "../menu/headsup_gui.hpp"
-#include "../menu/meta_state.hpp"
+#include "../menu/headsup-gui.hpp"
+#include "../menu/meta-state.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
 #include "../utility/hash.hpp"

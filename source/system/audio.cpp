@@ -1,10 +1,10 @@
 #include "./audio.hpp"
 
-#include "../audio/alcheck.hpp"
-#include "../utility/setup_file.hpp"
+#include "../audio/al-check.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
-#include "../resource/table_entry.hpp"
+#include "../resource/table-entry.hpp"
 
 static constexpr arch_t kSoundChannels = 12;
 

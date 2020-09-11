@@ -1,7 +1,7 @@
 #include "./input.hpp"
 
 #include "../utility/logger.hpp"
-#include "../utility/setup_file.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/rng.hpp"
 

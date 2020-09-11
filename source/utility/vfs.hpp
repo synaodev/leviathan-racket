@@ -5,9 +5,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "./thread_pool.hpp"
+#include "./thread-pool.hpp"
 
-#include "../resource/table_entry.hpp"
+#include "../resource/table-entry.hpp"
 #include "../video/texture.hpp"
 #include "../video/pipeline.hpp"
 

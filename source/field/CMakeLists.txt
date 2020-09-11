@@ -5,8 +5,8 @@ target_sources (naomi PRIVATE
 	"collision.cpp"
 	"properties.cpp"
 	"tilemap.cpp"
-	"tilemap_layer.cpp"
-	"tilemap_parallax.cpp"
+	"tilemap-layer.cpp"
+	"tilemap-parallax.cpp"
 )
 
-target_sources (editor PRIVATE "tileset_viewer.cpp")
+target_sources (editor PRIVATE "tileset-viewer.cpp")

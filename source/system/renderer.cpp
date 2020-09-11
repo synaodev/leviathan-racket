@@ -4,7 +4,7 @@
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
-#include "../video/frame_buffer.hpp"
+#include "../video/frame-buffer.hpp"
 
 #include <limits>
 #include <glm/gtc/matrix_transform.hpp>

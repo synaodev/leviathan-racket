@@ -8,11 +8,11 @@
 #include "../component/kontext.hpp"
 #include "../field/camera.hpp"
 #include "../field/tilemap.hpp"
-#include "../menu/stack_gui.hpp"
-#include "../menu/dialogue_gui.hpp"
-#include "../menu/inventory_gui.hpp"
-#include "../menu/headsup_gui.hpp"
-#include "../menu/meta_state.hpp"
+#include "../menu/stack-gui.hpp"
+#include "../menu/dialogue-gui.hpp"
+#include "../menu/inventory-gui.hpp"
+#include "../menu/headsup-gui.hpp"
+#include "../menu/meta-state.hpp"
 
 struct setup_file_t;
 struct input_t;

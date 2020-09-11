@@ -1,8 +1,8 @@
 #ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
 #define LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
 
-#include "./tilemap_parallax.hpp"
-#include "./tilemap_layer.hpp"
+#include "./tilemap-parallax.hpp"
+#include "./tilemap-layer.hpp"
 
 struct camera_t;
 

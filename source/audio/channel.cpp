@@ -1,13 +1,13 @@
 #include "./channel.hpp"
-#include "./alcheck.hpp"
+#include "./al-check.hpp"
 #include "./noise.hpp"
 
-channel_t::channel_t() : 
+channel_t::channel_t() :
 	ready(false),
 	handle(0),
-	current(nullptr) 
+	current(nullptr)
 {
-	
+
 }
 
 channel_t::channel_t(channel_t&& that) noexcept : channel_t() {

@@ -1,18 +1,18 @@
 cmake_minimum_required (VERSION 3.15)
 
 target_sources (naomi PRIVATE
-	"dialogue_gui.cpp"
-	"headsup_gui.cpp"
-	"inventory_gui.cpp"
-	"meta_state.cpp"
-	"stack_gui.cpp"
-	"wgt_audio.cpp"
-	"wgt_file.cpp"
-	"wgt_input.cpp"
-	"wgt_language.cpp"
-	"wgt_option.cpp"
-	"wgt_video.cpp"
+	"dialogue-gui.cpp"
+	"headsup-gui.cpp"
+	"inventory-gui.cpp"
+	"meta-state.cpp"
+	"stack-gui.cpp"
+	"wgt-audio.cpp"
+	"wgt-file.cpp"
+	"wgt-input.cpp"
+	"wgt-language.cpp"
+	"wgt-option.cpp"
+	"wgt-video.cpp"
 	"widget.cpp"
 )
 
-target_sources (editor PRIVATE "attribute_gui.cpp")
+target_sources (editor PRIVATE "attribute-gui.cpp")

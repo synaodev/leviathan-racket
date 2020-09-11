@@ -11,7 +11,7 @@
 #include "../system/renderer.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup_file.hpp"
+#include "../utility/setup-file.hpp"
 #include "../utility/vfs.hpp"
 
 static const byte_t kStatProgPath[] = "_prog.cfg";

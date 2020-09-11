@@ -1,5 +1,5 @@
 #include "./pipeline.hpp"
-#include "./glcheck.hpp"
+#include "./gl-check.hpp"
 
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
