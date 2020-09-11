@@ -1,4 +1,4 @@
-#include <add_on/scriptstdstring.h>
+#include <angel/scriptstdstring.h>
 
 #include <assert.h> // assert()
 #include <sstream>  // std::stringstream

@@ -1,4 +1,4 @@
-#include <add_on/scriptarray.h>
+#include <angel/scriptarray.h>
 
 #include <new>
 #include <stdlib.h>

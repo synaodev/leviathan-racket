@@ -18,8 +18,8 @@
 
 #include <cstring>
 #include <angelscript.h>
-#include <add_on/scriptstdstring.h>
-#include <add_on/scriptarray.h>
+#include <angel/scriptstdstring.h>
+#include <angel/scriptarray.h>
 
 static const byte_t kBootFile[]	 = "boot";
 static const byte_t kDeathDecl[] = "void death(arch_t type)";
