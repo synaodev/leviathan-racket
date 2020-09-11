@@ -4,7 +4,7 @@
 #include "../types.hpp"
 
 #ifdef LEVIATHAN_DEFINES_VERSION
-	#include <leviathan_racket.hpp>
+	#include <leviathan-racket.hpp>
 #else
 	#include "../version.inc"
 #endif

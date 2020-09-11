@@ -13,7 +13,7 @@ if (STDAFX_BUILD)
 	target_precompile_headers (editor PRIVATE "stdafx.hpp")
 endif ()
 
-configure_file ("version.inc" "leviathan_racket.hpp" @ONLY)
+configure_file ("version.inc" "leviathan-racket.hpp" @ONLY)
 
 target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_DEFINES_VERSION")
 target_compile_definitions (editor PRIVATE "-DLEVIATHAN_DEFINES_VERSION")
