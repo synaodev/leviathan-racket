@@ -28,32 +28,76 @@
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL_filesystem.h>
 
-#define SYNAO_SIZEOF_ARRAY(ARR) (sizeof( ARR ) / sizeof( ARR [0] ))
-
-static constexpr byte_t kEventPath[]	= "./data/event/";
-static constexpr byte_t kFieldPath[]	= "./data/field/";
-static constexpr byte_t kFontPath[]		= "./data/font/";
-static constexpr byte_t kI18NPath[]		= "./data/i18n/";
-static constexpr byte_t kImagePath[]	= "./data/image/";
-static constexpr byte_t kNoisePath[]	= "./data/noise/";
-static constexpr byte_t kPalettePath[]	= "./data/palette/";
-static constexpr byte_t kSpritePath[]	= "./data/sprite/";
-static constexpr byte_t kTileKeyPath[]	= "./data/tilekey/";
-static constexpr byte_t kTunePath[]		= "./data/tune/";
-static constexpr byte_t kInitExt[]		= "init/";
-static constexpr byte_t kSaveExt[]		= "save/";
-static constexpr byte_t kOrgName[] 		= "studio-synao";
-static constexpr byte_t kAppName[] 		= "leviathan";
-static constexpr byte_t kDefaultLang[] 	= "english";
 static constexpr arch_t kTotalThreads 	= 4;
 static constexpr arch_t kDebugFontIndex = 4;
+static constexpr byte_t kOrganization[] = "studio-synao";
+static constexpr byte_t kApplication[] 	= "leviathan";
+static constexpr byte_t kLanguage[] 	= "english";
+
+#define kDATA_ROUTE "data/"
+static constexpr byte_t kDataRoute[] 	= kDATA_ROUTE;
+static constexpr byte_t kInitRoute[] 	= "init/";
+static constexpr byte_t kSaveRoute[]	= "save/";
+
+static constexpr byte_t kEventPath[]	= kDATA_ROUTE "event/";
+static constexpr byte_t kFieldPath[]	= kDATA_ROUTE "field/";
+static constexpr byte_t kFontPath[]		= kDATA_ROUTE "font/";
+static constexpr byte_t kI18NPath[]		= kDATA_ROUTE "i18n/";
+static constexpr byte_t kImagePath[]	= kDATA_ROUTE "image/";
+static constexpr byte_t kNoisePath[]	= kDATA_ROUTE "noise/";
+static constexpr byte_t kPalettePath[]	= kDATA_ROUTE "palette/";
+static constexpr byte_t kSpritePath[]	= kDATA_ROUTE "sprite/";
+static constexpr byte_t kTileKeyPath[]	= kDATA_ROUTE "tilekey/";
+static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
+
+/*
+	Not a fully featured virtual filesystem, obviously. Here's the layout:
+
+	data/
+		event/
+			[lang]/
+				*.cc
+			boot.cc
+		field/
+			*.tmx
+		font/
+			*.fnt
+			*.png
+			*.bmfc
+		i18n/
+			*.json
+		image/
+			*.png
+		noise/
+			*.wav
+		palette/
+			*.png
+		sprite/
+			*.cfg
+		tilekey/
+			*.atr
+		tune/
+			*.ptcop
+			*.pttune
+	init/
+		boot.cfg
+		*.macro
+	save/
+		*_check.bin
+		*_check.cfg
+		*_prog.bin
+		*_prog.cfg
+
+	The "data" directory should be in the working directory (i.e. the executable's directory).
+	The "init" and "save" directories should be in the directory returned by SDL_PrefPath().
+*/
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	vfs_t::vfs_t() :
 		thread_pool(),
 		storage_mutex(),
 		personal(),
-		language(kDefaultLang),
+		language(kLanguage),
 		i18n(),
 		textures(),
 		palettes(),
@@ -66,7 +110,7 @@ static constexpr arch_t kDebugFontIndex = 4;
 		thread_pool(),
 		storage_mutex(),
 		personal(),
-		language(kDefaultLang),
+		language(kLanguage),
 		i18n(),
 		textures(),
 		palettes(),
@@ -137,7 +181,7 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 	}
 #endif
 	bool success = true;
-	for (arch_t it = 0; it < SYNAO_SIZEOF_ARRAY(kDirList); ++it) {
+	for (arch_t it = 0; it < (sizeof(kDirList) / sizeof(kDirList[0])); ++it) {
 		if (!vfs::directory_exists(kDirList[it], print)) {
 			success = false;
 		}
@@ -245,7 +289,7 @@ std::string vfs::executable_directory() {
 }
 
 std::string vfs::personal_directory() {
-	byte_t* path = SDL_GetPrefPath(kOrgName, kAppName);
+	byte_t* path = SDL_GetPrefPath(kOrganization, kApplication);
 	if (path == nullptr) {
 		return std::string();
 	}
@@ -268,18 +312,18 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 		return kImagePath;
 	case vfs_resource_path_t::Init:
 		if (vfs::device != nullptr) {
-			return vfs::device->personal + kInitExt;
+			return vfs::device->personal + kInitRoute;
 		}
-		return vfs::personal_directory() + kInitExt;
+		return vfs::personal_directory() + kInitRoute;
 	case vfs_resource_path_t::Noise:
 		return kNoisePath;
 	case vfs_resource_path_t::Palette:
 		return kPalettePath;
 	case vfs_resource_path_t::Save:
 		if (vfs::device != nullptr) {
-			return vfs::device->personal + kSaveExt;
+			return vfs::device->personal + kSaveRoute;
 		}
-		return vfs::personal_directory() + kSaveExt;
+		return vfs::personal_directory() + kSaveRoute;
 	case vfs_resource_path_t::Sprite:
 		return kSpritePath;
 	case vfs_resource_path_t::TileKey:

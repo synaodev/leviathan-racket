@@ -94,7 +94,7 @@ void kernel_t::read_data(const setup_file_t& file) {
 
 bool kernel_t::read_stream(const std::string& path) {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ifstream ifs(path + std::to_string(file_index) + name, std::ifstream::binary);
+	std::ifstream ifs(path + std::to_string(file_index) + name, std::ios::binary);
 	if (ifs.is_open()) {
 		ifs.read(
 			reinterpret_cast<byte_t*>(flags.data()),
@@ -121,7 +121,7 @@ void kernel_t::write_data(setup_file_t& file) const {
 
 bool kernel_t::write_stream(const std::string& path) const {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ofstream ofs(path + std::to_string(file_index) + name, std::ofstream::binary);
+	std::ofstream ofs(path + std::to_string(file_index) + name, std::ios::binary);
 	if (ofs.is_open()) {
 		ofs.write(
 			reinterpret_cast<const byte_t*>(flags.data()),

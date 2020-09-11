@@ -182,8 +182,8 @@ void draw_text_t::generate() {
 	quads.clear();
 	if (font != nullptr and !buffer.empty()) {
 		arch_t spaces_chars = std::count_if(
-			begin(buffer),
-			begin(buffer) + current,
+			buffer.begin(),
+			buffer.begin() + current,
 			[](auto c) { return c == U'\n' or c == U'\t'; }
 		);
 		arch_t drawable_chars = buffer.size() - spaces_chars;

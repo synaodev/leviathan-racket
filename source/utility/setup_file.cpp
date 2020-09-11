@@ -115,18 +115,6 @@ void setup_file_t::clear() {
 	this->clear("");
 }
 
-bool setup_file_t::exists(const std::string& title) const {
-	for (auto&& chunk : data) {
-		if (title == chunk.get_title()) {
-			bool_t result = false;
-			std::stringstream ss(chunk.get(0));
-			ss >> result;
-			return result;
-		}
-	}
-	return false;
-}
-
 arch_t setup_file_t::size() const {
 	return data.size();
 }
@@ -184,7 +172,8 @@ std::pair<std::string, std::string> setup_file_t::parse(const std::string& line)
 		while (std::isspace(line[index], locale) or line[index] == '=') {
 			index++;
 		}
-		const std::string value = line.substr(index, line.size() - index);
+		std::string value = line.substr(index, line.size() - index);
+		this->sanitize(value);
 		return std::make_pair(key, value);
 
 	} else if (line[0] == '[') {
@@ -193,9 +182,17 @@ std::pair<std::string, std::string> setup_file_t::parse(const std::string& line)
 		while (!std::isspace(line[index], locale) and line[index] != ']') {
 			index++;
 		}
-		const std::string title = line.substr(begin, index - begin);
+		std::string title = line.substr(begin, index - begin);
+		this->sanitize(title);
 		return std::make_pair("!", title);
 	}
-
 	return std::make_pair(std::string(), std::string());
+}
+
+void setup_file_t::sanitize(std::string& value) const {
+	auto has_separators = [](char c) { return c == '/' or c == '\\'; };
+	value.erase(
+		std::remove_if(value.begin(), value.end(), has_separators),
+		value.end()
+	);
 }

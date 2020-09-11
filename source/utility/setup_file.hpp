@@ -44,12 +44,12 @@ public:
 	bool save();
 	void clear(const std::string& full_path);
 	void clear();
-	bool exists(const std::string& title) const;
 	arch_t size() const;
 	bool swap(const std::string& title, const std::string& lhk, const std::string& rhk);
 	bool read(std::ifstream& file);
 	bool write(std::ofstream& file) const;
 	std::pair<std::string, std::string> parse(const std::string& line) const;
+	void sanitize(std::string& value) const;
 	template<typename T> void get(const std::string& title, const std::string& key, T& value) const;
 	template<typename T> void get(const std::string& title, const std::string& key, std::vector<T>& value) const;
 	template<typename T, arch_t L> void get(const std::string& title, const std::string& key, std::array<T, L>& value) const;
@@ -247,68 +247,14 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 	data.push_back(chunk);
 }
 
-template<>
-inline sint16_t setup_file_t::convert_to<sint16_t>(const std::string& input) const {
-	sint16_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline uint16_t setup_file_t::convert_to<uint16_t>(const std::string& input) const {
-	uint16_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline sint32_t setup_file_t::convert_to<sint32_t>(const std::string& input) const {
-	sint32_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline uint32_t setup_file_t::convert_to<uint32_t>(const std::string& input) const {
-	uint32_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline sint64_t setup_file_t::convert_to<sint64_t>(const std::string& input) const {
-	sint64_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline uint64_t setup_file_t::convert_to<uint64_t>(const std::string& input) const {
-	uint64_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline real32_t setup_file_t::convert_to<real32_t>(const std::string& input) const {
-	real32_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
-}
-
-template<>
-inline real64_t setup_file_t::convert_to<real64_t>(const std::string& input) const {
-	real64_t value;
-	std::stringstream ss(input);
-	ss >> value;
-	return value;
+template<typename T>
+inline T setup_file_t::convert_to(const std::string& input) const {
+	static_assert(std::is_integral<T>::value or std::is_floating_point<T>::value);
+	if constexpr (std::is_integral<T>::value) {
+		return static_cast<T>(std::stoi(input));
+	} else {
+		return static_cast<T>(std::stof(input));
+	}
 }
 
 template<>

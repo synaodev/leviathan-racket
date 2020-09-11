@@ -203,7 +203,7 @@ bool tileset_viewer_t::save() {
 	select = false;
 	if (!file.empty()) {
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		std::ofstream ofs(tilekey_path + file + ".atr", std::ofstream::binary);
+		std::ofstream ofs(tilekey_path + file + ".atr", std::ios::binary);
 		if (ofs.is_open()) {
 			ofs.write(
 				reinterpret_cast<byte_t*>(&bitmasks[0]),
