@@ -12,7 +12,7 @@ endif ()
 
 # Libraries
 
-set (GENERAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+set (LIBRARY_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/include")
 
 find_package (Angelscript CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
@@ -68,7 +68,7 @@ target_link_libraries (naomi PRIVATE
 )
 target_include_directories (naomi PRIVATE
 	${CMAKE_CURRENT_BINARY_DIR}
-	${GENERAL_INCLUDE_DIR}
+	${LIBRARY_INCLUDE_DIR}
 	${TMXLITE_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
@@ -82,7 +82,7 @@ target_link_libraries (editor PRIVATE
 
 target_include_directories (editor PRIVATE
 	${CMAKE_CURRENT_BINARY_DIR}
-	${GENERAL_INCLUDE_DIR}
+	${LIBRARY_INCLUDE_DIR}
 	${STB_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
