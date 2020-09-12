@@ -7,8 +7,9 @@
 **/__pycache__/
 **/venv/
 
-# CMake
+# Build
 **/build/
+**/scratch/
 
 # Game
 **/AS_DEBUG/
