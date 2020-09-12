@@ -33,20 +33,32 @@ if (CCACHE_BUILD)
 	endif ()
 endif ()
 
-# Building with meta elements
+# Building with gold linker
 
-if (NOT DEFINED META_BUILD)
-	message ("Defaulting to building without meta menu...")
-	set (META_BUILD OFF)
+if (NOT DEFINED GOLD_BUILD)
+	message ("Defaulting to building without gold linker...")
+	set (GOLD_BUILD OFF)
+elseif (UNIX AND NOT APPLE)
+	message ("Warning! Make sure you have gold linker installed!")
+	set (GOLD_BUILD ON)
+else ()
+	message ("Gold linker is unavailable! Sorry!")
 endif ()
 
-# Building with RTTI (building without is usually not possible)
+# Building with RTTI
 
 if (NOT DEFINED RTTI_BUILD)
 	message ("Defaulting to building with RTTI...")
 	set (RTTI_BUILD ON)
 elseif (NOT RTTI_BUILD)
 	message ("Warning! Building without RTTI might fail!")
+endif ()
+
+# Building with meta elements
+
+if (NOT DEFINED META_BUILD)
+	message ("Defaulting to building without meta menu...")
+	set (META_BUILD OFF)
 endif ()
 
 # Project definition
