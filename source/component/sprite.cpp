@@ -25,6 +25,26 @@ sprite_t::sprite_t(const table_entry_t& entry) :
 	file = vfs::animation(entry);
 }
 
+sprite_t::sprite_t(const animation_t* file) :
+	file(file),
+	amend(false),
+	timer(0.0),
+	alpha(1.0f),
+	table(0.0f),
+	state(0),
+	direction(direction_t::Right),
+	mirroring(mirroring_t::None),
+	frame(0),
+	layer(layer_value::Automatic),
+	scale(1.0f),
+	position(0.0f),
+	pivot(0.0f),
+	angle(0.0f),
+	shake(0.0f)
+{
+
+}
+
 sprite_t::sprite_t() :
 	file(nullptr),
 	amend(false),

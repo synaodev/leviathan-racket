@@ -12,6 +12,7 @@ struct kontext_t;
 struct sprite_t {
 public:
 	sprite_t(const table_entry_t& entry);
+	sprite_t(const animation_t* file);
 	sprite_t();
 	sprite_t(const sprite_t&) = default;
 	sprite_t& operator=(const sprite_t&) = default;
@@ -29,10 +30,9 @@ public:
 	static bool compare(const sprite_t& lhv, const sprite_t& rhv) {
 		return lhv.layer < rhv.layer;
 	}
-private:
-	const animation_t* file;
 public:
 	static constexpr arch_t NonState = (arch_t)-1;
+	const animation_t* file;
 	mutable bool_t amend;
 	real64_t timer;
 	real_t alpha, table;
