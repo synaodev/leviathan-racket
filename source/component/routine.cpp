@@ -81,13 +81,17 @@ routine_t::routine_t() :
 
 }
 
-void routine_t::handle(audio_t& audio, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext, tilemap_t& tilemap) {
+void routine_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap) {
 	auto view = kontext.slice<routine_t>();
 	if (!view.empty()) {
 		routine_tuple_t rtp(
+			input,
 			audio,
+			kernel,
+			receiver,
+			headsup_gui,
 			camera,
-			naomi_state,
+			naomi,
 			kontext,
 			tilemap
 		);

@@ -26,7 +26,7 @@ runtime_t::runtime_t() :
 	inventory_gui(),
 	headsup_gui(),
 	camera(),
-	naomi_state(),
+	naomi(),
 	kontext(),
 	tilemap(),
 	meta_state()
@@ -38,7 +38,7 @@ bool runtime_t::init(input_t& input, video_t& video, audio_t& audio, music_t& mu
 	if (!kernel.init(receiver)) {
 		return false;
 	}
-	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, headsup_gui, camera, naomi_state, kontext)) {
+	if (!receiver.init(input, audio, music, kernel, stack_gui, dialogue_gui, headsup_gui, camera, naomi, kontext)) {
 		return false;
 	}
 	if (!dialogue_gui.init(receiver)) {
@@ -53,7 +53,7 @@ bool runtime_t::init(input_t& input, video_t& video, audio_t& audio, music_t& mu
 	if (!kontext.init(receiver, headsup_gui)) {
 		return false;
 	}
-	if (!naomi_state.init(kontext)) {
+	if (!naomi.init(kontext)) {
 		return false;
 	}
 #ifdef LEVIATHAN_USES_META
@@ -95,9 +95,9 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup_gui);
 		headsup_gui.handle(kernel);
 		if (!kernel.has(kernel_state_t::Freeze)) {
-			camera.handle(kontext, naomi_state);
-			naomi_state.handle(input, audio, kernel, receiver, headsup_gui, kontext, tilemap);
-			kontext.handle(audio, receiver, camera, naomi_state, tilemap);
+			camera.handle(kontext, naomi);
+			naomi.handle(input, audio, kernel, receiver, headsup_gui, kontext, tilemap);
+			kontext.handle(input, audio, kernel, receiver, headsup_gui, camera, naomi, tilemap);
 			tilemap.handle(camera);
 		}
 #ifdef LEVIATHAN_USES_META
@@ -187,7 +187,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 			break;
 		}
 	}
-	naomi_state.setup(audio, kernel, camera, kontext);
+	naomi.setup(audio, kernel, camera, kontext);
 	kernel.finish_field();
 	synao_log("Field loading successful.\n");
 	return true;
@@ -199,7 +199,7 @@ void runtime_t::setup_boot(const video_t&, renderer_t& renderer) {
 	stack_gui.reset();
 	dialogue_gui.reset();
 	headsup_gui.reset();
-	naomi_state.reset(kontext);
+	naomi.reset(kontext);
 	synao_log("Boot successful.\n");
 	receiver.run_function(kernel);
 }
@@ -230,7 +230,7 @@ void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 			stack_gui.reset();
 			dialogue_gui.reset();
 			headsup_gui.reset();
-			naomi_state.reset(
+			naomi.reset(
 				kontext, position * constants::TileSize<real_t>(),
 				static_cast<direction_t>(direction),
 				static_cast<sint_t>(current),
@@ -264,15 +264,15 @@ void runtime_t::setup_save() {
 	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
-		auto& location = kontext.get<location_t>(naomi_state.get_actor());
-		auto& health = kontext.get<health_t>(naomi_state.get_actor());
+		auto& location = kontext.get<location_t>(naomi.get_actor());
+		auto& health = kontext.get<health_t>(naomi.get_actor());
 		file.set("Status", "MaxHp", health.maximum);
 		file.set("Status", "CurHp", health.current);
 		file.set("Status", "CurAp", health.leviathan);
 		file.set("Status", "Field", kernel.get_field());
 		file.set("Status", "Position", location.position / constants::TileSize<real_t>());
 		file.set("Status", "Direction", static_cast<std::underlying_type<direction_t>::type>(location.direction));
-		file.set("Status", "Equips", naomi_state.hexadecimal_equips());
+		file.set("Status", "Equips", naomi.hexadecimal_equips());
 		kernel.write_data(file);
 		if (!kernel.write_stream(save_path)) {
 			synao_log("Couldn't save current flags!\n");

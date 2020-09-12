@@ -58,10 +58,10 @@ void kontext_t::reset() {
 	spawn_commands.clear();
 }
 
-void kontext_t::handle(audio_t& audio, receiver_t& receiver, camera_t& camera, naomi_state_t& naomi_state, tilemap_t& tilemap) {
+void kontext_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, const tilemap_t& tilemap) {
 	kinematics_t::handle(*this, tilemap);
-	routine_t::handle(audio, camera, naomi_state, *this, tilemap);
-	health_t::handle(audio, receiver, naomi_state, *this);
+	routine_t::handle(input, audio, kernel, receiver, headsup_gui, camera, naomi, *this, tilemap);
+	health_t::handle(audio, receiver, naomi, *this);
 	liquid::handle(audio, *this);
 	if (!spawn_commands.empty()) {
 		for (auto&& spawn : spawn_commands) {

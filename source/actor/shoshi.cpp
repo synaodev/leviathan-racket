@@ -94,6 +94,8 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 
 
 void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
+	kontext.assign_if<shoshi_state_t>(s);
+
 	auto& location = kontext.get<location_t>(s);
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
@@ -106,16 +108,14 @@ void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.assign_if<blinker_t>(s, 0, 4);
 	kontext.assign_if<routine_t>(s, tick);
 	kontext.assign_if<liquid_listener_t>(s, ai::splash::type, res::sfx::Splash);
-	kontext.assign_if<shoshi_helper_t>(s);
-
 	kontext.sort<sprite_t>(sprite_t::compare);
 }
 
 void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
+	auto& shoshi_state = rtp.kontext.get<shoshi_state_t>(s);
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
-	auto& helper = rtp.kontext.get<shoshi_helper_t>(s);
 	auto& listener = rtp.kontext.get<liquid_listener_t>(s);
 	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
 	auto& naomi_kinematics = rtp.kontext.get<kinematics_t>(rtp.naomi.get_actor());
@@ -172,10 +172,10 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 		}
 		if (kinematics.flags[phy_t::Bottom]) {
 			sprite.new_state(1);
-			helper.augment = true;
-		} else if (helper.augment) {
+			shoshi_state.augment = true;
+		} else if (shoshi_state.augment) {
 			sprite.new_state(2);
-			helper.augment = false;
+			shoshi_state.augment = false;
 			kinematics.velocity.y = -kJumpPw;
 			should_jump = true;
 			rtp.audio.play(res::sfx::Jump, 0);
@@ -191,7 +191,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	} else if (kinematics.flags[phy_t::Bottom]) {
 		kinematics.decel_x(kDecelX);
 		sprite.new_state(0);
-		helper.augment = true;
+		shoshi_state.augment = true;
 	}
 	kinematics.accel_y(kGravSp, kMaxVsp);
 	if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {

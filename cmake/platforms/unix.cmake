@@ -21,7 +21,7 @@ target_link_libraries (editor PRIVATE
 )
 
 if (GOLD_BUILD)
-	if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+	if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND NOT LLVM_USE_LINKER)
 		message ("Warning! Compiler is clang, so pass \"-DLLVM_USE_LINKER=gold\" when configuring!")
 		set (LLVM_USE_LINKER "gold")
 	endif ()

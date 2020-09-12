@@ -47,7 +47,7 @@ private:
 	inventory_gui_t inventory_gui;
 	headsup_gui_t headsup_gui;
 	camera_t camera;
-	naomi_state_t naomi_state;
+	naomi_state_t naomi;
 	kontext_t kontext;
 	tilemap_t tilemap;
 	meta_state_t meta_state;

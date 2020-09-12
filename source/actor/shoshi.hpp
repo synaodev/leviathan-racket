@@ -4,14 +4,14 @@
 #include "../component/routine.hpp"
 
 namespace ai {
-	struct shoshi_helper_t {
+	struct shoshi_state_t {
 	public:
-		shoshi_helper_t() : augment(false) {}
-		shoshi_helper_t(const shoshi_helper_t&) = default;
-		shoshi_helper_t& operator=(const shoshi_helper_t&) = default;
-		shoshi_helper_t(shoshi_helper_t&&) = default;
-		shoshi_helper_t& operator=(shoshi_helper_t&&) = default;
-		~shoshi_helper_t() = default;
+		shoshi_state_t() : augment(false) {}
+		shoshi_state_t(const shoshi_state_t&) = default;
+		shoshi_state_t& operator=(const shoshi_state_t&) = default;
+		shoshi_state_t(shoshi_state_t&&) = default;
+		shoshi_state_t& operator=(shoshi_state_t&&) = default;
+		~shoshi_state_t() = default;
 	public:
 		bool_t augment;
 	};

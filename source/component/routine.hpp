@@ -8,7 +8,11 @@
 
 #include "../utility/hash.hpp"
 
+struct input_t;
 struct audio_t;
+struct kernel_t;
+struct receiver_t;
+struct headsup_gui_t;
 struct camera_t;
 struct naomi_state_t;
 struct kontext_t;
@@ -16,8 +20,12 @@ struct tilemap_t;
 
 struct routine_tuple_t : public not_copyable_t {
 public:
-	routine_tuple_t(audio_t& audio, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, tilemap_t& tilemap) :
+	routine_tuple_t(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap) :
+		input(input),
 		audio(audio),
+		kernel(kernel),
+		receiver(receiver),
+		headsup_gui(headsup_gui),
 		camera(camera),
 		naomi(naomi),
 		kontext(kontext),
@@ -26,11 +34,15 @@ public:
 	routine_tuple_t& operator=(routine_tuple_t&&) = delete;
 	~routine_tuple_t() = default;
 public:
+	const input_t& input;
 	audio_t& audio;
+	kernel_t& kernel;
+	receiver_t& receiver;
+	headsup_gui_t& headsup_gui;
 	camera_t& camera;
 	naomi_state_t& naomi;
 	kontext_t& kontext;
-	tilemap_t& tilemap;
+	const tilemap_t& tilemap;
 };
 
 using routine_ctor_fn = void(*)(entt::entity, kontext_t&);
@@ -70,7 +82,7 @@ public:
 	routine_t& operator=(routine_t&&) = default;
 	~routine_t() = default;
 public:
-	static void handle(audio_t& audio, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext, tilemap_t& tilemap);
+	static void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap);
 public:
 	arch_t state;
 	routine_tick_fn tick;

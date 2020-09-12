@@ -15,14 +15,15 @@
 
 class asIScriptFunction;
 
+struct input_t;
 struct audio_t;
 struct renderer_t;
 struct kernel_t;
 struct receiver_t;
+struct headsup_gui_t;
 struct camera_t;
 struct naomi_state_t;
 struct tilemap_t;
-struct headsup_gui_t;
 
 struct kontext_t : public not_copyable_t {
 public:
@@ -33,7 +34,7 @@ public:
 public:
 	bool init(receiver_t& receiver, headsup_gui_t& headsup_gui);
 	void reset();
-	void handle(audio_t& audio, receiver_t& receiver, camera_t& camera, naomi_state_t& naomi_state, tilemap_t& tilemap);
+	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, const tilemap_t& tilemap);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, rect_t viewport) const;
 	entt::entity search_type(arch_t type) const;
