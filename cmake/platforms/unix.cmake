@@ -8,17 +8,26 @@ else ()
 	set (STLFS_LIBS "stdc++fs")
 endif ()
 
-target_link_libraries (naomi PRIVATE
-	Threads::Threads
-	${STLFS_LIBS}
-	${CMAKE_DL_LIBS}
-)
-
-target_link_libraries (editor PRIVATE
-	Threads::Threads
-	${STLFS_LIBS}
-	${CMAKE_DL_LIBS}
-)
+if (NAOMI_BUILD)
+	target_link_libraries (naomi PRIVATE
+		Threads::Threads
+		${STLFS_LIBS}
+		${CMAKE_DL_LIBS}
+	)
+	if (NOT RTTI_BUILD)
+		target_compile_options (naomi PRIVATE "-fno-rtti")
+	endif ()
+endif ()
+if (EDITOR_BUILD)
+	target_link_libraries (editor PRIVATE
+		Threads::Threads
+		${STLFS_LIBS}
+		${CMAKE_DL_LIBS}
+	)
+	if (NOT RTTI_BUILD)
+		target_compile_options (editor PRIVATE "-fno-rtti")
+	endif ()
+endif ()
 
 if (GOLD_BUILD)
 	if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" AND NOT LLVM_USE_LINKER)
@@ -30,9 +39,4 @@ if (GOLD_BUILD)
 		set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fuse-ld=gold -Wl,--disable-new-dtags")
 		set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fuse-ld=gold -Wl,--disable-new-dtags")
 	endif()
-endif ()
-
-if (NOT RTTI_BUILD)
-	target_compile_options (naomi PRIVATE "-fno-rtti")
-	target_compile_options (editor PRIVATE "-fno-rtti")
 endif ()

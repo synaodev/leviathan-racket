@@ -10,9 +10,7 @@ else ()
 	message (FATAL_ERROR "Undefined platform!")
 endif ()
 
-# Libraries
-
-set (LIBRARY_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/include")
+# Find Packages/Libraries
 
 find_package (Angelscript CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
@@ -56,34 +54,37 @@ else ()
 	endif ()
 endif ()
 
+set (GENERAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
+
 # Link/Include
 
-target_link_libraries (naomi PRIVATE
-	Angelscript::angelscript
-	EnTT::EnTT
-	${TMXLITE_LIBRARY}
-	${FMT_LIBRARY}
-	${OPENAL_LIBRARY}
-	${SDL2_LIBRARIES}
-)
-target_include_directories (naomi PRIVATE
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LIBRARY_INCLUDE_DIR}
-	${TMXLITE_INCLUDE_DIR}
-	${FMT_INCLUDE_DIR}
-	${OPENAL_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-)
+if (NAOMI_BUILD)
+	target_link_libraries (naomi PRIVATE
+		Angelscript::angelscript
+		EnTT::EnTT
+		${TMXLITE_LIBRARY}
+		${FMT_LIBRARY}
+		${OPENAL_LIBRARY}
+		${SDL2_LIBRARIES}
+	)
+	target_include_directories (naomi PRIVATE
+		${GENERAL_INCLUDE_DIR}
+		${TMXLITE_INCLUDE_DIR}
+		${FMT_INCLUDE_DIR}
+		${OPENAL_INCLUDE_DIR}
+		${SDL2_INCLUDE_DIR}
+	)
+endif ()
 
-target_link_libraries (editor PRIVATE
-	${FMT_LIBRARY}
-	${SDL2_LIBRARIES}
-)
-
-target_include_directories (editor PRIVATE
-	${CMAKE_CURRENT_BINARY_DIR}
-	${LIBRARY_INCLUDE_DIR}
-	${STB_INCLUDE_DIR}
-	${FMT_INCLUDE_DIR}
-	${SDL2_INCLUDE_DIR}
-)
+if (EDITOR_BUILD)
+	target_link_libraries (editor PRIVATE
+		${FMT_LIBRARY}
+		${SDL2_LIBRARIES}
+	)
+	target_include_directories (editor PRIVATE
+		${GENERAL_INCLUDE_DIR}
+		${STB_INCLUDE_DIR}
+		${FMT_INCLUDE_DIR}
+		${SDL2_INCLUDE_DIR}
+	)
+endif ()

@@ -1,17 +1,21 @@
 cmake_minimum_required (VERSION 3.15)
 
-target_sources (naomi PRIVATE
-	"rng.cpp"
-	"setup-file.cpp"
-	"thread-pool.cpp"
-	"utf32.cpp"
-	"vfs.cpp"
-)
+if (NAOMI_BUILD)
+	target_sources (naomi PRIVATE
+		"rng.cpp"
+		"setup-file.cpp"
+		"thread-pool.cpp"
+		"utf32.cpp"
+		"vfs.cpp"
+	)
+endif ()
 
-target_sources (editor PRIVATE
-	"rng.cpp"
-	"setup-file.cpp"
-	"thread-pool.cpp"
-	"utf32.cpp"
-	"vfs.cpp"
-)
+if (EDITOR_BUILD)
+	target_sources (editor PRIVATE
+		"rng.cpp"
+		"setup-file.cpp"
+		"thread-pool.cpp"
+		"utf32.cpp"
+		"vfs.cpp"
+	)
+endif ()
