@@ -25,7 +25,7 @@ I hope to release in Winter 2021.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Depending on your GPU, you may need to install non-free firmware.
-  - For OpenGL,OpenAL, GLM, SDL2, and fmt, you should use your package manager:
+  - For OpenGL, OpenAL, GLM, SDL2, and fmt, you should use your package manager:
     - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
     - Pacman: `pacman -S mesa openal glm sdl2 fmt`
     - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel fmt-devel`
