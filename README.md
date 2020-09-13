@@ -44,7 +44,6 @@ I hope to release in Winter 2021.
     - `set(CMAKE_C_COMPILER "<mingw-gcc-posix>")`
     - `set(CMAKE_CXX_COMPILER "<mingw-g++-posix>")`
     - `set(CMAKE_RC_COMPILER "<mingw-windres>")`
-    - `set(CMAKE_RC_COMPILER "<mingw-windres>")`
     - `set(CMAKE_FIND_ROOT_PATH "<paths-to-additional-dependencies>")`
     - `set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)`
     - `set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)`
