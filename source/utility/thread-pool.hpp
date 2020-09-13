@@ -9,6 +9,7 @@
 
 #include "./safe-queue.hpp"
 
+// Sort of like https://github.com/progschj/ThreadPool
 struct thread_pool_t : public not_copyable_t {
 public:
 	thread_pool_t(arch_t count);
