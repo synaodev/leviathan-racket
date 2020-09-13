@@ -1,5 +1,6 @@
 #include "./utf32.hpp"
 
+// SFML's implementation
 static std::string::const_iterator decode_utf8(
 	std::string::const_iterator begin,
 	std::string::const_iterator end,
