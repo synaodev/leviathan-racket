@@ -11,6 +11,9 @@ struct setup_file_t;
 
 using audio_task_t = std::pair<arch_t, const noise_t*>;
 
+typedef struct ALCdevice_struct ALCdevice;
+typedef struct ALCcontext_struct ALCcontext;
+
 struct audio_t : public not_copyable_t {
 public:
 	audio_t();
@@ -31,7 +34,8 @@ public:
 private:
 	std::vector<audio_task_t> tasks;
 	std::vector<channel_t> channels;
-	void_t engine, context;
+	ALCdevice* engine;
+	ALCcontext* context;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP

@@ -7,10 +7,6 @@
 #include <string>
 #include <map>
 
-#include <SDL2/SDL_joystick.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_scancode.h>
-
 #include "../utility/enums.hpp"
 
 struct setup_file_t;
@@ -47,6 +43,9 @@ namespace __enum_btn {
 
 using btn_t = __enum_btn::type;
 
+typedef union SDL_Event SDL_Event;
+typedef struct _SDL_Joystick SDL_Joystick;
+
 struct input_t : public not_copyable_t {
 public:
 	input_t();
@@ -72,8 +71,8 @@ public:
 	void set_joystick_scanner();
 	btn_t set_joystick_binding(sint_t code, arch_t btn);
 #ifdef LEVIATHAN_USES_META
-	bool get_meta_pressed(SDL_Scancode scancode) const;
-	bool get_meta_holding(SDL_Scancode scancode) const;
+	bool get_meta_pressed(sint_t scancode) const;
+	bool get_meta_holding(sint_t scancode) const;
 #endif
 private:
 	void all_keyboard_bindings(const setup_file_t& config);

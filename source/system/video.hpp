@@ -2,7 +2,6 @@
 #define LEVIATHAN_INCLUDED_SYSTEM_VIDEO_HPP
 
 #include <tuple>
-#include <SDL2/SDL_video.h>
 
 #include "../utility/watch.hpp"
 
@@ -34,6 +33,9 @@ public:
 	screen_params_t& operator=(screen_params_t&&) = default;
 	~screen_params_t() = default;
 };
+
+typedef struct SDL_Window SDL_Window;
+typedef void* SDL_GLContext;
 
 struct video_t : public not_copyable_t {
 public:

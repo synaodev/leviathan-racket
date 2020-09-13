@@ -3,14 +3,15 @@
 
 #ifdef LEVIATHAN_USES_META
 
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_events.h>
-
 #include "../types.hpp"
 
 struct input_t;
 struct video_t;
 struct renderer_t;
+
+typedef struct SDL_Window SDL_Window;
+typedef void* SDL_GLContext;
+typedef union SDL_Event SDL_Event;
 
 struct meta_state_t : public not_copyable_t {
 public:
@@ -35,8 +36,6 @@ private:
 };
 
 #else
-
-#include <SDL2/SDL_events.h>
 
 #include "../types.hpp"
 

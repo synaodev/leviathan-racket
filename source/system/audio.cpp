@@ -22,11 +22,11 @@ audio_t::~audio_t() {
 	channels.clear();
 	if (context != nullptr) {
 		alcMakeContextCurrent(nullptr);
-		alcDestroyContext(reinterpret_cast<ALCcontext*>(context));
+		alcDestroyContext(context);
 		context = nullptr;
 	}
 	if (engine != nullptr) {
-		alcCloseDevice(reinterpret_cast<ALCdevice*>(engine));
+		alcCloseDevice(engine);
 		engine = nullptr;
 	}
 }
@@ -47,12 +47,12 @@ bool audio_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	context = alcCreateContext(reinterpret_cast<ALCdevice*>(engine), nullptr);
+	context = alcCreateContext(engine, nullptr);
 	if (context == nullptr) {
 		synao_log("OpenAL context creation failed!\n");
 		return false;
 	}
-	if (alcMakeContextCurrent(reinterpret_cast<ALCcontext*>(context)) == 0) {
+	if (alcMakeContextCurrent(context) == 0) {
 		synao_log("OpenAL context relevance failed!\n");
 		return false;
 	}

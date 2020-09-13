@@ -6,6 +6,9 @@
 #include "../utility/rng.hpp"
 
 #include <functional>
+#include <SDL2/SDL_scancode.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_joystick.h>
 
 static constexpr arch_t kNotReady = (arch_t)-1;
 static constexpr sint_t kScancodeNothing  = -1;
@@ -13,8 +16,8 @@ static constexpr sint_t kScancodeKeyboard = -2;
 static constexpr sint_t kScancodeJoystick = -3;
 
 #ifdef LEVIATHAN_USES_META
-	static std::map<SDL_Scancode, bool_t> meta_pressed;
-	static std::map<SDL_Scancode, bool_t> meta_holding;
+	static std::map<sint_t, bool_t> meta_pressed;
+	static std::map<sint_t, bool_t> meta_holding;
 #endif
 
 input_t::input_t() :
@@ -409,11 +412,11 @@ btn_t input_t::set_joystick_binding(sint_t code, arch_t btn) {
 
 #ifdef LEVIATHAN_USES_META
 
-bool input_t::get_meta_pressed(SDL_Scancode scancode) const {
+bool input_t::get_meta_pressed(sint_t scancode) const {
 	return meta_pressed[scancode];
 }
 
-bool input_t::get_meta_holding(SDL_Scancode scancode) const {
+bool input_t::get_meta_holding(sint_t scancode) const {
 	return meta_holding[scancode];
 }
 

@@ -11,6 +11,8 @@
 #include "../system/video.hpp"
 #include "../utility/logger.hpp"
 
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_events.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_sdl.h>

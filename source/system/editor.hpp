@@ -1,14 +1,14 @@
 #ifndef LEVIATHAN_INCLUDED_SYSTEM_EDITOR_HPP
 #define LEVIATHAN_INCLUDED_SYSTEM_EDITOR_HPP
 
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_events.h>
-
 #include "../field/tileset-viewer.hpp"
 #include "../menu/attribute-gui.hpp"
 
 struct video_t;
 struct renderer_t;
+
+typedef struct SDL_Window SDL_Window;
+typedef void* SDL_GLContext;
 
 struct editor_t : public not_copyable_t {
 public:
