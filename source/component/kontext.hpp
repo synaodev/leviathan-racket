@@ -37,7 +37,7 @@ public:
 	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, const tilemap_t& tilemap);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, rect_t viewport) const;
-	entt::entity search_type(arch_t type) const;
+	entt::entity search_type(const entt::hashed_string& type) const;
 	entt::entity search_id(sint_t identity) const;
 	void destroy_id(sint_t identity);
 	void kill_id(sint_t identity);
@@ -59,7 +59,7 @@ public:
 	void run(const actor_trigger_t& trigger) const;
 	void meter(sint_t current, sint_t maximum) const;
 	template<typename... Args>
-	bool spawn(arch_t type, Args&& ...args);
+	bool spawn(const entt::hashed_string& type, Args&& ...args);
 	bool spawn(const actor_spawn_t& spawn);
 	void dispose(entt::entity actor);
 	bool valid(entt::entity actor) const;
@@ -87,7 +87,7 @@ private:
 	mutable bool_t panic_draw;
 	entt::registry registry;
 	std::vector<actor_spawn_t> spawn_commands;
-	std::unordered_map<arch_t, routine_ctor_fn> ctor_table;
+	std::unordered_map<entt::id_type, routine_ctor_fn> ctor_table;
 	std::function<void(sint_t)> run_event;
 	std::function<void(sint_t, asIScriptFunction*)> push_event;
 	std::function<void(sint_t, sint_t)> push_meter;
@@ -102,7 +102,7 @@ inline void kontext_t::meter(sint_t current, sint_t maximum) const {
 }
 
 template<typename... Args>
-inline bool kontext_t::spawn(arch_t type, Args&& ...args) {
+inline bool kontext_t::spawn(const entt::hashed_string& type, Args&& ...args) {
 	spawn_commands.emplace_back(type, std::forward<Args>(args)...);
 	return true;
 }

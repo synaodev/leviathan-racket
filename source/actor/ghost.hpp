@@ -5,7 +5,7 @@
 
 namespace ai {
 	namespace ghost {
-		constexpr arch_t type = synao_hash("ghost");
+		constexpr entt::hashed_string type = "ghost"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}

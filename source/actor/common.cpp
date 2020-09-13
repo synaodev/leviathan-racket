@@ -108,16 +108,3 @@ LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::computer::type, 		ai::computer::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::fire::type, 			ai::fire::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::null::type, 			"Null");
-	LEVIATHAN_TABLE_PUSH(ai::hv_trigger::type, 		"Event Trigger");
-	LEVIATHAN_TABLE_PUSH(ai::full_chest::type, 		"Full Chest");
-	LEVIATHAN_TABLE_PUSH(ai::empty_chest::type, 	"Empty Chest");
-	LEVIATHAN_TABLE_PUSH(ai::door::type, 			"Door");
-	LEVIATHAN_TABLE_PUSH(ai::death_spikes::type, 	"Instant Death Spikes");
-	LEVIATHAN_TABLE_PUSH(ai::bed::type, 			"Bed");
-	LEVIATHAN_TABLE_PUSH(ai::ammo_station::type, 	"Ammo Refill Station");
-	LEVIATHAN_TABLE_PUSH(ai::computer::type, 		"Computer");
-	LEVIATHAN_TABLE_PUSH(ai::fire::type, 			"Fire");
-}

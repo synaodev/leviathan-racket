@@ -594,40 +594,38 @@ std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 }
 
 const noise_t* vfs::noise(const std::string& name) {
-	const table_entry_t entry = table_entry_t(name.c_str());
+	const entt::hashed_string entry{name.c_str()};
 	return vfs::noise(entry);
 }
 
-const noise_t* vfs::noise(const table_entry_t& entry) {
+const noise_t* vfs::noise(const entt::hashed_string& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	// auto it = vfs::device->noises.find(entry.hash);
-	auto it = vfs::device->search_safely(entry.hash, vfs::device->noises);
+	auto it = vfs::device->search_safely(entry.value(), vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
-		noise_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->noises);
-		ref.load(kNoisePath + std::string(entry.name) + ".wav", *vfs::device->thread_pool);
+		noise_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->noises);
+		ref.load(kNoisePath + std::string(entry.data()) + ".wav", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const animation_t* vfs::animation(const table_entry_t& entry) {
+const animation_t* vfs::animation(const entt::hashed_string& entry) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	// auto it = vfs::device->animations.find(entry.hash);
-	auto it = vfs::device->search_safely(entry.hash, vfs::device->animations);
+	auto it = vfs::device->search_safely(entry.value(), vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
-		animation_t& ref = vfs::device->emplace_safely(entry.hash, vfs::device->animations);
-		ref.load(kSpritePath + std::string(entry.name) + ".cfg", *vfs::device->thread_pool);
+		animation_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->animations);
+		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", *vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
 const animation_t* vfs::animation(const std::string& name) {
-	const table_entry_t entry = table_entry_t(name.c_str());
+	const entt::hashed_string entry{name.c_str()};
 	return vfs::animation(entry);
 }
 

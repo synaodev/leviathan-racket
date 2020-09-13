@@ -657,16 +657,3 @@ LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::wolf_vulcan::type, 	ai::wolf_vulcan::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::austere::type, 		ai::austere::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::frontier::type, 		"Frontier");
-	LEVIATHAN_TABLE_PUSH(ai::toxitier::type, 		"Toxitier");
-	LEVIATHAN_TABLE_PUSH(ai::weak_hammer::type, 	"Weak Hammer");
-	LEVIATHAN_TABLE_PUSH(ai::strong_hammer::type, 	"Strong Hammer");
-	LEVIATHAN_TABLE_PUSH(ai::holy_lance::type, 		"Holy Lance");
-	LEVIATHAN_TABLE_PUSH(ai::holy_tether::type, 	"Holy Tether");
-	LEVIATHAN_TABLE_PUSH(ai::kannon::type, 			"Kannon");
-	LEVIATHAN_TABLE_PUSH(ai::nail_ray::type, 		"Nail Ray");
-	LEVIATHAN_TABLE_PUSH(ai::wolf_vulcan::type, 	"Wolf Vulcan");
-	LEVIATHAN_TABLE_PUSH(ai::austere::type, 		"Austere");
-}

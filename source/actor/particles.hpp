@@ -8,46 +8,46 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace smoke {
-		constexpr arch_t type = synao_hash("smoke");
+		constexpr entt::hashed_string type = "smoke"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shrapnel {
-		constexpr arch_t type = synao_hash("shrapnel");
+		constexpr entt::hashed_string type = "shrapnel"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace dust {
-		constexpr arch_t type = synao_hash("dust");
+		constexpr entt::hashed_string type = "dust"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace splash {
-		constexpr arch_t type = synao_hash("splash");
+		constexpr entt::hashed_string type = "splash"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_small {
-		constexpr arch_t type = synao_hash("blast_small");
+		constexpr entt::hashed_string type = "blast_small"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_medium {
-		constexpr arch_t type = synao_hash("blast_medium");
+		constexpr entt::hashed_string type = "blast_medium"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace blast_large {
-		constexpr arch_t type = synao_hash("blast_large");
+		constexpr entt::hashed_string type = "blast_large"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace energy_trail {
-		constexpr arch_t type = synao_hash("energy_trail");
+		constexpr entt::hashed_string type = "energy_trail"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace dash_flash {
-		constexpr arch_t type = synao_hash("dash_flash");
+		constexpr entt::hashed_string type = "dash_flash"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace barrier {
-		constexpr arch_t type = synao_hash("barrier");
+		constexpr entt::hashed_string type = "barrier"_hs;
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}

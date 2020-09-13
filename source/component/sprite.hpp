@@ -1,17 +1,18 @@
 #ifndef LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
 #define LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
 
+#include <entt/core/hashed_string.hpp>
+
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
 
-struct table_entry_t;
 struct animation_t;
 struct renderer_t;
 struct kontext_t;
 
 struct sprite_t {
 public:
-	sprite_t(const table_entry_t& entry);
+	sprite_t(const entt::hashed_string& entry);
 	sprite_t(const animation_t* file);
 	sprite_t();
 	sprite_t(const sprite_t&) = default;

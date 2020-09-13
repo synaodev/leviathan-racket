@@ -5,7 +5,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
-sprite_t::sprite_t(const table_entry_t& entry) :
+sprite_t::sprite_t(const entt::hashed_string& entry) :
 	file(nullptr),
 	amend(false),
 	timer(0.0),

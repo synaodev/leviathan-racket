@@ -1,10 +1,10 @@
 #ifndef LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
 #define LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
 
-#include "./table-entry.hpp"
+#include <entt/core/hashed_string.hpp>
 
 #define LEVIATHAN_RES_BYTES_DEF(NAME, STR) constexpr byte_t NAME[] = STR
-#define LEVIATHAN_RES_ENTRY_DEF(TAG, FILE) constexpr table_entry_t TAG(FILE)
+#define LEVIATHAN_RES_ENTRY_DEF(TAG, FILE) constexpr entt::hashed_string TAG(FILE)
 
 namespace res {
 	namespace img {

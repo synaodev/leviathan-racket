@@ -12,13 +12,16 @@ void liquid::handle(audio_t& audio, kontext_t& kontext, const location_t& locati
 		}
 	};
 	auto spawner = [&audio, &kontext](const location_t& location, const liquid_listener_t& listener, rect_t bounds) {
-		if (listener.sound != nullptr) {
-			audio.play(*listener.sound, 11);
+		if (listener.sound.value() != 0) {
+			audio.play(listener.sound, 11);
 		}
-		kontext.spawn(
-			listener.particle_type,
-			glm::vec2(location.center().x, bounds.y)
-		);
+		if (listener.particle.value() != 0) {
+			kontext.spawn(
+				listener.particle,
+				glm::vec2(location.center().x, bounds.y)
+			);
+		}
+
 	};
 	if (listener.liquid == entt::null or !kontext.valid(listener.liquid)) {
 		listener.liquid = entt::null;

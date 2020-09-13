@@ -98,11 +98,3 @@ LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::fox::type, 	ai::fox::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::gyo::type, 	ai::gyo::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::kyoko::type, 	"Kyoko");
-	LEVIATHAN_TABLE_PUSH(ai::nauzika::type, "Nauzika");
-	LEVIATHAN_TABLE_PUSH(ai::senma::type, 	"Senma");
-	LEVIATHAN_TABLE_PUSH(ai::fox::type, 	"Fox");
-	LEVIATHAN_TABLE_PUSH(ai::gyo::type, 	"Gyo");
-}

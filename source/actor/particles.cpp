@@ -265,16 +265,3 @@ LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::dash_flash::type, 		ai::dash_flash::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::barrier::type, 		ai::barrier::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::smoke::type, 			"Smoke");
-	LEVIATHAN_TABLE_PUSH(ai::shrapnel::type, 		"Shrapnel");
-	LEVIATHAN_TABLE_PUSH(ai::dust::type, 			"Dust");
-	LEVIATHAN_TABLE_PUSH(ai::splash::type, 			"Splash");
-	LEVIATHAN_TABLE_PUSH(ai::blast_small::type, 	"Small Blast");
-	LEVIATHAN_TABLE_PUSH(ai::blast_medium::type, 	"Medium Blast");
-	LEVIATHAN_TABLE_PUSH(ai::blast_large::type, 	"Large Blast");
-	LEVIATHAN_TABLE_PUSH(ai::energy_trail::type, 	"Energy Trail");
-	LEVIATHAN_TABLE_PUSH(ai::dash_flash::type, 		"Dash Flash");
-	LEVIATHAN_TABLE_PUSH(ai::barrier::type, 		"Barrier");
-}

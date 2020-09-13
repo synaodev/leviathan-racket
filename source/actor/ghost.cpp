@@ -59,7 +59,3 @@ void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
 LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::ghost::type, ai::ghost::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::ghost::type, "Ghost");
-}

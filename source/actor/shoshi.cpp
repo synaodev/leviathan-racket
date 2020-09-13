@@ -211,9 +211,3 @@ LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
 	LEVIATHAN_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);
 }
-
-LEVIATHAN_NAME_TABLE_CREATE(routine_name_generator_t) {
-	LEVIATHAN_TABLE_PUSH(ai::shoshi::type, 			"Shoshi (Idle)");
-	LEVIATHAN_TABLE_PUSH(ai::shoshi_carry::type, 	"Shoshi (Carried)");
-	LEVIATHAN_TABLE_PUSH(ai::shoshi_follow::type, 	"Shoshi (Following)");
-}

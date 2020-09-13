@@ -4,10 +4,10 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <entt/core/hashed_string.hpp>
 
 #include "./thread-pool.hpp"
 
-#include "../resource/table-entry.hpp"
 #include "../video/texture.hpp"
 #include "../video/pipeline.hpp"
 
@@ -18,7 +18,6 @@
 	#include "../video/font.hpp"
 #endif
 
-struct table_entry_t;
 struct setup_file_t;
 struct vfs_t;
 
@@ -70,9 +69,9 @@ namespace vfs {
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::string event_path(const std::string& name, rec_loading_t flags);
 	const noise_t* noise(const std::string& name);
-	const noise_t* noise(const table_entry_t& entry);
+	const noise_t* noise(const entt::hashed_string& entry);
 	const animation_t* animation(const std::string& name);
-	const animation_t* animation(const table_entry_t& entry);
+	const animation_t* animation(const entt::hashed_string& entry);
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
 	const font_t* debug_font();
@@ -106,8 +105,8 @@ public:
 	std::unordered_map<std::string, palette_t> palettes;
 	std::unordered_map<std::string, shader_t> shaders;
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	std::unordered_map<arch_t, noise_t> noises;
-	std::unordered_map<arch_t, animation_t> animations;
+	std::unordered_map<entt::id_type, noise_t> noises;
+	std::unordered_map<entt::id_type, animation_t> animations;
 	std::unordered_map<std::string, font_t> fonts;
 #endif
 };

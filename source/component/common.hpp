@@ -3,6 +3,7 @@
 
 #include <array>
 #include <bitset>
+#include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
 #include <entt/entity/entity.hpp>
 
@@ -41,11 +42,11 @@ using trigger_flags_t = __enum_trigger_flags::type;
 
 struct actor_header_t {
 public:
-	actor_header_t(arch_t type) :
+	actor_header_t(const entt::hashed_string& type) :
 		type(type),
 		attach(entt::null) {}
 	actor_header_t() :
-		type(0),
+		type(),
 		attach(entt::null) {}
 	actor_header_t(const actor_header_t&) = default;
 	actor_header_t(actor_header_t&&) = default;
@@ -53,48 +54,48 @@ public:
 	actor_header_t& operator=(actor_header_t&&) = default;
 	~actor_header_t() = default;
 public:
-	arch_t type;
+	entt::hashed_string type;
 	entt::entity attach;
 };
 
 struct actor_spawn_t {
 public:
-	actor_spawn_t(arch_t type, glm::vec2 position) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position) :
 		type(type),
 		position(position),
 		velocity(0.0f),
 		direction(direction_t::Right),
 		identity(0),
 		bitmask(0) {}
-	actor_spawn_t(arch_t type, glm::vec2 position, glm::vec2 velocity) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity) :
 		type(type),
 		position(position),
 		velocity(velocity),
 		direction(direction_t::Right),
 		identity(0),
 		bitmask(0) {}
-	actor_spawn_t(arch_t type, glm::vec2 position, direction_t direction) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction) :
 		type(type),
 		position(position),
 		velocity(0.0f),
 		direction(direction),
 		identity(0),
 		bitmask(0) {}
-	actor_spawn_t(arch_t type, glm::vec2 position, glm::vec2 velocity, direction_t direction) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction) :
 		type(type),
 		position(position),
 		velocity(velocity),
 		direction(direction),
 		identity(0),
 		bitmask(0) {}
-	actor_spawn_t(arch_t type, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags) :
 		type(type),
 		position(position),
 		velocity(0.0f),
 		direction(direction),
 		identity(identity),
 		bitmask(flags) {}
-	actor_spawn_t(arch_t type, glm::vec2 position, glm::vec2 velocity, direction_t direction, sint_t identity, arch_t flags) :
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction, sint_t identity, arch_t flags) :
 		type(type),
 		position(position),
 		velocity(velocity),
@@ -102,7 +103,7 @@ public:
 		identity(identity),
 		bitmask(flags) {}
 	actor_spawn_t() :
-		type(0),
+		type(),
 		position(0.0f),
 		velocity(0.0f),
 		direction(direction_t::Right),
@@ -114,7 +115,7 @@ public:
 	actor_spawn_t& operator=(actor_spawn_t&&) = default;
 	~actor_spawn_t() = default;
 public:
-	arch_t type;
+	entt::hashed_string type;
 	glm::vec2 position, velocity;
 	direction_t direction;
 	sint_t identity;

@@ -1,6 +1,7 @@
 #ifndef LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
 #define LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
 
+#include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
 #include <entt/entity/entity.hpp>
 
@@ -10,7 +11,6 @@ struct audio_t;
 struct renderer_t;
 struct kontext_t;
 struct location_t;
-struct table_entry_t;
 
 struct liquid_body_t {
 public:
@@ -32,14 +32,14 @@ public:
 
 struct liquid_listener_t {
 public:
-	liquid_listener_t(arch_t particle_type, const table_entry_t& entry) :
+	liquid_listener_t(const entt::hashed_string& particle, const entt::hashed_string& sound) :
 		liquid(entt::null),
-		particle_type(particle_type),
-		sound(&entry) {}
+		particle(particle),
+		sound(sound) {}
 	liquid_listener_t() :
 		liquid(entt::null),
-		particle_type(0),
-		sound(nullptr) {}
+		particle(),
+		sound() {}
 	liquid_listener_t(const liquid_listener_t&) = default;
 	liquid_listener_t& operator=(const liquid_listener_t&) = default;
 	liquid_listener_t(liquid_listener_t&&) = default;
@@ -47,8 +47,7 @@ public:
 	~liquid_listener_t() = default;
 public:
 	entt::entity liquid;
-	arch_t particle_type;
-	const table_entry_t* sound;
+	entt::hashed_string particle, sound;
 };
 
 namespace liquid {
