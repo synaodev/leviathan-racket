@@ -18,11 +18,10 @@ renderer_t::renderer_t() :
 	viewport_buffer(),
 	internal_state(),
 	gk_projection_matrix(1.0f),
-	gk_viewport_matrix(1.0f),
-	gk_video_dimensions(constants::NormalDimensions<real_t>()),
-	gk_video_resolution(constants::NormalDimensions<real_t>())
+	gk_viewport_matrix(1.0f)
 {
-	gk_projection_matrix = glm::ortho(0.0f, gk_video_resolution.x, gk_video_resolution.y, 0.0f);
+	const glm::vec2 resolution = constants::NormalDimensions<real_t>();
+	gk_projection_matrix = glm::ortho(0.0f, resolution.x, resolution.y, 0.0f);
 	gk_viewport_matrix = gk_projection_matrix;
 }
 
@@ -37,47 +36,18 @@ bool renderer_t::init(glm::ivec2 version) {
 	}
 	projection_buffer.setup(buffer_usage_t::Static);
 	if (const_buffer_t::has_immutable_option()) {
-		projection_buffer.create_immutable(
-			sizeof(glm::mat4) +
-			sizeof(glm::vec2) +
-			sizeof(glm::vec2)
-		);
+		projection_buffer.create_immutable(sizeof(glm::mat4));
 	} else {
-		projection_buffer.create(
-			sizeof(glm::mat4) +
-			sizeof(glm::vec2) +
-			sizeof(glm::vec2)
-		);
+		projection_buffer.create(sizeof(glm::mat4));
 	}
-	projection_buffer.update(
-		&gk_projection_matrix,
-		sizeof(glm::mat4)
-	);
-	projection_buffer.update(
-		&gk_video_dimensions,
-		sizeof(glm::vec2) + sizeof(glm::vec2),
-		sizeof(glm::mat4)
-	);
+	projection_buffer.update(&gk_projection_matrix);
 	viewport_buffer.setup(buffer_usage_t::Dynamic);
 	if (const_buffer_t::has_immutable_option()) {
-		viewport_buffer.create_immutable(
-			sizeof(glm::mat4) +
-			sizeof(glm::vec2) +
-			sizeof(glm::vec2)
-		);
+		viewport_buffer.create_immutable(sizeof(glm::mat4));
 	} else {
-		viewport_buffer.create(
-			sizeof(glm::mat4) +
-			sizeof(glm::vec2) +
-			sizeof(glm::vec2)
-		);
+		viewport_buffer.create(sizeof(glm::mat4));
 	}
-	viewport_buffer.update(
-		&gk_viewport_matrix,
-		sizeof(glm::mat4) +
-		sizeof(glm::vec2) +
-		sizeof(glm::vec2)
-	);
+	viewport_buffer.update(&gk_viewport_matrix);
 	internal_state.set_const_buffer(&viewport_buffer, 0);
 
 	const shader_t* blank = vfs::shader(
@@ -146,12 +116,12 @@ void renderer_t::clear() {
 
 void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
 	// Update Constant Buffers
-	glm::vec2 video_dimensions = video.get_dimensions();
-	if (gk_video_dimensions != video_dimensions) {
-		gk_video_dimensions = video_dimensions;
-		projection_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
-		viewport_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
-	}
+	// glm::vec2 video_dimensions = video.get_dimensions();
+	// if (gk_video_dimensions != video_dimensions) {
+	// 	gk_video_dimensions = video_dimensions;
+	// 	projection_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
+	// 	viewport_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
+	// }
 	if (gk_viewport_matrix != viewport_matrix) {
 		gk_viewport_matrix = viewport_matrix;
 		viewport_buffer.update(&gk_viewport_matrix, sizeof(glm::mat4));
@@ -183,23 +153,15 @@ void renderer_t::ortho(const glm::ivec2& integral_dimensions) {
 		glm::vec2 dimensions = glm::vec2(integral_dimensions);
 		gk_projection_matrix = glm::ortho(0.0f, dimensions.x, dimensions.y, 0.0f);
 		gk_viewport_matrix = gk_projection_matrix;
-		gk_video_dimensions = dimensions;
-		gk_video_resolution = dimensions;
-		projection_buffer.update(
-			&gk_projection_matrix,
-			sizeof(glm::mat4)
-		);
-		projection_buffer.update(
-			&gk_video_dimensions,
-			sizeof(glm::vec2) + sizeof(glm::vec2),
-			sizeof(glm::mat4)
-		);
-		viewport_buffer.update(
-			&gk_viewport_matrix,
-			sizeof(glm::mat4) +
-			sizeof(glm::vec2) +
-			sizeof(glm::vec2)
-		);
+		//gk_video_dimensions = dimensions;
+		//gk_video_resolution = dimensions;
+		projection_buffer.update(&gk_projection_matrix, sizeof(glm::mat4));
+		// projection_buffer.update(
+		// 	&gk_video_dimensions,
+		// 	sizeof(glm::vec2) + sizeof(glm::vec2),
+		// 	sizeof(glm::mat4)
+		// );
+		viewport_buffer.update(&gk_viewport_matrix, sizeof(glm::mat4));
 	}
 }
 

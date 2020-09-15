@@ -41,7 +41,6 @@ private:
 	const_buffer_t projection_buffer, viewport_buffer;
 	gfx_t internal_state;
 	glm::mat4 gk_projection_matrix, gk_viewport_matrix;
-	glm::vec2 gk_video_dimensions, gk_video_resolution;
 };
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP

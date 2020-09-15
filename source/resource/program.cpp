@@ -5,8 +5,6 @@
 static constexpr byte_t kBlankVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
 	mat4 viewport;
-	vec2 dimensions;
-	vec2 resolution;
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec4 color;
@@ -21,8 +19,6 @@ void main() {
 static constexpr byte_t kBlankVert330[] = R"(#version 330 core
 layout(std140) uniform transforms {
 	mat4 viewport;
-	vec2 dimensions;
-	vec2 resolution;
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec4 color;
@@ -37,8 +33,6 @@ void main() {
 static constexpr byte_t kMajorVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
 	mat4 viewport;
-	vec2 dimensions;
-	vec2 resolution;
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec3 uvs;
@@ -56,8 +50,6 @@ void main() {
 static constexpr byte_t kMajorVert330[] = R"(#version 330 core
 layout(std140) uniform transforms {
 	mat4 viewport;
-	vec2 dimensions;
-	vec2 resolution;
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec3 uvs;
