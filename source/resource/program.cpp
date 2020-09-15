@@ -4,62 +4,66 @@
 
 static constexpr byte_t kBlankVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
-	mat4 viewport;
+	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec4 color;
+layout(location = 1) in int matrix;
+layout(location = 2) in vec4 color;
 out STAGE {
 	layout(location = 0) vec4 color;
 } vs;
 void main() {
-	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.color = color;
 })";
 
 static constexpr byte_t kBlankVert330[] = R"(#version 330 core
 layout(std140) uniform transforms {
-	mat4 viewport;
+	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec4 color;
+layout(location = 1) in int matrix;
+layout(location = 2) in vec4 color;
 out STAGE {
 	vec4 color;
 } vs;
 void main() {
-	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.color = color;
 })";
 
 static constexpr byte_t kMajorVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
-	mat4 viewport;
+	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec3 uvs;
-layout(location = 2) in float alpha;
+layout(location = 1) in int matrix;
+layout(location = 2) in vec3 uvs;
+layout(location = 3) in float alpha;
 out STAGE {
 	layout(location = 0) vec3 uvs;
 	layout(location = 1) float alpha;
 } vs;
 void main() {
-	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.uvs = uvs;
 	vs.alpha = alpha;
 })";
 
 static constexpr byte_t kMajorVert330[] = R"(#version 330 core
 layout(std140) uniform transforms {
-	mat4 viewport;
+	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in vec3 uvs;
-layout(location = 2) in float alpha;
+layout(location = 1) in int matrix;
+layout(location = 2) in vec3 uvs;
+layout(location = 3) in float alpha;
 out STAGE {
 	vec3 uvs;
 	float alpha;
 } vs;
 void main() {
-	gl_Position = viewport * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.uvs = uvs;
 	vs.alpha = alpha;
 })";

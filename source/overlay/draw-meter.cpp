@@ -41,7 +41,7 @@ void draw_meter_t::invalidate() const {
 void draw_meter_t::render(renderer_t& renderer) const {
 	if (current != 0) {
 		graphed.render(renderer);
-		auto& list = renderer.overlay_list(
+		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

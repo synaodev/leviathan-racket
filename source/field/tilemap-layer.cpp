@@ -97,21 +97,25 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 				uvs = glm::vec2(tile * constants::TileSize<sint_t>());
 				vtx_major_t* quad = quads.at<vtx_major_t>(indices * display_list_t::SingleQuad);
 				quad[0].position = pos;
+				quad[0].matrix = 1;
 				quad[0].uvcoords = uvs * inverse_dimensions;
 				quad[0].table = 0.0f;
 				quad[0].alpha = 1.0f;
 
 				quad[1].position = glm::vec2(pos.x, pos.y + constants::TileSize<real_t>());
+				quad[1].matrix = 1;
 				quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
 				quad[1].table = 0.0f;
 				quad[1].alpha = 1.0f;
 
 				quad[2].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y);
+				quad[2].matrix = 1;
 				quad[2].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y) * inverse_dimensions;
 				quad[2].table = 0.0f;
 				quad[2].alpha = 1.0f;
 
 				quad[3].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y + constants::TileSize<real_t>());
+				quad[3].matrix = 1;
 				quad[3].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
 				quad[3].table = 0.0f;
 				quad[3].alpha = 1.0f;
@@ -125,7 +129,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 }
 
 void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const texture_t* texture, const palette_t* palette) const {
-	auto& list = renderer.working_list(
+	auto& list = renderer.display_list(
 		priority,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,

@@ -40,7 +40,7 @@ void draw_text_t::increment() {
 
 void draw_text_t::render(renderer_t& renderer) const {
 	if (!quads.empty() and font != nullptr) {
-		auto& list = renderer.overlay_list(
+		auto& list = renderer.display_list(
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
@@ -212,21 +212,25 @@ void draw_text_t::generate() {
 				vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
 
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
+				quad[0].matrix = 0;
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
 				quad[0].table = table;
 				quad[0].alpha = 1.0f;
 
 				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
+				quad[1].matrix = 0;
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
 				quad[1].table = table;
 				quad[1].alpha = 1.0f;
 
 				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
+				quad[2].matrix = 0;
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
 				quad[2].table = table;
 				quad[2].alpha = 1.0f;
 
 				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
+				quad[3].matrix = 0;
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
 				quad[3].table = table;
 				quad[3].alpha = 1.0f;

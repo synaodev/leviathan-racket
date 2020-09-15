@@ -24,28 +24,36 @@ public:
 struct vtx_minor_t : public crtp_vertex_t<vtx_minor_t> {
 public:
 	glm::vec2 position;
+	sint_t matrix;
 public:
 	vtx_minor_t(real_t x, real_t y) :
-		position(x, y) {}
+		position(x, y),
+		matrix(0) {}
 	vtx_minor_t() :
-		position(0.0f) {}
+		position(0.0f),
+		matrix(0) {}
 };
 
 struct vtx_blank_t : public crtp_vertex_t<vtx_blank_t> {
 	glm::vec2 position;
+	sint_t matrix;
 	glm::vec4 color;
 public:
 	vtx_blank_t() :
 		position(0.0f),
+		matrix(0),
 		color(1.0f) {}
 };
 
 struct vtx_major_t : public crtp_vertex_t<vtx_major_t> {
-	glm::vec2 position, uvcoords;
+	glm::vec2 position;
+	sint_t matrix;
+	glm::vec2 uvcoords;
 	real_t table, alpha;
 public:
 	vtx_major_t() :
 		position(0.0f),
+		matrix(0),
 		uvcoords(0.0f),
 		table(0.0f),
 		alpha(0.0f) {}

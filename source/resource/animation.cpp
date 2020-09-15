@@ -225,7 +225,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 				program = program_t::Indexed;
 				index = palette->convert(index);
 			}
-			auto& list = renderer.working_list(
+			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -258,7 +258,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 				program = program_t::Indexed;
 				index = palette->convert(index);
 			}
-			auto& list = renderer.working_list(
+			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -287,7 +287,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 			program = program_t::Indexed;
 			index = palette->convert(index);
 		}
-		auto& list = renderer.overlay_list(
+		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

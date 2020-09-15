@@ -92,20 +92,25 @@ display_list_t& display_list_t::vtx_pool_write(const vertex_pool_t& that_pool) {
 }
 
 display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring) {
+	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
+	vtx[0].matrix 	= matrix;
 	vtx[0].uvcoords = texture_rect.left_top();
 	vtx[0].table 	= table_index;
 	vtx[0].alpha	= alpha_color;
 	vtx[1].position = glm::vec2(0.0f, raster_dimensions.y);
+	vtx[1].matrix 	= matrix;
 	vtx[1].uvcoords = texture_rect.left_bottom();
 	vtx[1].table 	= table_index;
 	vtx[1].alpha	= alpha_color;
 	vtx[2].position = glm::vec2(raster_dimensions.x, 0.0f);
+	vtx[2].matrix 	= matrix;
 	vtx[2].uvcoords = texture_rect.right_top();
 	vtx[2].table 	= table_index;
 	vtx[2].alpha	= alpha_color;
 	vtx[3].position = raster_dimensions;
+	vtx[3].matrix 	= matrix;
 	vtx[3].uvcoords = texture_rect.right_bottom();
 	vtx[3].table 	= table_index;
 	vtx[3].alpha	= alpha_color;
@@ -129,14 +134,19 @@ display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 r
 }
 
 display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
+	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_blank_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
+	vtx[0].matrix 	= matrix;
 	vtx[0].color 	= vtx_color;
 	vtx[1].position = glm::vec2(0.0f, raster_rect.h);
+	vtx[1].matrix 	= matrix;
 	vtx[1].color 	= vtx_color;
 	vtx[2].position = glm::vec2(raster_rect.w, 0.0f);
+	vtx[2].matrix 	= matrix;
 	vtx[2].color 	= vtx_color;
 	vtx[3].position = raster_rect.dimensions();
+	vtx[3].matrix 	= matrix;
 	vtx[3].color 	= vtx_color;
 	return *this;
 }

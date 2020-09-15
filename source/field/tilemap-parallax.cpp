@@ -80,7 +80,7 @@ void tilemap_parallax_t::handle(rect_t viewport) {
 }
 
 void tilemap_parallax_t::render(renderer_t& renderer, rect_t viewport, const texture_t* texture) const {
-	auto& list = renderer.working_list(
+	auto& list = renderer.display_list(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,

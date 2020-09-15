@@ -11,18 +11,12 @@
 
 renderer_t::renderer_t() :
 	quad_allocator(),
-	overlay_lists(),
-	working_lists(),
+	display_lists(),
 	pipelines(program_t::Total),
-	projection_buffer(),
-	viewport_buffer(),
-	internal_state(),
-	gk_projection_matrix(1.0f),
-	gk_viewport_matrix(1.0f)
+	viewports(),
+	internal_state()
 {
-	const glm::vec2 resolution = constants::NormalDimensions<real_t>();
-	gk_projection_matrix = glm::ortho(0.0f, resolution.x, resolution.y, 0.0f);
-	gk_viewport_matrix = gk_projection_matrix;
+
 }
 
 bool renderer_t::init(glm::ivec2 version) {
@@ -30,25 +24,22 @@ bool renderer_t::init(glm::ivec2 version) {
 		synao_log("Couldn't create quad_buffer_allocator_t!\n");
 		return false;
 	}
-	if (projection_buffer.valid() or viewport_buffer.valid()) {
+	if (viewports.valid()) {
 		synao_log("Constant buffers already exist!\n");
 		return false;
 	}
-	projection_buffer.setup(buffer_usage_t::Static);
+	viewports.setup(buffer_usage_t::Dynamic);
 	if (const_buffer_t::has_immutable_option()) {
-		projection_buffer.create_immutable(sizeof(glm::mat4));
+		viewports.create_immutable(sizeof(glm::mat4) * 2);
 	} else {
-		projection_buffer.create(sizeof(glm::mat4));
+		viewports.create(sizeof(glm::mat4) * 2);
 	}
-	projection_buffer.update(&gk_projection_matrix);
-	viewport_buffer.setup(buffer_usage_t::Dynamic);
-	if (const_buffer_t::has_immutable_option()) {
-		viewport_buffer.create_immutable(sizeof(glm::mat4));
-	} else {
-		viewport_buffer.create(sizeof(glm::mat4));
-	}
-	viewport_buffer.update(&gk_viewport_matrix);
-	internal_state.set_const_buffer(&viewport_buffer, 0);
+	glm::mat4 matrices[2] = {
+		glm::ortho(0.0f, constants::NormalWidth<real_t>(), constants::NormalHeight<real_t>(), 0.0f),
+		glm::ortho(0.0f, constants::NormalWidth<real_t>(), constants::NormalHeight<real_t>(), 0.0f)
+	};
+	viewports.update(matrices);
+	internal_state.set_const_buffer(&viewports, 0);
 
 	const shader_t* blank = vfs::shader(
 		"blank",
@@ -104,79 +95,47 @@ bool renderer_t::init(glm::ivec2 version) {
 
 void renderer_t::clear() {
 	auto lacks_owner = [](auto& list) { return !list.persists(); };
-	overlay_lists.erase(
-		std::remove_if(overlay_lists.begin(), overlay_lists.end(), lacks_owner),
-		overlay_lists.end()
-	);
-	working_lists.erase(
-		std::remove_if(working_lists.begin(), working_lists.end(), lacks_owner),
-		working_lists.end()
+	display_lists.erase(
+		std::remove_if(display_lists.begin(), display_lists.end(), lacks_owner),
+		display_lists.end()
 	);
 }
 
-void renderer_t::flush(const video_t& video, const glm::mat4& viewport_matrix) {
-	// Update Constant Buffers
-	// glm::vec2 video_dimensions = video.get_dimensions();
-	// if (gk_video_dimensions != video_dimensions) {
-	// 	gk_video_dimensions = video_dimensions;
-	// 	projection_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
-	// 	viewport_buffer.update(&gk_video_dimensions, sizeof(glm::vec2), sizeof(glm::mat4));
-	// }
-	if (gk_viewport_matrix != viewport_matrix) {
-		gk_viewport_matrix = viewport_matrix;
-		viewport_buffer.update(&gk_viewport_matrix, sizeof(glm::mat4));
+void renderer_t::flush(const video_t& video, const glm::mat4& viewport) {
+	// Update Viewports
+	static glm::mat4 current = glm::mat4(1.0f);
+	if (current != viewport) {
+		current = viewport;
+		viewports.update(&current, sizeof(glm::mat4), sizeof(glm::mat4));
 	}
-	// Draw Normal Quads
-	frame_buffer_t::clear(video.get_integral_dimensions());
-	internal_state.set_const_buffer(&viewport_buffer, 0);
-	for (auto&& list : working_lists) {
-		list.flush(internal_state);
-	}
-	// Draw Overlay Quads
-	internal_state.set_const_buffer(&projection_buffer, 0);
-	for (auto&& list : overlay_lists) {
-		list.flush(internal_state);
-	}
+	this->flush(video.get_integral_dimensions());
 }
 
 void renderer_t::flush(const glm::ivec2& dimensions) {
-	// Draw Overlay Quads (Only)
+	// Draw Lists
 	frame_buffer_t::clear(dimensions);
-	internal_state.set_const_buffer(&projection_buffer, 0);
-	for (auto&& list : overlay_lists) {
+	for (auto&& list : display_lists) {
 		list.flush(internal_state);
 	}
 }
 
-void renderer_t::ortho(const glm::ivec2& integral_dimensions) {
-	if (projection_buffer.valid() and viewport_buffer.valid()) {
-		glm::vec2 dimensions = glm::vec2(integral_dimensions);
-		gk_projection_matrix = glm::ortho(0.0f, dimensions.x, dimensions.y, 0.0f);
-		gk_viewport_matrix = gk_projection_matrix;
-		//gk_video_dimensions = dimensions;
-		//gk_video_resolution = dimensions;
-		projection_buffer.update(&gk_projection_matrix, sizeof(glm::mat4));
-		// projection_buffer.update(
-		// 	&gk_video_dimensions,
-		// 	sizeof(glm::vec2) + sizeof(glm::vec2),
-		// 	sizeof(glm::mat4)
-		// );
-		viewport_buffer.update(&gk_viewport_matrix, sizeof(glm::mat4));
+void renderer_t::ortho(const glm::ivec2& dimensions) {
+	if (viewports.valid()) {
+		glm::mat4 matrices[2] = {
+			glm::ortho(0.0f, static_cast<real_t>(dimensions.x), static_cast<real_t>(dimensions.y), 0.0f),
+			glm::ortho(0.0f, static_cast<real_t>(dimensions.x), static_cast<real_t>(dimensions.y), 0.0f)
+		};
+		viewports.update(matrices);
 	}
 }
 
 arch_t renderer_t::get_total_lists() const {
-	return overlay_lists.size() + working_lists.size();
+	return display_lists.size();
 }
 
 arch_t renderer_t::get_total_calls() const {
 	arch_t result = 0;
-	for (auto&& list : overlay_lists) {
-		if (list.rendered()) {
-			result++;
-		}
-	}
-	for (auto&& list : working_lists) {
+	for (auto&& list : display_lists) {
 		if (list.rendered()) {
 			result++;
 		}
@@ -186,12 +145,7 @@ arch_t renderer_t::get_total_calls() const {
 
 display_list_t* renderer_t::find_list(sint64_t guid) {
 	if (guid != 0) {
-		for (auto&& list : working_lists) {
-			if (list.matches(guid)) {
-				return &list;
-			}
-		}
-		for (auto&& list : overlay_lists) {
+		for (auto&& list : display_lists) {
 			if (list.matches(guid)) {
 				return &list;
 			}
@@ -215,29 +169,21 @@ void renderer_t::release(display_list_t& list) {
 #endif
 }
 
-display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const texture_t* texture, const palette_t* palette) {
-	for (auto&& list : overlay_lists) {
-		if (list.matches(layer, blend_mode, usage, texture, palette, pipeline)) {
+/*display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
+	for (auto&& list : display_lists) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, &pipelines[program])) {
 			return list;
 		}
 	}
-	overlay_lists.emplace_back(
+	display_lists.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		pipeline, &quad_allocator
+		&pipelines[program], &quad_allocator
 	);
-	std::sort(overlay_lists.begin(), overlay_lists.end());
+	std::sort(display_lists.begin(), display_lists.end());
 	return this->overlay_list(
 		layer, blend_mode, usage,
-		pipeline, texture, palette
-	);
-}
-
-display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
-	return this->overlay_list(
-		layer, blend_mode, usage,
-		&pipelines[program],
-		texture, palette
+		program, texture, palette
 	);
 }
 
@@ -246,36 +192,28 @@ display_list_t& renderer_t::overlay_list(layer_t layer, blend_mode_t blend_mode,
 		layer, blend_mode, usage,
 		program, nullptr, nullptr
 	);
-}
+}*/
 
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const texture_t* texture, const palette_t* palette) {
-	for (auto&& list : working_lists) {
-		if (list.matches(layer, blend_mode, usage, texture, palette, pipeline)) {
+display_list_t& renderer_t::display_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
+	for (auto&& list : display_lists) {
+		if (list.matches(layer, blend_mode, usage, texture, palette, &pipelines[program])) {
 			return list;
 		}
 	}
-	working_lists.emplace_back(
+	display_lists.emplace_back(
 		layer, blend_mode, usage,
 		texture, palette,
-		pipeline, &quad_allocator
+		&pipelines[program], &quad_allocator
 	);
-	std::sort(working_lists.begin(), working_lists.end());
-	return this->working_list(
+	std::sort(display_lists.begin(), display_lists.end());
+	return this->display_list(
 		layer, blend_mode, usage,
-		pipeline, texture, palette
+		program, texture, palette
 	);
 }
 
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program, const texture_t* texture, const palette_t* palette) {
-	return this->working_list(
-		layer, blend_mode, usage,
-		&pipelines[program],
-		texture, palette
-	);
-}
-
-display_list_t& renderer_t::working_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program) {
-	return this->working_list(
+display_list_t& renderer_t::display_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program) {
+	return this->display_list(
 		layer, blend_mode, usage,
 		program, nullptr, nullptr
 	);

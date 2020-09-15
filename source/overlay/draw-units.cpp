@@ -26,7 +26,7 @@ void draw_units_t::invalidate() const {
 
 void draw_units_t::render(renderer_t& renderer) const {
 	if (!quads.empty()) {
-		auto& list = renderer.overlay_list(
+		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
@@ -124,21 +124,25 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 		}
 
 		quad[0].position = pos;
+		quad[0].matrix = 0;
 		quad[0].uvcoords = uvs * inv;
 		quad[0].table = table;
 		quad[0].alpha = 1.0f;
 
 		quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
+		quad[1].matrix = 0;
 		quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
 		quad[1].table = table;
 		quad[1].alpha = 1.0f;
 
 		quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
+		quad[2].matrix = 0;
 		quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
 		quad[2].table = table;
 		quad[2].alpha = 1.0f;
 
 		quad[3].position = pos + bounding.dimensions();
+		quad[3].matrix = 0;
 		quad[3].uvcoords = inv * (uvs + bounding.dimensions());
 		quad[3].table = table;
 		quad[3].alpha = 1.0f;

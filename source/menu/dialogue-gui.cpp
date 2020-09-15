@@ -131,7 +131,7 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 			arrow.invalidate();
 		}
 		text.render(renderer);
-		auto& list = renderer.overlay_list(
+		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,

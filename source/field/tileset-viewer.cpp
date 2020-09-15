@@ -121,7 +121,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 	if (amend) {
 		amend = false;
 		if (select and flash) {
-			auto& list = renderer.overlay_list(
+			auto& list = renderer.display_list(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -136,7 +136,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			.end();
 		}
 		if (texture != nullptr) {
-			auto& list = renderer.overlay_list(
+			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -156,7 +156,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 		}
 	} else {
 		if (select and flash) {
-			auto& list = renderer.overlay_list(
+			auto& list = renderer.display_list(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
@@ -165,7 +165,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			list.skip(display_list_t::SingleQuad);
 		}
 		if (texture != nullptr) {
-			auto& list = renderer.overlay_list(
+			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
