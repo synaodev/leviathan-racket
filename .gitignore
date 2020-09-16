@@ -1,21 +1,28 @@
 # Editor
-**/.vs/
-**/.vscode/
-**/CMakeSettings.json
+.vs/
+.vscode/
+**/[Cc][Mm]ake[Ss]ettings.json
 
 # Python
-**/__pycache__/
-**/venv/
+.env/
+.venv/
+env/
+venv/
+__pycache__/
 
 # Build
-**/build/
-**/scratch/
+build/
+mingw/
+output/
+[Dd]ebug/
+[Rr]elease/
+[Mm]in[Ss]ize[Rr]el/
+[Rr]el[Ww]ith[Dd]eb[Ii]nfo/
 
 # Game
-**/AS_DEBUG/
+AS_DEBUG/
 **/save/
 **/init/
-
-# Imgui
-imgui.ini
-imgui_log.txt
+**/imgui**
+**/[Tt][Oo][Dd][Oo].md
+*.ini
