@@ -2,19 +2,6 @@
 #include "./logger.hpp"
 #include "./setup-file.hpp"
 
-#if defined(LEVIATHAN_PLATFORM_WINDOWS)
-	#include <windows.h>
-#elif defined(LEVIATHAN_PLATFORM_MACOS)
-	#include <libproc.h>
-#endif
-
-#ifdef LEVIATHAN_POSIX_COMPLIANT
-	#include <dirent.h>
-	#include <unistd.h>
-	#include <sys/stat.h>
-	#include <sys/types.h>
-#endif
-
 #include <cstdlib>
 #include <cstring>
 #include <fstream>
@@ -23,6 +10,10 @@
 
 #ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	#include <filesystem>
+	#define using_namespace(NSP) namespace NSP = std::filesystem
+#else
+	#include <ghc/filesystem.hpp>
+	#define using_namespace(NSP) namespace NSP = ghc::filesystem
 #endif
 
 #include <nlohmann/json.hpp>
@@ -67,6 +58,7 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 		i18n/
 			*.json
 		image/
+			icon.png
 			*.png
 		noise/
 			*.wav
@@ -166,20 +158,13 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 	if (!vfs::directory_exists(directory, print)) {
 		return false;
 	}
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
 	std::error_code code;
-	std::filesystem::current_path(directory, code);
+	using_namespace(std__filesystem);
+	std__filesystem::current_path(directory, code);
 	if (code) {
 		synao_log("Failed to set working directory to \"{}\"!\n", directory);
 		return false;
 	}
-#else
-	sint_t result = chdir(directory.c_str());
-	if (result != 0) {
-		synao_log("Failed to set working directory to \"{}\"!\n", directory);
-		return false;
-	}
-#endif
 	bool success = true;
 	for (arch_t it = 0; it < (sizeof(kDirList) / sizeof(kDirList[0])); ++it) {
 		if (!vfs::directory_exists(kDirList[it], print)) {
@@ -190,60 +175,36 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 }
 
 bool vfs::directory_exists(const std::string& name, bool_t print) {
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	if (!std::filesystem::exists(name) or !std::filesystem::is_directory(name)) {
+	using_namespace(std__filesystem);
+	if (!std__filesystem::exists(name) or !std__filesystem::is_directory(name)) {
 		if (print) {
 			synao_log("\"{}\" isn't a valid directory!\n", name);
 		}
 		return false;
 	}
-#else
-	struct stat sb;
-	if (stat(name.c_str(), &sb) != 0 or S_ISDIR(sb.st_mode) == 0) {
-		if (print) {
-			synao_log("\"{}\" isn't a valid directory!\n", name);
-		}
-		return false;
-	}
-#endif
 	return true;
 }
 
 bool vfs::file_exists(const std::string& name, bool_t print) {
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	if (!std::filesystem::exists(name) or !std::filesystem::is_regular_file(name)) {
+	using_namespace(std__filesystem);
+	if (!std__filesystem::exists(name) or !std__filesystem::is_regular_file(name)) {
 		if (print) {
 			synao_log("\"{}\" isn't a valid file!\n", name);
 		}
 		return false;
 	}
-#else
-	struct stat sb;
-	if (stat(name.c_str(), &sb) != 0 or S_ISREG(sb.st_mode) == 0) {
-		if (print) {
-			synao_log("\"{}\" isn't a valid file!\n", name);
-		}
-		return false;
-	}
-#endif
 	return true;
 }
 
 bool vfs::create_directory(const std::string& name) {
+	using_namespace(std__filesystem);
 	if (vfs::directory_exists(name)) {
 		return true;
 	}
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	if (!std::filesystem::create_directory(name)) {
+	if (!std__filesystem::create_directory(name)) {
 		synao_log("Failed to create file at: \"{}\"\n", name);
 		return false;
 	}
-#else
-	if (mkdir(name.c_str(), 0755) != 0) {
-		synao_log("Failed to create file at: \"{}\"\n", name);
-		return false;
-	}
-#endif
 	return true;
 }
 
@@ -260,22 +221,14 @@ bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>&
 }
 
 std::string vfs::working_directory() {
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
+	using_namespace(std__filesystem);
 	std::error_code code;
-	auto path = std::filesystem::current_path(code);
+	auto path = std__filesystem::current_path(code);
 	if (code) {
 		synao_log("Failed get working directory!\n");
 		return std::string();
 	}
 	return path.string();
-#else
-	byte_t buffer[1024];
-	if (getcwd(buffer, sizeof(buffer)) == nullptr) {
-		synao_log("Failed get working directory!\n");
-		return std::string();
-	}
-	return std::string(buffer);
-#endif
 }
 
 std::string vfs::executable_directory() {
@@ -337,29 +290,15 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 }
 
 std::vector<std::string> vfs::file_list(const std::string& path) {
+	using_namespace(std__filesystem);
 	std::vector<std::string> result;
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	for (auto&& file : std::filesystem::directory_iterator(path)) {
+	for (auto&& file : std__filesystem::directory_iterator(path)) {
 		if (!file.is_directory()) {
 			const std::string fname = file.path().filename().string();
 			const std::string fstrn = fname.substr(0, fname.find_last_of("."));
 			result.push_back(fstrn);
 		}
 	}
-#else
-	DIR* dir;
-	struct dirent* ent;
-	if ((dir = opendir(path.c_str())) != nullptr) {
-		while ((ent = readdir(dir)) != nullptr) {
-			const std::string file = ent->d_name;
-			const std::string name = file.substr(0, file.find_last_of("."));
-			if (name.size() > 1) {
-				result.push_back(name);
-			}
-		}
-		closedir(dir);
-	}
-#endif
 	return result;
 }
 

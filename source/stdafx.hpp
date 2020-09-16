@@ -53,6 +53,8 @@
 
 #if defined(__clang__) && defined(__apple_build_version__)
 	#include <filesystem>
+#else
+	#include <ghc/filesystem.hpp>
 #endif
 
 #include <glm/glm.hpp>
