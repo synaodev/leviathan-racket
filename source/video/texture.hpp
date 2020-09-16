@@ -3,6 +3,7 @@
 
 #include <future>
 #include <atomic>
+#include <map>
 
 #include "./image.hpp"
 #include "./gfx.hpp"
@@ -18,9 +19,28 @@ public:
 	static bool has_azdo();
 };
 
+struct texture_allocator_t : public not_copyable_t {
+public:
+	texture_allocator_t() :
+		handles() {}
+	texture_allocator_t(texture_allocator_t&& that) noexcept;
+	texture_allocator_t& operator=(texture_allocator_t&& that) noexcept;
+	~texture_allocator_t();
+public:
+	void destroy();
+private:
+	std::map<glm::ivec2, uint_t> handles;
+};
+
 struct texture_t : public not_copyable_t, public sampler_t {
 public:
-	texture_t();
+	texture_t() :
+		ready(false),
+		future(),
+		handle(0),
+		dimensions(0),
+		layers(0),
+		format(pixel_format_t::Invalid) {}
 	texture_t(texture_t&& that) noexcept;
 	texture_t& operator=(texture_t&& that) noexcept;
 	~texture_t();
@@ -47,7 +67,12 @@ private:
 
 struct palette_t : public not_copyable_t, public sampler_t {
 public:
-	palette_t();
+	palette_t() :
+		ready(false),
+		future(),
+		handle(0),
+		dimensions(0),
+		format(pixel_format_t::Invalid) {}
 	palette_t(palette_t&& that) noexcept;
 	palette_t& operator=(palette_t&& that) noexcept;
 	~palette_t();

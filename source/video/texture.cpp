@@ -12,15 +12,29 @@ bool sampler_t::has_azdo() {
 	return glCreateTextures != nullptr;
 }
 
-texture_t::texture_t() :
-	ready(false),
-	future(),
-	handle(0),
-	dimensions(0),
-	layers(0),
-	format(pixel_format_t::Invalid)
-{
+texture_allocator_t::texture_allocator_t(texture_allocator_t&& that) noexcept : texture_allocator_t() {
+	if (this != &that) {
+		std::swap(handles, that.handles);
+	}
+}
 
+texture_allocator_t& texture_allocator_t::operator=(texture_allocator_t&& that) noexcept {
+	if (this != &that) {
+		std::swap(handles, that.handles);
+	}
+	return *this;
+}
+
+texture_allocator_t::~texture_allocator_t() {
+	this->destroy();
+}
+
+void texture_allocator_t::destroy() {
+	for (auto&& pair : handles) {
+		glCheck(glDeleteTextures(1, &pair.second));
+		pair.second = 0;
+	}
+	handles.clear();
 }
 
 texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
@@ -183,16 +197,6 @@ glm::vec2 texture_t::get_inverse_dimensions() const {
 glm::ivec2 texture_t::get_integral_dimensions() const {
 	this->assure();
 	return dimensions;
-}
-
-palette_t::palette_t() :
-	ready(false),
-	future(),
-	handle(0),
-	dimensions(0),
-	format(pixel_format_t::Invalid)
-{
-
 }
 
 palette_t::palette_t(palette_t&& that) noexcept : palette_t() {
