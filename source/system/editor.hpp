@@ -9,6 +9,7 @@ struct renderer_t;
 
 typedef struct SDL_Window SDL_Window;
 typedef void* SDL_GLContext;
+typedef union SDL_Event SDL_Event;
 
 struct editor_t : public not_copyable_t {
 public:

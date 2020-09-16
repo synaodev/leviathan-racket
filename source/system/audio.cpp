@@ -10,7 +10,7 @@ static constexpr arch_t kSoundChannels = 12;
 audio_t::audio_t() :
 	tasks(),
 	channels(kSoundChannels),
-	engine(nullptr),
+	device(nullptr),
 	context(nullptr)
 {
 
@@ -21,18 +21,18 @@ audio_t::~audio_t() {
 	channels.clear();
 	if (context != nullptr) {
 		alcMakeContextCurrent(nullptr);
-		alcDestroyContext(context);
+		alcDestroyContext(reinterpret_cast<ALCcontext*>(context));
 		context = nullptr;
 	}
-	if (engine != nullptr) {
-		alcCloseDevice(engine);
-		engine = nullptr;
+	if (device != nullptr) {
+		alcCloseDevice(reinterpret_cast<ALCdevice*>(device));
+		device = nullptr;
 	}
 }
 
 bool audio_t::init(const setup_file_t& config) {
-	if (engine != nullptr) {
-		synao_log("OpenAL engine already exists!\n");
+	if (device != nullptr) {
+		synao_log("OpenAL device already exists!\n");
 		return false;
 	}
 	if (context != nullptr) {
@@ -40,19 +40,19 @@ bool audio_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	engine = alcOpenDevice(nullptr);
-	if (engine == nullptr) {
-		synao_log("OpenAL engine creation failed!\n");
+	device = alcOpenDevice(nullptr);
+	if (device == nullptr) {
+		synao_log("OpenAL device creation failed!\n");
 		return false;
 	}
 
-	context = alcCreateContext(engine, nullptr);
+	context = alcCreateContext(reinterpret_cast<ALCdevice*>(device), nullptr);
 	if (context == nullptr) {
 		synao_log("OpenAL context creation failed!\n");
 		return false;
 	}
-	if (alcMakeContextCurrent(context) == 0) {
-		synao_log("OpenAL context relevance failed!\n");
+	if (alcMakeContextCurrent(reinterpret_cast<ALCcontext*>(context)) == 0) {
+		synao_log("OpenAL context currency failed!\n");
 		return false;
 	}
 
