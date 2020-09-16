@@ -3,13 +3,19 @@
 
 #include "../utility/logger.hpp"
 
-static const uint_t kDrawAttach[] = {
-	GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
-	GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
-	GL_COLOR_ATTACHMENT4, GL_COLOR_ATTACHMENT5,
-	GL_COLOR_ATTACHMENT6, GL_COLOR_ATTACHMENT7,
-	GL_COLOR_ATTACHMENT8, GL_COLOR_ATTACHMENT9
-};
+static constexpr uint_t kDrawTotal = 32;
+
+static uint_t* kDrawAttach() {
+	static uint_t array[kDrawTotal] = {};
+	static bool_t empty = true;
+	if (empty) {
+		empty = false;
+		for (uint_t i = 0; i < kDrawTotal; ++i) {
+			array[i] = GL_COLOR_ATTACHMENT0 + i;
+		}
+	}
+	return array;
+}
 
 color_buffer_t::color_buffer_t(color_buffer_t&& that) noexcept : color_buffer_t() {
 	if (this != &that) {
@@ -56,6 +62,7 @@ bool color_buffer_t::create(glm::ivec2 dimensions, uint_t layers, pixel_format_t
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+
 			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 			for (uint_t it = 0; it < layers; ++it) {
 				glCheck(glFramebufferTextureLayer(
@@ -75,6 +82,7 @@ bool color_buffer_t::create(glm::ivec2 dimensions, uint_t layers, pixel_format_t
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+
 			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
 			glCheck(glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
@@ -169,13 +177,11 @@ bool depth_buffer_t::create(glm::ivec2 dimensions, bool_t compress) {
 		} else {
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
-
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y));
 			} else {
 				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_BYTE, nullptr));
 			}
-
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
@@ -191,6 +197,21 @@ bool depth_buffer_t::create(glm::ivec2 dimensions, bool_t compress) {
 
 bool depth_buffer_t::valid() const {
 	return handle != 0;
+}
+
+glm::vec2 depth_buffer_t::get_dimensions() const {
+	return glm::vec2(dimensions);
+}
+
+glm::vec2 depth_buffer_t::get_inverse_dimensions() const {
+	if (dimensions.x != 0.0f and dimensions.y != 0.0f) {
+		return 1.0f / glm::vec2(dimensions);
+	}
+	return glm::one<glm::vec2>();
+}
+
+glm::ivec2 depth_buffer_t::get_integral_dimensions() const {
+	return dimensions;
 }
 
 frame_buffer_t::frame_buffer_t(frame_buffer_t&& that) noexcept : frame_buffer_t() {
@@ -216,43 +237,46 @@ frame_buffer_t::~frame_buffer_t() {
 	this->destroy();
 }
 
-void frame_buffer_t::color(glm::ivec2 dimensions, uint_t layers, pixel_format_t format) {
-	if (!ready and !color_buffer.get_layers()) {
+bool frame_buffer_t::create(glm::ivec2 dimensions, uint_t layers, pixel_format_t format) {
+	if (!ready and layers < kDrawTotal) {
 		if (!handle) {
 			glCheck(glGenFramebuffers(1, &handle));
 		}
 		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, handle));
-		color_buffer.create(
-			dimensions,
-			layers,
-			format
-		);
+		color_buffer.create(dimensions, layers, format);
+		glCheck(glDrawBuffers(layers, kDrawAttach()));
+
+		uint_t state = 0;
+		glCheck(state = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+
+		if (state == GL_FRAMEBUFFER_COMPLETE) {
+			ready = true;
+		} else {
+			this->destroy();
+		}
 	}
+	return ready;
 }
 
-void frame_buffer_t::depth(glm::ivec2 dimensions, bool_t compress) {
-	if (!ready and !depth_buffer.valid()) {
+bool frame_buffer_t::create(glm::ivec2 dimensions, uint_t layers, pixel_format_t format, bool_t compress) {
+	if (!ready and layers < kDrawTotal) {
 		if (!handle) {
 			glCheck(glGenFramebuffers(1, &handle));
 		}
 		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, handle));
+		color_buffer.create(dimensions, layers, format);
 		depth_buffer.create(dimensions, compress);
-	}
-}
+		glCheck(glDrawBuffers(layers, kDrawAttach()));
 
-bool frame_buffer_t::create() {
-	if (!ready) {
-		if (handle != 0) {
-			uint_t state = 0;
-			uint_t count = color_buffer.get_layers();
-			glCheck(glDrawBuffers(count, kDrawAttach));
-			glCheck(state = glCheckFramebufferStatus(GL_FRAMEBUFFER));
-			glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
-			if (state == GL_FRAMEBUFFER_COMPLETE) {
-				ready = true;
-			} else {
-				this->destroy();
-			}
+		uint_t state = 0;
+		glCheck(state = glCheckFramebufferStatus(GL_FRAMEBUFFER));
+		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+
+		if (state == GL_FRAMEBUFFER_COMPLETE) {
+			ready = true;
+		} else {
+			this->destroy();
 		}
 	}
 	return ready;
@@ -284,7 +308,7 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_bindi
 			if (frame_buffer != nullptr and frame_buffer->ready) {
 				uint_t layers = frame_buffer->color_buffer.get_layers();
 				glCheck(glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->handle));
-				glCheck(glDrawBuffers(layers, kDrawAttach));
+				glCheck(glDrawBuffers(layers, kDrawAttach()));
 			}
 			else {
 				glCheck(glBindFramebuffer(GL_FRAMEBUFFER, 0));
