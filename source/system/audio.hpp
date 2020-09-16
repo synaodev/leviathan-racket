@@ -9,8 +9,13 @@
 
 struct setup_file_t;
 
-typedef struct ALCdevice_struct ALCdevice;
-typedef struct ALCcontext_struct ALCcontext;
+#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG) && !defined(LEVIATHAN_USES_VCPKG)
+	typedef struct ALCdevice ALCdevice;
+	typedef struct ALCcontext ALCcontext;
+#else
+	typedef struct ALCdevice_struct ALCdevice;
+	typedef struct ALCcontext_struct ALCcontext;
+#endif
 
 using audio_task_t = std::pair<arch_t, const noise_t*>;
 
