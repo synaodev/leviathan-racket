@@ -3,9 +3,38 @@
 
 #include "./texture.hpp"
 
+struct color_buffer_t : public not_copyable_t, public sampler_t {
+public:
+	color_buffer_t() :
+		handle(0),
+		dimensions(0),
+		layers(0),
+		format(pixel_format_t::Invalid) {}
+	color_buffer_t(color_buffer_t&& that) noexcept;
+	color_buffer_t& operator=(color_buffer_t&& that) noexcept;
+	~color_buffer_t();
+public:
+	bool create(glm::ivec2 dimensions, uint_t layers, pixel_format_t format);
+	void destroy();
+	bool valid();
+	uint_t get_layers() const;
+	glm::vec2 get_dimensions() const;
+	glm::vec2 get_inverse_dimensions() const;
+	glm::ivec2 get_integral_dimensions() const;
+private:
+	friend struct gfx_t;
+	uint_t handle;
+	glm::ivec2 dimensions;
+	uint_t layers;
+	pixel_format_t format;
+};
+
 struct depth_buffer_t : public not_copyable_t, public sampler_t {
 public:
-	depth_buffer_t();
+	depth_buffer_t() :
+		handle(0),
+		dimensions(0),
+		compress(false) {}
 	depth_buffer_t(depth_buffer_t&& that) noexcept;
 	depth_buffer_t& operator=(depth_buffer_t&& that) noexcept;
 	~depth_buffer_t();
@@ -32,12 +61,16 @@ using frame_buffer_binding_t = __enum_frame_buffer_binding::type;
 
 struct frame_buffer_t : public not_copyable_t {
 public:
-	frame_buffer_t();
+	frame_buffer_t() :
+		ready(false),
+		handle(0),
+		color_buffer(),
+		depth_buffer() {}
 	frame_buffer_t(frame_buffer_t&& that) noexcept;
 	frame_buffer_t& operator=(frame_buffer_t&& that) noexcept;
 	~frame_buffer_t();
 public:
-	void push(glm::ivec2 dimensions, arch_t length, pixel_format_t format);
+	void color(glm::ivec2 dimensions, uint_t layers, pixel_format_t format);
 	void depth(glm::ivec2 dimensions, bool_t compress);
 	bool create();
 	void destroy();
@@ -55,13 +88,13 @@ public:
 	bool valid() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
-	const texture_t* get_color_buffer() const;
+	const color_buffer_t* get_color_buffer() const;
 	const depth_buffer_t* get_depth_buffer() const;
 private:
 	friend struct gfx_t;
 	bool_t ready;
 	uint_t handle;
-	texture_t color_buffer;
+	color_buffer_t color_buffer;
 	depth_buffer_t depth_buffer;
 };
 

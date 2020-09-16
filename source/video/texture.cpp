@@ -103,38 +103,6 @@ bool texture_t::create(glm::ivec2 dimensions, arch_t layers, pixel_format_t form
 	return false;
 }
 
-bool texture_t::color_buffer(glm::ivec2 dimensions, arch_t layers, pixel_format_t format) {
-	if (this->create(dimensions, layers, format)) {
-		glCheck(glGenerateMipmap(GL_TEXTURE_2D_ARRAY));
-		glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
-		for (arch_t index = 0; index < layers; ++index) {
-			uint_t i = static_cast<uint_t>(index);
-			glCheck(glFramebufferTextureLayer(
-				GL_FRAMEBUFFER,
-				GL_COLOR_ATTACHMENT0 + i,
-				handle, 0, i
-			));
-		}
-		ready = true;
-	}
-	return ready;
-}
-
-bool texture_t::color_buffer_at(glm::ivec2 dimensions, pixel_format_t format, arch_t offset) {
-	if (this->create(dimensions, 1, format)) {
-		glCheck(glGenerateMipmap(GL_TEXTURE_2D));
-		glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-		glCheck(glFramebufferTexture2D(
-			GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(offset),
-			GL_TEXTURE_2D,
-			handle, 0
-		));
-		ready = true;
-	}
-	return ready;
-}
-
 void texture_t::destroy() {
 	if (future.valid()) {
 		auto result = future.get();

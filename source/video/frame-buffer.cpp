@@ -1,6 +1,8 @@
 #include "./frame-buffer.hpp"
 #include "./gl-check.hpp"
 
+#include "../utility/logger.hpp"
+
 static const uint_t kDrawAttach[] = {
 	GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1,
 	GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
@@ -9,12 +11,115 @@ static const uint_t kDrawAttach[] = {
 	GL_COLOR_ATTACHMENT8, GL_COLOR_ATTACHMENT9
 };
 
-depth_buffer_t::depth_buffer_t() :
-	handle(0),
-	dimensions(0),
-	compress(false)
-{
+color_buffer_t::color_buffer_t(color_buffer_t&& that) noexcept : color_buffer_t() {
+	if (this != &that) {
+		std::swap(handle, that.handle);
+		std::swap(dimensions, that.dimensions);
+		std::swap(layers, that.layers);
+		std::swap(format, that.format);
+	}
+}
 
+color_buffer_t& color_buffer_t::operator=(color_buffer_t&& that) noexcept {
+	if (this != &that) {
+		std::swap(handle, that.handle);
+		std::swap(dimensions, that.dimensions);
+		std::swap(layers, that.layers);
+		std::swap(format, that.format);
+	}
+	return *this;
+}
+
+color_buffer_t::~color_buffer_t() {
+	this->destroy();
+}
+
+bool color_buffer_t::create(glm::ivec2 dimensions, uint_t layers, pixel_format_t format) {
+	if (!handle) {
+		assert(layers > 0);
+		this->dimensions = dimensions;
+		this->layers = layers;
+		this->format = format;
+
+		uint_t gl_enum = gfx_t::get_pixel_format_gl_enum(format);
+
+		glCheck(glGenTextures(1, &handle));
+		if (layers > 1) {
+			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexStorage3D(GL_TEXTURE_2D_ARRAY, 4, gl_enum, dimensions.x, dimensions.y, layers));
+			} else {
+				glCheck(glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, gl_enum, dimensions.x, dimensions.y, layers, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			}
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+			for (uint_t it = 0; it < layers; ++it) {
+				glCheck(glFramebufferTextureLayer(
+					GL_FRAMEBUFFER,
+					GL_COLOR_ATTACHMENT0 + it,
+					handle, 0, it
+				));
+			}
+		} else {
+			glCheck(glBindTexture(GL_TEXTURE_2D, handle));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexStorage2D(GL_TEXTURE_2D, 4, gl_enum, dimensions.x, dimensions.y));
+			} else {
+				glCheck(glTexImage2D(GL_TEXTURE_2D, 0, gl_enum, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+			}
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			glCheck(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+			glCheck(glFramebufferTexture2D(
+				GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0,
+				GL_TEXTURE_2D,
+				handle, 0
+			));
+		}
+		return true;
+	}
+	synao_log("Warning! Tried to overwrite existing color buffer!\n");
+	return false;
+}
+
+void color_buffer_t::destroy() {
+	if (handle != 0) {
+		glCheck(glDeleteTextures(1, &handle));
+		handle = 0;
+	}
+	dimensions = glm::zero<glm::ivec2>();
+	layers = 0;
+	format = pixel_format_t::Invalid;
+}
+
+bool color_buffer_t::valid() {
+	return handle != 0;
+}
+
+uint_t color_buffer_t::get_layers() const {
+	return layers;
+}
+
+glm::vec2 color_buffer_t::get_dimensions() const {
+	return glm::vec2(dimensions);
+}
+
+glm::vec2 color_buffer_t::get_inverse_dimensions() const {
+	if (dimensions.x != 0.0f and dimensions.y != 0.0f) {
+		return 1.0f / glm::vec2(dimensions);
+	}
+	return glm::one<glm::vec2>();
+}
+
+glm::ivec2 color_buffer_t::get_integral_dimensions() const {
+	return dimensions;
 }
 
 depth_buffer_t::depth_buffer_t(depth_buffer_t&& that) noexcept : depth_buffer_t() {
@@ -88,15 +193,6 @@ bool depth_buffer_t::valid() const {
 	return handle != 0;
 }
 
-frame_buffer_t::frame_buffer_t() :
-	ready(false),
-	handle(0),
-	color_buffer(),
-	depth_buffer()
-{
-
-}
-
 frame_buffer_t::frame_buffer_t(frame_buffer_t&& that) noexcept : frame_buffer_t() {
 	if (this != &that) {
 		std::swap(ready, that.ready);
@@ -120,13 +216,17 @@ frame_buffer_t::~frame_buffer_t() {
 	this->destroy();
 }
 
-void frame_buffer_t::push(glm::ivec2 dimensions, arch_t length, pixel_format_t format) {
+void frame_buffer_t::color(glm::ivec2 dimensions, uint_t layers, pixel_format_t format) {
 	if (!ready and !color_buffer.get_layers()) {
 		if (!handle) {
 			glCheck(glGenFramebuffers(1, &handle));
 		}
 		glCheck(glBindFramebuffer(GL_FRAMEBUFFER, handle));
-		color_buffer.color_buffer(dimensions, length, format);
+		color_buffer.create(
+			dimensions,
+			layers,
+			format
+		);
 	}
 }
 
@@ -306,7 +406,7 @@ glm::ivec2 frame_buffer_t::get_integral_dimensions() const {
 	return color_buffer.get_integral_dimensions();
 }
 
-const texture_t* frame_buffer_t::get_color_buffer() const {
+const color_buffer_t* frame_buffer_t::get_color_buffer() const {
 	return &color_buffer;
 }
 
