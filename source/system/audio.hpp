@@ -9,7 +9,7 @@
 
 struct setup_file_t;
 
-#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG) && !defined(LEVIATHAN_USES_VCPKG)
+#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG)
 	typedef struct ALCdevice ALCdevice;
 	typedef struct ALCcontext ALCcontext;
 #else
