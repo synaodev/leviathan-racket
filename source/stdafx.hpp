@@ -63,6 +63,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
+
+#define FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)

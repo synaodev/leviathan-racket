@@ -3,6 +3,7 @@
 #include "./weapons.hpp"
 #include "./shoshi.hpp"
 
+#define FMT_HEADER_ONLY
 #include <fmt/core.h>
 #include <entt/entity/registry.hpp>
 

@@ -7,6 +7,8 @@
 #include <iosfwd>
 #include <sstream>
 #include <locale>
+
+#define FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 #include "../types.hpp"

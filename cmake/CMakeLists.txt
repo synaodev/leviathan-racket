@@ -63,7 +63,6 @@ if (NAOMI_BUILD)
 		Angelscript::angelscript
 		EnTT::EnTT
 		${TMXLITE_LIBRARY}
-		${FMT_LIBRARY}
 		${OPENAL_LIBRARY}
 		${SDL2_LIBRARIES}
 	)
@@ -77,10 +76,7 @@ if (NAOMI_BUILD)
 endif ()
 
 if (EDITOR_BUILD)
-	target_link_libraries (editor PRIVATE
-		${FMT_LIBRARY}
-		${SDL2_LIBRARIES}
-	)
+	target_link_libraries (editor PRIVATE ${SDL2_LIBRARIES})
 	target_include_directories (editor PRIVATE
 		${GENERAL_INCLUDE_DIR}
 		${STB_INCLUDE_DIR}
