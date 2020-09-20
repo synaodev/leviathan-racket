@@ -64,7 +64,9 @@
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 
-#define FMT_HEADER_ONLY
+#ifndef FMT_HEADER_ONLY
+	#define FMT_HEADER_ONLY
+#endif // FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)

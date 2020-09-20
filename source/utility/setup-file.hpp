@@ -8,7 +8,9 @@
 #include <sstream>
 #include <locale>
 
-#define FMT_HEADER_ONLY
+#ifndef FMT_HEADER_ONLY
+	#define FMT_HEADER_ONLY
+#endif // FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 #include "../types.hpp"

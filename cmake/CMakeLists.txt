@@ -20,17 +20,15 @@ if (NOT GLM_FOUND)
 	message (FATAL_ERROR "Could not find glm!")
 endif ()
 
-include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindFMT.cmake")
-if (NOT FMT_FOUND)
-	message (FATAL_ERROR "Could not find fmt!")
-endif ()
-
 include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindTmxlite.cmake")
 if (NOT TMXLITE_FOUND)
 	message (FATAL_ERROR "Could not find tmxlite!")
 endif ()
 
 if (VCPKG_TOOLCHAIN)
+	find_package (fmt CONFIG REQUIRED)
+	set (FMT_LIBRARY fmt::fmt-header-only)
+	set (FMT_INCLUDE_DIR "")
 	find_package (OpenAL CONFIG REQUIRED)
 	set (OPENAL_LIBRARY OpenAL::OpenAL)
 	find_package (SDL2 CONFIG REQUIRED)
@@ -42,6 +40,11 @@ if (VCPKG_TOOLCHAIN)
 		set (SDL2_LIBRARIES SDL2::SDL2main SDL2::SDL2)
 	endif ()
 else ()
+	include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindFMT.cmake")
+	if (NOT FMT_FOUND)
+		message (FATAL_ERROR "Could not find fmt!")
+	endif ()
+	set (FMT_LIBRARY "")
 	include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindOpenAL.cmake")
 	if (NOT OPENAL_FOUND)
 		message (FATAL_ERROR "Could not find OpenAL!")
@@ -63,6 +66,7 @@ if (NAOMI_BUILD)
 		Angelscript::angelscript
 		EnTT::EnTT
 		${TMXLITE_LIBRARY}
+		${FMT_LIBRARY}
 		${OPENAL_LIBRARY}
 		${SDL2_LIBRARIES}
 	)
@@ -76,7 +80,10 @@ if (NAOMI_BUILD)
 endif ()
 
 if (EDITOR_BUILD)
-	target_link_libraries (editor PRIVATE ${SDL2_LIBRARIES})
+	target_link_libraries (editor PRIVATE
+		${FMT_LIBRARY}
+		${SDL2_LIBRARIES}
+	)
 	target_include_directories (editor PRIVATE
 		${GENERAL_INCLUDE_DIR}
 		${STB_INCLUDE_DIR}

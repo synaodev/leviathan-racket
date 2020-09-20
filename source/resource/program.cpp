@@ -1,6 +1,8 @@
 #include "./program.hpp"
 
-#define FMT_HEADER_ONLY
+#ifndef FMT_HEADER_ONLY
+	#define FMT_HEADER_ONLY
+#endif // FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 static constexpr byte_t kBlankVert420[] = R"(#version 420 core

@@ -1,4 +1,4 @@
-include (${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+include ("${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake")
 
 find_path (GLM_INCLUDE_DIR "glm/glm.hpp")
 

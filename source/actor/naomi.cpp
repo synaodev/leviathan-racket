@@ -3,8 +3,11 @@
 #include "./weapons.hpp"
 #include "./shoshi.hpp"
 
-#define FMT_HEADER_ONLY
+#ifndef FMT_HEADER_ONLY
+	#define FMT_HEADER_ONLY
+#endif // FMT_HEADER_ONLY
 #include <fmt/core.h>
+
 #include <entt/entity/registry.hpp>
 
 #include "../component/kontext.hpp"

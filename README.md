@@ -29,8 +29,7 @@ I hope to release in Winter 2021.
     - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
     - Pacman: `pacman -S mesa openal glm sdl2 fmt`
     - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel fmt-devel`
-  - For Angelscript and EnTT, build and install from source using cmake.
-  - Tmxlite should also be built from source using cmake, but I recommend adding this argument when running cmake: `-DTMXLITE_STATIC_LIB:BOOL=TRUE`.
+  - For Angelscript, EnTT, and Tmxlite, build and install from source using cmake.
 - MacOS:
   - Vcpkg is absolutely required.
   - Install Xcode and Xcode Command-Line Tools in order to use OpenGL.Framework (yes, seriously).
