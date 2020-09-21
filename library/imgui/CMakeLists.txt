@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.15)
+cmake_minimum_required (VERSION 3.13)
 
 if (NAOMI_BUILD AND META_BUILD)
 	target_compile_definitions (naomi PRIVATE "-DIMGUI_IMPL_OPENGL_LOADER_GLAD")

@@ -2,6 +2,7 @@
 .vs/
 .vscode/
 **/[Cc][Mm]ake[Ss]ettings.json
+**/[Tt][Oo][Dd][Oo].md
 
 # Python
 .env/
@@ -21,8 +22,7 @@ output/
 
 # Game
 AS_DEBUG/
-**/save/
-**/init/
-**/imgui**
-**/[Tt][Oo][Dd][Oo].md
-*.ini
+data/save/
+data/init/
+imgui_log.txt
+imgui.ini

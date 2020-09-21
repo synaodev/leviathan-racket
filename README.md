@@ -17,7 +17,7 @@ I hope to release in Winter 2021.
 - [Pxtone](https://pxtone.org/developer)
 ## Building From Source
 - General:
-  - CMake version must be at least 3.15.
+  - CMake version must be at least 3.13.
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
   - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
