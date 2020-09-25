@@ -62,7 +62,6 @@ public:
 	void load(const std::string& full_path, pixel_format_t format, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
 	void assure();
 	void assure() const;
-	void destroy();
 	bool valid() const;
 	uint_t get_handle() const;
 	sint_t get_name() const;

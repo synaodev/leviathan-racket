@@ -20,7 +20,6 @@ namespace res {
 		LEVIATHAN_RES_BYTES_DEF(Friends, 	"friends");
 		LEVIATHAN_RES_BYTES_DEF(Heads, 		"heads");
 		LEVIATHAN_RES_BYTES_DEF(Naomi, 		"naomi");
-		LEVIATHAN_RES_BYTES_DEF(PrtSilver, 	"prtsilver");
 	}
 	namespace anim {
 		LEVIATHAN_RES_ENTRY_DEF(Heads,		"heads");

@@ -126,7 +126,9 @@ texture_t& texture_t::operator=(texture_t&& that) noexcept {
 }
 
 texture_t::~texture_t() {
-	this->destroy();
+	if (future.valid()) {
+		auto result = future.get();
+	}
 }
 
 void texture_t::load(const std::string& full_path, pixel_format_t format, sampler_allocator_t& allocator, thread_pool_t& thread_pool) {
@@ -136,17 +138,6 @@ void texture_t::load(const std::string& full_path, pixel_format_t format, sample
 	this->future = thread_pool.push([](const std::string& full_path) -> image_t {
 		return image_t::generate(full_path);
 	}, full_path);
-}
-
-void texture_t::destroy() {
-	ready = false;
-	if (future.valid()) {
-		auto result = future.get();
-	}
-	allocator = nullptr;
-	format = pixel_format_t::Invalid;
-	name = 0;
-	dimensions = glm::zero<glm::ivec2>();
 }
 
 void texture_t::assure() {
