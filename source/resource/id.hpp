@@ -9,8 +9,12 @@
 namespace res {
 	namespace img {
 		LEVIATHAN_RES_BYTES_DEF(BkgRough, 	"bkgrough");
+		LEVIATHAN_RES_BYTES_DEF(Bullet, 	"bullets");
 		LEVIATHAN_RES_BYTES_DEF(Common, 	"common");
+		LEVIATHAN_RES_BYTES_DEF(Faces, 		"faces");
+		LEVIATHAN_RES_BYTES_DEF(Friends, 	"friends");
 		LEVIATHAN_RES_BYTES_DEF(Heads, 		"heads");
+		LEVIATHAN_RES_BYTES_DEF(Naomi, 		"naomi");
 		LEVIATHAN_RES_BYTES_DEF(PrtCave, 	"prtcave");
 		LEVIATHAN_RES_BYTES_DEF(PrtGhou, 	"prtghou");
 		LEVIATHAN_RES_BYTES_DEF(PrtSilver, 	"prtsilver");
@@ -34,6 +38,7 @@ namespace res {
 		LEVIATHAN_RES_ENTRY_DEF(Blast,		"blast");
 		LEVIATHAN_RES_ENTRY_DEF(DashFlash,	"dashflash");
 		LEVIATHAN_RES_ENTRY_DEF(Droplet,	"droplet");
+		LEVIATHAN_RES_ENTRY_DEF(Faces,		"faces");
 		LEVIATHAN_RES_ENTRY_DEF(Shrapnel,	"shrapnel");
 		LEVIATHAN_RES_ENTRY_DEF(Smoke,		"smoke");
 		LEVIATHAN_RES_ENTRY_DEF(Splash,		"splash");
