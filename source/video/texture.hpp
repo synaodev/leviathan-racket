@@ -3,7 +3,7 @@
 
 #include <future>
 #include <atomic>
-#include <map>
+#include <array>
 
 #include "./image.hpp"
 #include "./gfx.hpp"
@@ -19,31 +19,31 @@ struct sampler_data_t : public not_copyable_t {
 public:
 	sampler_data_t() :
 		id(0),
-		type(0),
 		count(0) {}
-	sampler_data_t(uint_t id, uint_t type, uint_t count) :
+	sampler_data_t(uint_t id, uint_t count) :
 		id(id),
-		type(type),
 		count(count) {}
 	sampler_data_t(sampler_data_t&&) noexcept;
 	sampler_data_t& operator=(sampler_data_t&&) noexcept;
 	~sampler_data_t();
 public:
-	uint_t id, type;
+	uint_t id;
 	sint_t count;
 };
 
 struct sampler_allocator_t : public not_copyable_t {
 public:
 	sampler_allocator_t() :
-		texture_format(pixel_format_t::Invalid),
-		palette_format(pixel_format_t::Invalid),
-		textures(),
+		highest(pixel_format_t::Invalid),
+		lowest(pixel_format_t::Invalid),
+		texsmall(),
+		texlarge(),
 		palettes() {}
-	sampler_allocator_t(pixel_format_t texture_format, pixel_format_t palette_format) :
-		texture_format(texture_format),
-		palette_format(palette_format),
-		textures(),
+	sampler_allocator_t(pixel_format_t highest, pixel_format_t lowest) :
+		highest(highest),
+		lowest(lowest),
+		texsmall(),
+		texlarge(),
 		palettes() {}
 	sampler_allocator_t(sampler_allocator_t&& that) noexcept;
 	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept;
@@ -54,10 +54,10 @@ public:
 	sampler_data_t& palette(const glm::ivec2& dimensions);
 	const sampler_data_t& palette_const(const glm::ivec2& dimensions) const;
 private:
-	static sampler_data_t generate(const glm::ivec2& dimensions, pixel_format_t format);
+	static sampler_data_t generate(const glm::ivec2& dimensions, sint_t layers, pixel_format_t format);
 private:
-	pixel_format_t texture_format, palette_format;
-	std::map<glm::ivec2, sampler_data_t> textures, palettes;
+	pixel_format_t highest, lowest;
+	sampler_data_t texsmall, texlarge, palettes;
 };
 
 struct texture_t : public not_copyable_t, public sampler_t {

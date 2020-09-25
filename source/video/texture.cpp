@@ -4,7 +4,13 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread-pool.hpp"
 
-static constexpr sint_t kMaxLayers = 256;
+static constexpr sint_t kGLMipMaps = 4;
+static constexpr sint_t kTotalPals = 256;
+static constexpr sint_t kWidthsOne = 256;
+static constexpr sint_t kWidthsTwo = 512;
+static constexpr sint_t kColorsMax = 32;
+static constexpr sint_t kLayersOne = 64;
+static constexpr sint_t kLayersTwo = 4;
 
 bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
@@ -13,7 +19,6 @@ bool sampler_t::has_immutable_option() {
 sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t() {
 	if (this != &that) {
 		std::swap(id, that.id);
-		std::swap(type, that.type);
 		std::swap(count, that.count);
 	}
 }
@@ -21,7 +26,6 @@ sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t(
 sampler_data_t& sampler_data_t::operator=(sampler_data_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(id, that.id);
-		std::swap(type, that.type);
 		std::swap(count, that.count);
 	}
 	return *this;
@@ -29,92 +33,96 @@ sampler_data_t& sampler_data_t::operator=(sampler_data_t&& that) noexcept {
 
 sampler_data_t::~sampler_data_t() {
 	if (id != 0) {
-		glCheck(glBindTexture(type, 0));
+		glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
 		glCheck(glDeleteTextures(1, &id));
 		id = 0;
-		type = 0;
 		count = 0;
 	}
 }
 
 sampler_allocator_t::sampler_allocator_t(sampler_allocator_t&& that) noexcept : sampler_allocator_t() {
 	if (this != &that) {
-		std::swap(textures, that.textures);
+		std::swap(highest, that.highest);
+		std::swap(lowest, that.lowest);
+		std::swap(texsmall, that.texsmall);
+		std::swap(texlarge, that.texlarge);
 		std::swap(palettes, that.palettes);
-		std::swap(texture_format, that.texture_format);
-		std::swap(palette_format, that.palette_format);
 	}
 }
 
 sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) noexcept {
 	if (this != &that) {
-		std::swap(textures, that.textures);
+		std::swap(highest, that.highest);
+		std::swap(lowest, that.lowest);
+		std::swap(texsmall, that.texsmall);
+		std::swap(texlarge, that.texlarge);
 		std::swap(palettes, that.palettes);
-		std::swap(texture_format, that.texture_format);
-		std::swap(palette_format, that.palette_format);
 	}
 	return *this;
 }
 
 sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
-	if (textures.find(dimensions) != textures.end()) {
-		return textures[dimensions];
+	if (dimensions.x == kWidthsOne and dimensions.y == kWidthsOne) {
+		if (texsmall.id == 0) {
+			texsmall = this->generate(dimensions, kLayersOne, highest);
+		}
+		return texsmall;
+	} else if (dimensions.x == kWidthsTwo and dimensions.y == kWidthsTwo) {
+		if (texlarge.id == 0) {
+			texlarge = this->generate(dimensions, kLayersTwo, highest);
+		}
+		return texlarge;
 	}
-	auto& ref = textures[dimensions];
-	ref = this->generate(dimensions, texture_format);
-	return ref;
+	synao_log("Error! Texture size must be 256x256 or 512x512! This one is {}x{}!\n", dimensions.x, dimensions.y);
+	static sampler_data_t kNullHandle = sampler_data_t{};
+	return kNullHandle;
 }
 
 const sampler_data_t& sampler_allocator_t::texture_const(const glm::ivec2& dimensions) const {
-#ifndef LEVIATHAN_BUILD_DEBUG
-	return textures.at(dimensions);
-#else
-	auto it = textures.find(dimensions);
-	if (it != textures.end()) {
-		return it->second;
+	if (dimensions.x == kWidthsOne) {
+		return texsmall;
+	} else if (dimensions.x == kWidthsTwo) {
+		return texsmall;
 	}
 	synao_log("Warning! Sampler allocator did not retrieve the texture! This message shouldn't print!\n");
-	static const sampler_data_t kNullHandle = sampler_data_t{};
-	return kNullHandle;
-#endif
+	static const sampler_data_t kConstNullHandle = sampler_data_t{};
+	return kConstNullHandle;
 }
 
 sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
-	if (palettes.find(dimensions) != palettes.end()) {
-		return palettes[dimensions];
+	if (dimensions.x <= kColorsMax) {
+		if (palettes.id == 0) {
+			palettes = this->generate(dimensions, kTotalPals, lowest);
+		}
+		return palettes;
 	}
-	auto& ref = palettes[dimensions];
-	ref = this->generate(dimensions, palette_format);
-	return ref;
+	synao_log("Error! Palette size must be 32 colors or lower! This one is {}!\n", dimensions.x);
+	static sampler_data_t kNullHandle = sampler_data_t{};
+	return kNullHandle;
 }
 
 const sampler_data_t& sampler_allocator_t::palette_const(const glm::ivec2& dimensions) const {
-#ifndef LEVIATHAN_BUILD_DEBUG
-	return palettes.at(dimensions);
-#else
-	auto it = palettes.find(dimensions);
-	if (it != palettes.end()) {
-		return it->second;
+	if (dimensions.x <= kColorsMax) {
+		return palettes;
 	}
 	synao_log("Warning! Sampler allocator did not retrieve the palette! This message shouldn't print!\n");
-	static const sampler_data_t kNullHandle = sampler_data_t{};
-	return kNullHandle;
-#endif
+	static const sampler_data_t kConstNullHandle = sampler_data_t{};
+	return kConstNullHandle;
 }
 
-sampler_data_t sampler_allocator_t::generate(const glm::ivec2& dimensions, pixel_format_t format) {
+sampler_data_t sampler_allocator_t::generate(const glm::ivec2& dimensions, sint_t layers, pixel_format_t format) {
 	uint_t handle = 0;
 	glCheck(glGenTextures(1, &handle));
 	glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
 	if (sampler_t::has_immutable_option()) {
 		glCheck(glTexStorage3D(
-			GL_TEXTURE_2D_ARRAY, 4, gfx_t::get_pixel_format_gl_enum(format),
-			dimensions.x, dimensions.y, kMaxLayers
+			GL_TEXTURE_2D_ARRAY, kGLMipMaps, gfx_t::get_pixel_format_gl_enum(format),
+			dimensions.x, dimensions.y, layers
 		));
 	} else {
 		glCheck(glTexImage3D(
-			GL_TEXTURE_2D_ARRAY, 0, gfx_t::get_pixel_format_gl_enum(format),
-			dimensions.x, dimensions.y, kMaxLayers,
+			GL_TEXTURE_2D_ARRAY, kGLMipMaps, gfx_t::get_pixel_format_gl_enum(format),
+			dimensions.x, dimensions.y, layers,
 			0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
 		));
 	}
@@ -124,11 +132,7 @@ sampler_data_t sampler_allocator_t::generate(const glm::ivec2& dimensions, pixel
 	glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 	glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 	glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
-	return sampler_data_t(
-		handle,
-		GL_TEXTURE_2D_ARRAY,
-		0
-	);
+	return sampler_data_t(handle, 0);
 }
 
 texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
@@ -181,7 +185,7 @@ void texture_t::assure() {
 			auto& handle = allocator->texture(dimensions);
 			this->dimensions = dimensions;
 			this->name = handle.count;
-			if (handle.count < kMaxLayers) {
+			if (handle.count < kLayersOne) {
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle.id));
 				glCheck(glTexSubImage3D(
 					GL_TEXTURE_2D_ARRAY, 0, 0, 0,
@@ -289,7 +293,7 @@ void palette_t::assure() {
 			auto& handle = allocator->palette(dimensions);
 			this->dimensions = dimensions;
 			this->name = handle.count;
-			if ((handle.count + dimensions.y) < kMaxLayers) {
+			if ((handle.count + dimensions.y) < kTotalPals) {
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle.id));
 				for (sint_t it = 0; it < dimensions.y; it++) {
 					glCheck(glTexSubImage3D(
