@@ -96,9 +96,9 @@ public:
 		return map.find(key);
 	}
 public:
-	std::unique_ptr<thread_pool_t> thread_pool;
-	std::mutex storage_mutex;
+	thread_pool_t thread_pool;
 	sampler_allocator_t sampler_allocator;
+	std::mutex storage_mutex;
 	std::string personal, language;
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
 	std::unordered_map<std::string, texture_t> textures;

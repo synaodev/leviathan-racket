@@ -12,17 +12,35 @@
 // Sort of like https://github.com/progschj/ThreadPool
 struct thread_pool_t : public not_copyable_t {
 public:
-	thread_pool_t(arch_t count);
-	thread_pool_t();
+	thread_pool_t() :
+		shutdown(false),
+		queue(),
+		threads(),
+		conditional_mutex(),
+		conditional_lock() {}
 	thread_pool_t(const thread_pool_t&) = delete;
 	thread_pool_t(thread_pool_t&&) = delete;
 	thread_pool_t& operator=(const thread_pool_t&) = delete;
 	thread_pool_t& operator=(thread_pool_t&&) = delete;
-	~thread_pool_t();
+	~thread_pool_t() {
+		if (!threads.empty()) {
+			shutdown = true;
+			conditional_lock.notify_all();
+			for (auto&& thread : threads) {
+				if (thread.joinable()) {
+					thread.join();
+				}
+			}
+		}
+	}
 public:
-	void setup(arch_t count);
-	void reset();
-	void destroy();
+	bool init(arch_t count) {
+		threads.resize(count);
+		for (auto&& thread : threads) {
+			thread = std::thread(worker_t(this));
+		}
+		return !threads.empty();
+	}
 	template<typename Func, typename...Args>
 	auto push(Func&& func, Args&& ... args) -> std::future<decltype(func(args...))> {
 		std::function<decltype(func(args...))()> process = std::bind(

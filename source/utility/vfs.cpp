@@ -87,8 +87,8 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	vfs_t::vfs_t() :
 		thread_pool(),
-		storage_mutex(),
 		sampler_allocator(),
+		storage_mutex(),
 		personal(),
 		language(kLanguage),
 		i18n(),
@@ -100,8 +100,8 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #else
 	vfs_t::vfs_t() :
 		thread_pool(),
-		storage_mutex(),
 		sampler_allocator(),
+		storage_mutex(),
 		personal(),
 		language(kLanguage),
 		i18n(),
@@ -133,8 +133,7 @@ bool vfs_t::init(const setup_file_t& config) {
 		synao_log("Error! Couldn't load first language: {}\n", vfs::device->language);
 		return false;
 	}
-	vfs::device->thread_pool = std::make_unique<thread_pool_t>(kTotalThreads);
-	if (vfs::device->thread_pool == nullptr) {
+	if (!vfs::device->thread_pool.init(kTotalThreads)) {
 		synao_log("Error! Couldn't create thread pool!\n");
 		return false;
 	}
@@ -453,7 +452,7 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 			directory + name + ".png",
 			format,
 			vfs::device->sampler_allocator,
-			*vfs::device->thread_pool
+			vfs::device->thread_pool
 		);
 		return &ref;
 	}
@@ -542,7 +541,7 @@ const noise_t* vfs::noise(const entt::hashed_string& entry) {
 	auto it = vfs::device->search_safely(entry.value(), vfs::device->noises);
 	if (it == vfs::device->noises.end()) {
 		noise_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->noises);
-		ref.load(kNoisePath + std::string(entry.data()) + ".wav", *vfs::device->thread_pool);
+		ref.load(kNoisePath + std::string(entry.data()) + ".wav", vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
@@ -555,7 +554,7 @@ const animation_t* vfs::animation(const entt::hashed_string& entry) {
 	auto it = vfs::device->search_safely(entry.value(), vfs::device->animations);
 	if (it == vfs::device->animations.end()) {
 		animation_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->animations);
-		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", *vfs::device->thread_pool);
+		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", vfs::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
