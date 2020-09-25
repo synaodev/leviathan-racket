@@ -10,10 +10,6 @@ bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
 }
 
-bool sampler_t::has_azdo() {
-	return glCreateTextures != nullptr;
-}
-
 sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t() {
 	if (this != &that) {
 		std::swap(id, that.id);

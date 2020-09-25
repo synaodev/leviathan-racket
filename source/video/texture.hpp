@@ -12,11 +12,7 @@ struct thread_pool_t;
 
 struct sampler_t {
 public:
-	sampler_t() = default;
-	~sampler_t() = default;
-public:
 	static bool has_immutable_option();
-	static bool has_azdo();
 };
 
 struct sampler_data_t : public not_copyable_t {
