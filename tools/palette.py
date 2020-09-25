@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 from PIL import Image
-import os, sys, numpy
+import numpy
+from typing import List
+import os, sys
 
 def get_nearest_power_of_two(value: int) -> int:
     result: int = 1
@@ -84,22 +86,25 @@ def get_limit_type(arg: str) -> int:
     return 0
 
 def main():
-    argc: int = len(sys.argv)
-    if argc > 1:
-        limit: int = 0
-        for i in range(1, argc):
-            if sys.argv[i].startswith('--limit='):
+    paths: List[str] = []
+    limit: int = 0
+    if len(sys.argv) > 1:
+        for i in range(1, len(sys.argv)):
+            arg: str = sys.argv[i]
+            if arg.startswith('--limit='):
                 if limit == 0:
-                    limit = get_limit_type(sys.argv[i])
+                    limit = get_limit_type(arg)
                 else:
                     print('Don\'t set limit more than once!')
             else:
-                initial_path: str = sys.argv[i]
-                initial_image: None = Image.open(initial_path)
-                pixel_list: list = list(initial_image.getdata())
-                color_list: list = get_colors_from_pixels(pixel_list, limit)
-                make_palette_image(initial_path, color_list, limit)
-                make_indexed_image(initial_path, pixel_list, color_list, initial_image.size, limit)
+                paths.append(arg)
+    if len(paths) > 0:
+        for path in paths:
+            image: None = Image.open(path)
+            pixel_list: list = list(image.getdata())
+            color_list: list = get_colors_from_pixels(pixel_list, limit)
+            make_palette_image(path, color_list, limit)
+            make_indexed_image(path, pixel_list, color_list, image.size, limit)
     else:
         print('Error! No image paths given!')
 
