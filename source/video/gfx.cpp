@@ -85,25 +85,24 @@ void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
 			this->samplers[index] = texture;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
 			if (texture != nullptr) {
-				texture->assure();
-				if (texture->layers > 1) {
-					glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, texture->handle));
-				} else {
-					glCheck(glBindTexture(GL_TEXTURE_2D, texture->handle));
-				}
+				uint_t handle = texture->get_handle();
+				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
 			}
 		}
 	}
 }
 
-void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
+void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
 	if (index < samplers.size()) {
-		if (this->samplers[index] != palette) {
-			this->samplers[index] = palette;
+		if (this->samplers[index] != color_buffer) {
+			this->samplers[index] = color_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (palette != nullptr) {
-				palette->assure();
-				glCheck(glBindTexture(GL_TEXTURE_2D, palette->handle));
+			if (color_buffer != nullptr) {
+				if (color_buffer->layers > 1) {
+					glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, color_buffer->handle));
+				} else {
+					glCheck(glBindTexture(GL_TEXTURE_2D, color_buffer->handle));
+				}
 			}
 		}
 	}

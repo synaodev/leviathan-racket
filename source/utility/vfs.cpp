@@ -88,11 +88,11 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 	vfs_t::vfs_t() :
 		thread_pool(),
 		storage_mutex(),
+		sampler_allocator(),
 		personal(),
 		language(kLanguage),
 		i18n(),
 		textures(),
-		palettes(),
 		shaders(),
 		noises(),
 		fonts(),
@@ -101,11 +101,11 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 	vfs_t::vfs_t() :
 		thread_pool(),
 		storage_mutex(),
+		sampler_allocator(),
 		personal(),
 		language(kLanguage),
 		i18n(),
 		textures(),
-		palettes(),
 		shaders() {}
 #endif
 
@@ -442,26 +442,17 @@ bool vfs::try_language(const std::string& language) {
 	return false;
 }
 
-const texture_t* vfs::texture(const std::vector<std::string>& names, const std::string& directory) {
+const texture_t* vfs::texture(const std::string& name, const std::string& directory, pixel_format_t format) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	if (names.size() == 0 or names.size() > 4) {
-		return nullptr;
-	}
-	// auto it = vfs::device->textures.find(names[0]);
-	auto it = vfs::device->search_safely(names[0], vfs::device->textures);
+	auto it = vfs::device->search_safely(name, vfs::device->textures);
 	if (it == vfs::device->textures.end()) {
-		texture_t& ref = vfs::device->emplace_safely(names[0], vfs::device->textures);
-		auto generate_full_paths = [&directory](std::vector<std::string> names) {
-			for (auto&& name : names) {
-				name = directory + name + ".png";
-			}
-			return names;
-		};
+		texture_t& ref = vfs::device->emplace_safely(name, vfs::device->textures);
 		ref.load(
-			std::invoke(generate_full_paths, names),
-			pixel_format_t::R8G8B8A8,
+			directory + name + ".png",
+			format,
+			vfs::device->sampler_allocator,
 			*vfs::device->thread_pool
 		);
 		return &ref;
@@ -469,16 +460,23 @@ const texture_t* vfs::texture(const std::vector<std::string>& names, const std::
 	return &it->second;
 }
 
-const texture_t* vfs::texture(const std::vector<std::string>& names) {
-	return vfs::texture(names, kImagePath);
+const texture_t* vfs::texture(const std::string& name, const std::string& directory) {
+	return vfs::texture(name, directory, pixel_format_t::R8G8B8A8);
 }
 
 const texture_t* vfs::texture(const std::string& name) {
-	const std::vector<std::string> names = { name };
-	return vfs::texture(names);
+	return vfs::texture(name, kImagePath);
 }
 
-const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
+const texture_t* vfs::palette(const std::string& name, const std::string& directory) {
+	return vfs::texture(name, directory, pixel_format_t::R2G2B2A2);
+}
+
+const texture_t* vfs::palette(const std::string& name) {
+	return vfs::texture(name, kPalettePath);
+}
+
+/*const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -498,7 +496,7 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 
 const palette_t* vfs::palette(const std::string& name) {
 	return vfs::palette(name, kPalettePath);
-}
+}*/
 
 const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
 	if (vfs::device == nullptr) {
