@@ -92,6 +92,19 @@ void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
 	}
 }
 
+void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
+	if (index < samplers.size()) {
+		if (this->samplers[index] != palette) {
+			this->samplers[index] = palette;
+			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
+			if (palette != nullptr) {
+				uint_t handle = palette->get_handle();
+				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+			}
+		}
+	}
+}
+
 void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
 	if (index < samplers.size()) {
 		if (this->samplers[index] != color_buffer) {

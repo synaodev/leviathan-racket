@@ -21,8 +21,12 @@ public:
 		id(0),
 		type(0),
 		count(0) {}
-	sampler_data_t(sampler_data_t&&);
-	sampler_data_t& operator=(sampler_data_t&&);
+	sampler_data_t(uint_t id, uint_t type, uint_t count) :
+		id(id),
+		type(type),
+		count(count) {}
+	sampler_data_t(sampler_data_t&&) noexcept;
+	sampler_data_t& operator=(sampler_data_t&&) noexcept;
 	~sampler_data_t();
 public:
 	uint_t id, type;
@@ -31,15 +35,29 @@ public:
 
 struct sampler_allocator_t : public not_copyable_t {
 public:
-	sampler_allocator_t() : handles() {}
+	sampler_allocator_t() :
+		texture_format(pixel_format_t::Invalid),
+		palette_format(pixel_format_t::Invalid),
+		textures(),
+		palettes() {}
+	sampler_allocator_t(pixel_format_t texture_format, pixel_format_t palette_format) :
+		texture_format(texture_format),
+		palette_format(palette_format),
+		textures(),
+		palettes() {}
 	sampler_allocator_t(sampler_allocator_t&& that) noexcept;
 	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept;
 	~sampler_allocator_t() = default;
 public:
-	sampler_data_t& get(const glm::ivec2& dimensions, pixel_format_t format);
-	const sampler_data_t& get(const glm::ivec2& dimensions) const;
+	sampler_data_t& texture(const glm::ivec2& dimensions);
+	const sampler_data_t& texture_const(const glm::ivec2& dimensions) const;
+	sampler_data_t& palette(const glm::ivec2& dimensions);
+	const sampler_data_t& palette_const(const glm::ivec2& dimensions) const;
 private:
-	std::map<glm::ivec2, sampler_data_t> handles;
+	static sampler_data_t generate(const glm::ivec2& dimensions, pixel_format_t format);
+private:
+	pixel_format_t texture_format, palette_format;
+	std::map<glm::ivec2, sampler_data_t> textures, palettes;
 };
 
 struct texture_t : public not_copyable_t, public sampler_t {
@@ -48,20 +66,18 @@ public:
 		ready(false),
 		future(),
 		allocator(nullptr),
-		format(pixel_format_t::Invalid),
 		name(0),
 		dimensions(0) {}
 	texture_t(texture_t&& that) noexcept;
 	texture_t& operator=(texture_t&& that) noexcept;
 	~texture_t();
 public:
-	void load(const std::string& full_path, pixel_format_t format, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
+	void load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
 	void assure();
 	void assure() const;
 	bool valid() const;
 	uint_t get_handle() const;
 	sint_t get_name() const;
-	real_t get_convert(real_t index) const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_inverse_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
@@ -70,7 +86,34 @@ private:
 	std::atomic<bool> ready;
 	std::future<image_t> future;
 	sampler_allocator_t* allocator;
-	pixel_format_t format;
+	sint_t name;
+	glm::ivec2 dimensions;
+};
+
+struct palette_t : public not_copyable_t, public sampler_t {
+public:
+	palette_t() :
+		ready(false),
+		future(),
+		allocator(nullptr),
+		name(0),
+		dimensions(0) {}
+	palette_t(palette_t&& that) noexcept;
+	palette_t& operator=(palette_t&& that) noexcept;
+	~palette_t();
+public:
+	void load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
+	void assure();
+	void assure() const;
+	bool valid() const;
+	real_t convert(real_t index) const;
+	uint_t get_handle() const;
+	sint_t get_name() const;
+private:
+	friend struct gfx_t;
+	std::atomic<bool> ready;
+	std::future<image_t> future;
+	sampler_allocator_t* allocator;
 	sint_t name;
 	glm::ivec2 dimensions;
 };

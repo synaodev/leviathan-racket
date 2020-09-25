@@ -60,10 +60,10 @@ namespace vfs {
 	std::string i18n_find(const std::string& segment, arch_t first, arch_t last);
 	arch_t i18n_size(const std::string& segment);
 	bool try_language(const std::string& language);
-	const texture_t* texture(const std::string& name, const std::string& directory, pixel_format_t format);
 	const texture_t* texture(const std::string& name, const std::string& directory);
-	const texture_t* palette(const std::string& name, const std::string& directory);
-	const texture_t* palette(const std::string& name);
+	const texture_t* texture(const std::string& name);
+	const palette_t* palette(const std::string& name, const std::string& directory);
+	const palette_t* palette(const std::string& name);
 	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::string event_path(const std::string& name, rec_loading_t flags);
@@ -102,6 +102,7 @@ public:
 	std::string personal, language;
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
 	std::unordered_map<std::string, texture_t> textures;
+	std::unordered_map<std::string, palette_t> palettes;
 	std::unordered_map<std::string, shader_t> shaders;
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::unordered_map<entt::id_type, noise_t> noises;

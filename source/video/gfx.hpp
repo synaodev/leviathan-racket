@@ -44,6 +44,7 @@ enum class shader_stage_t {
 struct pipeline_t;
 struct sampler_t;
 struct texture_t;
+struct palette_t;
 struct color_buffer_t;
 struct depth_buffer_t;
 struct const_buffer_t;
@@ -60,6 +61,7 @@ public:
 	void set_blend_mode(blend_mode_t blend_mode);
 	void set_pipeline(const pipeline_t* pipeline);
 	void set_sampler(const texture_t* texture, arch_t index);
+	void set_sampler(const palette_t* palette, arch_t index);
 	void set_sampler(const color_buffer_t* texture, arch_t index);
 	void set_sampler(const depth_buffer_t* depth_buffer, arch_t index);
 	void set_sampler(std::nullptr_t, arch_t index);

@@ -87,12 +87,13 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	vfs_t::vfs_t() :
 		thread_pool(),
-		sampler_allocator(),
+		sampler_allocator(pixel_format_t::R8G8B8A8, pixel_format_t::R2G2B2A2),
 		storage_mutex(),
 		personal(),
 		language(kLanguage),
 		i18n(),
 		textures(),
+		palettes(),
 		shaders(),
 		noises(),
 		fonts(),
@@ -100,12 +101,13 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #else
 	vfs_t::vfs_t() :
 		thread_pool(),
-		sampler_allocator(),
+		sampler_allocator(pixel_format_t::R8G8B8A8, pixel_format_t::R2G2B2A2),
 		storage_mutex(),
 		personal(),
 		language(kLanguage),
 		i18n(),
 		textures(),
+		palettes(),
 		shaders() {}
 #endif
 
@@ -441,7 +443,7 @@ bool vfs::try_language(const std::string& language) {
 	return false;
 }
 
-const texture_t* vfs::texture(const std::string& name, const std::string& directory, pixel_format_t format) {
+const texture_t* vfs::texture(const std::string& name, const std::string& directory) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -450,7 +452,6 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 		texture_t& ref = vfs::device->emplace_safely(name, vfs::device->textures);
 		ref.load(
 			directory + name + ".png",
-			format,
 			vfs::device->sampler_allocator,
 			vfs::device->thread_pool
 		);
@@ -459,34 +460,21 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 	return &it->second;
 }
 
-const texture_t* vfs::texture(const std::string& name, const std::string& directory) {
-	return vfs::texture(name, directory, pixel_format_t::R8G8B8A8);
-}
-
 const texture_t* vfs::texture(const std::string& name) {
 	return vfs::texture(name, kImagePath);
 }
 
-const texture_t* vfs::palette(const std::string& name, const std::string& directory) {
-	return vfs::texture(name, directory, pixel_format_t::R2G2B2A2);
-}
-
-const texture_t* vfs::palette(const std::string& name) {
-	return vfs::texture(name, kPalettePath);
-}
-
-/*const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
+const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
-	// auto it = vfs::device->palettes.find(name);
 	auto it = vfs::device->search_safely(name, vfs::device->palettes);
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->emplace_safely(name, vfs::device->palettes);
 		ref.load(
 			directory + name + ".png",
-			pixel_format_t::R2G2B2A2,
-			*vfs::device->thread_pool
+			vfs::device->sampler_allocator,
+			vfs::device->thread_pool
 		);
 		return &ref;
 	}
@@ -495,7 +483,7 @@ const texture_t* vfs::palette(const std::string& name) {
 
 const palette_t* vfs::palette(const std::string& name) {
 	return vfs::palette(name, kPalettePath);
-}*/
+}
 
 const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
 	if (vfs::device == nullptr) {

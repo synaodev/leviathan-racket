@@ -4,6 +4,11 @@
 [Cc][Mm]ake[Ss]ettings.json
 [Tt][Oo][Dd][Oo].md
 
+# Font
+*.exe
+*.ttf
+*.bmfc
+
 # Python
 .env/
 .venv/
