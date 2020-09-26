@@ -5,8 +5,8 @@
 #include "../utility/thread-pool.hpp"
 
 static constexpr sint_t kGLMipMaps = 4;
-static constexpr sint_t kTotalPals = 128;
-static constexpr sint_t kTotalTexs = 128;
+static constexpr sint_t kTotalPals = 64;
+static constexpr sint_t kTotalTexs = 64;
 static constexpr sint_t kDimension = 256;
 static constexpr sint_t kColorsMax = 32;
 
