@@ -13,12 +13,12 @@ draw_text_t::draw_text_t() :
 	position(0.0f),
 	origin(0.0f),
 	layer(layer_value::HeadsUp),
-	params(0.0f),
+	color(1.0f),
 	current(0),
 	buffer(),
 	quads()
 {
-	auto specify = vertex_spec_t::from(vtx_major_t::name());
+	auto specify = vertex_spec_t::from(vtx_fonts_t::name());
 	quads.setup(specify);
 }
 
@@ -44,9 +44,9 @@ void draw_text_t::render(renderer_t& renderer) const {
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			program_t::Indexed,
+			program_t::Strings,
 			font->get_texture(),
-			font->get_palette()
+			nullptr
 		);
 		if (amend) {
 			amend = false;
@@ -89,8 +89,8 @@ void draw_text_t::append_string(std::string words, bool immediate) {
 	this->generate();
 }
 
-void draw_text_t::set_params(real_t params) {
-	this->params = params;
+void draw_text_t::set_color(glm::vec4 color) {
+	this->color = color;
 	this->generate();
 }
 
@@ -127,7 +127,7 @@ bool draw_text_t::empty() const {
 
 rect_t draw_text_t::bounds() const {
 	if (!quads.empty()) {
-		const vtx_major_t* verts = quads.at<vtx_major_t>(0);
+		const vtx_fonts_t* verts = quads.at<vtx_fonts_t>(0);
 		real_t left = verts[0].position.x;
 		real_t top = verts[0].position.y;
 		real_t right = verts[0].position.x;
@@ -191,7 +191,7 @@ void draw_text_t::generate() {
 		glm::vec2 start_pos = position - origin;
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
-		real_t table = font->convert_table(params);
+		sint_t texture_name = font->get_texture_name();
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
 			char32_t& c = buffer[it];
 			switch (c) {
@@ -209,31 +209,35 @@ void draw_text_t::generate() {
 			}
 			default: {
 				const font_glyph_t& glyph = font->glyph(c);
-				vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
+				vtx_fonts_t* quad = quads.at<vtx_fonts_t>(qindex * display_list_t::SingleQuad);
 
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
 				quad[0].matrix = 0;
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
-				quad[0].table = table;
-				quad[0].alpha = 1.0f;
+				quad[0].color = color;
+				quad[0].texID = texture_name;
+				quad[0].tblID = glyph.table;
 
 				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
 				quad[1].matrix = 0;
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
-				quad[1].table = table;
-				quad[1].alpha = 1.0f;
+				quad[1].color = color;
+				quad[1].texID = texture_name;
+				quad[1].tblID = glyph.table;
 
 				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
 				quad[2].matrix = 0;
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
-				quad[2].table = table;
-				quad[2].alpha = 1.0f;
+				quad[2].color = color;
+				quad[2].texID = texture_name;
+				quad[2].tblID = glyph.table;
 
 				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
 				quad[3].matrix = 0;
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
-				quad[3].table = table;
-				quad[3].alpha = 1.0f;
+				quad[3].color = color;
+				quad[3].texID = texture_name;
+				quad[3].tblID = glyph.table;
 
 				start_pos.x += glyph.x_advance;
 				break;

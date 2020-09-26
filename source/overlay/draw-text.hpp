@@ -25,7 +25,7 @@ public:
 	void set_font(const font_t* font);
 	void set_string(std::string words, bool immediate = true);
 	void append_string(std::string words, bool immediate = true);
-	void set_params(real_t params);
+	void set_color(glm::vec4 color);
 	void set_position(glm::vec2 position);
 	void set_position(real_t x, real_t y);
 	void set_origin(glm::vec2 origin);
@@ -46,7 +46,7 @@ private:
 	const font_t* font;
 	glm::vec2 position, origin;
 	layer_t layer;
-	real_t params;
+	glm::vec4 color;
 	arch_t current;
 	std::u32string buffer;
 	vertex_pool_t quads;

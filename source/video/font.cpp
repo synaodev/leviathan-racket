@@ -10,8 +10,7 @@
 font_t::font_t() :
 	glyphs(),
 	dimensions(0.0f),
-	texture(nullptr),
-	palette(nullptr)
+	texture(nullptr)
 {
 
 }
@@ -21,7 +20,6 @@ font_t::font_t(font_t&& that) noexcept : font_t() {
 		std::swap(glyphs, that.glyphs);
 		std::swap(dimensions, that.dimensions);
 		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
 	}
 }
 
@@ -30,12 +28,20 @@ font_t& font_t::operator=(font_t&& that) noexcept {
 		std::swap(glyphs, that.glyphs);
 		std::swap(dimensions, that.dimensions);
 		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
 	}
 	return *this;
 }
 
 void font_t::load(const std::string& directory, const std::string& name) {
+	auto make_table = [](const std::string& value) {
+		switch (std::stoi(value)) {
+		case 1: return 0;
+		case 2: return 1;
+		case 4: return 2;
+		case 8: return 3;
+		default: return 0;
+		}
+	};
 	if (glyphs.size() > 0) {
 		synao_log("Warning! Tried to overwrite font!\n");
 		return;
@@ -47,7 +53,6 @@ void font_t::load(const std::string& directory, const std::string& name) {
 		dimensions.x = std::stof(file["font"]["common"]["-base"].get<std::string>());
 		dimensions.y = std::stof(file["font"]["common"]["-lineHeight"].get<std::string>());
 		texture = vfs::texture({ file["font"]["pages"]["page"]["-file"].get<std::string>() }, directory);
-		palette = vfs::palette(file["font"]["pages"]["page"]["-pllt"].get<std::string>(), directory);
 		for (auto ot : file["font"]["chars"]["char"]) {
 			char32_t id = std::stoi(ot["-id"].get<std::string>());
 			const font_glyph_t glyph(
@@ -57,7 +62,8 @@ void font_t::load(const std::string& directory, const std::string& name) {
 				std::stof(ot["-height"].get<std::string>()),
 				std::stof(ot["-xoffset"].get<std::string>()),
 				std::stof(ot["-yoffset"].get<std::string>()),
-				std::stof(ot["-xadvance"].get<std::string>())
+				std::stof(ot["-xadvance"].get<std::string>()),
+				make_table(ot["-chnl"].get<std::string>())
 			);
 			glyphs[id] = glyph;
 		}
@@ -79,8 +85,11 @@ const texture_t* font_t::get_texture() const {
 	return texture;
 }
 
-const palette_t* font_t::get_palette() const {
-	return palette;
+sint_t font_t::get_texture_name() const {
+	if (texture != nullptr) {
+		return texture->get_name();
+	}
+	return 0;
 }
 
 glm::vec2 font_t::get_inverse_dimensions() const {
@@ -92,11 +101,4 @@ glm::vec2 font_t::get_inverse_dimensions() const {
 
 glm::vec2 font_t::get_dimensions() const {
 	return dimensions;
-}
-
-real_t font_t::convert_table(real_t index) const {
-	if (palette != nullptr) {
-		return palette->convert(index);
-	}
-	return 0.0f;
 }
