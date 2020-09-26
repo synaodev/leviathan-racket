@@ -51,6 +51,11 @@ bool renderer_t::init(glm::ivec2 version) {
 		program::major_vert(version),
 		shader_stage_t::Vertex
 	);
+	const shader_t* fonts = vfs::shader(
+		"fonts",
+		program::fonts_vert(version),
+		shader_stage_t::Vertex
+	);
 	const shader_t* colors = vfs::shader(
 		"colors",
 		program::colors_frag(version),
@@ -64,6 +69,11 @@ bool renderer_t::init(glm::ivec2 version) {
 	const shader_t* indexed = vfs::shader(
 		"indexed",
 		program::indexed_frag(version),
+		shader_stage_t::Fragment
+	);
+	const shader_t* channels = vfs::shader(
+		"channels",
+		program::channels_frag(version),
 		shader_stage_t::Fragment
 	);
 	bool result = pipelines[program_t::Colors].create(blank, colors);
@@ -81,6 +91,10 @@ bool renderer_t::init(glm::ivec2 version) {
 		synao_log("\"Indexed\" program creation failed!\n");
 		return false;
 	}
+	result = pipelines[program_t::Strings].create(fonts, channels);
+	if (!result) {
+		synao_log("\"Strings\" program creation failed!\n");
+	}
 	if (!pipeline_t::has_separable()) {
 		pipelines[program_t::Colors].set_block("transforms", 0);
 		pipelines[program_t::Sprites].set_block("transforms", 0);
@@ -88,6 +102,8 @@ bool renderer_t::init(glm::ivec2 version) {
 		pipelines[program_t::Indexed].set_block("transforms", 0);
 		pipelines[program_t::Indexed].set_sampler("indexed_map", 0);
 		pipelines[program_t::Indexed].set_sampler("palette_map", 1);
+		pipelines[program_t::Strings].set_block("transforms", 0);
+		pipelines[program_t::Strings].set_sampler("channels_map", 0);
 	}
 	synao_log("Rendering service is ready.\n");
 	return true;

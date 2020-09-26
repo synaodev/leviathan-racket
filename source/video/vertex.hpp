@@ -49,14 +49,32 @@ struct vtx_major_t : public crtp_vertex_t<vtx_major_t> {
 	glm::vec2 position;
 	sint_t matrix;
 	glm::vec2 uvcoords;
-	real_t table, alpha;
+	real_t alpha;
+	sint_t texID, palID;
 public:
 	vtx_major_t() :
 		position(0.0f),
 		matrix(0),
 		uvcoords(0.0f),
-		table(0.0f),
-		alpha(0.0f) {}
+		alpha(0.0f),
+		texID(0),
+		palID(0) {}
+};
+
+struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {
+	glm::vec2 position;
+	sint_t matrix;
+	glm::vec2 uvcoords;
+	glm::vec4 color;
+	sint_t texID, tblID;
+public:
+	vtx_fonts_t() :
+		position(0.0f),
+		matrix(0),
+		uvcoords(0.0f),
+		color(1.0f),
+		texID(0),
+		tblID(0) {}
 };
 
 struct vertex_spec_t {

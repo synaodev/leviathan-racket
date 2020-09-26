@@ -194,11 +194,9 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 			if (vert != nullptr and vert->stage == shader_stage_t::Vertex) {
 				glCheck(glAttachShader(handle, vert->handle));
 			}
-
 			if (frag != nullptr and frag->stage == shader_stage_t::Fragment) {
 				glCheck(glAttachShader(handle, frag->handle));
 			}
-
 			if (geom != nullptr and geom->stage == shader_stage_t::Geometry) {
 				glCheck(glAttachShader(handle, geom->handle));
 			}
@@ -211,9 +209,19 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
 				synao_log("Failed to link program: {}\n", log);
 				this->destroy();
-				return false;
+			} else {
+				specify = shader_t::attributes(handle);
 			}
-			specify = shader_t::attributes(handle);
+
+			if (vert != nullptr) {
+				glCheck(glDetachShader(handle, vert->handle));
+			}
+			if (frag != nullptr) {
+				glCheck(glDetachShader(handle, frag->handle));
+			}
+			if (geom != nullptr) {
+				glCheck(glDetachShader(handle, geom->handle));
+			}
 		}
 	}
 	return specify.length != 0;
@@ -255,7 +263,7 @@ void pipeline_t::set_block(const byte_t* name, arch_t binding) const {
 
 void pipeline_t::set_sampler(const byte_t* name, arch_t sampler) const {
 	if (pipeline_t::has_separable()) {
-		synao_log("Warning! OpenGL version is 4.2^! Don't manually set sampler bindings!\n");
+		synao_log("Error! OpenGL version is 4.2^! You shouldn't manually set sampler bindings!\n");
 	} else if (handle != 0) {
 		sint_t index = GL_INVALID_INDEX;
 		glCheck(index = glGetUniformLocation(handle, name));
