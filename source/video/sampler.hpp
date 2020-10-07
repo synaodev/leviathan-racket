@@ -32,19 +32,15 @@ public:
 struct sampler_allocator_t : public not_copyable_t {
 public:
 	sampler_allocator_t() :
-		highest(pixel_format_t::Invalid),
-		lowest(pixel_format_t::Invalid),
-		textures(),
-		palettes() {}
-	sampler_allocator_t(pixel_format_t highest, pixel_format_t lowest) :
-		highest(highest),
-		lowest(lowest),
+		highest(pixel_format_t::R8G8B8A8),
+		lowest(pixel_format_t::R8G8B8A8),
 		textures(),
 		palettes() {}
 	sampler_allocator_t(sampler_allocator_t&& that) noexcept;
 	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept;
 	~sampler_allocator_t() = default;
 public:
+	bool create(pixel_format_t highest, pixel_format_t lowest);
 	sampler_data_t& texture(const glm::ivec2& dimensions);
 	const sampler_data_t& texture() const;
 	sampler_data_t& palette(const glm::ivec2& dimensions);

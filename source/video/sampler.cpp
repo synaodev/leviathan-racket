@@ -73,6 +73,14 @@ sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) 
 	return *this;
 }
 
+bool sampler_allocator_t::create(pixel_format_t highest, pixel_format_t lowest) {
+	this->highest = highest;
+	this->lowest = lowest;
+	auto& t = this->texture(glm::ivec2(kDimensions, kDimensions));
+	auto& p = this->palette(glm::ivec2(kColorsMax, kTotalPals));
+	return true;
+}
+
 sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 	if (dimensions.x == kDimensions and dimensions.y == kDimensions) {
 		if (textures.id == 0) {

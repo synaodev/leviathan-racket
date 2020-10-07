@@ -238,8 +238,8 @@ in STAGE {
 layout(location = 0) out vec4 fragment;
 void main() {
 	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	if (dot(ivec4(1, 1, 1, 1), table)) {
-		float value = dot(pixel, table);
+	if (dot(ivec4(1), fs.table) != 0.0f) {
+		float value = dot(pixel, fs.table);
 		if (value > 0.5f) {
 			pixel = vec4(vec3(2.0f * value - 1.0f), 1.0f);
 		} else {
