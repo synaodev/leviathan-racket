@@ -61,7 +61,7 @@ void tilemap_t::handle(const camera_t& camera) {
 		);
 		arch_t range = camera.get_tile_range(first, last);
 		for (auto&& layer : tilemap_layers) {
-			layer.handle(range, first, last, dimensions);
+			layer.handle(range, first, last, dimensions, tilemap_layer_texture, tilemap_layer_palette);
 		}
 	}
 }
@@ -78,7 +78,6 @@ void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
 		layer.render(
 			renderer,
 			amend,
-			tilemap_layer_texture,
 			tilemap_layer_palette
 		);
 	}

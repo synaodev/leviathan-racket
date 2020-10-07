@@ -7,6 +7,7 @@
 #include "../utility/enums.hpp"
 #include "../video/const-buffer.hpp"
 #include "../video/display-list.hpp"
+#include "../video/sampler.hpp"
 
 struct setup_file_t;
 struct vfs_t;

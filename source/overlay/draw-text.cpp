@@ -44,9 +44,7 @@ void draw_text_t::render(renderer_t& renderer) const {
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			program_t::Strings,
-			font->get_texture(),
-			nullptr
+			program_t::Strings
 		);
 		if (amend) {
 			amend = false;

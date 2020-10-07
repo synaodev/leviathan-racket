@@ -13,7 +13,7 @@ draw_count_t::draw_count_t() :
 	layer(layer_value::HeadsUp),
 	backwards(false),
 	visible(false),
-	table(0.0f),
+	table(0),
 	position(0.0f),
 	bounding(0.0f, 0.0f, 0.0f, 0.0f),
 	value(kFirst),
@@ -36,9 +36,7 @@ void draw_count_t::render(renderer_t& renderer) const {
 			layer,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			program_t::Indexed,
-			texture,
-			palette
+			program_t::Indexed
 		);
 		if (amend) {
 			amend = false;
@@ -66,7 +64,7 @@ void draw_count_t::set_visible(bool_t visible) {
 	this->visible = visible;
 }
 
-void draw_count_t::set_table(real_t table) {
+void draw_count_t::set_table(sint_t table) {
 	if (this->table != table) {
 		amend = true;
 		this->table = table;
@@ -182,6 +180,8 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	}
 	glm::vec2 pos = position;
 	glm::vec2 inv = texture->get_inverse_dimensions();
+	sint_t texID = texture->get_name();
+	sint_t palID = palette->get_name() + table;
 	arch_t qindex = 0;
 	if (backwards) {
 		for (auto it = buffer.begin(); it != buffer.end(); ++it, ++qindex) {
@@ -191,7 +191,7 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 			);
 			this->generate_one(
 				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
-				pos, txcd, inv
+				pos, txcd, inv, texID, palID
 			);
 			pos.x -= (*it == kPoint) ?
 				bounding.w / 2.0f :
@@ -205,7 +205,7 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 			);
 			this->generate_one(
 				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
-				pos, txcd, inv
+				pos, txcd, inv, texID, palID
 			);
 			pos.x += (*it == kPoint) ?
 				bounding.w / 2.0f :
@@ -214,28 +214,32 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	}
 }
 
-void draw_count_t::generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv) {
+void draw_count_t::generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv, sint_t texID, sint_t palID) {
 	quad[0].position = pos;
 	quad[0].matrix = 0;
 	quad[0].uvcoords = uvs * inv;
-	quad[0].table = table;
 	quad[0].alpha = 1.0f;
+	quad[0].texID = texID;
+	quad[0].palID = palID;
 
 	quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
 	quad[1].matrix = 0;
 	quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
-	quad[1].table = table;
 	quad[1].alpha = 1.0f;
+	quad[1].texID = texID;
+	quad[1].palID = palID;
 
 	quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
 	quad[2].matrix = 0;
 	quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
-	quad[2].table = table;
 	quad[2].alpha = 1.0f;
+	quad[2].texID = texID;
+	quad[2].palID = palID;
 
 	quad[3].position = pos + bounding.dimensions();
 	quad[3].matrix = 0;
 	quad[3].uvcoords = inv * (uvs + bounding.dimensions());
-	quad[3].table = table;
 	quad[3].alpha = 1.0f;
+	quad[3].texID = texID;
+	quad[3].palID = palID;
 }

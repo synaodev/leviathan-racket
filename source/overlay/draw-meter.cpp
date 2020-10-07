@@ -45,9 +45,7 @@ void draw_meter_t::render(renderer_t& renderer) const {
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			program_t::Colors,
-			nullptr,
-			nullptr
+			program_t::Colors
 		);
 		if (amend) {
 			amend = false;

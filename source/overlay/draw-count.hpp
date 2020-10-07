@@ -21,7 +21,7 @@ public:
 	void set_layer(layer_t layer);
 	void set_backwards(bool_t backwards);
 	void set_visible(bool_t visible);
-	void set_table(real_t table);
+	void set_table(sint_t table);
 	void set_position(real_t x, real_t y);
 	void set_position(glm::vec2 position);
 	void mut_position(real_t x, real_t y);
@@ -40,12 +40,12 @@ public:
 private:
 	static sint_t quick_power_of_10(arch_t exponent);
 	void generate_all(const std::vector<sint_t>& buffer);
-	void generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv);
+	void generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv, sint_t texID, sint_t palID);
 private:
 	mutable bool_t amend;
 	layer_t layer;
 	bool_t backwards, visible;
-	real_t table;
+	sint_t table;
 	glm::vec2 position;
 	rect_t bounding;
 	sint_t value;

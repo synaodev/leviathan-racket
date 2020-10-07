@@ -115,11 +115,7 @@ bool renderer_t::init(glm::ivec2 version, vfs_t& fs) {
 }
 
 void renderer_t::clear() {
-	auto lacks_owner = [](auto& list) { return !list.persists(); };
-	display_lists.erase(
-		std::remove_if(display_lists.begin(), display_lists.end(), lacks_owner),
-		display_lists.end()
-	);
+	display_lists.clear();
 }
 
 void renderer_t::flush(const video_t& video, const glm::mat4& viewport) {

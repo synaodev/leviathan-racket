@@ -140,16 +140,14 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				program_t::Sprites,
-				texture,
-				nullptr
+				program_t::Sprites
 			);
 			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(
 					rect_t(glm::zero<glm::vec2>(), glm::one<glm::vec2>()),
 					texture->get_dimensions(),
-					0.0f, 1.0f,
-					mirroring_t::None
+					mirroring_t::None,
+					1.0f, texture->get_name(), 0
 				)
 				.vtx_transform_write(kDefaultPosition)
 			.end();
@@ -169,9 +167,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				program_t::Sprites,
-				texture,
-				nullptr
+				program_t::Sprites
 			);
 			list.skip(display_list_t::SingleQuad);
 		}

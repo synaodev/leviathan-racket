@@ -1,8 +1,9 @@
 #include "./tilemap-layer.hpp"
 #include "./properties.hpp"
 
-#include "../utility/constants.hpp"
 #include "../system/renderer.hpp"
+#include "../utility/constants.hpp"
+#include "../video/texture.hpp"
 
 #include <tmxlite/TileLayer.hpp>
 
@@ -82,13 +83,15 @@ void tilemap_layer_t::init(const std::unique_ptr<tmx::Layer>& layer, glm::vec2 i
 	}
 }
 
-void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, glm::ivec2 map_size) {
+void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, glm::ivec2 map_size, const texture_t* texture, const palette_t* palette) {
 	if (range != quads.size()) {
 		quads.resize(range);
 	}
 	indices = 0;
 	glm::vec2 pos = glm::vec2(first * constants::TileSize<sint_t>());
 	glm::vec2 uvs = glm::zero<glm::vec2>();
+	sint_t texID = texture != nullptr ? texture->get_name() : 0;
+	sint_t palID = palette != nullptr ? palette->get_name() : 0;
 	for (sint_t y = first.y; y < last.y; ++y) {
 		for (sint_t x = first.x; x < last.x; ++x) {
 			arch_t index = static_cast<arch_t>(x) + static_cast<arch_t>(y) * static_cast<arch_t>(map_size.x);
@@ -99,26 +102,31 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 				quad[0].position = pos;
 				quad[0].matrix = 1;
 				quad[0].uvcoords = uvs * inverse_dimensions;
-				quad[0].table = 0.0f;
 				quad[0].alpha = 1.0f;
+				quad[0].texID = texID;
+				quad[0].palID = palID;
 
 				quad[1].position = glm::vec2(pos.x, pos.y + constants::TileSize<real_t>());
 				quad[1].matrix = 1;
 				quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
-				quad[1].table = 0.0f;
 				quad[1].alpha = 1.0f;
+				quad[1].texID = texID;
+				quad[1].palID = palID;
 
 				quad[2].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y);
 				quad[2].matrix = 1;
 				quad[2].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y) * inverse_dimensions;
-				quad[2].table = 0.0f;
 				quad[2].alpha = 1.0f;
+				quad[2].texID = texID;
+				quad[2].palID = palID;
 
 				quad[3].position = glm::vec2(pos.x + constants::TileSize<real_t>(), pos.y + constants::TileSize<real_t>());
 				quad[3].matrix = 1;
 				quad[3].uvcoords = glm::vec2(uvs.x + constants::TileSize<real_t>(), uvs.y + constants::TileSize<real_t>()) * inverse_dimensions;
-				quad[3].table = 0.0f;
 				quad[3].alpha = 1.0f;
+				quad[3].texID = texID;
+				quad[3].palID = palID;
+
 				++indices;
 			}
 			pos.x += constants::TileSize<real_t>();
@@ -128,14 +136,12 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 	}
 }
 
-void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const texture_t* texture, const palette_t* palette) const {
+void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const palette_t* palette) const {
 	auto& list = renderer.display_list(
 		priority,
 		blend_mode_t::Alpha,
 		buffer_usage_t::Dynamic,
-		palette != nullptr ? program_t::Indexed : program_t::Sprites,
-		texture,
-		palette
+		palette != nullptr ? program_t::Indexed : program_t::Sprites
 	);
 	if (amend) {
 		list.begin(indices * display_list_t::SingleQuad)
