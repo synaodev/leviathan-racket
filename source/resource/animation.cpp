@@ -213,30 +213,25 @@ void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& 
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t palette_offset, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
 	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
 		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			program_t program = program_t::Sprites;
-			if (palette != nullptr) {
-				program = program_t::Indexed;
-				index = palette->convert(index);
-			}
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				program,
-				texture,
-				palette
+				palette != nullptr ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
 				amend = false;
+				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
+				sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
 				list.begin(display_list_t::SingleQuad)
-					.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
+					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale, pivot, angle)
 				.end();
 			} else {
@@ -246,30 +241,25 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, real_t index, glm::vec2 position, glm::vec2 scale) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t palette_offset, glm::vec2 position, glm::vec2 scale) const {
 	this->assure();
 	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
 		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
 			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			program_t program = program_t::Sprites;
-			if (palette != nullptr) {
-				program = program_t::Indexed;
-				index = palette->convert(index);
-			}
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
 				buffer_usage_t::Dynamic,
-				program,
-				texture,
-				palette
+				palette != nullptr ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
 				amend = false;
+				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
+				sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
 				list.begin(display_list_t::SingleQuad)
-					.vtx_major_write(seququad, sequsize, index, alpha, mirroring)
+					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale)
 				.end();
 			} else {
@@ -279,29 +269,24 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, real_t index, glm::vec2 position) const {
+void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, sint_t palette_offset, glm::vec2 position) const {
 	this->assure();
 	if (state < sequences.size()) {
-		program_t program = program_t::Sprites;
-		if (palette != nullptr) {
-			program = program_t::Indexed;
-			index = palette->convert(index);
-		}
 		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
 			buffer_usage_t::Dynamic,
-			program,
-			texture,
-			palette
+			palette != nullptr ? program_t::Indexed : program_t::Sprites
 		);
 		if (amend) {
 			amend = false;
 			glm::vec2 sequsize = sequences[state].get_dimensions();
 			glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
-			rect_t seququads   = sequences[state].get_quad(inverts, frame, variation);
+			rect_t seququads = sequences[state].get_quad(inverts, frame, variation);
+			sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
+			sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
 			list.begin(display_list_t::SingleQuad)
-				.vtx_major_write(seququads, sequsize, index, 1.0f, mirroring_t::None)
+				.vtx_major_write(seququads, sequsize, mirroring_t::None, 1.0f, texture_name, palette_name)
 				.vtx_transform_write(position - sequorig)
 			.end();
 		} else {
@@ -317,7 +302,7 @@ void animation_t::load(const std::string& full_path) {
 	}
 	setup_file_t setup;
 	if (setup.load(full_path)) {
-		std::vector<std::string> matfile;
+		std::string matfile;
 		std::string palfile;
 		setup.get("Main", "Material", matfile);
 		setup.get("Main", "Palettes", palfile);

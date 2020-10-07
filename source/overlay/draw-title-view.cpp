@@ -60,15 +60,15 @@ void draw_title_view_t::set_font(const font_t* font) {
 	lite.set_font(font);
 }
 
-void draw_title_view_t::set_persistent(glm::vec2 position, real_t table) {
+void draw_title_view_t::set_persistent(glm::vec2 position, glm::vec4 color) {
 	head.set_position(position);
 	lite.set_position(position);
-	lite.set_params(table);
+	lite.set_color(color);
 }
 
-void draw_title_view_t::set_persistent(real_t x, real_t y, real_t table) {
+void draw_title_view_t::set_persistent(real_t x, real_t y, glm::vec4 color) {
 	glm::vec2 position = glm::vec2(x, y);
-	this->set_persistent(position, table);
+	this->set_persistent(position, color);
 }
 
 void draw_title_view_t::set_position(arch_t index, glm::vec2 position) {

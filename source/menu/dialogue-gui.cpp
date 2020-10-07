@@ -195,7 +195,7 @@ void dialogue_gui_t::close_textbox() {
 	delay = kDefaultDelay;
 	flags.reset();
 	text.clear();
-	text.set_params(0.0f);
+	text.set_color(glm::one<glm::vec4>());
 	text.set_position(rect.left_top() + kTextOffsetA);
 	faces.set_state(0);
 	faces.set_direction(direction_t::Right);

@@ -16,8 +16,8 @@ public:
 	void push(const std::string& string, arch_t font_index);
 	void clear();
 	void set_font(const font_t* font);
-	void set_persistent(glm::vec2 position, real_t table);
-	void set_persistent(real_t x, real_t y, real_t table);
+	void set_persistent(glm::vec2 position, glm::vec4 color);
+	void set_persistent(real_t x, real_t y, glm::vec4 color);
 	void set_position(arch_t index, glm::vec2 position);
 	void set_position(arch_t index, real_t x, real_t y);
 	void set_centered(arch_t index, bool horizontal, bool vertical);
