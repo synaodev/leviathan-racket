@@ -13,6 +13,8 @@ struct thread_pool_t;
 struct sampler_t {
 public:
 	static bool has_immutable_option();
+	static arch_t get_maximum_textures();
+	static arch_t get_maximum_palettes();
 };
 
 struct sampler_data_t : public not_copyable_t {
@@ -54,6 +56,7 @@ public:
 	sampler_data_t& palette(const glm::ivec2& dimensions);
 	const sampler_data_t& palette() const;
 private:
+	friend struct gfx_t;
 	pixel_format_t highest, lowest;
 	sampler_data_t textures, palettes;
 };
@@ -70,7 +73,7 @@ public:
 	texture_t& operator=(texture_t&& that) noexcept;
 	~texture_t();
 public:
-	void load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
+	void load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool);
 	void assure();
 	void assure() const;
 	bool valid() const;
@@ -100,7 +103,7 @@ public:
 	palette_t& operator=(palette_t&& that) noexcept;
 	~palette_t();
 public:
-	void load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool);
+	void load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool);
 	void assure();
 	void assure() const;
 	bool valid() const;

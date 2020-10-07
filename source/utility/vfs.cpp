@@ -87,10 +87,10 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	vfs_t::vfs_t() :
 		thread_pool(),
-		sampler_allocator(pixel_format_t::R8G8B8A8, pixel_format_t::R2G2B2A2),
 		storage_mutex(),
 		personal(),
 		language(kLanguage),
+		sampler_allocator(nullptr),
 		i18n(),
 		textures(),
 		palettes(),
@@ -101,10 +101,10 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 #else
 	vfs_t::vfs_t() :
 		thread_pool(),
-		sampler_allocator(pixel_format_t::R8G8B8A8, pixel_format_t::R2G2B2A2),
 		storage_mutex(),
 		personal(),
 		language(kLanguage),
+		sampler_allocator(nullptr),
 		i18n(),
 		textures(),
 		palettes(),
@@ -145,6 +145,19 @@ bool vfs_t::init(const setup_file_t& config) {
 		return false;
 	}
 	synao_log("Virtual filesystem initialized.\n");
+	return true;
+}
+
+bool vfs_t::set_sampler_allocator(sampler_allocator_t* sampler_allocator) {
+	if (vfs::device != this) {
+		synao_log("Error! This virtual filesystem isn't ready to setup the sampler allocator!\n");
+		return false;
+	}
+	if (this->sampler_allocator != nullptr or this->sampler_allocator == sampler_allocator) {
+		synao_log("Error! This virtual filesystem aleady has a sampler allocator!\n");
+		return false;
+	}
+	this->sampler_allocator = sampler_allocator;
 	return true;
 }
 
@@ -447,6 +460,9 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
+	if (vfs::device->sampler_allocator == nullptr) {
+		return nullptr;
+	}
 	auto it = vfs::device->search_safely(name, vfs::device->textures);
 	if (it == vfs::device->textures.end()) {
 		texture_t& ref = vfs::device->emplace_safely(name, vfs::device->textures);
@@ -466,6 +482,9 @@ const texture_t* vfs::texture(const std::string& name) {
 
 const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
 	if (vfs::device == nullptr) {
+		return nullptr;
+	}
+	if (vfs::device->sampler_allocator == nullptr) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(name, vfs::device->palettes);

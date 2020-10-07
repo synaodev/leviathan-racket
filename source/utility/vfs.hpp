@@ -84,6 +84,7 @@ public:
 	vfs_t& operator=(vfs_t&&) = delete;
 	~vfs_t();
 	bool init(const setup_file_t& config);
+	bool set_sampler_allocator(sampler_allocator_t* sampler_allocator);
 	template<typename K, typename T>
 	T& emplace_safely(const K& key, std::unordered_map<K, T>& map) {
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
@@ -97,9 +98,9 @@ public:
 	}
 public:
 	thread_pool_t thread_pool;
-	sampler_allocator_t sampler_allocator;
 	std::mutex storage_mutex;
 	std::string personal, language;
+	sampler_allocator_t* sampler_allocator;
 	std::unordered_map<std::string, std::vector<std::string> > i18n;
 	std::unordered_map<std::string, texture_t> textures;
 	std::unordered_map<std::string, palette_t> palettes;

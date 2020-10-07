@@ -4,15 +4,12 @@
 #include "../utility/watch.hpp"
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
 	layer(layer),
 	blend_mode(blend_mode),
-	texture(texture),
-	palette(palette),
 	pipeline(pipeline),
 	visible(false),
 	amend(false),
-	timestamp(0),
 	current(0),
 	account(0),
 	quad_pool(),
@@ -29,12 +26,9 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_us
 display_list_t::display_list_t() :
 	layer(layer_value::Automatic),
 	blend_mode(blend_mode_t::None),
-	texture(nullptr),
-	palette(nullptr),
 	pipeline(nullptr),
 	visible(false),
 	amend(false),
-	timestamp(0),
 	current(0),
 	account(0),
 	quad_pool(),
@@ -47,12 +41,9 @@ display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t(
 	if (this != &that) {
 		std::swap(layer, that.layer);
 		std::swap(blend_mode, that.blend_mode);
-		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
 		std::swap(pipeline, that.pipeline);
 		std::swap(visible, that.visible);
 		std::swap(amend, that.amend);
-		std::swap(timestamp, that.timestamp);
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
@@ -64,12 +55,9 @@ display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(layer, that.layer);
 		std::swap(blend_mode, that.blend_mode);
-		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
 		std::swap(pipeline, that.pipeline);
 		std::swap(visible, that.visible);
 		std::swap(amend, that.amend);
-		std::swap(timestamp, that.timestamp);
 		std::swap(current, that.current);
 		std::swap(account, that.account);
 		std::swap(quad_pool, that.quad_pool);
@@ -91,29 +79,51 @@ display_list_t& display_list_t::vtx_pool_write(const vertex_pool_t& that_pool) {
 	return *this;
 }
 
-display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, real_t table_index, real_t alpha_color, mirroring_t mirroring) {
+display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
+	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
+	auto vtx = quad_pool.at<vtx_blank_t>(current);
+	vtx[0].position = glm::zero<glm::vec2>();
+	vtx[0].matrix 	= matrix;
+	vtx[0].color 	= vtx_color;
+	vtx[1].position = glm::vec2(0.0f, raster_rect.h);
+	vtx[1].matrix 	= matrix;
+	vtx[1].color 	= vtx_color;
+	vtx[2].position = glm::vec2(raster_rect.w, 0.0f);
+	vtx[2].matrix 	= matrix;
+	vtx[2].color 	= vtx_color;
+	vtx[3].position = raster_rect.dimensions();
+	vtx[3].matrix 	= matrix;
+	vtx[3].color 	= vtx_color;
+	return *this;
+}
+
+display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name, sint_t palette_name) {
 	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].matrix 	= matrix;
 	vtx[0].uvcoords = texture_rect.left_top();
-	vtx[0].table 	= table_index;
 	vtx[0].alpha	= alpha_color;
+	vtx[0].texID 	= texture_name;
+	vtx[0].palID 	= palette_name;
 	vtx[1].position = glm::vec2(0.0f, raster_dimensions.y);
 	vtx[1].matrix 	= matrix;
 	vtx[1].uvcoords = texture_rect.left_bottom();
-	vtx[1].table 	= table_index;
 	vtx[1].alpha	= alpha_color;
+	vtx[1].texID 	= texture_name;
+	vtx[1].palID 	= palette_name;
 	vtx[2].position = glm::vec2(raster_dimensions.x, 0.0f);
 	vtx[2].matrix 	= matrix;
 	vtx[2].uvcoords = texture_rect.right_top();
-	vtx[2].table 	= table_index;
 	vtx[2].alpha	= alpha_color;
+	vtx[2].texID 	= texture_name;
+	vtx[2].palID 	= palette_name;
 	vtx[3].position = raster_dimensions;
 	vtx[3].matrix 	= matrix;
 	vtx[3].uvcoords = texture_rect.right_bottom();
-	vtx[3].table 	= table_index;
 	vtx[3].alpha	= alpha_color;
+	vtx[3].texID 	= texture_name;
+	vtx[3].palID 	= palette_name;
 	switch (mirroring) {
 	case mirroring_t::None:
 		break;
@@ -133,21 +143,33 @@ display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 r
 	return *this;
 }
 
-display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
+display_list_t& display_list_t::vtx_fonts_write(rect_t texture_rect, glm::vec2 raster_dimensions, glm::vec4 full_color, sint_t texture_name, sint_t table_name) {
 	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
-	auto vtx = quad_pool.at<vtx_blank_t>(current);
+	auto vtx = quad_pool.at<vtx_fonts_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
-	vtx[0].matrix 	= matrix;
-	vtx[0].color 	= vtx_color;
-	vtx[1].position = glm::vec2(0.0f, raster_rect.h);
-	vtx[1].matrix 	= matrix;
-	vtx[1].color 	= vtx_color;
-	vtx[2].position = glm::vec2(raster_rect.w, 0.0f);
-	vtx[2].matrix 	= matrix;
-	vtx[2].color 	= vtx_color;
-	vtx[3].position = raster_rect.dimensions();
-	vtx[3].matrix 	= matrix;
-	vtx[3].color 	= vtx_color;
+	vtx[0].matrix = matrix;
+	vtx[0].uvcoords = texture_rect.left_top();
+	vtx[0].color = full_color;
+	vtx[0].texID = texture_name;
+	vtx[0].tblID = table_name;
+	vtx[1].position = glm::vec2(0.0f, raster_dimensions.y);
+	vtx[1].matrix = matrix;
+	vtx[1].uvcoords = texture_rect.left_bottom();
+	vtx[1].color = full_color;
+	vtx[1].texID = texture_name;
+	vtx[1].tblID = table_name;
+	vtx[2].position = glm::vec2(raster_dimensions.x, 0.0f);
+	vtx[2].matrix = matrix;
+	vtx[2].uvcoords = texture_rect.right_top();
+	vtx[2].color = full_color;
+	vtx[2].texID = texture_name;
+	vtx[2].tblID = table_name;
+	vtx[3].position = raster_dimensions;
+	vtx[3].matrix = matrix;
+	vtx[3].uvcoords = texture_rect.right_bottom();
+	vtx[3].color = full_color;
+	vtx[3].texID = texture_name;
+	vtx[3].tblID = table_name;
 	return *this;
 }
 
@@ -209,7 +231,7 @@ void display_list_t::skip() {
 	account = 0;
 }
 
-void display_list_t::flush(gfx_t& gfx) {
+void display_list_t::flush(gfx_t& gfx, const sampler_allocator_t* samplers) {
 	visible = current != 0;
 	if (visible) {
 		if (amend) {
@@ -221,50 +243,23 @@ void display_list_t::flush(gfx_t& gfx) {
 		}
 		gfx.set_blend_mode(blend_mode);
 		gfx.set_pipeline(pipeline);
-		gfx.set_sampler(texture, 0);
-		gfx.set_sampler(palette, 1);
+		gfx.set_sampler_allocator(samplers);
 		quad_buffer.draw(current);
 	}
 	current = 0;
 }
 
-sint64_t display_list_t::capture(const gfx_t& /*gfx*/) {
-	if (!this->persists()) {
-		timestamp = watch_t::timestamp();
-		return timestamp;
-	}
-	return 0;
-}
-
-bool display_list_t::release(const gfx_t& /*gfx*/) {
-	if (this->persists()) {
-		timestamp = 0;
-		return true;
-	}
-	return false;
-}
-
-bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const texture_t* texture, const palette_t* palette, const pipeline_t* pipeline) const {
+bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline) const {
 	return (
 		layer_value::equal(this->layer, layer) and
 		this->blend_mode == blend_mode and
 		this->quad_buffer.get_usage() == usage and
-		this->texture == texture and
-		this->palette == palette and
 		this->pipeline == pipeline
 	);
 }
 
-bool display_list_t::matches(sint64_t timestamp) const {
-	return this->timestamp == timestamp;
-}
-
 bool display_list_t::rendered() const {
 	return visible;
-}
-
-bool display_list_t::persists() const {
-	return timestamp != 0;
 }
 
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
@@ -273,13 +268,7 @@ bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 			buffer_usage_t lhu = lhv.quad_buffer.get_usage();
 			buffer_usage_t rhu = rhv.quad_buffer.get_usage();
 			if (lhu == rhu) {
-				if (lhv.texture == rhv.texture) {
-					if (lhv.palette == rhv.palette) {
-						return lhv.pipeline < rhv.pipeline;
-					}
-					return lhv.palette < rhv.palette;
-				}
-				return lhv.texture < rhv.texture;
+				return lhv.pipeline < rhv.pipeline;
 			}
 			return lhu < rhu;
 		}

@@ -5,6 +5,7 @@
 #include "../utility/thread-pool.hpp"
 
 static constexpr sint_t kGLMipMaps = 4;
+static constexpr uint_t kActiveTex = 5;
 static constexpr sint_t kTotalPals = 64;
 static constexpr sint_t kTotalTexs = 64;
 static constexpr sint_t kDimension = 256;
@@ -12,6 +13,14 @@ static constexpr sint_t kColorsMax = 32;
 
 bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
+}
+
+arch_t sampler_t::get_maximum_textures() {
+	return static_cast<arch_t>(kTotalTexs);
+}
+
+arch_t sampler_t::get_maximum_palettes() {
+	return static_cast<arch_t>(kTotalPals);
 }
 
 sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t() {
@@ -176,9 +185,9 @@ texture_t::~texture_t() {
 	}
 }
 
-void texture_t::load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool) {
+void texture_t::load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool) {
 	assert(!ready);
-	this->allocator = &allocator;
+	this->allocator = allocator;
 	this->future = thread_pool.push([](const std::string& full_path) -> image_t {
 		return image_t::generate(full_path);
 	}, full_path);
@@ -284,9 +293,9 @@ palette_t::~palette_t() {
 	}
 }
 
-void palette_t::load(const std::string& full_path, sampler_allocator_t& allocator, thread_pool_t& thread_pool) {
+void palette_t::load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool) {
 	assert(!ready);
-	this->allocator = &allocator;
+	this->allocator = allocator;
 	this->future = thread_pool.push([](const std::string& full_path) -> image_t {
 		return image_t::generate(full_path);
 	}, full_path);

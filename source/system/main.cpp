@@ -93,7 +93,7 @@ static int process(setup_file_t& config) {
 	// Must destroy this before destroying virtual filesystem and audio devices.
 	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(version)) {
+	if (!renderer.init(version, fs)) {
 		return EXIT_FAILURE;
 	}
 	if (!main_loop(config, input, video, audio, music, renderer)) {
@@ -157,7 +157,7 @@ static int process(setup_file_t& config) {
 	}
 	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(version)) {
+	if (!renderer.init(version, fs)) {
 		return EXIT_FAILURE;
 	}
 	if (!main_loop(input, video, renderer)) {

@@ -9,11 +9,12 @@ gfx_t::gfx_t() :
 	depth_func(compare_func_t::Disable),
 	blend_mode(blend_mode_t::Disable),
 	pipeline(nullptr),
-	samplers{},
-	const_buffers{}
+	sampler_allocator(nullptr),
+	sampler_list{},
+	buffer_list{}
 {
-	samplers.fill(nullptr);
-	const_buffers.fill(nullptr);
+	sampler_list.fill(nullptr);
+	buffer_list.fill(nullptr);
 }
 
 void gfx_t::set_depth_func(compare_func_t depth_func) {
@@ -79,36 +80,25 @@ void gfx_t::set_pipeline(const pipeline_t* pipeline) {
 	}
 }
 
-void gfx_t::set_sampler(const texture_t* texture, arch_t index) {
-	if (index < samplers.size()) {
-		if (this->samplers[index] != texture) {
-			this->samplers[index] = texture;
-			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (texture != nullptr) {
-				uint_t handle = texture->get_handle();
-				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-			}
-		}
-	}
-}
-
-void gfx_t::set_sampler(const palette_t* palette, arch_t index) {
-	if (index < samplers.size()) {
-		if (this->samplers[index] != palette) {
-			this->samplers[index] = palette;
-			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (palette != nullptr) {
-				uint_t handle = palette->get_handle();
-				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
-			}
+void gfx_t::set_sampler_allocator(const sampler_allocator_t* sampler_allocator) {
+	if (this->sampler_allocator != sampler_allocator) {
+		this->sampler_allocator = sampler_allocator;
+		if (sampler_allocator != nullptr) {
+			auto& texture = sampler_allocator->texture();
+			glCheck(glActiveTexture(GL_TEXTURE0));
+			glCheck(glBindTexture(texture.type, texture.id));
+			auto& palette = sampler_allocator->palette();
+			glCheck(glActiveTexture(GL_TEXTURE1));
+			glCheck(glBindTexture(palette.type, palette.id));
+			sampler_list.fill(nullptr);
 		}
 	}
 }
 
 void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
-	if (index < samplers.size()) {
-		if (this->samplers[index] != color_buffer) {
-			this->samplers[index] = color_buffer;
+	if (index < sampler_list.size()) {
+		if (sampler_list[index] != color_buffer) {
+			sampler_list[index] = color_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
 			if (color_buffer != nullptr) {
 				if (color_buffer->layers > 1) {
@@ -117,36 +107,39 @@ void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
 					glCheck(glBindTexture(GL_TEXTURE_2D, color_buffer->handle));
 				}
 			}
+			sampler_allocator = nullptr;
 		}
 	}
 }
 
 void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
-	if (index < samplers.size()) {
-		if (this->samplers[index] != depth_buffer) {
-			this->samplers[index] = depth_buffer;
+	if (index < sampler_list.size()) {
+		if (sampler_list[index] != depth_buffer) {
+			sampler_list[index] = depth_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
 			if (depth_buffer != nullptr and !depth_buffer->compress) {
 				glCheck(glBindTexture(GL_TEXTURE_2D, depth_buffer->handle));
 			}
+			sampler_allocator = nullptr;
 		}
 	}
 }
 
 void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
-	if (index < samplers.size()) {
-		if (this->samplers[index] != nullptr) {
-			this->samplers[index] = nullptr;
+	if (index < sampler_list.size()) {
+		if (sampler_list[index] != nullptr) {
+			sampler_list[index] = nullptr;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
 			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
+			sampler_allocator = nullptr;
 		}
 	}
 }
 
-void gfx_t::set_const_buffer(const const_buffer_t* buffer, arch_t index) {
-	if (index < const_buffers.size()) {
-		if (this->const_buffers[index] != buffer) {
-			this->const_buffers[index] = buffer;
+void gfx_t::set_buffer(const const_buffer_t* buffer, arch_t index) {
+	if (index < buffer_list.size()) {
+		if (buffer_list[index] != buffer) {
+			buffer_list[index] = buffer;
 			if (buffer != nullptr) {
 				glCheck(glBindBufferBase(
 					GL_UNIFORM_BUFFER,
