@@ -209,32 +209,28 @@ void draw_text_t::generate() {
 				vtx_fonts_t* quad = quads.at<vtx_fonts_t>(qindex * display_list_t::SingleQuad);
 
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
-				quad[0].matrix = 0;
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
 				quad[0].color = color;
 				quad[0].texID = texID;
-				quad[0].tblID = glyph.table;
+				quad[0].table = glyph.table;
 
 				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
-				quad[1].matrix = 0;
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
 				quad[1].color = color;
 				quad[1].texID = texID;
-				quad[1].tblID = glyph.table;
+				quad[1].table = glyph.table;
 
 				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
-				quad[2].matrix = 0;
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
 				quad[2].color = color;
 				quad[2].texID = texID;
-				quad[2].tblID = glyph.table;
+				quad[2].table = glyph.table;
 
 				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
-				quad[3].matrix = 0;
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
 				quad[3].color = color;
 				quad[3].texID = texID;
-				quad[3].tblID = glyph.table;
+				quad[3].table = glyph.table;
 
 				start_pos.x += glyph.x_advance;
 				break;

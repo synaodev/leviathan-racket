@@ -24,14 +24,8 @@ public:
 struct vtx_minor_t : public crtp_vertex_t<vtx_minor_t> {
 public:
 	glm::vec2 position;
-	sint_t matrix;
 public:
-	vtx_minor_t(real_t x, real_t y) :
-		position(x, y),
-		matrix(0) {}
-	vtx_minor_t() :
-		position(0.0f),
-		matrix(0) {}
+	vtx_minor_t() : position(0.0f) {}
 };
 
 struct vtx_blank_t : public crtp_vertex_t<vtx_blank_t> {
@@ -63,18 +57,17 @@ public:
 
 struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {
 	glm::vec2 position;
-	sint_t matrix;
 	glm::vec2 uvcoords;
 	glm::vec4 color;
-	sint_t texID, tblID;
+	sint_t texID;
+	glm::ivec4 table;
 public:
 	vtx_fonts_t() :
 		position(0.0f),
-		matrix(0),
 		uvcoords(0.0f),
 		color(1.0f),
 		texID(0),
-		tblID(0) {}
+		table(0) {}
 };
 
 struct vertex_spec_t {

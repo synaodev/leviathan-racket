@@ -5,6 +5,26 @@
 #endif // FMT_HEADER_ONLY
 #include <fmt/format.h>
 
+static constexpr byte_t kMinorVert420[] = R"(#version 420 core
+layout(location = 0) in vec2 position;
+out STAGE {
+	layout(location = 0) vec4 color;
+} vs;
+void main() {
+	gl_Position = vec4(position, 0.0f, 1.0f);
+	vs.color = vec4(1.0f);
+})";
+
+static constexpr byte_t kMinorVert330[] = R"(#version 330 core
+layout(location = 0) in vec2 position;
+out STAGE {
+	vec4 color;
+} vs;
+void main() {
+	gl_Position = vec4(position, 0.0f, 1.0f);
+	vs.color = vec4(1.0f);
+})";
+
 static constexpr byte_t kBlankVert420[] = R"(#version 420 core
 layout(binding = 0, std140) uniform transforms {
 	mat4 viewports[2];
@@ -88,23 +108,22 @@ layout(std140) uniform transforms {
 	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvcoords;
-layout(location = 3) in vec4 color;
-layout(location = 4) in int texID;
-layout(location = 5) in int tblID;
+layout(location = 1) in vec2 uvcoords;
+layout(location = 2) in vec4 color;
+layout(location = 3) in int texID;
+layout(location = 4) in ivec4 table;
 out STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat int tblID;
+	layout(location = 3) flat ivec4 table;
 } vs;
 void main() {
-	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
 	vs.color = color;
 	vs.texID = texID;
-	vs.tblID = tblID;
+	vs.table = table;
 })";
 
 static constexpr byte_t kFontsVert330[] = R"(#version 330 core
@@ -112,23 +131,22 @@ layout(std140) uniform transforms {
 	mat4 viewports[2];
 };
 layout(location = 0) in vec2 position;
-layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvcoords;
-layout(location = 3) in vec4 color;
-layout(location = 4) in int texID;
-layout(location = 5) in int tblID;
+layout(location = 1) in vec2 uvcoords;
+layout(location = 2) in vec4 color;
+layout(location = 3) in int texID;
+layout(location = 4) in ivec4 table;
 out STAGE {
 	vec2 uvcoords;
 	vec4 color;
 	flat int texID;
-	flat int tblID;
+	flat ivec4 table;
 } vs;
 void main() {
-	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
+	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
 	vs.color = color;
 	vs.texID = texID;
-	vs.tblID = tblID;
+	vs.table = table;
 })";
 
 static constexpr byte_t kColorsFrag420[] = R"(#version 420 core
@@ -188,8 +206,8 @@ in STAGE {
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 index = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec4 color = texture(palette, vec2(index[0], float(fs.palID)));
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 color = texture(palette, vec2(pixel[0], float(fs.palID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
@@ -204,8 +222,8 @@ in STAGE {
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 index = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec4 color = texture(palette, vec2(index[0], float(fs.palID)));
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 color = texture(palette, vec2(pixel[0], float(fs.palID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
@@ -215,13 +233,22 @@ in STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat int tblID;
+	layout(location = 3) flat ivec4 table;
 } fs;
 layout(location = 0) out vec4 fragment;
+vec4 derive(ivec4 table, vec4 pixel) {
+	if (dot(ivec4(1, 1, 1, 1), table)) {
+		float value = dot(pixel, table);
+		if (value > 0.5f) {
+			return vec4(vec3(2.0f * value - 1.0f), 1.0f);
+		}
+		return vec4(vec3(0.0f), 2.0f * value);
+	}
+	return pixel;
+}
 void main() {
 	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec3 color = vec3(pixel[tblID]);
-	fragment = vec4(color, 1.0f) * fs.color;
+	fragment = derive(table, pixel) * fs.color;
 })";
 
 static constexpr byte_t kChannelsFrag330[] = R"(#version 330 core
@@ -230,13 +257,22 @@ in STAGE {
 	vec2 uvcoords;
 	vec4 color;
 	flat int texID;
-	flat int tblID;
+	flat ivec4 table;
 } fs;
 layout(location = 0) out vec4 fragment;
+vec4 derive(ivec4 table, vec4 pixel) {
+	if (dot(ivec4(1, 1, 1, 1), table)) {
+		float value = dot(pixel, table);
+		if (value > 0.5f) {
+			return vec4(vec3(2.0f * value - 1.0f), 1.0f);
+		}
+		return vec4(vec3(0.0f), 2.0f * value);
+	}
+	return pixel;
+}
 void main() {
 	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec3 color = vec3(pixel[tblID]);
-	fragment = vec4(color, 1.0f) * fs.color;
+	fragment = derive(table, pixel) * fs.color;
 })";
 
 namespace program {
@@ -246,6 +282,12 @@ namespace program {
 			version[0],
 			version[1]
 		);
+	}
+	std::string minor_vert(const glm::ivec2& version) {
+		if (version[0] == 4 and version[1] >= 2) {
+			return kMinorVert420;
+		}
+		return kMinorVert330;
 	}
 	std::string blank_vert(const glm::ivec2& version) {
 		if (version[0] == 4 and version[1] >= 2) {

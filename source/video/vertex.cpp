@@ -58,10 +58,10 @@ bool vertex_spec_t::compare(const uint_t* lhv, const uint_t* rhv) {
 }
 
 vertex_spec_t vertex_spec_t::from(const uint_t* list) {
-	static const uint_t kMinor[] = { GL_FLOAT_VEC2, GL_INT, 0 };
+	static const uint_t kMinor[] = { GL_FLOAT_VEC2, 0 };
 	static const uint_t kBlank[] = { GL_FLOAT_VEC2, GL_INT, GL_FLOAT_VEC4, 0 };
 	static const uint_t kMajor[] = { GL_FLOAT_VEC2, GL_INT, GL_FLOAT_VEC2, GL_FLOAT, GL_INT, GL_INT, 0 };
-	static const uint_t kFonts[] = { GL_FLOAT_VEC2, GL_INT, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_INT, GL_INT, 0 };
+	static const uint_t kFonts[] = { GL_FLOAT_VEC2, GL_FLOAT_VEC2, GL_FLOAT_VEC4, GL_INT, GL_INT_VEC4, 0 };
 	vertex_spec_t result;
 	if (vertex_spec_t::compare(list, kMinor)) {
 		result = vertex_spec_t::from(vtx_minor_t::name());
@@ -85,12 +85,6 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 				0, glm::vec2::length(),
 				GL_FLOAT, GL_FALSE, sizeof(vtx_minor_t),
 				(const void_t)offsetof(vtx_minor_t, position)
-			));
-			glCheck(glEnableVertexAttribArray(1));
-			glCheck(glVertexAttribIPointer(
-				1, glm::ivec1::length(),
-				GL_INT, sizeof(vtx_minor_t),
-				(const void_t)offsetof(vtx_minor_t, matrix)
 			));
 		};
 	} else if (name == vtx_blank_t::name()) {
@@ -165,34 +159,28 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 				(const void_t)offsetof(vtx_fonts_t, position)
 			));
 			glCheck(glEnableVertexAttribArray(1));
-			glCheck(glVertexAttribIPointer(
-				1, glm::ivec1::length(),
-				GL_INT, sizeof(vtx_fonts_t),
-				(const void_t)offsetof(vtx_fonts_t, matrix)
-			));
-			glCheck(glEnableVertexAttribArray(2));
 			glCheck(glVertexAttribPointer(
-				2, glm::vec2::length(),
+				1, glm::vec2::length(),
 				GL_FLOAT, GL_FALSE, sizeof(vtx_fonts_t),
 				(const void_t)offsetof(vtx_fonts_t, uvcoords)
 			));
-			glCheck(glEnableVertexAttribArray(3));
+			glCheck(glEnableVertexAttribArray(2));
 			glCheck(glVertexAttribPointer(
-				3, glm::vec4::length(),
+				2, glm::vec4::length(),
 				GL_FLOAT, GL_FALSE, sizeof(vtx_fonts_t),
 				(const void_t)offsetof(vtx_fonts_t, color)
 			));
-			glCheck(glEnableVertexAttribArray(4));
+			glCheck(glEnableVertexAttribArray(3));
 			glCheck(glVertexAttribIPointer(
-				4, glm::ivec1::length(),
+				3, glm::ivec1::length(),
 				GL_INT, sizeof(vtx_fonts_t),
 				(const void_t)offsetof(vtx_fonts_t, texID)
 			));
-			glCheck(glEnableVertexAttribArray(5));
+			glCheck(glEnableVertexAttribArray(4));
 			glCheck(glVertexAttribIPointer(
-				5, glm::ivec1::length(),
+				4, glm::ivec4::length(),
 				GL_INT, sizeof(vtx_fonts_t),
-				(const void_t)offsetof(vtx_fonts_t, tblID)
+				(const void_t)offsetof(vtx_fonts_t, table)
 			));
 		};
 	}

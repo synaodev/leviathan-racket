@@ -11,9 +11,9 @@ struct palette_t;
 
 struct font_glyph_t {
 	real_t x, y, w, h, x_offset, y_offset, x_advance;
-	sint_t table;
+	glm::ivec4 table;
 public:
-	font_glyph_t(real_t x, real_t y, real_t w, real_t h, real_t x_offset, real_t y_offset, real_t x_advance, sint_t table) :
+	font_glyph_t(real_t x, real_t y, real_t w, real_t h, real_t x_offset, real_t y_offset, real_t x_advance, glm::ivec4 table) :
 		x(x), y(y),
 		w(w), h(h),
 		x_offset(x_offset), y_offset(y_offset),

@@ -19,6 +19,7 @@ using program_t = __enum_program::type;
 
 namespace program {
 	std::string directive(const glm::ivec2& version);
+	std::string minor_vert(const glm::ivec2& version);
 	std::string blank_vert(const glm::ivec2& version);
 	std::string major_vert(const glm::ivec2& version);
 	std::string fonts_vert(const glm::ivec2& version);
