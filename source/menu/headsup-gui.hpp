@@ -18,8 +18,7 @@ struct receiver_t;
 
 struct headsup_params_t {
 public:
-	sint_t current_barrier, maximum_barrier, current_leviathan;
-	real_t main_state;
+	sint_t current_barrier, maximum_barrier, current_leviathan, main_state;
 	direction_t main_direction;
 	sint_t current_oxygen, maximum_oxygen;
 public:
@@ -27,7 +26,7 @@ public:
 		current_barrier(0),
 		maximum_barrier(0),
 		current_leviathan(0),
-		main_state(0.0f),
+		main_state(0),
 		main_direction(direction_t::Right),
 		current_oxygen(0),
 		maximum_oxygen(0) {}
@@ -63,7 +62,7 @@ public:
 	void set_card_centered(arch_t index, bool horizontal, bool vertical);
 	bool is_fade_done() const;
 	bool is_fade_moving() const;
-	real_t get_main_index() const;
+	sint_t get_main_state() const;
 private:
 	std::function<void(void)> suspender;
 	draw_title_view_t title_view;

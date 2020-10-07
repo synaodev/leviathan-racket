@@ -11,7 +11,7 @@ draw_scheme_t::draw_scheme_t() :
 	state(0),
 	direction(direction_t::Right),
 	frame(0),
-	index(0.0f),
+	table(0),
 	position(0.0f)
 {
 
@@ -37,7 +37,7 @@ void draw_scheme_t::render(renderer_t& renderer) const {
 			state,
 			frame,
 			direction,
-			index,
+			table,
 			position
 		);
 	}
@@ -83,10 +83,10 @@ void draw_scheme_t::set_frame(arch_t frame) {
 	}
 }
 
-void draw_scheme_t::set_index(real_t index) {
-	if (this->index != index) {
+void draw_scheme_t::set_table(sint_t table) {
+	if (this->table != table) {
 		this->amend = true;
-		this->index = index;
+		this->table = table;
 	}
 }
 
@@ -135,8 +135,8 @@ arch_t draw_scheme_t::get_frame() const {
 	return frame;
 }
 
-real_t draw_scheme_t::get_index() const {
-	return index;
+sint_t draw_scheme_t::get_table() const {
+	return table;
 }
 
 glm::vec2 draw_scheme_t::get_position() const {

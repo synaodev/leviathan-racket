@@ -28,10 +28,10 @@
 #include "../utility/logger.hpp"
 
 namespace kNao {
-	static constexpr real_t BoxGood = 0;
-	static constexpr real_t BoxOkay = 1;
-	static constexpr real_t BoxSick = 2;
-	static constexpr real_t BoxHeal = 3;
+	static constexpr sint_t BoxGood = 0;
+	static constexpr sint_t BoxOkay = 1;
+	static constexpr sint_t BoxSick = 2;
+	static constexpr sint_t BoxHeal = 3;
 	static constexpr sint_t Oxygens = 1500;
 }
 
@@ -533,8 +533,8 @@ naomi_death_t naomi_state_t::get_death_type(const kinematics_t& kinematics, cons
 	return naomi_death_t::Error;
 }
 
-real_t naomi_state_t::get_box_data(const headsup_gui_t& headsup_gui, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
-	if (headsup_gui.get_main_index() != kNao::BoxHeal) {
+sint_t naomi_state_t::get_box_data(const headsup_gui_t& headsup_gui, const std::bitset<naomi_flags_t::Total>& flags, const headsup_params_t& params) {
+	if (headsup_gui.get_main_state() != kNao::BoxHeal) {
 		if (flags[naomi_flags_t::HealthIncrement]) {
 			return kNao::BoxHeal;
 		} else if (params.current_leviathan >= 650) {
@@ -544,7 +544,7 @@ real_t naomi_state_t::get_box_data(const headsup_gui_t& headsup_gui, const std::
 		}
 		return kNao::BoxGood;
 	}
-	return 0.0f;
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

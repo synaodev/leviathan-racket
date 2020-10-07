@@ -44,7 +44,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	);
 
 	main_scheme.set_file(heads_animation);
-	main_scheme.set_index(0.0f);
+	main_scheme.set_table(0);
 	main_scheme.set_position(2.0f, 2.0f);
 
 	leviathan_count.set_texture(texture);
@@ -120,7 +120,7 @@ void headsup_gui_t::invalidate() const {
 }
 
 void headsup_gui_t::set_parameters(headsup_params_t params) {
-	main_scheme.set_index(params.main_state);
+	main_scheme.set_table(params.main_state);
 	main_scheme.set_direction(params.main_direction);
 	leviathan_count.set_value(params.current_leviathan);
 	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
@@ -174,6 +174,6 @@ bool headsup_gui_t::is_fade_moving() const {
 	return fade.is_moving();
 }
 
-real_t headsup_gui_t::get_main_index() const {
-	return main_scheme.get_index();
+sint_t headsup_gui_t::get_main_state() const {
+	return main_scheme.get_table();
 }

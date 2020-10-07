@@ -10,7 +10,7 @@ sprite_t::sprite_t(const entt::hashed_string& entry) :
 	amend(false),
 	timer(0.0),
 	alpha(1.0f),
-	table(0.0f),
+	table(0),
 	state(0),
 	direction(direction_t::Right),
 	mirroring(mirroring_t::None),
@@ -30,7 +30,7 @@ sprite_t::sprite_t(const animation_t* file) :
 	amend(false),
 	timer(0.0),
 	alpha(1.0f),
-	table(0.0f),
+	table(0),
 	state(0),
 	direction(direction_t::Right),
 	mirroring(mirroring_t::None),
@@ -50,7 +50,7 @@ sprite_t::sprite_t() :
 	amend(false),
 	timer(0.0),
 	alpha(1.0f),
-	table(0.0f),
+	table(0),
 	state(0),
 	variation(0),
 	mirroring(mirroring_t::None),
@@ -69,7 +69,7 @@ void sprite_t::reset() {
 	amend = true;
 	timer = 0.0;
 	alpha = 1.0f;
-	table = 0.0f;
+	table = 0;
 	state = 0;
 	variation = 0;
 	mirroring = mirroring_t::None;

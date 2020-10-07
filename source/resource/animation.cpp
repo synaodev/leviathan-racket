@@ -213,7 +213,7 @@ void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& 
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t palette_offset, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
 	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
@@ -229,7 +229,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			if (amend or panic) {
 				amend = false;
 				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-				sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
+				sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
 				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale, pivot, angle)
@@ -241,7 +241,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t palette_offset, glm::vec2 position, glm::vec2 scale) const {
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale) const {
 	this->assure();
 	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
@@ -257,7 +257,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			if (amend or panic) {
 				amend = false;
 				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-				sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
+				sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
 				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale)
@@ -269,7 +269,7 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 	}
 }
 
-void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, sint_t palette_offset, glm::vec2 position) const {
+void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, sint_t table, glm::vec2 position) const {
 	this->assure();
 	if (state < sequences.size()) {
 		auto& list = renderer.display_list(
@@ -284,7 +284,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 			glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
 			rect_t seququads = sequences[state].get_quad(inverts, frame, variation);
 			sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-			sint_t palette_name = palette != nullptr ? palette->get_name() + palette_offset : 0;
+			sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(seququads, sequsize, mirroring_t::None, 1.0f, texture_name, palette_name)
 				.vtx_transform_write(position - sequorig)

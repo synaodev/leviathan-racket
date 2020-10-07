@@ -36,7 +36,8 @@ public:
 	const animation_t* file;
 	mutable bool_t amend;
 	real64_t timer;
-	real_t alpha, table;
+	real_t alpha;
+	sint_t table;
 	arch_t state;
 	union {
 		arch_t variation;

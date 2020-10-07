@@ -20,8 +20,6 @@ static constexpr real_t kKeyHeldDelay = constants::MinInterval();
 static constexpr real_t kDefaultDelay = constants::MinInterval() * 2.8778;
 static constexpr real_t kHighestDelay = constants::MinInterval() * 6.0;
 
-static constexpr arch_t kFacesAnimIndex = 4;
-
 dialogue_gui_t::dialogue_gui_t() :
 	amend(true),
 	flags(0),
@@ -40,14 +38,15 @@ dialogue_gui_t::dialogue_gui_t() :
 
 bool dialogue_gui_t::init(receiver_t& receiver) {
 	const font_t* font = vfs::font(0);
-	const animation_t* animation = vfs::animation(res::anim::Heads);
-	if (font == nullptr or animation == nullptr) {
+	const animation_t* faces_animation = vfs::animation(res::anim::Faces);
+	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
+	if (font == nullptr or faces_animation == nullptr or heads_animation == nullptr) {
 		synao_log("Dialogue GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
 	text.set_font(font);
-	faces.set_file(animation);
-	arrow.set_file(animation);
+	faces.set_file(faces_animation);
+	arrow.set_file(heads_animation);
 	arrow.set_state(1);
 	suspender = [&receiver] {
 		receiver.suspend();
@@ -207,7 +206,7 @@ void dialogue_gui_t::set_face(arch_t state, direction_t direction) {
 	cursor_total = 0;
 	text.set_position(rect.left_top() + kTextOffsetB);
 	faces.set_position(rect.left_top() + kFacesOffset);
-	faces.set_state(state + kFacesAnimIndex);
+	faces.set_state(state);
 	faces.set_direction(direction);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 }
