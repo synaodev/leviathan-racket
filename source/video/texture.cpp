@@ -54,7 +54,7 @@ void texture_t::assure() {
 			auto& handle = allocator->texture(dimensions);
 			this->dimensions = dimensions;
 			this->name = handle.count;
-			if (handle.count < sampler_t::get_maximum_textures()) {
+			if ((handle.count + 1) < sampler_t::get_maximum_textures()) {
 				// Save previous unit and set to working unit
 				sint_t previous = 0;
 				glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
@@ -63,7 +63,7 @@ void texture_t::assure() {
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle.id));
 				glCheck(glTexSubImage3D(
 					GL_TEXTURE_2D_ARRAY, 0, 0, 0,
-					handle.count++, dimensions.x, dimensions.y, 1,
+					handle.count, dimensions.x, dimensions.y, 1,
 					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
 				));
 				glCheck(glGenerateMipmap(GL_TEXTURE_2D_ARRAY));
@@ -71,6 +71,9 @@ void texture_t::assure() {
 
 				// Restore previous unit
 				glCheck(glActiveTexture(previous));
+
+				// Increment texture count
+				++handle.count;
 			} else {
 				synao_log("Warning! This texture handle has no space left! This message should not print!\n");
 			}
@@ -177,18 +180,19 @@ void palette_t::assure() {
 				glCheck(glActiveTexture(sampler_t::get_working_unit()));
 
 				glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, handle.id));
-				for (sint_t it = 0; it < dimensions.y; ++it) {
-					glCheck(glTexSubImage2D(
-						GL_TEXTURE_1D_ARRAY, 0, 0,
-						handle.count++, dimensions.x, 1,
-						GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
-					));
-					glCheck(glGenerateMipmap(GL_TEXTURE_1D_ARRAY));
-				}
+				glCheck(glTexSubImage2D(
+					GL_TEXTURE_1D_ARRAY, 0, 0,
+					handle.count, dimensions.x, dimensions.y,
+					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
+				));
+				glCheck(glGenerateMipmap(GL_TEXTURE_1D_ARRAY));
 				glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, 0));
 
 				// Restore previous unit
 				glCheck(glActiveTexture(previous));
+
+				// Add to palette count
+				handle.count += dimensions.y;
 			} else {
 				synao_log("Warning! This palette handle has no space left! This message should not print!\n");
 			}
