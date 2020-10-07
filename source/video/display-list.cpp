@@ -143,7 +143,7 @@ display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 r
 	return *this;
 }
 
-display_list_t& display_list_t::vtx_fonts_write(rect_t texture_rect, glm::vec2 raster_dimensions, glm::vec4 full_color, sint_t texture_name, glm::ivec4 table) {
+display_list_t& display_list_t::vtx_fonts_write(rect_t texture_rect, glm::vec2 raster_dimensions, glm::vec4 full_color, sint_t texture_name, sint_t table) {
 	auto vtx = quad_pool.at<vtx_fonts_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].uvcoords = texture_rect.left_top();

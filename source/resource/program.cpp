@@ -111,12 +111,12 @@ layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 uvcoords;
 layout(location = 2) in vec4 color;
 layout(location = 3) in int texID;
-layout(location = 4) in ivec4 table;
+layout(location = 4) in int table;
 out STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat ivec4 table;
+	layout(location = 3) flat int table;
 } vs;
 void main() {
 	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
@@ -134,12 +134,12 @@ layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 uvcoords;
 layout(location = 2) in vec4 color;
 layout(location = 3) in int texID;
-layout(location = 4) in ivec4 table;
+layout(location = 4) in int table;
 out STAGE {
 	vec2 uvcoords;
 	vec4 color;
 	flat int texID;
-	flat ivec4 table;
+	flat int table;
 } vs;
 void main() {
 	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
@@ -233,20 +233,13 @@ in STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat ivec4 table;
+	layout(location = 3) flat int table;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
 	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	if (dot(ivec4(1), fs.table) != 0.0f) {
-		float value = dot(pixel, fs.table);
-		if (value > 0.5f) {
-			pixel = vec4(vec3(2.0f * value - 1.0f), 1.0f);
-		} else {
-			pixel = vec4(vec3(0.0f), 2.0f * value);
-		}
-	}
-	fragment = pixel * fs.color;
+	vec4 color = vec4(1.0f - pixel[fs.table]);
+	fragment = color * fs.color;
 })";
 
 static constexpr byte_t kChannelsFrag330[] = R"(#version 330 core
@@ -255,20 +248,13 @@ in STAGE {
 	vec2 uvcoords;
 	vec4 color;
 	flat int texID;
-	flat ivec4 table;
+	flat int table;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
 	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	if (dot(ivec4(1, 1, 1, 1), table)) {
-		float value = dot(pixel, table);
-		if (value > 0.5f) {
-			pixel = vec4(vec3(2.0f * value - 1.0f), 1.0f);
-		} else {
-			pixel = vec4(vec3(0.0f), 2.0f * value);
-		}
-	}
-	fragment = pixel * fs.color;
+	vec4 color = vec4(1.0f - pixel[fs.table]);
+	fragment = color * fs.color;
 })";
 
 namespace program {

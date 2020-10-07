@@ -40,7 +40,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	title_view.set_font(font);
 	title_view.set_persistent(
 		glm::vec2(160.0f, 24.0f),
-		glm::vec4(0.0f, 0.25f, 0.5f, 1.0f)
+		glm::vec4(0.25f, 0.25f, 1.0f, 1.0f)
 	);
 
 	main_scheme.set_file(heads_animation);

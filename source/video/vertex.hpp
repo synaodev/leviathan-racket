@@ -60,7 +60,7 @@ struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {
 	glm::vec2 uvcoords;
 	glm::vec4 color;
 	sint_t texID;
-	glm::ivec4 table;
+	sint_t table;
 public:
 	vtx_fonts_t() :
 		position(0.0f),

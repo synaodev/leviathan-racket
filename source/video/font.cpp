@@ -34,13 +34,13 @@ font_t& font_t::operator=(font_t&& that) noexcept {
 
 void font_t::load(const std::string& directory, const std::string& name) {
 	auto make_table = [](const std::string& value) {
-		sint_t flag = std::stoi(value);
-		glm::ivec4 result = glm::zero<glm::ivec4>();
-		if (flag & 1) result[2] = 1;
-		if (flag & 2) result[1] = 1;
-		if (flag & 4) result[0] = 1;
-		if (flag & 8) result[3] = 1;
-		return result;
+		switch (std::stoi(value)) {
+		case 1: return 2;
+		case 2: return 1;
+		case 4: return 0;
+		case 8: return 3;
+		default: return 0;
+		}
 	};
 	if (glyphs.size() > 0) {
 		synao_log("Warning! Tried to overwrite font!\n");
