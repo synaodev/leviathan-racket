@@ -236,19 +236,17 @@ in STAGE {
 	layout(location = 3) flat ivec4 table;
 } fs;
 layout(location = 0) out vec4 fragment;
-vec4 derive(ivec4 table, vec4 pixel) {
+void main() {
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
 	if (dot(ivec4(1, 1, 1, 1), table)) {
 		float value = dot(pixel, table);
 		if (value > 0.5f) {
-			return vec4(vec3(2.0f * value - 1.0f), 1.0f);
+			pixel = vec4(vec3(2.0f * value - 1.0f), 1.0f);
+		} else {
+			pixel = vec4(vec3(0.0f), 2.0f * value);
 		}
-		return vec4(vec3(0.0f), 2.0f * value);
 	}
-	return pixel;
-}
-void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	fragment = derive(table, pixel) * fs.color;
+	fragment = pixel * fs.color;
 })";
 
 static constexpr byte_t kChannelsFrag330[] = R"(#version 330 core
@@ -260,19 +258,17 @@ in STAGE {
 	flat ivec4 table;
 } fs;
 layout(location = 0) out vec4 fragment;
-vec4 derive(ivec4 table, vec4 pixel) {
+void main() {
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
 	if (dot(ivec4(1, 1, 1, 1), table)) {
 		float value = dot(pixel, table);
 		if (value > 0.5f) {
-			return vec4(vec3(2.0f * value - 1.0f), 1.0f);
+			pixel = vec4(vec3(2.0f * value - 1.0f), 1.0f);
+		} else {
+			pixel = vec4(vec3(0.0f), 2.0f * value);
 		}
-		return vec4(vec3(0.0f), 2.0f * value);
 	}
-	return pixel;
-}
-void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	fragment = derive(table, pixel) * fs.color;
+	fragment = pixel * fs.color;
 })";
 
 namespace program {
