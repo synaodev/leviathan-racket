@@ -40,6 +40,7 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 			fstr.substr(fstr.find_last_of("\\/") + 1),
 			line, expression, error, description
 		);
+		sint_t i = 0;
 	}
 }
 
