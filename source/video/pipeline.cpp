@@ -291,7 +291,7 @@ const vertex_spec_t& pipeline_t::get_specify() const {
 }
 
 bool pipeline_t::has_separable() {
-	return opengl_version[0] == 4 and opengl_version[1] >= 1;
+	return opengl_version[0] == 4 and opengl_version[1] >= 2;
 }
 
 bool pipeline_t::has_uniform_azdo() {
