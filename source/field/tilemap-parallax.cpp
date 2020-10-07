@@ -84,7 +84,6 @@ void tilemap_parallax_t::render(renderer_t& renderer, rect_t viewport, const tex
 	auto& list = renderer.display_list(
 		layer_value::Parallax,
 		blend_mode_t::Alpha,
-		buffer_usage_t::Dynamic,
 		program_t::Sprites
 	);
 	if (indices == 0) {

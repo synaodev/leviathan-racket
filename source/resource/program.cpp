@@ -41,19 +41,19 @@ layout(binding = 0, std140) uniform transforms {
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvs;
+layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in float alpha;
 layout(location = 4) in int texID;
 layout(location = 5) in int palID;
 out STAGE {
-	layout(location = 0) vec2 uvs;
+	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) float alpha;
-	layout(location = 2) int texID;
-	layout(location = 3) int palID;
+	layout(location = 2) flat int texID;
+	layout(location = 3) flat int palID;
 } vs;
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
-	vs.uvs = uvs;
+	vs.uvcoords = uvcoords;
 	vs.alpha = alpha;
 	vs.texID = texID;
 	vs.palID = palID;
@@ -65,19 +65,19 @@ layout(std140) uniform transforms {
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvs;
+layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in float alpha;
 layout(location = 4) in int texID;
 layout(location = 5) in int palID;
 out STAGE {
-	vec2 uvs;
+	vec2 uvcoords;
 	float alpha;
-	int texID;
-	int palID;
+	flat int texID;
+	flat int palID;
 } vs;
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
-	vs.uvs = uvs;
+	vs.uvcoords = uvcoords;
 	vs.alpha = alpha;
 	vs.texID = texID;
 	vs.palID = palID;
@@ -89,19 +89,19 @@ layout(std140) uniform transforms {
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvs;
+layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in vec4 color;
 layout(location = 4) in int texID;
 layout(location = 5) in int tblID;
 out STAGE {
-	layout(location = 0) vec2 uvs;
+	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
-	layout(location = 2) int texID;
-	layout(location = 3) int tblID;
+	layout(location = 2) flat int texID;
+	layout(location = 3) flat int tblID;
 } vs;
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
-	vs.uvs = uvs;
+	vs.uvcoords = uvcoords;
 	vs.color = color;
 	vs.texID = texID;
 	vs.tblID = tblID;
@@ -113,19 +113,19 @@ layout(std140) uniform transforms {
 };
 layout(location = 0) in vec2 position;
 layout(location = 1) in int matrix;
-layout(location = 2) in vec2 uvs;
+layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in vec4 color;
 layout(location = 4) in int texID;
 layout(location = 5) in int tblID;
 out STAGE {
-	vec2 uvs;
+	vec2 uvcoords;
 	vec4 color;
-	int texID;
-	int tblID;
+	flat int texID;
+	flat int tblID;
 } vs;
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
-	vs.uvs = uvs;
+	vs.uvcoords = uvcoords;
 	vs.color = color;
 	vs.texID = texID;
 	vs.tblID = tblID;
@@ -150,91 +150,93 @@ void main() {
 })";
 
 static constexpr byte_t kSpritesFrag420[] = R"(#version 420 core
-layout(binding = 0) uniform sampler2DArray diffuse_map;
+layout(binding = 0) uniform sampler2DArray diffuse;
 in STAGE {
-	layout(location = 0) vec2 uvs;
+	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) float alpha;
-	layout(location = 2) int texID;
-	layout(location = 3) int palID;
+	layout(location = 2) flat int texID;
+	layout(location = 3) flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 color = texture(diffuse_map, vec3(fs.uvs, float(fs.texID)));
+	vec4 color = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
 static constexpr byte_t kSpritesFrag330[] = R"(#version 330 core
-uniform sampler2DArray diffuse_map;
+uniform sampler2DArray diffuse;
 in STAGE {
-	vec2 uvs;
+	vec2 uvcoords;
 	float alpha;
-	int texID;
-	int palID;
+	flat int texID;
+	flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 color = texture(diffuse_map, vec3(fs.uvs, float(fs.texID)));
+	vec4 color = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
 static constexpr byte_t kIndexedFrag420[] = R"(#version 420 core
-layout(binding = 0) uniform sampler2DArray indexed_map;
-layout(binding = 1) uniform sampler1DArray palette_map;
+layout(binding = 0) uniform sampler2DArray diffuse;
+layout(binding = 1) uniform sampler1DArray palette;
 in STAGE {
-	layout(location = 0) vec2 uvs;
+	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) float alpha;
-	layout(location = 2) int texID;
-	layout(location = 3) int palID;
+	layout(location = 2) flat int texID;
+	layout(location = 3) flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(indexed_map, vec3(fs.uvs, float(fs.texID)));
-	vec4 color = texture(palette_map, vec2(pixel[0], float(fs.palID)));
+	vec4 index = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 color = texture(palette, vec2(index[0], float(fs.palID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
 static constexpr byte_t kIndexedFrag330[] = R"(#version 330 core
-uniform sampler2DArray indexed_map;
-uniform sampler1DArray palette_map;
+uniform sampler2DArray diffuse;
+uniform sampler1DArray palette;
 in STAGE {
-	vec2 uvs;
+	vec2 uvcoords;
 	float alpha;
-	int texID;
-	int palID;
+	flat int texID;
+	flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(indexed_map, vec3(fs.uvs, float(fs.texID)));
-	vec4 color = texture(palette_map, vec2(pixel[0], float(fs.palID)));
+	vec4 index = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 color = texture(palette, vec2(index[0], float(fs.palID)));
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
 static constexpr byte_t kChannelsFrag420[] = R"(#version 420 core
-layout(binding = 0) uniform sampler2DArray channels_map;
+layout(binding = 0) uniform sampler2DArray diffuse;
 in STAGE {
-	layout(location = 0) vec2 uvs;
+	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
-	layout(location = 2) int texID;
-	layout(location = 3) int tblID;
+	layout(location = 2) flat int texID;
+	layout(location = 3) flat int tblID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(channels_map, vec3(fs.uvs, float(fs.texID)));
-	fragment = vec4(vec3(pixel[tblID]), 1.0f) * fs.color;
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec3 color = vec3(pixel[tblID]);
+	fragment = vec4(color, 1.0f) * fs.color;
 })";
 
 static constexpr byte_t kChannelsFrag330[] = R"(#version 330 core
-uniform sampler2DArray channels_map;
+uniform sampler2DArray diffuse;
 in STAGE {
-	vec2 uvs;
+	vec2 uvcoords;
 	vec4 color;
-	int texID;
-	int tblID;
+	flat int texID;
+	flat int tblID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(channels_map, vec3(fs.uvs, float(fs.texID)));
-	fragment = vec4(vec3(pixel[tblID]), 1.0f) * fs.color;
+	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec3 color = vec3(pixel[tblID]);
+	fragment = vec4(color, 1.0f) * fs.color;
 })";
 
 namespace program {

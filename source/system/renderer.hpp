@@ -27,7 +27,7 @@ public:
 	void ortho(const glm::ivec2& dimensions);
 	arch_t get_total_lists() const;
 	arch_t get_total_calls() const;
-	display_list_t& display_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program);
+	display_list_t& display_list(layer_t layer, blend_mode_t blend_mode, program_t program);
 private:
 	quad_allocator_t quad_allocator;
 	sampler_allocator_t sampler_allocator;

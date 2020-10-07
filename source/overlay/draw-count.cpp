@@ -35,7 +35,6 @@ void draw_count_t::render(renderer_t& renderer) const {
 		auto& list = renderer.display_list(
 			layer,
 			blend_mode_t::Alpha,
-			buffer_usage_t::Dynamic,
 			program_t::Indexed
 		);
 		if (amend) {
@@ -179,9 +178,9 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 		quads.resize(buffer.size() * display_list_t::SingleQuad);
 	}
 	glm::vec2 pos = position;
-	glm::vec2 inv = texture->get_inverse_dimensions();
-	sint_t texID = texture->get_name();
-	sint_t palID = palette->get_name() + table;
+	glm::vec2 inv = texture != nullptr ? texture->get_inverse_dimensions() : glm::one<glm::vec2>();
+	sint_t texID = texture != nullptr ? texture->get_name() : 0;
+	sint_t palID = palette != nullptr ? palette->get_name() + table : 0;
 	arch_t qindex = 0;
 	if (backwards) {
 		for (auto it = buffer.begin(); it != buffer.end(); ++it, ++qindex) {

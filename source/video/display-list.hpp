@@ -14,7 +14,7 @@ struct rect_t;
 
 struct display_list_t : public not_copyable_t {
 public:
-	display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const quad_allocator_t* allocator);
+	display_list_t(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline, const quad_allocator_t* allocator);
 	display_list_t();
 	display_list_t(display_list_t&& that) noexcept;
 	display_list_t& operator=(display_list_t&& that) noexcept;
@@ -34,7 +34,7 @@ public:
 	void skip(arch_t count);
 	void skip();
 	void flush(gfx_t& gfx, const sampler_allocator_t* samplers);
-	bool matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline) const;
+	bool matches(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline) const;
 	bool rendered() const;
 	friend bool operator<(const display_list_t& lhv, const display_list_t& rhv);
 public:

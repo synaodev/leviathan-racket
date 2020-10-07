@@ -3,15 +3,20 @@
 
 #include "../utility/logger.hpp"
 
-static constexpr sint_t kGLMipMaps = 4;
-static constexpr uint_t kActiveTex = 5;
-static constexpr sint_t kTotalPals = 64;
-static constexpr sint_t kTotalTexs = 64;
-static constexpr sint_t kDimension = 256;
-static constexpr sint_t kColorsMax = 32;
+static constexpr sint_t kWorkingUnit = GL_TEXTURE4;
+static constexpr sint_t kMipMapTexs  = 4;
+static constexpr sint_t kTotalTexs   = 64;
+static constexpr sint_t kMipMapPals  = 4;
+static constexpr sint_t kTotalPals   = 64;
+static constexpr sint_t kDimensions  = 256;
+static constexpr sint_t kColorsMax   = 32;
 
 bool sampler_t::has_immutable_option() {
 	return glTexStorage2D != nullptr;
+}
+
+sint_t sampler_t::get_working_unit() {
+	return kWorkingUnit;
 }
 
 sint_t sampler_t::get_maximum_textures() {
@@ -69,20 +74,25 @@ sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) 
 }
 
 sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
-	if (dimensions.x == kDimension and dimensions.y == kDimension) {
+	if (dimensions.x == kDimensions and dimensions.y == kDimensions) {
 		if (textures.id == 0) {
+			// Save previous unit and set to working unit
+			sint_t previous = 0;
+			glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
+			glCheck(glActiveTexture(kWorkingUnit));
+
 			uint_t handle = 0;
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(
-					GL_TEXTURE_2D_ARRAY, kGLMipMaps,
+					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
 					gfx_t::get_pixel_format_gl_enum(highest),
 					dimensions.x, dimensions.y, kTotalTexs
 				));
 			} else {
 				glCheck(glTexImage3D(
-					GL_TEXTURE_2D_ARRAY, kGLMipMaps,
+					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
 					gfx_t::get_pixel_format_gl_enum(highest),
 					dimensions.x, dimensions.y, kTotalTexs,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
@@ -94,6 +104,9 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+
+			// Restore previous unit
+			glCheck(glActiveTexture(previous));
 
 			textures.id = handle;
 			textures.type = GL_TEXTURE_2D_ARRAY;
@@ -113,18 +126,23 @@ const sampler_data_t& sampler_allocator_t::texture() const {
 sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 	if (dimensions.x == kColorsMax) {
 		if (palettes.id == 0) {
+			// Save previous unit and set to working unit
+			sint_t previous = 0;
+			glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
+			glCheck(glActiveTexture(kWorkingUnit));
+
 			uint_t handle = 0;
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, handle));
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage2D(
-					GL_TEXTURE_1D_ARRAY, kGLMipMaps,
+					GL_TEXTURE_1D_ARRAY, kMipMapPals,
 					gfx_t::get_pixel_format_gl_enum(lowest),
 					dimensions.x, kTotalPals
 				));
 			} else {
 				glCheck(glTexImage2D(
-					GL_TEXTURE_1D_ARRAY, kGLMipMaps,
+					GL_TEXTURE_1D_ARRAY, kMipMapPals,
 					gfx_t::get_pixel_format_gl_enum(lowest),
 					dimensions.x, kTotalPals,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
@@ -135,6 +153,9 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 			glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, 0));
+
+			// Restore previous unit
+			glCheck(glActiveTexture(previous));
 
 			palettes.id = handle;
 			palettes.type = GL_TEXTURE_1D_ARRAY;

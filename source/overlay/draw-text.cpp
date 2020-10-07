@@ -43,7 +43,6 @@ void draw_text_t::render(renderer_t& renderer) const {
 		auto& list = renderer.display_list(
 			layer,
 			blend_mode_t::Alpha,
-			buffer_usage_t::Dynamic,
 			program_t::Strings
 		);
 		if (amend) {
@@ -189,7 +188,7 @@ void draw_text_t::generate() {
 		glm::vec2 start_pos = position - origin;
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
-		sint_t texture_name = font->get_texture_name();
+		sint_t texID = font->get_texture_name();
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
 			char32_t& c = buffer[it];
 			switch (c) {
@@ -213,28 +212,28 @@ void draw_text_t::generate() {
 				quad[0].matrix = 0;
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
 				quad[0].color = color;
-				quad[0].texID = texture_name;
+				quad[0].texID = texID;
 				quad[0].tblID = glyph.table;
 
 				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
 				quad[1].matrix = 0;
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
 				quad[1].color = color;
-				quad[1].texID = texture_name;
+				quad[1].texID = texID;
 				quad[1].tblID = glyph.table;
 
 				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
 				quad[2].matrix = 0;
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
 				quad[2].color = color;
-				quad[2].texID = texture_name;
+				quad[2].texID = texID;
 				quad[2].tblID = glyph.table;
 
 				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
 				quad[3].matrix = 0;
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
 				quad[3].color = color;
-				quad[3].texID = texture_name;
+				quad[3].texID = texID;
 				quad[3].tblID = glyph.table;
 
 				start_pos.x += glyph.x_advance;

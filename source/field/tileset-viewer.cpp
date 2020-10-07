@@ -124,7 +124,6 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.display_list(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				program_t::Colors
 			);
 			list.begin(display_list_t::SingleQuad)
@@ -139,7 +138,6 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				program_t::Sprites
 			);
 			list.begin(display_list_t::SingleQuad)
@@ -157,7 +155,6 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.display_list(
 				layer_value::HeadsUp,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				program_t::Colors
 			);
 			list.skip(display_list_t::SingleQuad);
@@ -166,7 +163,6 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				program_t::Sprites
 			);
 			list.skip(display_list_t::SingleQuad);

@@ -55,6 +55,11 @@ void texture_t::assure() {
 			this->dimensions = dimensions;
 			this->name = handle.count;
 			if (handle.count < sampler_t::get_maximum_textures()) {
+				// Save previous unit and set to working unit
+				sint_t previous = 0;
+				glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
+				glCheck(glActiveTexture(sampler_t::get_working_unit()));
+
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle.id));
 				glCheck(glTexSubImage3D(
 					GL_TEXTURE_2D_ARRAY, 0, 0, 0,
@@ -63,6 +68,9 @@ void texture_t::assure() {
 				));
 				glCheck(glGenerateMipmap(GL_TEXTURE_2D_ARRAY));
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+
+				// Restore previous unit
+				glCheck(glActiveTexture(previous));
 			} else {
 				synao_log("Warning! This texture handle has no space left! This message should not print!\n");
 			}
@@ -163,8 +171,13 @@ void palette_t::assure() {
 			this->dimensions = dimensions;
 			this->name = handle.count;
 			if ((handle.count + dimensions.y) < sampler_t::get_maximum_palettes()) {
+				// Save previous unit and set to working unit
+				sint_t previous = 0;
+				glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
+				glCheck(glActiveTexture(sampler_t::get_working_unit()));
+
 				glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, handle.id));
-				for (sint_t it = 0; it < dimensions.y; it++) {
+				for (sint_t it = 0; it < dimensions.y; ++it) {
 					glCheck(glTexSubImage2D(
 						GL_TEXTURE_1D_ARRAY, 0, 0,
 						handle.count++, dimensions.x, 1,
@@ -173,6 +186,9 @@ void palette_t::assure() {
 					glCheck(glGenerateMipmap(GL_TEXTURE_1D_ARRAY));
 				}
 				glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, 0));
+
+				// Restore previous unit
+				glCheck(glActiveTexture(previous));
 			} else {
 				synao_log("Warning! This palette handle has no space left! This message should not print!\n");
 			}

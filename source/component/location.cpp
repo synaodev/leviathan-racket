@@ -71,7 +71,6 @@ void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t v
 	auto& list = renderer.display_list(
 		layer_value::TileFront,
 		blend_mode_t::Add,
-		buffer_usage_t::Dynamic,
 		program_t::Colors
 	);
 	kontext.slice<location_t>().each([&list, &viewport, &color](entt::entity, const location_t& location) {

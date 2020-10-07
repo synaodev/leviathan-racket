@@ -21,12 +21,12 @@ renderer_t::renderer_t() :
 }
 
 bool renderer_t::init(glm::ivec2 version, vfs_t& fs) {
-	if (!fs.set_sampler_allocator(&sampler_allocator)) {
-		synao_log("Couldn't setup sampler_allocator_t!\n");
+	if (!quad_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
+		synao_log("Couldn't setup quad_buffer_allocator_t!\n");
 		return false;
 	}
-	if (!quad_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
-		synao_log("Couldn't create quad_buffer_allocator_t!\n");
+	if (!fs.set_sampler_allocator(&sampler_allocator)) {
+		synao_log("Couldn't setup sampler_allocator_t!\n");
 		return false;
 	}
 	if (viewports.valid()) {
@@ -103,12 +103,12 @@ bool renderer_t::init(glm::ivec2 version, vfs_t& fs) {
 	if (!pipeline_t::has_separable()) {
 		pipelines[program_t::Colors].set_block("transforms", 0);
 		pipelines[program_t::Sprites].set_block("transforms", 0);
-		pipelines[program_t::Sprites].set_sampler("diffuse_map", 0);
+		pipelines[program_t::Sprites].set_sampler("diffuse", 0);
 		pipelines[program_t::Indexed].set_block("transforms", 0);
-		pipelines[program_t::Indexed].set_sampler("indexed_map", 0);
-		pipelines[program_t::Indexed].set_sampler("palette_map", 1);
+		pipelines[program_t::Indexed].set_sampler("diffuse", 0);
+		pipelines[program_t::Indexed].set_sampler("palette", 1);
 		pipelines[program_t::Strings].set_block("transforms", 0);
-		pipelines[program_t::Strings].set_sampler("channels_map", 0);
+		pipelines[program_t::Strings].set_sampler("diffuse", 0);
 	}
 	synao_log("Rendering service is ready.\n");
 	return true;
@@ -160,20 +160,17 @@ arch_t renderer_t::get_total_calls() const {
 	return result;
 }
 
-display_list_t& renderer_t::display_list(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, program_t program) {
+display_list_t& renderer_t::display_list(layer_t layer, blend_mode_t blend_mode, program_t program) {
 	for (auto&& list : display_lists) {
-		if (list.matches(layer, blend_mode, usage, &pipelines[program])) {
+		if (list.matches(layer, blend_mode, &pipelines[program])) {
 			return list;
 		}
 	}
 	display_lists.emplace_back(
-		layer, blend_mode, usage,
+		layer, blend_mode,
 		&pipelines[program],
 		&quad_allocator
 	);
 	std::sort(display_lists.begin(), display_lists.end());
-	return this->display_list(
-		layer, blend_mode,
-		usage, program
-	);
+	return this->display_list(layer, blend_mode, program);
 }

@@ -223,7 +223,6 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				palette != nullptr ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
@@ -251,7 +250,6 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
-				buffer_usage_t::Dynamic,
 				palette != nullptr ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
@@ -275,7 +273,6 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 		auto& list = renderer.display_list(
 			layer_value::HeadsUp,
 			blend_mode_t::Alpha,
-			buffer_usage_t::Dynamic,
 			palette != nullptr ? program_t::Indexed : program_t::Sprites
 		);
 		if (amend) {

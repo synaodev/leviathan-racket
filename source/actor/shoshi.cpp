@@ -25,7 +25,7 @@ void ai::shoshi::ctor(entt::entity s, kontext_t& kontext) {
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
-	sprite.table = 0.0f;
+	sprite.table = 0;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 
@@ -66,7 +66,7 @@ void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.state = 3;
-	sprite.table = 0.0f;
+	sprite.table = 0;
 	sprite.layer = 0.22f;
 	sprite.position = location.position;
 
@@ -100,7 +100,7 @@ void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
 	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
-	sprite.table = 0.0f;
+	sprite.table = 0;
 	sprite.layer = 0.2f;
 	sprite.position = location.position;
 

@@ -21,7 +21,7 @@ public:
 	void set_state(arch_t state);
 	void set_direction(direction_t direction);
 	void set_frame(arch_t frame);
-	void set_table(sint_t index);
+	void set_table(sint_t table);
 	void set_position(real_t x, real_t y);
 	void set_position(glm::vec2 position);
 	void mut_position(real_t x, real_t y);

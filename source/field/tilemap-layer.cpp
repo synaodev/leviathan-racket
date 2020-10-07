@@ -140,7 +140,6 @@ void tilemap_layer_t::render(renderer_t& renderer, bool_t amend, const palette_t
 	auto& list = renderer.display_list(
 		priority,
 		blend_mode_t::Alpha,
-		buffer_usage_t::Dynamic,
 		palette != nullptr ? program_t::Indexed : program_t::Sprites
 	);
 	if (amend) {

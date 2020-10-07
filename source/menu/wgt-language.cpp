@@ -82,13 +82,19 @@ void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audi
 		input.flush();
 		if (!selection) {
 			audio.play(res::sfx::Inven, 0);
+		} else {
+			config.set("Setup", "Language", languages[cursor]);
+			audio.play(res::sfx::TitleBeg, 0);
+		}
+		/*if (!selection) {
+			audio.play(res::sfx::Inven, 0);
 		} else if (vfs::try_language(languages[cursor])) {
 			config.set("Setup", "Language", languages[cursor]);
 			audio.play(res::sfx::TitleBeg, 0);
 			headsup_gui.fade_out();
 			stack_gui.clear();
 			kernel.boot();
-		}
+		}*/
 	}
 }
 

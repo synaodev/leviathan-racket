@@ -56,7 +56,6 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 		auto& list = renderer.display_list(
 			layer_value::TileFront,
 			blend_mode_t::Add,
-			buffer_usage_t::Dynamic,
 			program_t::Colors
 		);
 		view.each([&list, &viewport](entt::entity, const liquid_body_t& instance) {

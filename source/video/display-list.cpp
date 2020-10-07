@@ -4,7 +4,7 @@
 #include "../utility/watch.hpp"
 #include "../utility/rect.hpp"
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
+display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
 	layer(layer),
 	blend_mode(blend_mode),
 	pipeline(pipeline),
@@ -20,7 +20,7 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, buffer_us
 		specify = pipeline->get_specify();
 	}
 	quad_pool.setup(specify);
-	quad_buffer.setup(allocator, usage, specify);
+	quad_buffer.setup(allocator, buffer_usage_t::Dynamic, specify);
 }
 
 display_list_t::display_list_t() :
@@ -249,11 +249,10 @@ void display_list_t::flush(gfx_t& gfx, const sampler_allocator_t* samplers) {
 	current = 0;
 }
 
-bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, buffer_usage_t usage, const pipeline_t* pipeline) const {
+bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline) const {
 	return (
 		layer_value::equal(this->layer, layer) and
 		this->blend_mode == blend_mode and
-		this->quad_buffer.get_usage() == usage and
 		this->pipeline == pipeline
 	);
 }
@@ -265,12 +264,7 @@ bool display_list_t::rendered() const {
 bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
 	if (layer_value::equal(lhv.layer, rhv.layer)) {
 		if (lhv.blend_mode == rhv.blend_mode) {
-			buffer_usage_t lhu = lhv.quad_buffer.get_usage();
-			buffer_usage_t rhu = rhv.quad_buffer.get_usage();
-			if (lhu == rhu) {
-				return lhv.pipeline < rhv.pipeline;
-			}
-			return lhu < rhu;
+			return lhv.pipeline < rhv.pipeline;
 		}
 		return lhv.blend_mode < rhv.blend_mode;
 	}
