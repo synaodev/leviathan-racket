@@ -5,6 +5,8 @@
 
 #include "../types.hpp"
 
+extern glm::ivec2 opengl_version;
+
 #ifdef LEVIATHAN_BUILD_DEBUG
 	namespace priv {
 		void glCheckError(const byte_t* file, uint_t line, const byte_t* expression);

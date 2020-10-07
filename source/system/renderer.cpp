@@ -20,7 +20,7 @@ renderer_t::renderer_t() :
 
 }
 
-bool renderer_t::init(glm::ivec2 version, vfs_t& fs) {
+bool renderer_t::init(vfs_t& fs) {
 	if (!quad_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
 		synao_log("Couldn't setup quad_buffer_allocator_t!\n");
 		return false;
@@ -52,37 +52,37 @@ bool renderer_t::init(glm::ivec2 version, vfs_t& fs) {
 
 	const shader_t* blank = vfs::shader(
 		"blank",
-		program::blank_vert(version),
+		program::blank_vert(),
 		shader_stage_t::Vertex
 	);
 	const shader_t* major = vfs::shader(
 		"major",
-		program::major_vert(version),
+		program::major_vert(),
 		shader_stage_t::Vertex
 	);
 	const shader_t* fonts = vfs::shader(
 		"fonts",
-		program::fonts_vert(version),
+		program::fonts_vert(),
 		shader_stage_t::Vertex
 	);
 	const shader_t* colors = vfs::shader(
 		"colors",
-		program::colors_frag(version),
+		program::colors_frag(),
 		shader_stage_t::Fragment
 	);
 	const shader_t* sprites = vfs::shader(
 		"sprites",
-		program::sprites_frag(version),
+		program::sprites_frag(),
 		shader_stage_t::Fragment
 	);
 	const shader_t* indexed = vfs::shader(
 		"indexed",
-		program::indexed_frag(version),
+		program::indexed_frag(),
 		shader_stage_t::Fragment
 	);
 	const shader_t* channels = vfs::shader(
 		"channels",
-		program::channels_frag(version),
+		program::channels_frag(),
 		shader_stage_t::Fragment
 	);
 	bool result = pipelines[program_t::Colors].create(blank, colors);

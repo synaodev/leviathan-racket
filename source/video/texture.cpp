@@ -66,7 +66,9 @@ void texture_t::assure() {
 					handle.count, dimensions.x, dimensions.y, 1,
 					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
 				));
-				glCheck(glGenerateMipmap(GL_TEXTURE_2D_ARRAY));
+				if (sampler_t::has_immutable_option()) {
+					glCheck(glGenerateMipmap(GL_TEXTURE_2D_ARRAY));
+				}
 				glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
 
 				// Restore previous unit
@@ -185,7 +187,9 @@ void palette_t::assure() {
 					handle.count, dimensions.x, dimensions.y,
 					GL_RGBA, GL_UNSIGNED_BYTE, &image[0]
 				));
-				glCheck(glGenerateMipmap(GL_TEXTURE_1D_ARRAY));
+				if (sampler_t::has_immutable_option()) {
+					glCheck(glGenerateMipmap(GL_TEXTURE_1D_ARRAY));
+				}
 				glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, 0));
 
 				// Restore previous unit

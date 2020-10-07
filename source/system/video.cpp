@@ -14,8 +14,6 @@ video_t::video_t() :
 	window(nullptr),
 	context(nullptr),
 	params(),
-	major(4),
-	minor(6),
 	meta(false)
 {
 
@@ -39,12 +37,14 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
 	config.get("Setup", "MetaMenu", meta);
+	sint_t major = 4;
+	sint_t minor = 6;
 	{
 		bool_t opengl_4 = true;
 		config.get("Setup", "OpenGL4X", opengl_4);
 		if (!opengl_4) {
-			this->major = 3;
-			this->minor = 3;
+			major = 3;
+			minor = 3;
 		}
 	}
 	// Setup parameters.
@@ -119,22 +119,22 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	}
 	// Try every OpenGL version from 4.6 to 3.3 and break when no errors.
 	while (1) {
-		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, this->major) < 0) {
+		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major) < 0) {
 			synao_log("Setting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
-		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, this->minor) < 0) {
+		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, minor) < 0) {
 			synao_log("Setting OpenGL minor version failed! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
 		context = SDL_GL_CreateContext(window);
 		if (context != nullptr) {
 			break;
-		} else if (this->major == 4 and this->minor > 0) {
-			this->minor -= 1;
-		} else if (this->major == 4 and this->minor == 0) {
-			this->major = 3;
-			this->minor = 3;
+		} else if (major == 4 and minor > 0) {
+			minor -= 1;
+		} else if (major == 4 and minor == 0) {
+			major = 3;
+			minor = 3;
 		} else {
 			synao_log("Error! OpenGL version must be at least 3.3!\n");
 			break;
@@ -152,15 +152,18 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		return false;
 	}
 	// Confirm OpenGL version.
-	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &this->major) < 0) {
+	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major) < 0) {
 		synao_log("Getting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &this->minor) < 0) {
+	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &minor) < 0) {
 		synao_log("Getting OpenGL minor version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	synao_log("OpenGL Version is {}.{}!\n", this->major, this->minor);
+	synao_log("OpenGL Version is {}.{}!\n", major, minor);
+	// Set global version object so everything works properly
+	opengl_version[0] = major;
+	opengl_version[1] = minor;
 	// Load OpenGL extensions with GLAD
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		synao_log("OpenGL Extension loading failed!\n");
@@ -286,10 +289,6 @@ glm::ivec2 video_t::get_integral_dimensions() const {
 
 glm::ivec2 video_t::get_editor_dimensions() const {
 	return constants::EditorDimensions<sint_t>();
-}
-
-glm::ivec2 video_t::get_opengl_version() const {
-	return glm::ivec2(major, minor);
 }
 
 bool video_t::get_meta_option() const {

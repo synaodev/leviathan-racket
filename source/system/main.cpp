@@ -91,9 +91,8 @@ static int process(setup_file_t& config) {
 	}
 	// Global renderer device is dependent on existance of virtual filesystem and audio devices.
 	// Must destroy this before destroying virtual filesystem and audio devices.
-	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(version, fs)) {
+	if (!renderer.init(fs)) {
 		return EXIT_FAILURE;
 	}
 	if (!main_loop(config, input, video, audio, music, renderer)) {
@@ -155,9 +154,8 @@ static int process(setup_file_t& config) {
 	if (!fs.init(config)) {
 		return EXIT_FAILURE;
 	}
-	glm::ivec2 version = video.get_opengl_version();
 	renderer_t renderer;
-	if (!renderer.init(version, fs)) {
+	if (!renderer.init(fs)) {
 		return EXIT_FAILURE;
 	}
 	if (!main_loop(input, video, renderer)) {

@@ -12,7 +12,7 @@ static constexpr sint_t kDimensions  = 256;
 static constexpr sint_t kColorsMax   = 32;
 
 bool sampler_t::has_immutable_option() {
-	return glTexStorage2D != nullptr;
+	return opengl_version[0] == 4 and opengl_version[1] >= 2;
 }
 
 sint_t sampler_t::get_working_unit() {
@@ -100,7 +100,7 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 				));
 			} else {
 				glCheck(glTexImage3D(
-					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
+					GL_TEXTURE_2D_ARRAY, 0,
 					gfx_t::get_pixel_format_gl_enum(highest),
 					dimensions.x, dimensions.y, kTotalTexs,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
@@ -110,7 +110,11 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			} else {
+				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+			}
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
 
 			// Restore previous unit
@@ -150,7 +154,7 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 				));
 			} else {
 				glCheck(glTexImage2D(
-					GL_TEXTURE_1D_ARRAY, kMipMapPals,
+					GL_TEXTURE_1D_ARRAY, 0,
 					gfx_t::get_pixel_format_gl_enum(lowest),
 					dimensions.x, kTotalPals,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
@@ -159,7 +163,11 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			} else {
+				glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+			}
 			glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, 0));
 
 			// Restore previous unit

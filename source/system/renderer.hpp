@@ -20,7 +20,7 @@ public:
 	renderer_t& operator=(renderer_t&&) = default;
 	~renderer_t() = default;
 public:
-	bool init(glm::ivec2 version, vfs_t& fs);
+	bool init(vfs_t& fs);
 	void clear();
 	void flush(const video_t& video, const glm::mat4& viewport);
 	void flush(const glm::ivec2& dimensions);

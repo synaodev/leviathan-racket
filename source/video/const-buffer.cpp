@@ -118,5 +118,5 @@ arch_t const_buffer_t::get_length() const {
 }
 
 bool const_buffer_t::has_immutable_option() {
-	return glBufferStorage != nullptr;
+	return opengl_version[0] == 4 and opengl_version[1] >= 4;
 }

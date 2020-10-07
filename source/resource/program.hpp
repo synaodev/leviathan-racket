@@ -18,15 +18,15 @@ namespace __enum_program {
 using program_t = __enum_program::type;
 
 namespace program {
-	std::string directive(const glm::ivec2& version);
-	std::string minor_vert(const glm::ivec2& version);
-	std::string blank_vert(const glm::ivec2& version);
-	std::string major_vert(const glm::ivec2& version);
-	std::string fonts_vert(const glm::ivec2& version);
-	std::string colors_frag(const glm::ivec2& version);
-	std::string sprites_frag(const glm::ivec2& version);
-	std::string indexed_frag(const glm::ivec2& version);
-	std::string channels_frag(const glm::ivec2& version);
+	std::string directive();
+	std::string minor_vert();
+	std::string blank_vert();
+	std::string major_vert();
+	std::string fonts_vert();
+	std::string colors_frag();
+	std::string sprites_frag();
+	std::string indexed_frag();
+	std::string channels_frag();
 }
 
 #endif // LEVIATHAN_INCLUDED_RESOURCE_PROGRAM_HPP

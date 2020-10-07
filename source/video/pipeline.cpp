@@ -291,14 +291,9 @@ const vertex_spec_t& pipeline_t::get_specify() const {
 }
 
 bool pipeline_t::has_separable() {
-#if defined(LEVIATHAN_PLATFORM_MACOS)
-	// MacOS is dumb
-	return glTexStorage2D != nullptr;
-#else
-	return glBindProgramPipeline != nullptr;
-#endif
+	return opengl_version[0] == 4 and opengl_version[1] >= 1;
 }
 
 bool pipeline_t::has_uniform_azdo() {
-	return glProgramUniform1i != nullptr;
+	return opengl_version[0] == 4 and opengl_version[1] >= 1;
 }
