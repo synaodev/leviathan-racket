@@ -1,4 +1,6 @@
+imgui==1.2.0
 numpy==1.19.2
 Pillow==7.2.0
-PyQt5==5.11.3
-PyQt5-sip==4.19.19
+pkg-resources==0.0.0
+PyOpenGL==3.1.5
+PySDL2==0.9.7

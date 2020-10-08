@@ -85,7 +85,7 @@ def get_limit_type(arg: str) -> int:
         return 2
     return 0
 
-def main():
+def main() -> int:
     paths: List[str] = []
     limit: int = 0
     if len(sys.argv) > 1:
@@ -107,6 +107,8 @@ def main():
             make_indexed_image(path, pixel_list, color_list, image.size, limit)
     else:
         print('Error! No image paths given!')
+        return -1
+    return 0
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
