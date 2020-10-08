@@ -38,11 +38,10 @@ I hope to release in Winter 2021.
 - Windows:
   - Vcpkg is absolutely required.
   - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin environment is not supported. You can also use MinGW & vcpkg on Linux for cross-compiling.
-  - Additionally, for MinGW, you need to build vcpkg dependencies using a MinGW triplet.
+  - Additionally, for MinGW, you need to build vcpkg dependencies using a MinGW triplet. The most consistently functional triplet is "x64-mingw-dynamic", so you might want to go with that one.
   - To do this, open `<vcpkg-root>/scripts/toolchains/mingw.cmake` and add the following lines:
     - `set(CMAKE_C_COMPILER "<mingw-gcc-posix>")`
     - `set(CMAKE_CXX_COMPILER "<mingw-g++-posix>")`
-    - `set(CMAKE_RC_COMPILER "<mingw-windres>")`
     - `set(CMAKE_FIND_ROOT_PATH "<paths-to-additional-dependencies>")`
     - `set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)`
     - `set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)`
@@ -53,10 +52,12 @@ I hope to release in Winter 2021.
     - libgcc_s_seh-1.dll
     - libstdc++-6.dll
   - If vcpkg fails to build SDL2 using MinGW and cites the `-mwindows` flag as a problem for pkgconfig, open SDL2's portfile and comment out the call to `vcpkg_fixup_pkgconfig`.
-  - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_RC_COMPILER=<mingw-windres> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-<linking-type>`
+  - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_RC_COMPILER=<mingw-windres> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic`
   - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
-## Tools
-The dependencies required to run the python scripts are in `tools/requirements.txt`.
-- `tools/alpha.py` fixes transparency problems in an image. Mostly used to correct BFMC's auto-generated font atlases.
-- `tools/config.py` generates a default 'boot.cfg' file in a given directory.
-- `tools/palette.py` generates palettes and indexed textures from a given texture atlas.
+## Scripts/Tools
+The dependencies required to run the python scripts are in `requirements.txt`. The bash scripts only run on Linux, unfortunately.
+- `build-win32.sh` creates a cross platform Win32 build environment using vcpkg, cmake, and mingw.
+- `default-config.py` generates a default configuration file called `boot.cfg`.
+- `edit-tileset.py` opens an editor that allows for modification of tileset attributes.
+- `make-palette.py` generates palettes and index textures from a given texture atlas.
+- `symlink-pref.sh` creates symlinks for SDL_PrefPath() directories in the "data" folder.

@@ -6,6 +6,7 @@
 *.hpp text
 *.inl text
 *.as text
+*.cc text
 *.py text
 *.php text
 *.css text
@@ -21,6 +22,7 @@
 *.fnt text
 *.bmfc text
 *.rc text
+*.sh text
 .htaccess text
 
 # These files are binary and should be left untouched

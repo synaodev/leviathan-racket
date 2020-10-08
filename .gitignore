@@ -30,6 +30,7 @@ imgui_log.txt
 imgui.ini
 
 # Game
+boot.cfg
 AS_DEBUG/
 data/save/
 data/save
