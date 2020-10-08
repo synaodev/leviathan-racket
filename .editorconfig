@@ -6,7 +6,7 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{cpp,cc,h,hpp,inc,rc,json,cfg,toml,md,txt,cmake}]
+[*.{cpp,cc,h,hpp,inc,rc,json,cfg,toml,md,txt,sh,cmake}]
 indent_style = tab
 tab_width = 4
 
