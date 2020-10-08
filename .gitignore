@@ -4,7 +4,7 @@
 [Cc][Mm]ake[Ss]ettings.json
 [Tt][Oo][Dd][Oo].md
 
-# Font
+# BMFont
 *.exe
 *.ttf
 *.bmfc
@@ -20,15 +20,18 @@ __pycache__/
 build/
 mingw/
 helper/
-output/
 [Dd]ebug/
 [Rr]elease/
 [Mm]in[Ss]ize[Rr]el/
 [Rr]el[Ww]ith[Dd]eb[Ii]nfo/
 
+# Imgui
+imgui_log.txt
+imgui.ini
+
 # Game
 AS_DEBUG/
 data/save/
+data/save
 data/init/
-imgui_log.txt
-imgui.ini
+data/init
