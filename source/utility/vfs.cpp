@@ -94,6 +94,7 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 		i18n(),
 		textures(),
 		palettes(),
+		atlases(),
 		shaders(),
 		noises(),
 		fonts(),
@@ -108,6 +109,7 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 		i18n(),
 		textures(),
 		palettes(),
+		atlases(),
 		shaders() {}
 #endif
 
@@ -449,6 +451,7 @@ bool vfs::try_language(const std::string& language) {
 		vfs::device->i18n = std::move(i18n);
 #if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 		vfs::device->fonts.clear();
+		vfs::device->atlases.clear();
 #endif
 		return true;
 	}
@@ -456,7 +459,7 @@ bool vfs::try_language(const std::string& language) {
 	return false;
 }
 
-const texture_t* vfs::texture(const std::string& name, const std::string& directory) {
+const texture_t* vfs::texture(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -467,7 +470,7 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 	if (it == vfs::device->textures.end()) {
 		texture_t& ref = vfs::device->emplace_safely(name, vfs::device->textures);
 		ref.load(
-			directory + name + ".png",
+			kImagePath + name + ".png",
 			vfs::device->sampler_allocator,
 			vfs::device->thread_pool
 		);
@@ -476,11 +479,7 @@ const texture_t* vfs::texture(const std::string& name, const std::string& direct
 	return &it->second;
 }
 
-const texture_t* vfs::texture(const std::string& name) {
-	return vfs::texture(name, kImagePath);
-}
-
-const palette_t* vfs::palette(const std::string& name, const std::string& directory) {
+const palette_t* vfs::palette(const std::string& name) {
 	if (vfs::device == nullptr) {
 		return nullptr;
 	}
@@ -491,7 +490,7 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	if (it == vfs::device->palettes.end()) {
 		palette_t& ref = vfs::device->emplace_safely(name, vfs::device->palettes);
 		ref.load(
-			directory + name + ".png",
+			kPalettePath + name + ".png",
 			vfs::device->sampler_allocator,
 			vfs::device->thread_pool
 		);
@@ -500,8 +499,24 @@ const palette_t* vfs::palette(const std::string& name, const std::string& direct
 	return &it->second;
 }
 
-const palette_t* vfs::palette(const std::string& name) {
-	return vfs::palette(name, kPalettePath);
+const atlas_t* vfs::atlas(const std::string& name) {
+	if (vfs::device == nullptr) {
+		return nullptr;
+	}
+	if (vfs::device->sampler_allocator == nullptr) {
+		return nullptr;
+	}
+	auto it = vfs::device->search_safely(name, vfs::device->atlases);
+	if (it == vfs::device->atlases.end()) {
+		atlas_t& ref = vfs::device->emplace_safely(name, vfs::device->atlases);
+		ref.load(
+			kFontPath + name + ".png",
+			vfs::device->sampler_allocator,
+			vfs::device->thread_pool
+		);
+		return &ref;
+	}
+	return &it->second;
 }
 
 const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {

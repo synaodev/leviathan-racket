@@ -34,6 +34,7 @@ public:
 	void render(const video_t& video, renderer_t& renderer) const;
 	bool viable() const;
 private:
+	bool setup_language(setup_file_t& config, renderer_t& renderer);
 	bool setup_field(audio_t& audio, renderer_t& renderer);
 	void setup_boot(const video_t& video, renderer_t& renderer);
 	void setup_load(const video_t& video, renderer_t& renderer);

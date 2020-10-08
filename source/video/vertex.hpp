@@ -59,14 +59,14 @@ struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {
 	glm::vec2 position;
 	glm::vec2 uvcoords;
 	glm::vec4 color;
-	sint_t texID;
+	sint_t atlas;
 	sint_t table;
 public:
 	vtx_fonts_t() :
 		position(0.0f),
 		uvcoords(0.0f),
 		color(1.0f),
-		texID(0),
+		atlas(0),
 		table(0) {}
 };
 

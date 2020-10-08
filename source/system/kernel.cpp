@@ -20,6 +20,7 @@ kernel_t::kernel_t() :
 	bitmask(0),
 	file_index(0),
 	timer(0.0),
+	language(),
 	field(),
 	identity(0),
 	function(),
@@ -185,6 +186,17 @@ void kernel_t::finish_file_operation() {
 	bitmask[kernel_state_t::Check] = false;
 }
 
+void kernel_t::buffer_language(const std::string& language) {
+	this->language = language;
+	bitmask[kernel_state_t::Language] = true;
+}
+
+void kernel_t::finish_language() {
+	language.clear();
+	bitmask[kernel_state_t::Boot] = true;
+	bitmask[kernel_state_t::Language] = false;
+}
+
 void kernel_t::buffer_field(const std::string& field, sint_t identity) {
 	bitmask[kernel_state_t::Field] = true;
 	this->field = field;
@@ -343,6 +355,10 @@ void kernel_t::set_flag(arch_t index, bool value) {
 
 arch_t kernel_t::get_file_index() const {
 	return file_index;
+}
+
+const std::string& kernel_t::get_language() const {
+	return language;
 }
 
 const std::string& kernel_t::get_field() const {

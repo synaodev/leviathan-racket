@@ -175,7 +175,7 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 			glCheck(glVertexAttribIPointer(
 				3, glm::ivec1::length(),
 				GL_INT, sizeof(vtx_fonts_t),
-				(const void_t)offsetof(vtx_fonts_t, texID)
+				(const void_t)offsetof(vtx_fonts_t, atlas)
 			));
 			glCheck(glEnableVertexAttribArray(4));
 			glCheck(glVertexAttribIPointer(

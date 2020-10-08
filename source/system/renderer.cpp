@@ -112,7 +112,7 @@ bool renderer_t::init(vfs_t& fs) {
 		pipelines[program_t::Indexed].set_sampler("diffuse", 0);
 		pipelines[program_t::Indexed].set_sampler("palette", 1);
 		pipelines[program_t::Strings].set_block("transforms", 0);
-		pipelines[program_t::Strings].set_sampler("diffuse", 0);
+		pipelines[program_t::Strings].set_sampler("channels", 2);
 	}
 	synao_log("Rendering service is ready.\n");
 	return true;

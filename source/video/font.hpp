@@ -7,6 +7,7 @@
 #include "../types.hpp"
 
 struct texture_t;
+struct atlas_t;
 struct palette_t;
 
 struct font_glyph_t {
@@ -42,14 +43,14 @@ public:
 public:
 	void load(const std::string& directory, const std::string& full_path);
 	const font_glyph_t& glyph(char32_t code_point) const;
-	const texture_t* get_texture() const;
-	sint_t get_texture_name() const;
+	const atlas_t* get_atlas() const;
+	sint_t get_atlas_name() const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_inverse_dimensions() const;
 private:
 	std::unordered_map<char32_t, font_glyph_t> glyphs;
 	glm::vec2 dimensions;
-	const texture_t* texture;
+	const atlas_t* atlas;
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_FONT_HPP

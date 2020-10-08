@@ -71,6 +71,11 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		accum = glm::max(accum - constants::MinInterval(), 0.0);
 		input.advance();
 		if (headsup_gui.is_fade_done()) {
+			if (kernel.has(kernel_state_t::Language)) {
+				if (!this->setup_language(config, renderer)) {
+					return false;
+				}
+			}
 			if (kernel.has(kernel_state_t::Boot)) {
 				this->setup_boot(video, renderer);
 			}
@@ -145,6 +150,20 @@ void runtime_t::render(const video_t& video, renderer_t& renderer) const {
 
 bool runtime_t::viable() const {
 	return accum >= constants::MaxInterval();
+}
+
+bool runtime_t::setup_language(setup_file_t& config, renderer_t& renderer) {
+	renderer.clear();
+	const std::string& language = kernel.get_language();
+	if (vfs::try_language(language)) {
+		if (!dialogue_gui.refresh() or !headsup_gui.refresh()) {
+			synao_log("Error! Font loading errors have made switching language to \"{}\" unsuccessful!\n");
+			return false;
+		}
+	}
+	config.set("Setup", "Language", language);
+	kernel.finish_language();
+	return true;
 }
 
 bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {

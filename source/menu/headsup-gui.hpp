@@ -45,6 +45,7 @@ public:
 	~headsup_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);
+	bool refresh();
 	void reset();
 	void handle(const kernel_t& kernel);
 	void update(real64_t delta);

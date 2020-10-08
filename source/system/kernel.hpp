@@ -15,6 +15,7 @@ namespace __enum_kernel_state {
 		Boot,
 		Zero,
 		Quit,
+		Language,
 		Field,
 		Menu,
 		Load,
@@ -60,6 +61,8 @@ public:
 	void load_checkpoint();
 	void save_checkpoint();
 	void finish_file_operation();
+	void buffer_language(const std::string& language);
+	void finish_language();
 	void buffer_field(const std::string& field, sint_t identity);
 	void buffer_field(asIScriptFunction* handle, sint_t identity);
 	void finish_field();
@@ -77,6 +80,7 @@ public:
 	void set_item_ptr_index(arch_t index);
 	void set_flag(arch_t index, bool value);
 	arch_t get_file_index() const;
+	const std::string& get_language() const;
 	const std::string& get_field() const;
 	sint_t get_identity() const;
 	bool can_transfer() const;
@@ -95,7 +99,7 @@ private:
 	std::bitset<kernel_state_t::Total> bitmask;
 	arch_t file_index;
 	real64_t timer;
-	std::string field;
+	std::string language, field;
 	sint_t identity;
 	std::string function;
 	glm::ivec2 cursor;

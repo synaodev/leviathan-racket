@@ -10,7 +10,7 @@
 font_t::font_t() :
 	glyphs(),
 	dimensions(0.0f),
-	texture(nullptr)
+	atlas(nullptr)
 {
 
 }
@@ -19,7 +19,7 @@ font_t::font_t(font_t&& that) noexcept : font_t() {
 	if (this != &that) {
 		std::swap(glyphs, that.glyphs);
 		std::swap(dimensions, that.dimensions);
-		std::swap(texture, that.texture);
+		std::swap(atlas, that.atlas);
 	}
 }
 
@@ -27,7 +27,7 @@ font_t& font_t::operator=(font_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(glyphs, that.glyphs);
 		std::swap(dimensions, that.dimensions);
-		std::swap(texture, that.texture);
+		std::swap(atlas, that.atlas);
 	}
 	return *this;
 }
@@ -52,7 +52,7 @@ void font_t::load(const std::string& directory, const std::string& name) {
 		nlohmann::json file = nlohmann::json::parse(ifs);
 		dimensions.x = std::stof(file["font"]["common"]["-base"].get<std::string>());
 		dimensions.y = std::stof(file["font"]["common"]["-lineHeight"].get<std::string>());
-		texture = vfs::texture({ file["font"]["pages"]["page"]["-file"].get<std::string>() }, directory);
+		atlas = vfs::atlas(file["font"]["pages"]["page"]["-file"].get<std::string>());
 		for (auto ot : file["font"]["chars"]["char"]) {
 			char32_t id = std::stoi(ot["-id"].get<std::string>());
 			const font_glyph_t glyph(
@@ -81,20 +81,20 @@ const font_glyph_t& font_t::glyph(char32_t code_point) const {
 	return it->second;
 }
 
-const texture_t* font_t::get_texture() const {
-	return texture;
+const atlas_t* font_t::get_atlas() const {
+	return atlas;
 }
 
-sint_t font_t::get_texture_name() const {
-	if (texture != nullptr) {
-		return texture->get_name();
+sint_t font_t::get_atlas_name() const {
+	if (atlas != nullptr) {
+		return atlas->get_name();
 	}
 	return 0;
 }
 
 glm::vec2 font_t::get_inverse_dimensions() const {
-	if (texture != nullptr) {
-		return texture->get_inverse_dimensions();
+	if (atlas != nullptr) {
+		return atlas->get_inverse_dimensions();
 	}
 	return glm::one<glm::vec2>();
 }

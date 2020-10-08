@@ -10,6 +10,7 @@ static constexpr sint_t kMipMapPals  = 1;
 static constexpr sint_t kTotalPals   = 64;
 static constexpr sint_t kDimensions  = 256;
 static constexpr sint_t kColorsMax   = 32;
+static constexpr sint_t kTotalAtlas  = 5;
 
 bool sampler_t::has_immutable_option() {
 	return opengl_version[0] == 4 and opengl_version[1] >= 2;
@@ -25,6 +26,10 @@ sint_t sampler_t::get_maximum_textures() {
 
 sint_t sampler_t::get_maximum_palettes() {
 	return kTotalPals;
+}
+
+sint_t sampler_t::get_maximum_atlases() {
+	return kTotalAtlas;
 }
 
 sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t() {
@@ -60,6 +65,7 @@ sampler_allocator_t::sampler_allocator_t(sampler_allocator_t&& that) noexcept : 
 		std::swap(lowest, that.lowest);
 		std::swap(textures, that.textures);
 		std::swap(palettes, that.palettes);
+		std::swap(atlases, that.atlases);
 	}
 }
 
@@ -69,6 +75,7 @@ sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) 
 		std::swap(lowest, that.lowest);
 		std::swap(textures, that.textures);
 		std::swap(palettes, that.palettes);
+		std::swap(atlases, that.atlases);
 	}
 	return *this;
 }
@@ -78,6 +85,7 @@ bool sampler_allocator_t::create(pixel_format_t highest, pixel_format_t lowest) 
 	this->lowest = lowest;
 	auto& t = this->texture(glm::ivec2(kDimensions, kDimensions));
 	auto& p = this->palette(glm::ivec2(kColorsMax, kTotalPals));
+	auto& s = this->atlas(glm::ivec2(kDimensions, kDimensions));
 	return true;
 }
 
@@ -186,4 +194,58 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 
 const sampler_data_t& sampler_allocator_t::palette() const {
 	return palettes;
+}
+
+sampler_data_t& sampler_allocator_t::atlas(const glm::ivec2& dimensions) {
+	if (dimensions.x == kDimensions and dimensions.y == kDimensions) {
+		if (atlases.id == 0) {
+			// Save previous unit and set to working unit
+			sint_t previous = 0;
+			glCheck(glGetIntegerv(GL_ACTIVE_TEXTURE, &previous));
+			glCheck(glActiveTexture(kWorkingUnit));
+
+			uint_t handle = 0;
+			glCheck(glGenTextures(1, &handle));
+			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexStorage3D(
+					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
+					gfx_t::get_pixel_format_gl_enum(lowest),
+					dimensions.x, dimensions.y, kTotalAtlas
+				));
+			} else {
+				glCheck(glTexImage3D(
+					GL_TEXTURE_2D_ARRAY, 0,
+					gfx_t::get_pixel_format_gl_enum(lowest),
+					dimensions.x, dimensions.y, kTotalAtlas,
+					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
+				));
+			}
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			if (sampler_t::has_immutable_option()) {
+				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
+			} else {
+				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+			}
+			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, 0));
+
+			// Restore previous unit
+			glCheck(glActiveTexture(previous));
+
+			atlases.id = handle;
+			atlases.type = GL_TEXTURE_2D_ARRAY;
+			atlases.count = 0;
+		}
+		return atlases;
+	}
+	synao_log("Error! Atlas size must be 256x256! This one is {}x{}!\n", dimensions.x, dimensions.y);
+	static sampler_data_t kNullHandle = sampler_data_t{};
+	return kNullHandle;
+}
+
+const sampler_data_t& sampler_allocator_t::atlas() const {
+	return atlases;
 }

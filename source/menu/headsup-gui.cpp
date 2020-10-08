@@ -32,16 +32,13 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	const animation_t* items_animation = vfs::animation(res::anim::Items);
 	const texture_t* texture = vfs::texture(res::img::Heads);
 	const palette_t* palette = vfs::palette(res::pal::Heads);
-	const font_t* font = vfs::font(kHeadFontIndex);
-	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr or font == nullptr) {
-		synao_log("HeadsUp overlay is missing resources and so child overlays cannot be renderered!\n");
+	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr) {
+		synao_log("HeadsUp GUI is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
-	title_view.set_font(font);
-	title_view.set_persistent(
-		glm::vec2(160.0f, 24.0f),
-		glm::vec4(0.25f, 0.25f, 1.0f, 1.0f)
-	);
+	if (!this->refresh()) {
+		return false;
+	}
 
 	main_scheme.set_file(heads_animation);
 	main_scheme.set_table(0);
@@ -70,7 +67,21 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	item_view.init(texture, palette, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
-	synao_log("HeadsUp overlay is ready.\n");
+	synao_log("HeadsUp GUI is ready.\n");
+	return true;
+}
+
+bool headsup_gui_t::refresh() {
+	const font_t* font = vfs::font(kHeadFontIndex);
+	if (font == nullptr) {
+		synao_log("HeadsUp GUI is missing a font and so titles cannot be rendered!\n");
+		return false;
+	}
+	title_view.set_font(font);
+	title_view.set_persistent(
+		glm::vec2(160.0f, 24.0f),
+		glm::vec4(0.25f, 0.25f, 1.0f, 1.0f)
+	);
 	return true;
 }
 

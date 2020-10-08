@@ -35,6 +35,7 @@ public:
 	~dialogue_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);
+	bool refresh();
 	void reset();
 	void handle(const input_t& input, audio_t& audio);
 	void update(real64_t delta);

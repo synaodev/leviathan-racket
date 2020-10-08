@@ -58,6 +58,7 @@ void draw_title_view_t::clear() {
 void draw_title_view_t::set_font(const font_t* font) {
 	head.set_font(font);
 	lite.set_font(font);
+	cards.clear();
 }
 
 void draw_title_view_t::set_persistent(glm::vec2 position, glm::vec4 color) {

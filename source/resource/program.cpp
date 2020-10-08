@@ -112,19 +112,19 @@ layout(std140) uniform transforms {
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 uvcoords;
 layout(location = 2) in vec4 color;
-layout(location = 3) in int texID;
+layout(location = 3) in int atlas;
 layout(location = 4) in int table;
 out STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
-	layout(location = 2) flat int texID;
+	layout(location = 2) flat int atlas;
 	layout(location = 3) flat int table;
 } vs;
 void main() {
 	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
 	vs.color = color;
-	vs.texID = texID;
+	vs.atlas = atlas;
 	vs.table = table;
 })";
 
@@ -135,19 +135,19 @@ layout(std140) uniform transforms {
 layout(location = 0) in vec2 position;
 layout(location = 1) in vec2 uvcoords;
 layout(location = 2) in vec4 color;
-layout(location = 3) in int texID;
+layout(location = 3) in int atlas;
 layout(location = 4) in int table;
 out STAGE {
 	vec2 uvcoords;
 	vec4 color;
-	flat int texID;
+	flat int atlas;
 	flat int table;
 } vs;
 void main() {
 	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
 	vs.color = color;
-	vs.texID = texID;
+	vs.atlas = atlas;
 	vs.table = table;
 })";
 
@@ -230,31 +230,31 @@ void main() {
 })";
 
 static constexpr byte_t kChannelsFrag420[] = R"(#version 420 core
-layout(binding = 0) uniform sampler2DArray diffuse;
+layout(binding = 2) uniform sampler2DArray channels;
 in STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
-	layout(location = 2) flat int texID;
+	layout(location = 2) flat int atlas;
 	layout(location = 3) flat int table;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 pixel = texture(channels, vec3(fs.uvcoords, float(fs.atlas)));
 	vec4 color = vec4(1.0f - pixel[fs.table]);
 	fragment = color * fs.color;
 })";
 
 static constexpr byte_t kChannelsFrag330[] = R"(#version 330 core
-uniform sampler2DArray diffuse;
+uniform sampler2DArray channels;
 in STAGE {
 	vec2 uvcoords;
 	vec4 color;
-	flat int texID;
+	flat int atlas;
 	flat int table;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
+	vec4 pixel = texture(channels, vec3(fs.uvcoords, float(fs.atlas)));
 	vec4 color = vec4(1.0f - pixel[fs.table]);
 	fragment = color * fs.color;
 })";
