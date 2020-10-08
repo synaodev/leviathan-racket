@@ -56,7 +56,8 @@ I hope to release in Winter 2021.
   - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
 ## Scripts/Tools
 The dependencies required to run the python scripts are in `requirements.txt`. The bash scripts only run on Linux, unfortunately.
-- `build-win32.sh` creates a cross platform Win32 build environment using vcpkg, cmake, and mingw.
+- `build-win32.sh` creates a cross platform Win32 build using vcpkg, cmake, and mingw.
+- `pack-win32.sh` builds the Windows version and generates 7zip archive from the results.
 - `default-config.py` generates a default configuration file called `boot.cfg`.
 - `edit-tileset.py` opens an editor that allows for modification of tileset attributes.
 - `make-palette.py` generates palettes and index textures from a given texture atlas.
