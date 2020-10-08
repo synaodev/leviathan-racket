@@ -179,7 +179,7 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 			return false;
 		}
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		bitmasks = vfs::uint32_buffer(tilekey_path + path + ".atr");
+		bitmasks = vfs::uint32_buffer(tilekey_path + path + ".attr");
 		if (bitmasks.empty()) {
 			return false;
 		}
@@ -195,7 +195,7 @@ bool tileset_viewer_t::save() {
 	select = false;
 	if (!file.empty()) {
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		std::ofstream ofs(tilekey_path + file + ".atr", std::ios::binary);
+		std::ofstream ofs(tilekey_path + file + ".attr", std::ios::binary);
 		if (ofs.is_open()) {
 			ofs.write(
 				reinterpret_cast<byte_t*>(&bitmasks[0]),

@@ -108,7 +108,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 		const std::string& name = ftcv::path_to_name(tileset.getImagePath());
 		tilemap_layer_texture = vfs::texture(name);
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		attribute_key = vfs::uint32_buffer(tilekey_path + name + ".atr");
+		attribute_key = vfs::uint32_buffer(tilekey_path + name + ".attr");
 	}
 }
 
