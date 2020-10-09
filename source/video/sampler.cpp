@@ -5,9 +5,9 @@
 
 static constexpr sint_t kWorkingUnit = GL_TEXTURE4;
 static constexpr sint_t kMipMapTexs  = 4;
-static constexpr sint_t kTotalTexs   = 64;
+static constexpr sint_t kTotalTexs   = 80;
 static constexpr sint_t kMipMapPals  = 1;
-static constexpr sint_t kTotalPals   = 64;
+static constexpr sint_t kTotalPals   = 128;
 static constexpr sint_t kDimensions  = 256;
 static constexpr sint_t kColorsMax   = 32;
 static constexpr sint_t kTotalAtlas  = 5;
