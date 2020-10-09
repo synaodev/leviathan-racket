@@ -1,6 +1,6 @@
 {
 	"Fonts" : [
-		"system", "legal", "clock", "evangelion", "system"
+		"system", "legal", "clock", "evangelion", "console"
 	],
 
 	"Main" : [
@@ -8,7 +8,7 @@
 	],
 
 	"Options" : [
-		"Leviathan Racket:\n\n", 
+		"Leviathan Racket:\n\n",
 		"\t Return\n",
 		"\t Input\n",
 		"\t Video\n",
@@ -52,16 +52,16 @@
 	],
 
 	"FileSys" : [
-		"Save File:\n\n", 
-		"Load File:\n\n", 
-		"\t File 1\n", 
-		"\t File 2\n", 
+		"Save File:\n\n",
+		"Load File:\n\n",
+		"\t File 1\n",
+		"\t File 2\n",
 		"\t File 3"
 	],
 
 	"Inven" : [
-		"Empty", "Kannon", "Frontier", "Wolf Vulcan", "Nail Ray", "Austere", "Mitorashi", 
-		"Arc Wielder", "Lieteraum", "Shoshi's Message", "Life Pot", "Oxygen Tank", "Tow Rope", 
+		"Empty", "Kannon", "Frontier", "Wolf Vulcan", "Nail Ray", "Austere", "Mitorashi",
+		"Arc Wielder", "Lieteraum", "Shoshi's Message", "Life Pot", "Oxygen Tank", "Tow Rope",
 		"Small Key", "Storage Key", "Pretty Necklace", "Angelic Hammer"
 	],
 
