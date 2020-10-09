@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "${OSTYPE}" != "linux-gnu" ]]; then
+if [[ "${OSTYPE}" != "linux-gnu"* ]]; then
 	echo "Only cross-compiling on linux to windows is currently supported!"
 	exit -1
 fi

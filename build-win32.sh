@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "${OSTYPE}" != "linux-gnu" ]]; then
+if [[ "${OSTYPE}" != "linux-gnu"* ]]; then
 	echo "Only cross-compiling on linux to windows is currently supported!"
 	exit -1
 fi
@@ -20,7 +20,7 @@ remove_dir="true"
 
 if [[ $1 == "--debug" ]]; then
 	build_type="Debug"
-elif [[ $2 == "--no-remove" ]]; then
+elif [[ $1 == "--no-remove" ]]; then
 	remove_dir="false"
 fi
 

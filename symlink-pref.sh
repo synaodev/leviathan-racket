@@ -1,17 +1,17 @@
 #!/bin/bash
 
-if [[ "${OSTYPE}" != "linux-gnu" ]]; then
+if [[ "${OSTYPE}" != "linux-gnu"* ]]; then
 	echo "This script is exclusive to Linux! Sorry!"
+	exit -1
+fi
+
+if [ ! -d "data" ] || [ ! -d "cmake" ] || [ ! -f "CMakeLists.txt" ]; then
+	echo "This script needs to be run from the root of the repository!"
 	exit -1
 fi
 
 if [ -z "${XDG_DATA_HOME}" ]; then
 	echo "XDG_DATA_HOME variable is not defined!"
-	exit -1
-fi
-
-if [ ! -d "data" ]; then
-	echo "Can't find data folder!"
 	exit -1
 fi
 
