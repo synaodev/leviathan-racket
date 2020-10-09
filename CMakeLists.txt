@@ -55,6 +55,18 @@ elseif (NOT RTTI_BUILD)
 	message ("Warning! Building without RTTI might fail!")
 endif ()
 
+# Building with static tmxlite
+
+if (NOT DEFINED TMXLITE_STATIC_BUILD)
+	message ("Defaulting to building without static tmxlite...")
+	set (TMXLITE_STATIC_BUILD OFF)
+elseif (TMXLITE_STATIC_BUILD)
+	if (APPLE OR WIN32 OR MINGW)
+		message ("Can only build with static tmxlite on Linux! Sorry!")
+		set (TMXLITE_STATIC_BUILD OFF)
+	endif ()
+endif ()
+
 # Building with meta elements
 
 if (NOT DEFINED META_BUILD)

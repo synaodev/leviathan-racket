@@ -67,7 +67,7 @@ fi
 
 cd "mingw"
 
-cmake ".." -DCMAKE_BUILD_TYPE="${build_type}" -DCMAKE_C_COMPILER="$(which ${c_compiler})" -DCMAKE_CXX_COMPILER="$(which ${cxx_compiler})" -DCMAKE_TOOLCHAIN_FILE="${vcpkg_root}/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET="x64-mingw-dynamic" -DSTDAFX_BUILD:BOOL="OFF" -DCCACHE_BUILD:BOOL="OFF" -DGOLD_BUILD:BOOL="OFF" -DRTTI_BUILD:BOOL="ON" -DMETA_BUILD:BOOL="ON" -DNAOMI_BUILD:BOOL="ON" -DEDITOR_BUILD:BOOL="ON"
+cmake ".." -DCMAKE_BUILD_TYPE="${build_type}" -DCMAKE_C_COMPILER="$(which ${c_compiler})" -DCMAKE_CXX_COMPILER="$(which ${cxx_compiler})" -DCMAKE_TOOLCHAIN_FILE="${vcpkg_root}/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET="x64-mingw-dynamic" -DSTDAFX_BUILD:BOOL="OFF" -DCCACHE_BUILD:BOOL="OFF" -DGOLD_BUILD:BOOL="OFF" -DRTTI_BUILD:BOOL="ON" -DTMXLITE_STATIC_BUILD:BOOL="OFF" -DMETA_BUILD:BOOL="ON" -DNAOMI_BUILD:BOOL="ON" -DEDITOR_BUILD:BOOL="ON"
 
 cp "/lib/gcc/x86_64-w64-mingw32/${compiler_version}/libgcc_s_seh-1.dll" .
 cp "/lib/gcc/x86_64-w64-mingw32/${compiler_version}/libstdc++-6.dll" .
