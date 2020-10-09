@@ -2,7 +2,7 @@
 #define LEVIATHAN_INCLUDED_VIDEO_FONT_HPP
 
 #include <string>
-#include <unordered_map>
+#include <map>
 
 #include "../types.hpp"
 
@@ -43,12 +43,14 @@ public:
 public:
 	void load(const std::string& directory, const std::string& full_path);
 	const font_glyph_t& glyph(char32_t code_point) const;
+	real_t kerning(char32_t first, char32_t second) const;
 	const atlas_t* get_atlas() const;
 	sint_t get_atlas_name() const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_inverse_dimensions() const;
 private:
-	std::unordered_map<char32_t, font_glyph_t> glyphs;
+	std::map<char32_t, font_glyph_t> glyphs;
+	std::map<std::pair<char32_t, char32_t>, real_t> kernings;
 	glm::vec2 dimensions;
 	const atlas_t* atlas;
 };

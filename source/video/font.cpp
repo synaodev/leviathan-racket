@@ -18,6 +18,7 @@ font_t::font_t() :
 font_t::font_t(font_t&& that) noexcept : font_t() {
 	if (this != &that) {
 		std::swap(glyphs, that.glyphs);
+		std::swap(kernings, that.kernings);
 		std::swap(dimensions, that.dimensions);
 		std::swap(atlas, that.atlas);
 	}
@@ -26,6 +27,7 @@ font_t::font_t(font_t&& that) noexcept : font_t() {
 font_t& font_t::operator=(font_t&& that) noexcept {
 	if (this != &that) {
 		std::swap(glyphs, that.glyphs);
+		std::swap(kernings, that.kernings);
 		std::swap(dimensions, that.dimensions);
 		std::swap(atlas, that.atlas);
 	}
@@ -50,10 +52,11 @@ void font_t::load(const std::string& directory, const std::string& name) {
 	std::ifstream ifs(full_path, std::ios::binary);
 	if (ifs.is_open()) {
 		nlohmann::json file = nlohmann::json::parse(ifs);
-		dimensions.x = std::stof(file["font"]["common"]["-base"].get<std::string>());
-		dimensions.y = std::stof(file["font"]["common"]["-lineHeight"].get<std::string>());
-		atlas = vfs::atlas(file["font"]["pages"]["page"]["-file"].get<std::string>());
-		for (auto ot : file["font"]["chars"]["char"]) {
+		auto block = file["font"];
+		dimensions.x = std::stof(block["common"]["-base"].get<std::string>());
+		dimensions.y = std::stof(block["common"]["-lineHeight"].get<std::string>());
+		atlas = vfs::atlas(block["pages"]["page"]["-file"].get<std::string>());
+		for (auto ot : block["chars"]["char"]) {
 			char32_t id = std::stoi(ot["-id"].get<std::string>());
 			const font_glyph_t glyph(
 				std::stof(ot["-x"].get<std::string>()),
@@ -67,6 +70,14 @@ void font_t::load(const std::string& directory, const std::string& name) {
 			);
 			glyphs[id] = glyph;
 		}
+		if (block.find("kernings") != block.end()) {
+			for (auto ot : block["kernings"]["kerning"]) {
+				char32_t first = std::stoi(ot["-first"].get<std::string>());
+				char32_t second = std::stoi(ot["-second"].get<std::string>());
+				auto key = std::pair{first, second};
+				kernings[key] = std::stof(ot["-amount"].get<std::string>());
+			}
+		}
 	} else {
 		synao_log("Failed to load font from {}!\n", full_path);
 	}
@@ -77,6 +88,17 @@ const font_glyph_t& font_t::glyph(char32_t code_point) const {
 	auto it = glyphs.find(code_point);
 	if (it == glyphs.end()) {
 		return kInvalidGlyph;
+	}
+	return it->second;
+}
+
+real_t font_t::kerning(char32_t first, char32_t second) const {
+	if (first == U'\0' or second == U'\0') {
+		return 0.0f;
+	}
+	auto it = kernings.find(std::pair{first, second});
+	if (it == kernings.end()) {
+		return 0.0f;
 	}
 	return it->second;
 }

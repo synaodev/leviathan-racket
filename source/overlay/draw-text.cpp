@@ -189,16 +189,21 @@ void draw_text_t::generate() {
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
 		sint_t atlas_name = font->get_atlas_name();
+		char32_t p = U'\0';
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
 			char32_t& c = buffer[it];
 			switch (c) {
 			case U'\t': {
 				const font_glyph_t& glyph = font->glyph(U' ');
+				p = U' ';
+
 				start_pos.x += glyph.w * 4.0f;
 				--qindex;
 				break;
 			}
 			case U'\n': {
+				p = U'\0';
+
 				start_pos.x = (position - origin).x;
 				start_pos.y += start_dim.y;
 				--qindex;
@@ -206,8 +211,10 @@ void draw_text_t::generate() {
 			}
 			default: {
 				const font_glyph_t& glyph = font->glyph(c);
-				vtx_fonts_t* quad = quads.at<vtx_fonts_t>(qindex * display_list_t::SingleQuad);
+				const real_t kerning = font->kerning(p, c);
+				p = c;
 
+				vtx_fonts_t* quad = quads.at<vtx_fonts_t>(qindex * display_list_t::SingleQuad);
 				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
 				quad[0].color = color;
@@ -232,7 +239,7 @@ void draw_text_t::generate() {
 				quad[3].atlas = atlas_name;
 				quad[3].table = glyph.table;
 
-				start_pos.x += glyph.x_advance;
+				start_pos.x += (glyph.x_advance + kerning);
 				break;
 			}
 			}
