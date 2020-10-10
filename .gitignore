@@ -6,7 +6,6 @@
 
 # BMFont
 *.exe
-*.ttf
 *.bmfc
 
 # Python
