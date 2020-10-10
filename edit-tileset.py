@@ -4,6 +4,7 @@ import os, sys, ctypes
 import OpenGL.GL as gl
 import imgui
 
+from typing import List
 from sdl2 import *
 from imgui.integrations.sdl2 import SDL2Renderer
 
@@ -12,9 +13,41 @@ def get_tileset_name(attribute_path: str) -> str:
     dot_pos = attribute_path.rfind('.')
     return attribute_path[sep_pos : dot_pos - sep_pos] + '.png'
 
-def init():
-    dimensions = 800
-    name = 'Attribute Editor'
+def get_tilekey_list() -> List[str]:
+    pass
+
+class AttributeCtrl():
+    def __init__(self):
+        self.enable: bool = True
+        self.save: bool = False
+        self.load: bool = False
+        self.index: int = 0
+        self.files: List[str] = []
+    def handle(self):
+        imgui.begin_main_menu_bar()
+        if imgui.begin_menu('File'):
+            if imgui.menu_item('Load', 'Ctrl+L', False, self.enable):
+                self.enable = False
+                self.load = True
+                self.save = False
+            elif imgui.menu_item('Save', 'Ctrl+S', False, self.enable):
+                self.enable = False
+                self.load = False
+                self.save = True
+            elif imgui.menu_item('Clear', 'Ctrl+Q', False, self.enable):
+                self.enable = False
+                self.load = True
+                self.save = False
+                self.index = 0
+                # tileset_viewer.reset()
+            imgui.end_menu()
+        imgui.end_main_menu_bar()
+        if self.load:
+            imgui.begin('File Dialog')
+            if len(self.files) == 0:
+                pass
+
+def loop() -> int:
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24)
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8)
@@ -22,31 +55,27 @@ def init():
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3)
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
     window = SDL_CreateWindow(
-        name.encode('utf-8'),
+        'Tileset Editor'.encode('utf-8'),
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        dimensions, dimensions,
+        800, 800,
         SDL_WINDOW_OPENGL
     )
     if window is None:
         print('Error! Couldn\'t create window!')
-        return None, None
+        SDL_Quit()
+        return -1
     context = SDL_GL_CreateContext(window)
     if context is None:
         print('Error! Couldn\'t create context!')
         SDL_DestroyWindow(window)
-        return None, None
+        SDL_Quit()
+        return -1
     SDL_GL_MakeCurrent(window, context)
     if SDL_GL_SetSwapInterval(1) < 0:
         print('Error! Couldn\'t activate vsync!')
         SDL_DestroyWindow(window)
         SDL_GL_DeleteContext(context)
-        return None, None
-    return window, context
-
-def loop(working_directory: str) -> int:
-    window, context = init()
-    if window is None or context is None:
         SDL_Quit()
         return -1
     imgui.create_context()
@@ -61,15 +90,7 @@ def loop(working_directory: str) -> int:
             impl.process_event(event)
         impl.process_inputs()
         imgui.new_frame()
-        if imgui.begin_main_menu_bar():
-            if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item(
-                    "Quit", 'Cmd+Q', False, True
-                )
-                if clicked_quit:
-                    running = False
-                imgui.end_menu()
-            imgui.end_main_menu_bar()
+        # Run Everything
         gl.glClearColor(1.0, 1.0, 1.0, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
         imgui.render()
@@ -95,7 +116,7 @@ def main() -> int:
     if SDL_Init(SDL_INIT_EVERYTHING) < 0:
         print('Error! SDL failed to initialize!')
         return -1
-    return loop(working_directory)
+    return loop()
 
 if __name__ == '__main__':
     sys.exit(main())
