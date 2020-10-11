@@ -1,5 +1,15 @@
 cmake_minimum_required (VERSION 3.13)
 
+# Check for ccache on Linux
+
+if (UNIX AND NOT APPLE)
+	find_program (CCACHE_PROGRAM "ccache")
+	if (CCACHE_PROGRAM)
+		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+		message ("Using ccache!")
+	endif ()
+endif ()
+
 # Building with precompiled headers
 
 if (NOT DEFINED STDAFX_BUILD AND NOT MINGW)
@@ -10,61 +20,6 @@ elseif (${CMAKE_VERSION} VERSION_LESS_EQUAL "3.15" OR MINGW)
 		message ("Precompiled headers are unavailable! Sorry!")
 	endif ()
 	set (STDAFX_BUILD OFF)
-endif ()
-
-# Building with ccache
-
-if (WIN32 OR APPLE)
-	if (CCACHE_BUILD)
-		message ("Cannot use ccache on this system! Sorry!")
-	endif ()
-	set (CCACHE_BUILD OFF)
-elseif (NOT DEFINED CCACHE_BUILD)
-	message ("Defaulting to building with ccache, if possible...")
-	set (CCACHE_BUILD ON)
-endif ()
-
-if (CCACHE_BUILD)
-	find_program (CCACHE_PROGRAM "ccache")
-	if (CCACHE_PROGRAM)
-		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
-	else ()
-		message ("Couldn't find ccache! Sorry!")
-	endif ()
-endif ()
-
-# Building with gold linker
-
-if (NOT DEFINED GOLD_BUILD)
-	message ("Defaulting to building without gold linker...")
-	set (GOLD_BUILD OFF)
-elseif (GOLD_BUILD)
-	if (UNIX AND NOT APPLE)
-		message ("Warning! Make sure you have gold linker installed!")
-	else ()
-		message ("Gold linker is unavailable! Sorry!")
-	endif ()
-endif ()
-
-# Building with RTTI
-
-if (NOT DEFINED RTTI_BUILD)
-	message ("Defaulting to building with RTTI...")
-	set (RTTI_BUILD ON)
-elseif (NOT RTTI_BUILD)
-	message ("Warning! Building without RTTI might fail!")
-endif ()
-
-# Building with static tmxlite
-
-if (NOT DEFINED TMXLITE_STATIC_BUILD)
-	message ("Defaulting to building without static tmxlite...")
-	set (TMXLITE_STATIC_BUILD OFF)
-elseif (TMXLITE_STATIC_BUILD)
-	if (APPLE OR WIN32 OR MINGW)
-		message ("Can only build with static tmxlite on Linux! Sorry!")
-		set (TMXLITE_STATIC_BUILD OFF)
-	endif ()
 endif ()
 
 # Building with meta elements
