@@ -54,7 +54,7 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
 		auto& list = renderer.display_list(
-			layer_value::TileFront,
+			layer_value::Foreground,
 			blend_mode_t::Add,
 			program_t::Colors
 		);

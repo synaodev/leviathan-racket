@@ -271,7 +271,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 	this->assure();
 	if (state < sequences.size()) {
 		auto& list = renderer.display_list(
-			layer_value::HeadsUp,
+			layer_value::Persistent,
 			blend_mode_t::Alpha,
 			palette != nullptr ? program_t::Indexed : program_t::Sprites
 		);

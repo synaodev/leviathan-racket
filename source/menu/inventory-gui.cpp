@@ -171,7 +171,7 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 			element.render(renderer);
 		}
 		auto& list = renderer.display_list(
-			layer_value::HeadsUp,
+			layer_value::Persistent,
 			blend_mode_t::Alpha,
 			program_t::Colors
 		);

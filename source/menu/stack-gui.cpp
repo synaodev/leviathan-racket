@@ -68,7 +68,7 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 	}
 	if (!widgets.empty() or inventory_gui.open()) {
 		auto& list = renderer.display_list(
-			layer_value::HeadsUp,
+			layer_value::Persistent,
 			blend_mode_t::Alpha,
 			program_t::Colors
 		);

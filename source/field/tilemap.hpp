@@ -31,8 +31,7 @@ private:
 	glm::ivec2 dimensions;
 	std::vector<uint_t> attributes, attribute_key;
 	rect_t previous_viewport;
-	const texture_t* tilemap_layer_texture;
-	const palette_t* tilemap_layer_palette;
+	const texture_t* layer_texture;
 	const texture_t* parallax_texture;
 	std::vector<tilemap_parallax_t> tilemap_parallaxes;
 	std::vector<tilemap_layer_t> tilemap_layers;

@@ -122,7 +122,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 		amend = false;
 		if (select and flash) {
 			auto& list = renderer.display_list(
-				layer_value::HeadsUp,
+				layer_value::Persistent,
 				blend_mode_t::Alpha,
 				program_t::Colors
 			);
@@ -153,7 +153,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 	} else {
 		if (select and flash) {
 			auto& list = renderer.display_list(
-				layer_value::HeadsUp,
+				layer_value::Persistent,
 				blend_mode_t::Alpha,
 				program_t::Colors
 			);

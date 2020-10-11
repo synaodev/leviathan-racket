@@ -12,7 +12,7 @@ draw_text_t::draw_text_t() :
 	font(nullptr),
 	position(0.0f),
 	origin(0.0f),
-	layer(layer_value::HeadsUp),
+	layer(layer_value::Persistent),
 	color(1.0f),
 	current(0),
 	buffer(),

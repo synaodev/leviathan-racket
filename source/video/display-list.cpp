@@ -80,7 +80,7 @@ display_list_t& display_list_t::vtx_pool_write(const vertex_pool_t& that_pool) {
 }
 
 display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vtx_color) {
-	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
+	const sint_t matrix = layer == layer_value::Persistent ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_blank_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].matrix 	= matrix;
@@ -98,7 +98,7 @@ display_list_t& display_list_t::vtx_blank_write(rect_t raster_rect, glm::vec4 vt
 }
 
 display_list_t& display_list_t::vtx_major_write(rect_t texture_rect, glm::vec2 raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name, sint_t palette_name) {
-	const sint_t matrix = layer > layer_value::TileFront ? 0 : 1;
+	const sint_t matrix = layer == layer_value::Persistent ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
 	vtx[0].matrix 	= matrix;

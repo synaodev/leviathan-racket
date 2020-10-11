@@ -8,12 +8,11 @@ namespace __enum_layer {
 }
 
 namespace layer_value {
-	constexpr __enum_layer::type Parallax	= -2.0f;
-	constexpr __enum_layer::type TileBack	= -1.0f;
+	constexpr __enum_layer::type Invisible	= -2.0f;
+	constexpr __enum_layer::type Background	= -1.0f;
 	constexpr __enum_layer::type Automatic	= 0.0f;
-	constexpr __enum_layer::type TileFront	= 1.0f;
-	constexpr __enum_layer::type HeadsUp	= 1.5f;
-	constexpr __enum_layer::type Invisible	= 2.0f;
+	constexpr __enum_layer::type Foreground	= 1.0f;
+	constexpr __enum_layer::type Persistent	= 2.0f;
 	inline bool equal(__enum_layer::type lhv, __enum_layer::type rhv) {
 		static constexpr __enum_layer::type kEpsilon = 0.1f;
 		return glm::abs(lhv - rhv) < kEpsilon;

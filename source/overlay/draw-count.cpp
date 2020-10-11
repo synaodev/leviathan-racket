@@ -10,7 +10,7 @@ static constexpr sint_t kPoint = 12;
 
 draw_count_t::draw_count_t() :
 	amend(false),
-	layer(layer_value::HeadsUp),
+	layer(layer_value::Persistent),
 	backwards(false),
 	visible(false),
 	table(0),

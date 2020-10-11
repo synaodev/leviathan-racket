@@ -50,7 +50,7 @@ void draw_fade_t::handle() {
 
 void draw_fade_t::render(renderer_t& renderer) const {
 	auto& list = renderer.display_list(
-		layer_value::HeadsUp,
+		layer_value::Persistent,
 		blend_mode_t::Alpha,
 		program_t::Colors
 	);

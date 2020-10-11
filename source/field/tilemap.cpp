@@ -19,8 +19,7 @@ tilemap_t::tilemap_t() :
 	attributes(),
 	attribute_key(),
 	previous_viewport(glm::zero<glm::vec2>(), constants::NormalDimensions<real_t>()),
-	tilemap_layer_texture(nullptr),
-	tilemap_layer_palette(nullptr),
+	layer_texture(nullptr),
 	parallax_texture(nullptr),
 	tilemap_parallaxes(),
 	tilemap_layers()
@@ -36,8 +35,7 @@ void tilemap_t::reset() {
 		-constants::TileDimensions<real_t>(),
 		constants::NormalDimensions<real_t>()
 	);
-	tilemap_layer_texture = nullptr;
-	tilemap_layer_palette = nullptr;
+	layer_texture = nullptr;
 	parallax_texture = nullptr;
 	tilemap_parallaxes.clear();
 	tilemap_layers.clear();
@@ -61,7 +59,7 @@ void tilemap_t::handle(const camera_t& camera) {
 		);
 		arch_t range = camera.get_tile_range(first, last);
 		for (auto&& layer : tilemap_layers) {
-			layer.handle(range, first, last, dimensions, tilemap_layer_texture, tilemap_layer_palette);
+			layer.handle(range, first, last, dimensions, layer_texture);
 		}
 	}
 }
@@ -75,16 +73,10 @@ void tilemap_t::render(renderer_t& renderer, rect_t viewport) const {
 		);
 	}
 	for (auto&& layer : tilemap_layers) {
-		layer.render(
-			renderer,
-			amend,
-			tilemap_layer_palette
-		);
+		layer.render(renderer, amend);
 	}
 	amend = false;
 }
-
-static const byte_t kPaletteProperty[] = "indexed";
 
 void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 	const tmx::FloatRect bounds = tmxmap.getBounds();
@@ -99,14 +91,8 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 	auto& tilesets = tmxmap.getTilesets();
 	if (!tilesets.empty()) {
 		auto& tileset = tilesets[0];
-		for (auto&& property : tileset.getProperties()) {
-			auto& name = property.getName();
-			if (name == kPaletteProperty) {
-				tilemap_layer_palette = vfs::palette(tileset.getName());
-			}
-		}
 		const std::string& name = ftcv::path_to_name(tileset.getImagePath());
-		tilemap_layer_texture = vfs::texture(name);
+		layer_texture = vfs::texture(name);
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
 		attribute_key = vfs::uint32_buffer(tilekey_path + name + ".attr");
 	}
@@ -115,8 +101,8 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 void tilemap_t::push_layer(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	if (!attribute_key.empty()) {
-		glm::vec2 inverse = tilemap_layer_texture != nullptr ?
-			tilemap_layer_texture->get_inverse_dimensions() :
+		glm::vec2 inverse = layer_texture != nullptr ?
+			layer_texture->get_inverse_dimensions() :
 			glm::zero<glm::vec2>();
 		auto& recent = tilemap_layers.emplace_back(dimensions);
 		recent.init(
