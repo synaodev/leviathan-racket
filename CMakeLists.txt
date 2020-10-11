@@ -29,20 +29,6 @@ if (NOT DEFINED META_BUILD)
 	set (META_BUILD OFF)
 endif ()
 
-# Building with naomi
-
-if (NOT DEFINED NAOMI_BUILD)
-	message ("Defaulting to building with naomi...")
-	set (NAOMI_BUILD ON)
-endif ()
-
-# Building with editor
-
-if (NOT DEFINED EDITOR_BUILD)
-	message ("Defaulting to building with editor...")
-	set (EDITOR_BUILD ON)
-endif ()
-
 # Project definition
 
 project (LeviathanRacket)
@@ -60,15 +46,9 @@ set (CMAKE_C_STANDARD_REQUIRED ON)
 set (CMAKE_C_EXTENSIONS OFF)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Targets
+# Target
 
 add_executable (naomi)
-target_compile_definitions (naomi PRIVATE "-DLEVIATHAN_EXECUTABLE_NAOMI")
-
-if (EDITOR_BUILD)
-	add_executable (editor)
-	target_compile_definitions (editor PRIVATE "-DLEVIATHAN_EXECUTABLE_EDITOR")
-endif ()
 
 # Configure
 

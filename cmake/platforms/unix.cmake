@@ -8,17 +8,8 @@ else ()
 	set (STLFS_LIBS "stdc++fs")
 endif ()
 
-if (NAOMI_BUILD)
-	target_link_libraries (naomi PRIVATE
-		Threads::Threads
-		${STLFS_LIBS}
-		${CMAKE_DL_LIBS}
-	)
-endif ()
-if (EDITOR_BUILD)
-	target_link_libraries (editor PRIVATE
-		Threads::Threads
-		${STLFS_LIBS}
-		${CMAKE_DL_LIBS}
-	)
-endif ()
+target_link_libraries (naomi PRIVATE
+	Threads::Threads
+	${STLFS_LIBS}
+	${CMAKE_DL_LIBS}
+)

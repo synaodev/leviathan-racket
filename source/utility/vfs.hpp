@@ -8,15 +8,12 @@
 
 #include "./thread-pool.hpp"
 
+#include "../audio/noise.hpp"
+#include "../resource/animation.hpp"
+#include "../system/receiver.hpp"
+#include "../video/font.hpp"
 #include "../video/texture.hpp"
 #include "../video/pipeline.hpp"
-
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	#include "../audio/noise.hpp"
-	#include "../resource/animation.hpp"
-	#include "../system/receiver.hpp"
-	#include "../video/font.hpp"
-#endif
 
 struct setup_file_t;
 struct vfs_t;
@@ -64,7 +61,6 @@ namespace vfs {
 	const palette_t* palette(const std::string& name);
 	const atlas_t* atlas(const std::string& name);
 	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::string event_path(const std::string& name, rec_loading_t flags);
 	const noise_t* noise(const std::string& name);
 	const noise_t* noise(const entt::hashed_string& entry);
@@ -73,7 +69,6 @@ namespace vfs {
 	const font_t* font(const std::string& name);
 	const font_t* font(arch_t index);
 	const font_t* debug_font();
-#endif
 }
 
 struct vfs_t : public not_copyable_t {
@@ -105,11 +100,9 @@ public:
 	std::unordered_map<std::string, palette_t> palettes;
 	std::unordered_map<std::string, atlas_t> atlases;
 	std::unordered_map<std::string, shader_t> shaders;
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 	std::unordered_map<entt::id_type, noise_t> noises;
 	std::unordered_map<entt::id_type, animation_t> animations;
 	std::unordered_map<std::string, font_t> fonts;
-#endif
 };
 
 #endif // LEVIATHAN_INCLUDED_UTILITY_VFS_HPP

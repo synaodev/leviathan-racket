@@ -4,19 +4,17 @@
 #include <cstring>
 #include <SDL2/SDL.h>
 
-#include "../utility/vfs.hpp"
-#include "../utility/constants.hpp"
-#include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
-
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-
 #include "./input.hpp"
 #include "./video.hpp"
 #include "./audio.hpp"
 #include "./music.hpp"
 #include "./renderer.hpp"
 #include "./runtime.hpp"
+
+#include "../utility/vfs.hpp"
+#include "../utility/constants.hpp"
+#include "../utility/logger.hpp"
+#include "../utility/setup-file.hpp"
 
 static constexpr uint_t kStopDelay = 40;
 static constexpr uint_t kNormDelay = 10;
@@ -100,73 +98,6 @@ static int process(setup_file_t& config) {
 	}
 	return EXIT_SUCCESS;
 }
-
-#elif defined(LEVIATHAN_EXECUTABLE_EDITOR)
-
-#include "./input.hpp"
-#include "./video.hpp"
-#include "./renderer.hpp"
-#include "./editor.hpp"
-
-static constexpr uint_t kStopDelay = 40;
-
-static bool main_loop(input_t& input, video_t& video, renderer_t& renderer) {
-	policy_t policy = policy_t::Run;
-	editor_t editor;
-	if (!editor.init(video, renderer)) {
-		synao_log("Editor initialization failed!\n");
-		return false;
-	}
-	synao_log("Entering main loop...\n");
-	watch_t sync_watch, head_watch;
-	while (policy != policy_t::Quit) {
-		policy = input.poll(policy, editor_t::get_event_callback());
-		if (policy != policy_t::Stop) {
-			editor.update(head_watch.restart());
-			if (editor.viable()) {
-				editor.handle(input, renderer);
-				editor.render(video, renderer);
-				real64_t waiting = constants::MinInterval() - sync_watch.elapsed();
-				if (waiting > 0.0) {
-					uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
-					SDL_Delay(ticks);
-				}
-				sync_watch.restart();
-			}
-		} else {
-			SDL_Delay(kStopDelay);
-		}
-	}
-	return true;
-}
-
-static int process(setup_file_t& config) {
-	config.set("Video", "VerticalSync", 0);
-	input_t input;
-	if (!input.init(config)) {
-		return EXIT_FAILURE;
-	}
-	video_t video;
-	if (!video.init(config, true)) {
-		return EXIT_FAILURE;
-	}
-	vfs_t fs;
-	if (!fs.init(config)) {
-		return EXIT_FAILURE;
-	}
-	renderer_t renderer;
-	if (!renderer.init(fs)) {
-		return EXIT_FAILURE;
-	}
-	if (!main_loop(input, video, renderer)) {
-		return EXIT_FAILURE;
-	}
-	return EXIT_SUCCESS;
-}
-
-#else
-	#error "Error! Executable is not defined!"
-#endif
 
 static std::string get_boot_path() {
 	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
@@ -255,7 +186,7 @@ int main(int argc, char** argv) {
 		"   Platform: {} {}\n"
 		"   Compiler: {}\n"
 		"   Toolchain: {}\n"
-		"   Executable: {} {}\n"
+		"   Build Type: {}\n"
 		"==============================\n",
 		LEVIATHAN_VERSION_INFORMATION_MAJOR,
 		LEVIATHAN_VERSION_INFORMATION_MINOR,
@@ -265,7 +196,6 @@ int main(int argc, char** argv) {
 		version_information::architecture,
 		version_information::compiler,
 		version_information::toolchain,
-		version_information::executable,
 		version_information::build_type
 	);
 	// Handle arguments

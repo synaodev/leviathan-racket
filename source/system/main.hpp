@@ -63,15 +63,6 @@ namespace version_information {
 		"Release"
 #endif
 	;
-	const byte_t executable[] =
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-		"Naomi"
-#elif defined(LEVIATHAN_EXECUTABLE_EDITOR)
-		"Editor"
-#else
-		"Unknown"
-#endif
-	;
 }
 
 #endif // LEVIATHAN_INCLUDED_SYSTEM_MAIN_HPP

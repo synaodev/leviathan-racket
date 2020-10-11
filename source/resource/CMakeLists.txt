@@ -1,15 +1,7 @@
 cmake_minimum_required (VERSION 3.13)
 
-if (NAOMI_BUILD)
-	target_sources (naomi PRIVATE "animation.cpp" "program.cpp")
-	if (WIN32)
-		target_sources (naomi PRIVATE "icon.rc")
-	endif ()
-endif ()
+target_sources (naomi PRIVATE "animation.cpp" "program.cpp")
 
-if (EDITOR_BUILD)
-	target_sources (editor PRIVATE "program.cpp")
-	if (WIN32)
-		target_sources (editor PRIVATE "icon.rc")
-	endif ()
+if (WIN32)
+	target_sources (naomi PRIVATE "icon.rc")
 endif ()

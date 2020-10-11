@@ -84,34 +84,20 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 	The "init" and "save" directories should be in the directory returned by SDL_PrefPath().
 */
 
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-	vfs_t::vfs_t() :
-		thread_pool(),
-		storage_mutex(),
-		personal(),
-		language(kLanguage),
-		sampler_allocator(nullptr),
-		i18n(),
-		textures(),
-		palettes(),
-		atlases(),
-		shaders(),
-		noises(),
-		fonts(),
-		animations() {}
-#else
-	vfs_t::vfs_t() :
-		thread_pool(),
-		storage_mutex(),
-		personal(),
-		language(kLanguage),
-		sampler_allocator(nullptr),
-		i18n(),
-		textures(),
-		palettes(),
-		atlases(),
-		shaders() {}
-#endif
+vfs_t::vfs_t() :
+	thread_pool(),
+	storage_mutex(),
+	personal(),
+	language(kLanguage),
+	sampler_allocator(nullptr),
+	i18n(),
+	textures(),
+	palettes(),
+	atlases(),
+	shaders(),
+	noises(),
+	fonts(),
+	animations() {}
 
 vfs_t::~vfs_t() {
 	if (vfs::device != nullptr) {
@@ -449,10 +435,8 @@ bool vfs::try_language(const std::string& language) {
 		}
 		vfs::device->language = language;
 		vfs::device->i18n = std::move(i18n);
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
 		vfs::device->fonts.clear();
 		vfs::device->atlases.clear();
-#endif
 		return true;
 	}
 	synao_log("Error! Couldn't load language file: {}\n", full_path);
@@ -538,8 +522,6 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	return &it->second;
 }
 
-#if defined(LEVIATHAN_EXECUTABLE_NAOMI)
-
 std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
 	if (vfs::device == nullptr) {
 		synao_log("Couldn't find path for event: {}!\n", name);
@@ -614,5 +596,3 @@ const font_t* vfs::font(arch_t index) {
 const font_t* vfs::debug_font() {
 	return vfs::font(kDebugFontIndex);
 }
-
-#endif

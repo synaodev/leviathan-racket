@@ -61,33 +61,18 @@ set (GENERAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 
 # Link/Include
 
-if (NAOMI_BUILD)
-	target_link_libraries (naomi PRIVATE
-		Angelscript::angelscript
-		EnTT::EnTT
-		${TMXLITE_LIBRARY}
-		${FMT_LIBRARY}
-		${OPENAL_LIBRARY}
-		${SDL2_LIBRARIES}
-	)
-	target_include_directories (naomi PRIVATE
-		${GENERAL_INCLUDE_DIR}
-		${TMXLITE_INCLUDE_DIR}
-		${FMT_INCLUDE_DIR}
-		${OPENAL_INCLUDE_DIR}
-		${SDL2_INCLUDE_DIR}
-	)
-endif ()
-
-if (EDITOR_BUILD)
-	target_link_libraries (editor PRIVATE
-		${FMT_LIBRARY}
-		${SDL2_LIBRARIES}
-	)
-	target_include_directories (editor PRIVATE
-		${GENERAL_INCLUDE_DIR}
-		${STB_INCLUDE_DIR}
-		${FMT_INCLUDE_DIR}
-		${SDL2_INCLUDE_DIR}
-	)
-endif ()
+target_link_libraries (naomi PRIVATE
+	Angelscript::angelscript
+	EnTT::EnTT
+	${TMXLITE_LIBRARY}
+	${FMT_LIBRARY}
+	${OPENAL_LIBRARY}
+	${SDL2_LIBRARIES}
+)
+target_include_directories (naomi PRIVATE
+	${GENERAL_INCLUDE_DIR}
+	${TMXLITE_INCLUDE_DIR}
+	${FMT_INCLUDE_DIR}
+	${OPENAL_INCLUDE_DIR}
+	${SDL2_INCLUDE_DIR}
+)
