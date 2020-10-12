@@ -6,7 +6,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
-#include <angel/scriptarray.h>
+#include <angelscript/scriptarray.h>
 
 static constexpr arch_t kHeadFontIndex = 2;
 
