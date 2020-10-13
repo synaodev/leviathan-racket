@@ -1,6 +1,9 @@
 #ifndef LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
 #define LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
 
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+
 #include "../types.hpp"
 
 // CRTP

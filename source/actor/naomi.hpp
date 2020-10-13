@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <bitset>
+#include <glm/vec2.hpp>
 #include <entt/entity/fwd.hpp>
 
 #include "../utility/enums.hpp"

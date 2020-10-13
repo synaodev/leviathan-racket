@@ -3,6 +3,7 @@
 
 #include <array>
 #include <bitset>
+#include <glm/vec2.hpp>
 #include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
 #include <entt/entity/entity.hpp>

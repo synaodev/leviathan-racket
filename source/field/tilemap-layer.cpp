@@ -5,6 +5,7 @@
 #include "../utility/constants.hpp"
 #include "../video/texture.hpp"
 
+#include <glm/gtc/constants.hpp>
 #include <tmxlite/TileLayer.hpp>
 
 static constexpr arch_t kMinimumVerts = 21 * 13 * display_list_t::SingleQuad;

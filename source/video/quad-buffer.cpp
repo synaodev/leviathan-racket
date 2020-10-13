@@ -3,6 +3,7 @@
 #include "./gl-check.hpp"
 
 #include <limits>
+#include <glm/common.hpp>
 
 quad_allocator_t::quad_allocator_t() :
 	primitive(primitive_t::Triangles),

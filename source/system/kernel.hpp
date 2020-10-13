@@ -5,6 +5,7 @@
 #include <string>
 #include <bitset>
 #include <functional>
+#include <glm/vec2.hpp>
 
 #include "../utility/enums.hpp"
 

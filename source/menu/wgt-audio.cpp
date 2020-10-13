@@ -7,6 +7,8 @@
 #include "../utility/vfs.hpp"
 #include "../utility/setup-file.hpp"
 
+#include <glm/common.hpp>
+
 static constexpr arch_t kTotalOptions = 2;
 static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
 

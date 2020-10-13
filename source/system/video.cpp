@@ -8,6 +8,7 @@
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
+#include <glm/common.hpp>
 #include <SDL2/SDL.h>
 
 video_t::video_t() :

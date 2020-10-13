@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <glm/vec2.hpp>
 
 #include "../utility/enums.hpp"
 

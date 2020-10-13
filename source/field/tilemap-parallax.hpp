@@ -2,6 +2,7 @@
 #define LEVIATHAN_INCLUDED_FIELD_TILEMAP_PARALLAX_HPP
 
 #include <memory>
+#include <glm/vec2.hpp>
 #include <tmxlite/Layer.hpp>
 
 #include "../utility/rect.hpp"

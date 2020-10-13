@@ -1,5 +1,6 @@
 #include "./runtime.hpp"
 
+#include <glm/gtc/constants.hpp>
 #include <tmxlite/Map.hpp>
 
 #include "../component/location.hpp"

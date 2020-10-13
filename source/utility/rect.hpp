@@ -1,6 +1,9 @@
 #ifndef LEVIATHAN_INCLUDED_UTILITY_RECT_HPP
 #define LEVIATHAN_INCLUDED_UTILITY_RECT_HPP
 
+#include <glm/vec2.hpp>
+#include <glm/vec4.hpp>
+
 #include "../types.hpp"
 
 namespace __enum_side {

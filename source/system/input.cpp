@@ -6,6 +6,7 @@
 #include "../utility/rng.hpp"
 
 #include <functional>
+#include <glm/gtc/constants.hpp>
 #include <SDL2/SDL_scancode.h>
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_joystick.h>

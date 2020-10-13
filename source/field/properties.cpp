@@ -1,5 +1,7 @@
 #include "./properties.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 namespace ftcv {
 	void prop_to_stats(const std::vector<tmx::Property>& properties, direction_t& direction, std::string& event, arch_t& flags, sint_t& idnum, arch_t& deter) {
 		if (properties.size() >= 5) {
