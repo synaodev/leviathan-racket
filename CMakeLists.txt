@@ -10,6 +10,15 @@ if (UNIX AND NOT APPLE)
 	endif ()
 endif ()
 
+# Building with profile time info
+
+if (NOT DEFINED PROFILE_TIME)
+	set (PROFILE_TIME OFF)
+elseif (NOT UNIX OR APPLE)
+	set (PROFILE_TIME OFF)
+	message (FATAL_ERROR "Can't profile on this system! Sorry!")
+endif ()
+
 # Building with precompiled headers
 
 if (NOT DEFINED STDAFX_BUILD AND NOT MINGW)
