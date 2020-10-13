@@ -1,17 +1,17 @@
 #ifndef LEVIATHAN_INCLUDED_MENU_META_GUI_HPP
 #define LEVIATHAN_INCLUDED_MENU_META_GUI_HPP
 
-#ifdef LEVIATHAN_USES_META
-
 #include "../types.hpp"
+
+typedef struct SDL_Window SDL_Window;
+typedef void* SDL_GLContext;
+typedef union SDL_Event SDL_Event;
 
 struct input_t;
 struct video_t;
 struct renderer_t;
 
-typedef struct SDL_Window SDL_Window;
-typedef void* SDL_GLContext;
-typedef union SDL_Event SDL_Event;
+#ifdef LEVIATHAN_USES_META
 
 struct meta_state_t : public not_copyable_t {
 public:
@@ -36,8 +36,6 @@ private:
 };
 
 #else
-
-#include "../types.hpp"
 
 struct meta_state_t : public not_copyable_t {
 public:
