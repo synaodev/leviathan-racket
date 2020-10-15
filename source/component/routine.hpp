@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <entt/entity/registry.hpp>
 #include <entt/core/hashed_string.hpp>
+#include <entt/entity/fwd.hpp>
 
 #include "../types.hpp"
 

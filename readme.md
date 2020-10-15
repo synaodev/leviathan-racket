@@ -8,20 +8,23 @@ I hope to release in Winter 2021.
 - [glm](https://github.com/g-truc/glm)
 - [EnTT](https://github.com/skypjack/entt)
 - [SDL2](https://www.libsdl.org/download-2.0.php)
-- [Tmxlite](https://github.com/fallahn/tmxlite)
 ## Included Dependencies
+- [ghc](https://github.com/gulrak/filesystem)
 - [ImGui](https://github.com/ocornut/imgui)
 - [Nlohmann-JSON](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
-- [GLAD](https://glad.dav1d.de)
+- [Glad](https://glad.dav1d.de)
 - [Pxtone](https://pxtone.org/developer)
+- [Tmxlite](https://github.com/fallahn/tmxlite)
+- [PugiXML](https://github.com/zeux/pugixml)
+- [miniz](https://github.com/richgel999/miniz)
 ## Building From Source
 - General:
   - CMake version must be at least 3.13.
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
   - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
-  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 tmxlite fmt`.
+  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 fmt`.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Depending on your GPU, you may need to install non-free firmware.
@@ -29,7 +32,7 @@ I hope to release in Winter 2021.
     - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
     - Pacman: `pacman -S mesa openal glm sdl2 fmt`
     - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel fmt-devel`
-  - For Angelscript, EnTT, and Tmxlite, build and install from source using cmake.
+  - For Angelscript and EnTT build and install from source using cmake.
 - MacOS:
   - Vcpkg is absolutely required.
   - Install Xcode and Xcode Command-Line Tools in order to use OpenGL.Framework (yes, seriously).

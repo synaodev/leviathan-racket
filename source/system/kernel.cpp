@@ -1,12 +1,16 @@
 #include "./kernel.hpp"
 #include "./input.hpp"
 
+#include <fstream>
+#include <angelscript.h>
+
+#include <glm/vec4.hpp>
+#include <glm/common.hpp>
+#include <glm/gtc/constants.hpp>
+
 #include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
-
-#include <fstream>
-#include <angelscript.h>
 
 static const byte_t kFlagProgsName[] = "_prog.bin";
 static const byte_t kFlagCheckName[] = "_check.bin";

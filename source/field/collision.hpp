@@ -3,6 +3,7 @@
 
 #include <bitset>
 #include <optional>
+#include <glm/vec2.hpp>
 
 #include "./tileflag.hpp"
 

@@ -3,9 +3,9 @@
 
 #include <array>
 #include <bitset>
+#include <glm/vec2.hpp>
 #include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
-#include <entt/entity/entity.hpp>
 
 #include "../utility/enums.hpp"
 
@@ -42,12 +42,8 @@ using trigger_flags_t = __enum_trigger_flags::type;
 
 struct actor_header_t {
 public:
-	actor_header_t(const entt::hashed_string& type) :
-		type(type),
-		attach(entt::null) {}
-	actor_header_t() :
-		type(),
-		attach(entt::null) {}
+	actor_header_t(const entt::hashed_string& type);
+	actor_header_t();
 	actor_header_t(const actor_header_t&) = default;
 	actor_header_t(actor_header_t&&) = default;
 	actor_header_t& operator=(const actor_header_t&) = default;
@@ -60,55 +56,13 @@ public:
 
 struct actor_spawn_t {
 public:
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position) :
-		type(type),
-		position(position),
-		velocity(0.0f),
-		direction(direction_t::Right),
-		identity(0),
-		bitmask(0) {}
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity) :
-		type(type),
-		position(position),
-		velocity(velocity),
-		direction(direction_t::Right),
-		identity(0),
-		bitmask(0) {}
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction) :
-		type(type),
-		position(position),
-		velocity(0.0f),
-		direction(direction),
-		identity(0),
-		bitmask(0) {}
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction) :
-		type(type),
-		position(position),
-		velocity(velocity),
-		direction(direction),
-		identity(0),
-		bitmask(0) {}
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags) :
-		type(type),
-		position(position),
-		velocity(0.0f),
-		direction(direction),
-		identity(identity),
-		bitmask(flags) {}
-	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction, sint_t identity, arch_t flags) :
-		type(type),
-		position(position),
-		velocity(velocity),
-		direction(direction),
-		identity(identity),
-		bitmask(flags) {}
-	actor_spawn_t() :
-		type(),
-		position(0.0f),
-		velocity(0.0f),
-		direction(direction_t::Right),
-		identity(0),
-		bitmask(0) {}
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position);
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity);
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction);
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction);
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags);
+	actor_spawn_t(const entt::hashed_string& type, glm::vec2 position, glm::vec2 velocity, direction_t direction, sint_t identity, arch_t flags);
+	actor_spawn_t();
 	actor_spawn_t(const actor_spawn_t&) = default;
 	actor_spawn_t(actor_spawn_t&&) = default;
 	actor_spawn_t& operator=(const actor_spawn_t&) = default;
@@ -124,30 +78,13 @@ public:
 
 struct actor_trigger_t {
 public:
-	actor_trigger_t(sint_t identity, const std::bitset<trigger_flags_t::Total>& bitmask) :
-		identity(identity),
-		bitmask(bitmask) {}
-	actor_trigger_t(sint_t identity, arch_t flags) :
-		identity(identity),
-		bitmask(flags) {}
-	actor_trigger_t() :
-		identity(0),
-		bitmask(0) {}
+	actor_trigger_t(sint_t identity, const std::bitset<trigger_flags_t::Total>& bitmask);
+	actor_trigger_t(sint_t identity, arch_t flags);
+	actor_trigger_t();
 	actor_trigger_t(const actor_trigger_t&) = default;
 	actor_trigger_t& operator=(const actor_trigger_t&) = default;
-	actor_trigger_t(actor_trigger_t&& that) noexcept : actor_trigger_t() {
-		if (this != &that) {
-			std::swap(bitmask, that.bitmask);
-			std::swap(identity, that.identity);
-		}
-	}
-	actor_trigger_t& operator=(actor_trigger_t&& that) noexcept {
-		if (this != &that) {
-			std::swap(bitmask, that.bitmask);
-			std::swap(identity, that.identity);
-		}
-		return *this;
-	}
+	actor_trigger_t(actor_trigger_t&& that) noexcept;
+	actor_trigger_t& operator=(actor_trigger_t&& that) noexcept;
 	~actor_trigger_t() = default;
 public:
 	sint_t identity;
@@ -156,20 +93,15 @@ public:
 
 struct actor_timer_t {
 public:
-	actor_timer_t() :
-		data{ 0, 0, 0, 0 } {}
+	actor_timer_t();
 	actor_timer_t(const actor_timer_t&) = default;
 	actor_timer_t& operator=(const actor_timer_t&) = default;
 	actor_timer_t(actor_timer_t&&) = default;
 	actor_timer_t& operator=(actor_timer_t&&) = default;
 	~actor_timer_t() = default;
 public:
-	sint64_t& operator[](arch_t index) {
-		return data[index];
-	}
-	const sint64_t& operator[](arch_t index) const {
-		return data[index];
-	}
+	sint64_t& operator[](arch_t index);
+	const sint64_t& operator[](arch_t index) const;
 private:
 	std::array<sint64_t, 4> data;
 };

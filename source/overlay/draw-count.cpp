@@ -1,5 +1,7 @@
 #include "./draw-count.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 #include "../video/texture.hpp"
 #include "../system/renderer.hpp"
 

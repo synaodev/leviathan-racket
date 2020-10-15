@@ -1,5 +1,7 @@
 #include "./draw-meter.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 #include "../system/renderer.hpp"
 
 static const glm::vec2 kGraphedPosition		= glm::vec2(302.0f, 142.0f);

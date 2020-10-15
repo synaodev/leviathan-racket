@@ -4,6 +4,8 @@
 #include "../utility/logger.hpp"
 #include "../utility/thread-pool.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
 	if (this != &that) {
 		std::atomic<bool> temp = ready.load();

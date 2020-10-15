@@ -2,6 +2,7 @@
 #define LEVIATHAN_INCLUDED_VIDEO_GL_CHECK_HPP
 
 #include <glad/glad.h>
+#include <glm/vec2.hpp>
 
 #include "../types.hpp"
 

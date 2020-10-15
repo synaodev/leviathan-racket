@@ -6,6 +6,8 @@
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 animation_sequence_t::animation_sequence_t() :
 	frames(),
 	action_points(),

@@ -54,6 +54,7 @@ using namespace ghc::filesystem;
 using ifstream = ghc::filesystem::ifstream;
 using ofstream = ghc::filesystem::ofstream;
 using fstream = ghc::filesystem::fstream;
-}
+} 
 #endif
 #endif // GHC_FILESYSTEM_STD_FWD_H
+

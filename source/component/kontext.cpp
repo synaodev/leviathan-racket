@@ -16,6 +16,7 @@
 #include "../utility/logger.hpp"
 
 #include <angelscript.h>
+#include <glm/gtc/constants.hpp>
 #include <tmxlite/ObjectGroup.hpp>
 
 kontext_t::kontext_t() :

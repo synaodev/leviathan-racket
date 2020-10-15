@@ -4,6 +4,8 @@
 #include "../system/renderer.hpp"
 #include "../video/texture.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 static const byte_t kBoundsXProp[] = "rect.x";
 static const byte_t kBoundsYProp[] = "rect.y";
 static const byte_t kBoundsWProp[] = "rect.w";

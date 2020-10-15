@@ -2,6 +2,7 @@
 #include "../utility/logger.hpp"
 
 #include <cstring>
+#include <glm/gtc/constants.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>

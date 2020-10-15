@@ -72,12 +72,12 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include <glm/gtc/vec1.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 #include <angelscript.h>
-#include <entt/entt.hpp>
+#include <entt/core/hashed_string.hpp>
+#include <entt/entity/registry.hpp>
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
 #include <tmxlite/ImageLayer.hpp>

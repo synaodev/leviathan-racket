@@ -5,6 +5,7 @@
 #include "../utility/logger.hpp"
 
 #include <fstream>
+#include <glm/gtc/constants.hpp>
 #include <nlohmann/json.hpp>
 
 font_t::font_t() :

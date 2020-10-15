@@ -4,6 +4,9 @@
 #include "../utility/constants.hpp"
 
 #include <limits>
+#include <glm/common.hpp>
+#include <glm/exponential.hpp>
+#include <glm/trigonometric.hpp>
 
 collision::info_t::info_t(glm::ivec2 index, uint_t attribute) :
 	index(index),

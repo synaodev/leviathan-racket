@@ -81,12 +81,7 @@
 	#define LEVIATHAN_BUILD_DEBUG
 #endif
 
-#include <cstdint>
-#include <type_traits>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtc/vec1.hpp>
+#include <glm/fwd.hpp>
 
 using sint8_t  = signed char;
 using bool16_t = short;

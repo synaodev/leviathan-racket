@@ -2,6 +2,11 @@
 #include "./location.hpp"
 #include "./kontext.hpp"
 
+#include <glm/common.hpp>
+#include <glm/geometric.hpp>
+#include <glm/trigonometric.hpp>
+#include <glm/gtc/constants.hpp>
+
 #include "../field/collision.hpp"
 
 static constexpr real_t kLongFactor  = 2.0f;

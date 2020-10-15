@@ -1,5 +1,7 @@
 #include "./draw-text.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 #include "../system/renderer.hpp"
 #include "../utility/vfs.hpp"
 #include "../utility/utf32.hpp"

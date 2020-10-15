@@ -15,7 +15,11 @@ namespace layer_value {
 	constexpr __enum_layer::type Persistent	= 2.0f;
 	inline bool equal(__enum_layer::type lhv, __enum_layer::type rhv) {
 		static constexpr __enum_layer::type kEpsilon = 0.1f;
-		return glm::abs(lhv - rhv) < kEpsilon;
+		auto result = lhv - rhv;
+		if (result < 0.0f) {
+			result = -result;
+		}
+		return result < kEpsilon;
 	}
 }
 

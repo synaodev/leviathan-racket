@@ -3,7 +3,6 @@
 
 #include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
-#include <entt/entity/entity.hpp>
 
 #include "../utility/rect.hpp"
 

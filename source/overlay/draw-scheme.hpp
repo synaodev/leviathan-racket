@@ -1,6 +1,8 @@
 #ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP
 #define LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP
 
+#include <glm/vec2.hpp>
+
 #include "../utility/enums.hpp"
 
 struct renderer_t;

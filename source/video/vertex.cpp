@@ -99,7 +99,7 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribIPointer(
-				1, glm::ivec1::length(),
+				1, 1,
 				GL_INT, sizeof(vtx_blank_t),
 				(const void_t)offsetof(vtx_blank_t, matrix)
 			));
@@ -121,7 +121,7 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 			));
 			glCheck(glEnableVertexAttribArray(1));
 			glCheck(glVertexAttribIPointer(
-				1, glm::ivec1::length(),
+				1, 1,
 				GL_INT, sizeof(vtx_major_t),
 				(const void_t)offsetof(vtx_major_t, matrix)
 			));
@@ -133,19 +133,19 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 			));
 			glCheck(glEnableVertexAttribArray(3));
 			glCheck(glVertexAttribPointer(
-				3, glm::vec1::length(),
+				3, 1,
 				GL_FLOAT, GL_FALSE, sizeof(vtx_major_t),
 				(const void_t)offsetof(vtx_major_t, alpha)
 			));
 			glCheck(glEnableVertexAttribArray(4));
 			glCheck(glVertexAttribIPointer(
-				4, glm::ivec1::length(),
+				4, 1,
 				GL_INT, sizeof(vtx_major_t),
 				(const void_t)offsetof(vtx_major_t, texID)
 			));
 			glCheck(glEnableVertexAttribArray(5));
 			glCheck(glVertexAttribIPointer(
-				5, glm::ivec1::length(),
+				5, 1,
 				GL_INT, sizeof(vtx_major_t),
 				(const void_t)offsetof(vtx_major_t, palID)
 			));
@@ -173,13 +173,13 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 			));
 			glCheck(glEnableVertexAttribArray(3));
 			glCheck(glVertexAttribIPointer(
-				3, glm::ivec1::length(),
+				3, 1,
 				GL_INT, sizeof(vtx_fonts_t),
 				(const void_t)offsetof(vtx_fonts_t, atlas)
 			));
 			glCheck(glEnableVertexAttribArray(4));
 			glCheck(glVertexAttribIPointer(
-				4, glm::ivec1::length(),
+				4, 1,
 				GL_INT, sizeof(vtx_fonts_t),
 				(const void_t)offsetof(vtx_fonts_t, table)
 			));

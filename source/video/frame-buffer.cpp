@@ -3,6 +3,9 @@
 
 #include "../utility/logger.hpp"
 
+#include <glm/vec4.hpp>
+#include <glm/gtc/constants.hpp>
+
 static constexpr uint_t kDrawTotal = 32;
 
 static uint_t* kDrawAttach() {

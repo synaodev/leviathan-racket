@@ -5,6 +5,9 @@
 #include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
+#include <glm/common.hpp>
+#include <glm/gtc/constants.hpp>
+
 sprite_t::sprite_t(const entt::hashed_string& entry) :
 	file(nullptr),
 	amend(false),

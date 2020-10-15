@@ -1,6 +1,8 @@
 #include "./particles.hpp"
 #include "./naomi.hpp"
 
+#include <glm/gtc/constants.hpp>
+
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"
 #include "../component/kinematics.hpp"
