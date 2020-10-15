@@ -5,6 +5,38 @@
 #include "../system/audio.hpp"
 #include "../system/renderer.hpp"
 
+#include <entt/entity/entity.hpp>
+
+liquid_body_t::liquid_body_t(rect_t hitbox) :
+	amend(true),
+	hitbox(hitbox)
+{
+
+}
+
+liquid_body_t::liquid_body_t() :
+	amend(true),
+	hitbox()
+{
+
+}
+
+liquid_listener_t::liquid_listener_t(const entt::hashed_string& particle, const entt::hashed_string& sound) :
+	liquid(entt::null),
+	particle(particle),
+	sound(sound)
+{
+
+}
+
+liquid_listener_t::liquid_listener_t() :
+	liquid(entt::null),
+	particle(),
+	sound()
+{
+
+}
+
 void liquid::handle(audio_t& audio, kontext_t& kontext, const location_t& location, liquid_listener_t& listener) {
 	auto checker = [&location, &listener](entt::entity liquid, const liquid_body_t& body) {
 		if (listener.liquid == entt::null and location.overlap(body.hitbox)) {

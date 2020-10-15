@@ -4,6 +4,9 @@
 #include "../types.hpp"
 
 #ifdef LEVIATHAN_BUILD_DEBUG
+	#ifndef FMT_HEADER_ONLY
+		#define FMT_HEADER_ONLY
+	#endif // FMT_HEADER_ONLY
 	#include <fmt/core.h>
 	#define synao_log(...) fmt::print(__VA_ARGS__)
 #else

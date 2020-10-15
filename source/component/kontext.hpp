@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <memory>
 #include <functional>
-#include <entt/entity/entity.hpp>
+#include <entt/entity/registry.hpp>
 #include <tmxlite/Layer.hpp>
 
 #include "./common.hpp"

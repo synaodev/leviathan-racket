@@ -13,12 +13,8 @@ struct location_t;
 
 struct liquid_body_t {
 public:
-	liquid_body_t(rect_t hitbox) :
-		amend(true),
-		hitbox(hitbox) {}
-	liquid_body_t() :
-		amend(true),
-		hitbox() {}
+	liquid_body_t(rect_t hitbox);
+	liquid_body_t();
 	liquid_body_t(const liquid_body_t&) = default;
 	liquid_body_t& operator=(const liquid_body_t&) = default;
 	liquid_body_t(liquid_body_t&&) = default;
@@ -31,14 +27,8 @@ public:
 
 struct liquid_listener_t {
 public:
-	liquid_listener_t(const entt::hashed_string& particle, const entt::hashed_string& sound) :
-		liquid(entt::null),
-		particle(particle),
-		sound(sound) {}
-	liquid_listener_t() :
-		liquid(entt::null),
-		particle(),
-		sound() {}
+	liquid_listener_t(const entt::hashed_string& particle, const entt::hashed_string& sound);
+	liquid_listener_t();
 	liquid_listener_t(const liquid_listener_t&) = default;
 	liquid_listener_t& operator=(const liquid_listener_t&) = default;
 	liquid_listener_t(liquid_listener_t&&) = default;
