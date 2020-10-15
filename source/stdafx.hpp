@@ -76,7 +76,8 @@
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL.h>
 #include <angelscript.h>
-#include <entt/entt.hpp>
+#include <entt/core/hashed_string.hpp>
+#include <entt/entity/registry.hpp>
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
 #include <tmxlite/ImageLayer.hpp>
