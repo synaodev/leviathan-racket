@@ -9,6 +9,8 @@
 #include "../utility/vfs.hpp"
 
 #include <angelscript/scriptarray.h>
+#include <glm/common.hpp>
+#include <glm/gtc/vec1.hpp>
 #include <glm/gtc/constants.hpp>
 
 static const glm::vec2 kDefaultRect = glm::vec2(256.0f, 56.0f);

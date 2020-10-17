@@ -6,6 +6,8 @@
 #include "../utility/logger.hpp"
 #include "../utility/vfs.hpp"
 
+#include <glm/common.hpp>
+#include <glm/gtc/vec1.hpp>
 #include <glm/gtc/constants.hpp>
 
 animation_sequence_t::animation_sequence_t() :

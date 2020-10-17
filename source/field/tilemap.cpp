@@ -7,6 +7,7 @@
 #include "../utility/vfs.hpp"
 #include "../utility/constants.hpp"
 
+#include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 #include <tmxlite/Map.hpp>
 #include <tmxlite/ImageLayer.hpp>

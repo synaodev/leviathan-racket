@@ -1,5 +1,6 @@
 #include "./draw-text.hpp"
 
+#include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 
 #include "../system/renderer.hpp"

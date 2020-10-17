@@ -1,8 +1,6 @@
 #ifndef LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
 #define LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
 
-#include <glm/mat4x4.hpp>
-
 #include "../resource/program.hpp"
 #include "../utility/enums.hpp"
 #include "../video/const-buffer.hpp"

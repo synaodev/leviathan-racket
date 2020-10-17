@@ -3,6 +3,7 @@
 #include "./naomi.hpp"
 
 #include <glm/common.hpp>
+#include <glm/geometric.hpp>
 #include <glm/trigonometric.hpp>
 #include <glm/gtc/constants.hpp>
 

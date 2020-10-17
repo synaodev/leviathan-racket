@@ -4,6 +4,7 @@
 #include "./shoshi.hpp"
 
 #include <entt/entity/registry.hpp>
+#include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 
 #ifndef FMT_HEADER_ONLY
