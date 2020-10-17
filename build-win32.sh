@@ -67,7 +67,7 @@ fi
 
 cd "mingw"
 
-cmake ".." -DCMAKE_BUILD_TYPE="${build_type}" -DCMAKE_C_COMPILER="$(which ${c_compiler})" -DCMAKE_CXX_COMPILER="$(which ${cxx_compiler})" -DCMAKE_TOOLCHAIN_FILE="${vcpkg_root}/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET="x64-mingw-dynamic" -DSTDAFX_BUILD:BOOL="OFF" -DMETA_BUILD:BOOL="OFF"
+cmake ".." -DCMAKE_BUILD_TYPE="${build_type}" -DCMAKE_C_COMPILER="$(which ${c_compiler})" -DCMAKE_CXX_COMPILER="$(which ${cxx_compiler})" -DCMAKE_TOOLCHAIN_FILE="${vcpkg_root}/scripts/buildsystems/vcpkg.cmake" -DVCPKG_TARGET_TRIPLET="x64-mingw-dynamic" -DSTDAFX_BUILD="OFF" -DMETA_BUILD="OFF"
 
 cp "/lib/gcc/x86_64-w64-mingw32/${compiler_version}/libgcc_s_seh-1.dll" .
 cp "/lib/gcc/x86_64-w64-mingw32/${compiler_version}/libstdc++-6.dll" .
@@ -75,12 +75,10 @@ cp "/usr/x86_64-w64-mingw32/lib/libwinpthread-1.dll" .
 
 if [[ "${build_type}" == "Debug" ]]; then
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/debug/bin/libangelscript.dll" .
-	cp "${vcpkg_root}/installed/x64-mingw-dynamic/debug/bin/libtmxlite-d.dll" .
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/debug/bin/OpenAL32.dll" .
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/debug/bin/SDL2d.dll" .
 else
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/bin/libangelscript.dll" .
-	cp "${vcpkg_root}/installed/x64-mingw-dynamic/bin/libtmxlite.dll" .
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/bin/OpenAL32.dll" .
 	cp "${vcpkg_root}/installed/x64-mingw-dynamic/bin/SDL2.dll" .
 fi
