@@ -69,3 +69,5 @@ target_include_directories (naomi PRIVATE
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 )
+
+target_compile_definitions (naomi PRIVATE "-DFMT_HEADER_ONLY")

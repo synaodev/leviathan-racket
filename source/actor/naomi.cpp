@@ -4,13 +4,9 @@
 #include "./shoshi.hpp"
 
 #include <entt/entity/registry.hpp>
+#include <fmt/core.h>
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
-
-#ifndef FMT_HEADER_ONLY
-	#define FMT_HEADER_ONLY
-#endif // FMT_HEADER_ONLY
-#include <fmt/core.h>
 
 #include "../component/kontext.hpp"
 #include "../component/location.hpp"

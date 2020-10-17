@@ -2,9 +2,6 @@
 
 #include "../video/gl-check.hpp"
 
-#ifndef FMT_HEADER_ONLY
-	#define FMT_HEADER_ONLY
-#endif // FMT_HEADER_ONLY
 #include <fmt/format.h>
 
 static constexpr byte_t kMinorVert420[] = R"(#version 420 core
