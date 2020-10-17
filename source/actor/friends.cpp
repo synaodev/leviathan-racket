@@ -91,7 +91,7 @@ void ai::gyo::ctor(entt::entity s, kontext_t& kontext) {
 
 // Tables
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t, friends) {
 	LEVIATHAN_TABLE_PUSH(ai::kyoko::type, 	ai::kyoko::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::nauzika::type, ai::nauzika::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::senma::type, 	ai::senma::ctor);

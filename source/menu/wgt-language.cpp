@@ -10,8 +10,8 @@
 #include "../utility/setup-file.hpp"
 
 static constexpr arch_t kTotalVisible = 9;
-static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
-static const glm::vec2 kBottomPosition = glm::vec2(120.0f, 2.0f);
+static const glm::vec2 kLangDefaultPosition = glm::vec2(4.0f, 2.0f);
+static const glm::vec2 kLangBottomPosition = glm::vec2(120.0f, 2.0f);
 
 wgt_language_t::wgt_language_t(arch_t flags) :
 	widget_i(flags),
@@ -30,12 +30,12 @@ void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_
 	const std::string i18n_path = vfs::resource_path(vfs_resource_path_t::I18N);
 	languages = vfs::file_list(i18n_path);
 	text.set_font(vfs::font(0));
-	text.set_position(kDefaultPosition);
+	text.set_position(kLangDefaultPosition);
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
-		4.0f + kDefaultPosition.y +
+		4.0f + kLangDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 	this->setup_text();

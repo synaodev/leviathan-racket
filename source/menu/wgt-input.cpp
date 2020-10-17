@@ -6,12 +6,12 @@
 #include "../utility/vfs.hpp"
 #include "../utility/setup-file.hpp"
 
-static constexpr arch_t kTotalOptionsA = 11;
-static constexpr arch_t kTotalOptionsB = 7;
-static constexpr real64_t kTotalDelays = 0.32;
-static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
-static const glm::vec2 kAddingPositions = glm::vec2(3.0f, 16.0f);
-static const glm::vec2 kRightsPositions = glm::vec2(175.0f, 16.0f);
+static constexpr arch_t kInputTotalOptionsA = 11;
+static constexpr arch_t kInputTotalOptionsB = 7;
+static constexpr real64_t kInputTotalDelays = 0.32;
+static const glm::vec2 kInputDefaultPosition = glm::vec2(4.0f, 2.0f);
+static const glm::vec2 kInputAddingPositions = glm::vec2(3.0f, 16.0f);
+static const glm::vec2 kInputRightsPositions = glm::vec2(175.0f, 16.0f);
 
 wgt_input_t::wgt_input_t(arch_t flags) :
 	widget_i(flags),
@@ -30,12 +30,12 @@ wgt_input_t::wgt_input_t(arch_t flags) :
 void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
 	header.set_font(vfs::font(0));
-	header.set_position(kDefaultPosition);
+	header.set_position(kInputDefaultPosition);
 	header.set_string(vfs::i18n_find("Input", 0));
 	left_text.set_font(vfs::font(4));
-	left_text.set_position(kDefaultPosition + kAddingPositions);
+	left_text.set_position(kInputDefaultPosition + kInputAddingPositions);
 	right_text.set_font(vfs::font(4));
-	right_text.set_position(kDefaultPosition + kRightsPositions);
+	right_text.set_position(kInputDefaultPosition + kInputRightsPositions);
 	this->setup_text(input);
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
@@ -83,7 +83,7 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 			arrow.mut_position(0.0f, -left_text.get_font_size().y);
 		}
 	} else if (input.pressed[btn_t::Down]) {
-		const arch_t comparison = siding ? kTotalOptionsB : kTotalOptionsA;
+		const arch_t comparison = siding ? kInputTotalOptionsB : kInputTotalOptionsA;
 		if (cursor < comparison) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
@@ -93,23 +93,23 @@ void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 		if (!siding) {
 			siding = true;
 			audio.play(res::sfx::Select, 0);
-			if (cursor > kTotalOptionsB) {
-				cursor = kTotalOptionsB;
+			if (cursor > kInputTotalOptionsB) {
+				cursor = kInputTotalOptionsB;
 				const glm::vec2 position = arrow.get_position();
 				arrow.set_position(
-					position.x + (kRightsPositions.x - 3.0f),
-					(static_cast<real_t>(kTotalOptionsB) * left_text.get_font_size().y) +
+					position.x + (kInputRightsPositions.x - 3.0f),
+					(static_cast<real_t>(kInputTotalOptionsB) * left_text.get_font_size().y) +
 					((left_text.get_font_size().y * 2.0f) - 3.0f)
 				);
 			} else {
-				arrow.mut_position(kRightsPositions.x - 3.0f, 0.0f);
+				arrow.mut_position(kInputRightsPositions.x - 3.0f, 0.0f);
 			}
 		}
 	} else if (input.pressed[btn_t::Left]) {
 		if (siding) {
 			siding = false;
 			audio.play(res::sfx::Select, 0);
-			arrow.mut_position(-kRightsPositions.x + 3.0f, 0.0f);
+			arrow.mut_position(-kInputRightsPositions.x + 3.0f, 0.0f);
 		}
 	} else if (input.pressed[btn_t::Yes]) {
 		if (siding) {

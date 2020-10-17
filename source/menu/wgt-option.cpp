@@ -8,8 +8,8 @@
 #include "../system/kernel.hpp"
 #include "../utility/vfs.hpp"
 
-static constexpr arch_t kTotalOptions = 6;
-static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
+static constexpr arch_t kOptionTotalOptions = 6;
+static const glm::vec2 kOptionDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 wgt_option_t::wgt_option_t(arch_t flags) :
 	widget_i(flags),
@@ -25,13 +25,13 @@ void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const mu
 	audio.play(res::sfx::Inven);
 	kernel.freeze();
 	text.set_font(vfs::font(0));
-	text.set_position(kDefaultPosition);
+	text.set_position(kOptionDefaultPosition);
 	text.set_string(vfs::i18n_find("Options", 0, 7));
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
-		4.0f + kDefaultPosition.y +
+		4.0f + kOptionDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 }
@@ -45,7 +45,7 @@ void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audi
 			arrow.mut_position(0.0f, -text.get_font_size().y);
 		}
 	} else if (input.pressed[btn_t::Down]) {
-		if (cursor < kTotalOptions) {
+		if (cursor < kOptionTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select);
 			arrow.mut_position(0.0f, text.get_font_size().y);

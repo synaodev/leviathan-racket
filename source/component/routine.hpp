@@ -77,10 +77,10 @@ public:
 	routine_tick_fn tick;
 };
 
-#define LEVIATHAN_CTOR_TABLE_CREATE(GENERATOR_TYPE) 												\
-	static void ___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table); 	\
-	static const GENERATOR_TYPE ___routine_ctor_generator(___routine_ctor_func);					\
-	static void ___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table) 	\
+#define LEVIATHAN_CTOR_TABLE_CREATE(TYPE, SYM)															\
+	static void SYM##___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table);	\
+	static const TYPE SYM##___routine_ctor_generator(SYM##___routine_ctor_func);						\
+	static void SYM##___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table)	\
 
 #define LEVIATHAN_TABLE_PUSH(ACTOR, DATA) table[ACTOR] = DATA
 

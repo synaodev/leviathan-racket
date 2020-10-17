@@ -9,8 +9,8 @@
 
 #include <glm/common.hpp>
 
-static constexpr arch_t kTotalOptions = 2;
-static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
+static constexpr arch_t kVideoTotalOptions = 2;
+static const glm::vec2 kVideoDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 wgt_video_t::wgt_video_t(arch_t flags) :
 	widget_i(flags),
@@ -24,13 +24,13 @@ wgt_video_t::wgt_video_t(arch_t flags) :
 void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
 	text.set_font(vfs::font(0));
-	text.set_position(kDefaultPosition);
+	text.set_position(kVideoDefaultPosition);
 	this->setup_text(video.get_parameters());
 	arrow.set_file(vfs::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
-		4.0f + kDefaultPosition.y +
+		4.0f + kVideoDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 }
@@ -43,7 +43,7 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 			arrow.mut_position(0.0f, -text.get_font_size().y);
 		}
 	} else if (input.pressed[btn_t::Down]) {
-		if (cursor < kTotalOptions) {
+		if (cursor < kVideoTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, text.get_font_size().y);

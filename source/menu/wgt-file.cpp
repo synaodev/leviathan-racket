@@ -9,8 +9,8 @@
 #include "../utility/vfs.hpp"
 #include "../utility/setup-file.hpp"
 
-static constexpr arch_t kTotalOptions = 2;
-static const glm::vec2 kDefaultPosition = glm::vec2(4.0f, 2.0f);
+static constexpr arch_t kFileTotalOptions = 2;
+static const glm::vec2 kFileDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 wgt_file_t::wgt_file_t(arch_t flags) :
 	widget_i(flags),
@@ -27,7 +27,7 @@ void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, 
 	cursor = kernel.get_file_index();
 	kernel.freeze();
 	text.set_font(vfs::font(0));
-	text.set_position(kDefaultPosition);
+	text.set_position(kFileDefaultPosition);
 	if (bitmask[0]) {
 		text.set_string(vfs::i18n_find("FileSys", 0));
 		text.append_string(vfs::i18n_find("FileSys", 2, 4));
@@ -38,7 +38,7 @@ void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, 
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
-		4.0f + kDefaultPosition.y +
+		4.0f + kFileDefaultPosition.y +
 		(text.get_font_size().y * 2.0f)
 	);
 	arrow.mut_position(
@@ -55,7 +55,7 @@ void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio,
 			arrow.mut_position(0.0f, -text.get_font_size().y);
 		}
 	} else if (input.pressed[btn_t::Down]) {
-		if (cursor < kTotalOptions) {
+		if (cursor < kFileTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, text.get_font_size().y);

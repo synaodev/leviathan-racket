@@ -650,7 +650,7 @@ void ai::austere::tick(entt::entity s, routine_tuple_t& rtp) {
 
 // Tables
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t) {
+LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t, weapons) {
 	LEVIATHAN_TABLE_PUSH(ai::frontier::type, 		ai::frontier::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::toxitier::type, 		ai::toxitier::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::weak_hammer::type, 	ai::weak_hammer::ctor);
