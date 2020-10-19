@@ -1,29 +1,147 @@
 #!/usr/bin/env python3
 
-import os, sys, ctypes
+import os, sys, struct, ctypes
 import OpenGL.GL as gl
 import imgui
+import numpy
 
-from typing import List
+from PIL import Image
+from typing import List, Dict
 from sdl2 import *
 from imgui.integrations.sdl2 import SDL2Renderer
 
-def get_tileset_name(attribute_path: str) -> str:
-    sep_pos = attribute_path.rfind(os.pathsep) + 1
-    dot_pos = attribute_path.rfind('.')
-    return attribute_path[sep_pos : dot_pos - sep_pos] + '.png'
+def get_tilekey_name(tileset_path: str) -> str:
+    sep_pos = tileset_path.rfind(os.pathsep) + 1
+    dot_pos = tileset_path.rfind('.')
+    return tileset_path[sep_pos : dot_pos - sep_pos] + '.attr'
 
-def get_tilekey_list() -> List[str]:
-    pass
+def get_tilekey_bitmasks(path: str) -> List[int]:
+    try:
+        fp = open(path, 'rb')
+    except IOError:
+        print(f'IO Error! Couldn\'t read from {path}!')
+    else:
+        result: List[int] = []
+        with open(path, 'rb') as fp:
+            while len(result) < 256:
+                data: int = struct.unpack('i', fp.read(4))[0]
+                result.append(data)
+        return result
+    return [0] * 256
+
+def set_tilekey_bitmasks(path: str, bitmasks: List[int]) -> bool:
+    try:
+        fp = open(path, 'wb')
+    except IOError:
+        print(f'IO Error! Couldn\'t write to {path}!')
+    else:
+        with open(path, 'wb') as fp:
+            for b in bitmasks:
+                fp.write(struct.pack('i', b))
+            fp.close()
+        return True
+    return False
+
+class Texture():
+    def __init__(self):
+        self.valid: bool = True
+        self.dimensions: tuple = (0, 0)
+        self.pointer: int = 0
+    def __init__(self, path: str):
+        self.__init__()
+        self.load(path)
+    def __del__(self):
+        if self.valid:
+            gl.glDeleteTextures(1, [self.pointer])
+            self.valid = False
+            self.dimensions = (0, 0)
+            self.pointer = 0
+    def load(self, path: str) -> bool:
+        if self.valid:
+            gl.glDeleteTextures(1, [self.pointer])
+            self.valid = False
+            self.dimensions = (0, 0)
+            self.pointer = 0
+        image: Image.Image = Image.open(path)
+        if image != None:
+            pointer = gl.glGenTextures(1)
+            gl.glBindTexture(gl.GL_TEXTURE_2D, pointer)
+            gl.glTexImage2D(
+                gl.GL_TEXTURE_2D, 0,
+                gl.GL_RGBA8,
+                image.size[0],
+                image.size[1],
+                0, gl.GL_RGBA,
+                gl.GL_UNSIGNED_BYTE,
+                image.tostring('raw', 'RBGA', 0, -1)
+            )
+            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+            gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+            gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
+            self.valid = True
+            self.dimensions = image.size
+            self.pointer = pointer
+        return self.valid
+
+class InputCtl():
+    def __init__(self):
+        self.quitting: bool = False
+        self.clicked: bool = False
+        self.pressed: Dict[SDL_Event, bool] = {}
+
+class TilesetCtl():
+    def __init__(self):
+        self.amend: bool = False
+        self.selected: bool = False
+        self.cursor: tuple = (0.0, 0.0, 16.0, 16.0)
+        self.index: int = 0
+        self.texture: Texture = Texture()
+        self.bitmasks: List[int] = [0] * 256
+        self.tileset_path: str = ''
+    def reset(self):
+        self.amend = True
+        self.selected = False
+        self.index = 0
+        for mask in self.bitmasks:
+            mask = 0
+    def load(self, tileset_path: str) -> bool:
+        self.amend = True
+        self.selected = False
+        if self.tileset_path != tileset_path:
+            if not self.texture.load(tileset_path):
+                return False
+            self.bitmasks = get_tilekey_bitmasks(os.path.join('data', 'tilekey', get_tilekey_name(tileset_path)))
+            if len(self.bitmasks) < 256:
+                return False
+            self.tileset_path = tileset_path
+            print('Loading successful!')
+            return True
+        return False
+    def save(self):
+        self.selected = False
+        if len(self.tileset_path) > 0:
+            return set_tilekey_bitmasks(os.path.join('data', 'tilekey', get_tilekey_name(self.tileset_path)))
+        print('Error! Nothing to save currently!')
+        return False
+    def handle(self):
+        pass
 
 class AttributeCtrl():
     def __init__(self):
-        self.enable: bool = True
+        self.enable: bool = False
         self.save: bool = False
         self.load: bool = False
         self.index: int = 0
         self.files: List[str] = []
-    def handle(self):
+    def reset(self):
+        self.enable = True
+        self.save = False
+        self.load = False
+        self.index = 0
+        self.files.clear()
+    def active(self) -> bool:
+        return self.load or self.save
+    def handle(self, tileset_ctl: TilesetCtl):
         imgui.begin_main_menu_bar()
         if imgui.begin_menu('File'):
             if imgui.menu_item('Load', 'Ctrl+L', False, self.enable):
@@ -39,13 +157,24 @@ class AttributeCtrl():
                 self.load = True
                 self.save = False
                 self.index = 0
-                # tileset_viewer.reset()
+                tileset_ctl.reset()
             imgui.end_menu()
         imgui.end_main_menu_bar()
         if self.load:
             imgui.begin('File Dialog')
             if len(self.files) == 0:
-                pass
+                self.files = os.listdir(os.path.join('data', 'tilekey'))
+            status: tuple = imgui.listbox('Files', self.index, self.files)
+            self.index = status.current
+            if imgui.button('Load'):
+                tileset_ctl.load(self.files[self.index])
+                self.reset()
+            elif imgui.button('Clear'):
+                self.reset()
+            imgui.end()
+        elif self.save:
+            tileset_ctl.save()
+            self.reset()
 
 def loop() -> int:
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1)
