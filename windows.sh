@@ -26,14 +26,14 @@ remove_dir="true"
 
 for arg in "$@"
 do
-	if [[ $arg == "--pack" ]]; then
+	if [[ ${arg} == "--pack" ]]; then
 		pack="true"
 		build_type="Release"
 		remove_dir="false"
 		break
-	elif [[ $arg == "--release" ]]; then
+	elif [[ ${arg} == "--release" ]]; then
 		build_type="Release"
-	elif [[ $arg == "--no-remove" ]]; then
+	elif [[ ${arg} == "--no-remove" ]]; then
 		remove_dir="false"
 	fi
 done
