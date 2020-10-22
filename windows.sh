@@ -15,14 +15,28 @@ if [ -z "$(which cmake)" ]; then
 	exit -1
 fi
 
-build_type="Release"
+if [ -z "$(which 7z)" ]; then
+	echo "Can't find 7zip!"
+	exit -1
+fi
+
+pack="false"
+build_type="Debug"
 remove_dir="true"
 
-if [[ $1 == "--debug" ]]; then
-	build_type="Debug"
-elif [[ $1 == "--no-remove" ]]; then
-	remove_dir="false"
-fi
+for arg in "$@"
+do
+	if [[ $arg == "--pack" ]]; then
+		pack="true"
+		build_type="Release"
+		remove_dir="false"
+		break
+	elif [[ $arg == "--release" ]]; then
+		build_type="Release"
+	elif [[ $arg == "--no-remove" ]]; then
+		remove_dir="false"
+	fi
+done
 
 c_compiler="x86_64-w64-mingw32-gcc-posix"
 cxx_compiler="x86_64-w64-mingw32-g++-posix"
@@ -85,6 +99,58 @@ fi
 
 make -j20
 
+if [ ! -f "naomi.exe" ]; then
+	echo "Something went wrong and the game didn't build!"
+	exit -1
+fi
+
 cd ".."
+
+if [[ ${pack} != "true" ]]; then
+	exit 0
+fi
+
+if [ -d "leviathan" ]; then
+	rm -rf "leviathan/"
+fi
+
+mkdir "leviathan" && cd "leviathan"
+
+cp "../mingw/naomi.exe" .
+cp "../mingw/libgcc_s_seh-1.dll" .
+cp "../mingw/libstdc++-6.dll" .
+cp "../mingw/libwinpthread-1.dll" .
+cp "../mingw/libangelscript.dll" .
+cp "../mingw/libtmxlite.dll" .
+cp "../mingw/OpenAL32.dll" .
+cp "../mingw/SDL2.dll" .
+
+cd "../data"
+
+if [ -L "init" ]; then
+	mv "init" "../../temp-init"
+fi
+
+if [ -L "save" ]; then
+	mv "save" "../../temp-save"
+fi
+
+cd "../leviathan"
+
+cp -r "../data" .
+
+cd ".."
+
+7z a "leviathan.7z" "leviathan/"
+
+rm -rf "leviathan"
+
+if [ -L "../temp-init" ]; then
+	mv "../temp-init" "data/init"
+fi
+
+if [ -L "../temp-save" ]; then
+	mv "../temp-save" "data/save"
+fi
 
 exit 0
