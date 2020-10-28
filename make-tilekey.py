@@ -44,7 +44,7 @@ def set_tilekey_bitmasks(path: str, bitmasks: List[int]) -> bool:
 
 class Texture():
     def __init__(self):
-        self.valid: bool = True
+        self.valid: bool = False
         self.dimensions: tuple = (0, 0)
         self.pointer: int = 0
     def __init__(self, path: str):
@@ -124,6 +124,11 @@ class TilesetCtl():
         print('Error! Nothing to save currently!')
         return False
     def handle(self):
+        if len(self.tileset_path) == 0 or not self.texture.valid:
+            self.amend = True
+            self.selected = False
+            self.index = 0
+            return
         pass
 
 class AttributeCtrl():
