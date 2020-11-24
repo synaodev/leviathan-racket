@@ -145,12 +145,14 @@ static void write_config(setup_file_t& config, const std::string& boot_path) {
 	}
 }
 
-static void load_config(setup_file_t& config) {
+static setup_file_t load_config() {
+	setup_file_t result;
 	const std::string boot_path = get_boot_path();
-	if (!config.load(boot_path)) {
+	if (!result.load(boot_path)) {
 		synao_log("Couldn't find main configuration file at \"{}\"! Generating new config file.\n", boot_path);
-		write_config(config, boot_path);
+		write_config(result, boot_path);
 	}
+	return result;
 }
 
 static bool mount(const byte_t* provided_directory) {
@@ -225,8 +227,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	// Load config
-	setup_file_t config;
-	load_config(config);
+	setup_file_t config = load_config();
 	// Run process
 	return process(config);
 }

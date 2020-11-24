@@ -2,13 +2,6 @@
 
 #include <fstream>
 
-setup_chunk_t::setup_chunk_t(const std::string& title) :
-	title(title),
-	data()
-{
-
-}
-
 std::string setup_chunk_t::get(const std::string& key) const {
 	for (auto&& pair : data) {
 		if (pair.first == key) {
@@ -76,12 +69,21 @@ void setup_chunk_t::write_to(std::string& buffer) const {
 	}
 }
 
-setup_file_t::setup_file_t() :
-	origin(),
-	data(),
-	locale()
-{
+setup_file_t::setup_file_t(setup_file_t&& that) noexcept : setup_file_t() {
+	if (this != &that) {
+		std::swap(origin, that.origin);
+		std::swap(data, that.data);
+		std::swap(locale, that.locale);
+	}
+}
 
+setup_file_t& setup_file_t::operator=(setup_file_t&& that) noexcept {
+	if (this != &that) {
+		std::swap(origin, that.origin);
+		std::swap(data, that.data);
+		std::swap(locale, that.locale);
+	}
+	return *this;
 }
 
 bool setup_file_t::load(const std::string& full_path) {

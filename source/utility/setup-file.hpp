@@ -13,12 +13,14 @@
 
 struct setup_chunk_t {
 public:
-	setup_chunk_t(const std::string& title);
+	setup_chunk_t(const std::string& title) :
+		title(title),
+		data() {}
 	setup_chunk_t() = default;
 	setup_chunk_t(const setup_chunk_t&) = default;
 	setup_chunk_t& operator=(const setup_chunk_t&) = default;
-	setup_chunk_t(setup_chunk_t&&) = default;
-	setup_chunk_t& operator=(setup_chunk_t&&) = default;
+	setup_chunk_t(setup_chunk_t&&) noexcept = default;
+	setup_chunk_t& operator=(setup_chunk_t&&) noexcept = default;
 	~setup_chunk_t() = default;
 public:
 	arch_t get_length() const;
@@ -36,7 +38,9 @@ private:
 
 struct setup_file_t : public not_copyable_t {
 public:
-	setup_file_t();
+	setup_file_t() = default;
+	setup_file_t(setup_file_t&& that) noexcept;
+	setup_file_t& operator=(setup_file_t&& that) noexcept;
 	~setup_file_t() = default;
 public:
 	bool load(const std::string& full_path);
