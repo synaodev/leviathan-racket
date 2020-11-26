@@ -134,12 +134,25 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN: {
-			pressed[btn_t::Click] = !holding[btn_t::Click];
-			holding[btn_t::Click] = true;
+			btn_t btn = evt.button.button == 0 ?
+				btn_t::Primary :
+				btn_t::Secondary;
+			pressed[btn] = !holding[btn];
+			holding[btn] = true;
+#ifdef LEVIATHAN_USES_META
+			meta_pressed[btn] = !meta_holding[btn];
+			meta_holding[btn] = true;
+#endif
 			break;
 		}
 		case SDL_MOUSEBUTTONUP: {
-			holding[btn_t::Click] = false;
+			btn_t btn = evt.button.button == 0 ?
+				btn_t::Primary :
+				btn_t::Secondary;
+			holding[btn] = false;
+#ifdef LEVIATHAN_USES_META
+			meta_holding[btn] = false;
+#endif
 			break;
 		}
 		case SDL_JOYAXISMOTION: {

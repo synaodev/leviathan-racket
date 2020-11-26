@@ -67,7 +67,7 @@ void tileset_viewer_t::handle(const input_t& input) {
 				cursor.y = position.y + kDefaultPosition.y;
 			}
 		}
-		if (input.pressed[btn_t::Click]) {
+		if (input.pressed[btn_t::Primary]) {
 			const rect_t bounds = rect_t(
 				kDefaultPosition,
 				texture->get_dimensions()
