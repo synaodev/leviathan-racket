@@ -308,7 +308,7 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_bindi
 	case frame_buffer_binding_t::Main: {
 		if (main != frame_buffer) {
 			main = frame_buffer;
-			if (frame_buffer != nullptr and frame_buffer->ready) {
+			if (frame_buffer and frame_buffer->ready) {
 				uint_t layers = frame_buffer->color_buffer.get_layers();
 				glCheck(glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer->handle));
 				glCheck(glDrawBuffers(layers, kDrawAttach()));
@@ -322,7 +322,7 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_bindi
 	case frame_buffer_binding_t::Read: {
 		if (read != frame_buffer) {
 			read = frame_buffer;
-			if (frame_buffer != nullptr and frame_buffer->ready) {
+			if (frame_buffer and frame_buffer->ready) {
 				glCheck(glBindFramebuffer(GL_READ_FRAMEBUFFER, frame_buffer->handle));
 				glCheck(glReadBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
 			}
@@ -335,7 +335,7 @@ void frame_buffer_t::bind(const frame_buffer_t* frame_buffer, frame_buffer_bindi
 	case frame_buffer_binding_t::Write: {
 		if (write != frame_buffer) {
 			write = frame_buffer;
-			if (frame_buffer != nullptr and frame_buffer->ready) {
+			if (frame_buffer and frame_buffer->ready) {
 				glCheck(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frame_buffer->handle));
 				glCheck(glDrawBuffer(GL_COLOR_ATTACHMENT0 + static_cast<uint_t>(index)));
 			}
@@ -386,7 +386,7 @@ void frame_buffer_t::clear(glm::ivec2 dimensions) {
 }
 
 void frame_buffer_t::clear(const frame_buffer_t* frame_buffer, glm::vec4 color) {
-	if (frame_buffer != nullptr and frame_buffer->ready) {
+	if (frame_buffer and frame_buffer->ready) {
 		frame_buffer_t::bind(frame_buffer);
 		frame_buffer_t::viewport(frame_buffer);
 		frame_buffer_t::bucket(color);
@@ -407,7 +407,7 @@ void frame_buffer_t::viewport(glm::ivec2 dimensions) {
 }
 
 void frame_buffer_t::viewport(const frame_buffer_t* frame_buffer) {
-	if (frame_buffer != nullptr) {
+	if (frame_buffer) {
 		glm::ivec2 dimensions = frame_buffer->color_buffer.get_integral_dimensions();
 		frame_buffer_t::viewport(dimensions);
 	}

@@ -100,7 +100,7 @@ vfs_t::vfs_t() :
 	animations() {}
 
 vfs_t::~vfs_t() {
-	if (vfs::device != nullptr) {
+	if (vfs::device) {
 		if (vfs::device == this) {
 			vfs::device = nullptr;
 		} else {
@@ -113,7 +113,7 @@ bool vfs_t::init(const setup_file_t& config) {
 	if (vfs::device == this) {
 		synao_log("Error! This virtual file system already exists!\n");
 		return false;
-	} else if (vfs::device != nullptr) {
+	} else if (vfs::device) {
 		synao_log("Error! Another virtual filesystem already exists!\n");
 		return false;
 	}
@@ -141,7 +141,7 @@ bool vfs_t::set_sampler_allocator(sampler_allocator_t* sampler_allocator) {
 		synao_log("Error! This virtual filesystem isn't ready to setup the sampler allocator!\n");
 		return false;
 	}
-	if (this->sampler_allocator != nullptr or this->sampler_allocator == sampler_allocator) {
+	if (this->sampler_allocator or this->sampler_allocator == sampler_allocator) {
 		synao_log("Error! This virtual filesystem aleady has a sampler allocator!\n");
 		return false;
 	}
@@ -235,7 +235,7 @@ std::string vfs::working_directory() {
 
 std::string vfs::executable_directory() {
 	byte_t* path = SDL_GetBasePath();
-	if (path == nullptr) {
+	if (!path) {
 		return std::string();
 	}
 	std::string result = path;
@@ -245,7 +245,7 @@ std::string vfs::executable_directory() {
 
 std::string vfs::personal_directory() {
 	byte_t* path = SDL_GetPrefPath(kOrganization, kApplication);
-	if (path == nullptr) {
+	if (!path) {
 		return std::string();
 	}
 	std::string result = path;
@@ -266,7 +266,7 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	case vfs_resource_path_t::Image:
 		return kImagePath;
 	case vfs_resource_path_t::Init:
-		if (vfs::device != nullptr) {
+		if (vfs::device) {
 			return vfs::device->personal + kInitRoute;
 		}
 		return vfs::personal_directory() + kInitRoute;
@@ -275,7 +275,7 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	case vfs_resource_path_t::Palette:
 		return kPalettePath;
 	case vfs_resource_path_t::Save:
-		if (vfs::device != nullptr) {
+		if (vfs::device) {
 			return vfs::device->personal + kSaveRoute;
 		}
 		return vfs::personal_directory() + kSaveRoute;
@@ -376,7 +376,7 @@ bool vfs::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, 
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return std::string();
 	}
 	auto it = vfs::device->i18n.find(segment);
@@ -391,7 +391,7 @@ std::string vfs::i18n_find(const std::string& segment, arch_t index) {
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return std::string();
 	}
 	auto it = vfs::device->i18n.find(segment);
@@ -408,7 +408,7 @@ std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last
 }
 
 arch_t vfs::i18n_size(const std::string& segment) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return 0;
 	}
 	auto it = vfs::device->i18n.find(segment);
@@ -419,7 +419,7 @@ arch_t vfs::i18n_size(const std::string& segment) {
 }
 
 bool vfs::try_language(const std::string& language) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return false;
 	}
 	const std::string full_path = kI18NPath + language + ".json";
@@ -444,10 +444,10 @@ bool vfs::try_language(const std::string& language) {
 }
 
 const texture_t* vfs::texture(const std::string& name) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
-	if (vfs::device->sampler_allocator == nullptr) {
+	if (!vfs::device->sampler_allocator) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(name, vfs::device->textures);
@@ -464,10 +464,10 @@ const texture_t* vfs::texture(const std::string& name) {
 }
 
 const palette_t* vfs::palette(const std::string& name) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
-	if (vfs::device->sampler_allocator == nullptr) {
+	if (!vfs::device->sampler_allocator) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(name, vfs::device->palettes);
@@ -484,10 +484,10 @@ const palette_t* vfs::palette(const std::string& name) {
 }
 
 const atlas_t* vfs::atlas(const std::string& name) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
-	if (vfs::device->sampler_allocator == nullptr) {
+	if (!vfs::device->sampler_allocator) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(name, vfs::device->atlases);
@@ -504,7 +504,7 @@ const atlas_t* vfs::atlas(const std::string& name) {
 }
 
 const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
 	auto it = vfs::device->shaders.find(name);
@@ -523,7 +523,7 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 }
 
 std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		synao_log("Couldn't find path for event: {}!\n", name);
 		return std::string();
 	}
@@ -539,7 +539,7 @@ const noise_t* vfs::noise(const std::string& name) {
 }
 
 const noise_t* vfs::noise(const entt::hashed_string& entry) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(entry.value(), vfs::device->noises);
@@ -552,7 +552,7 @@ const noise_t* vfs::noise(const entt::hashed_string& entry) {
 }
 
 const animation_t* vfs::animation(const entt::hashed_string& entry) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
 	auto it = vfs::device->search_safely(entry.value(), vfs::device->animations);
@@ -570,7 +570,7 @@ const animation_t* vfs::animation(const std::string& name) {
 }
 
 const font_t* vfs::font(const std::string& name) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
 	auto it = vfs::device->fonts.find(name);
@@ -583,7 +583,7 @@ const font_t* vfs::font(const std::string& name) {
 }
 
 const font_t* vfs::font(arch_t index) {
-	if (vfs::device == nullptr) {
+	if (!vfs::device) {
 		return nullptr;
 	}
 	auto& i18n_fonts = vfs::device->i18n["Fonts"];

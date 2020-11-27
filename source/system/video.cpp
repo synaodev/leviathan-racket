@@ -21,11 +21,11 @@ video_t::video_t() :
 }
 
 video_t::~video_t() {
-	if (context != nullptr) {
+	if (context) {
 		SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(context));
 		context = nullptr;
 	}
-	if (window != nullptr) {
+	if (window) {
 		SDL_DestroyWindow(window);
 		window = nullptr;
 	}
@@ -58,11 +58,11 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		params.framerate,
 		screen_params_t::kDefaultFramerate
 	);
-	if (window != nullptr) {
+	if (window) {
 		synao_log("Window already created!\n");
 		return false;
 	}
-	if (context != nullptr) {
+	if (context) {
 		synao_log("OpenGL context already created!\n");
 		return false;
 	}
@@ -109,7 +109,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
 		);
 	}
-	if (window == nullptr) {
+	if (!window) {
 		synao_log("Window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
@@ -129,7 +129,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 			return false;
 		}
 		context = SDL_GL_CreateContext(window);
-		if (context != nullptr) {
+		if (context) {
 			break;
 		} else if (major == 4 and minor > 0) {
 			minor -= 1;
@@ -142,7 +142,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		}
 	}
 	// If OpenGL 3.3 isn't available, it's worth telling the user.
-	if (context == nullptr) {
+	if (!context) {
 		SDL_ShowSimpleMessageBox(
 			SDL_MESSAGEBOX_ERROR,
 			"OpenGL Error",
@@ -204,7 +204,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		sizeof(uint_t) * image_dimensions.x,
 		SDL_PIXELFORMAT_RGBA32
 	);
-	if (surface != nullptr) {
+	if (surface) {
 		SDL_SetWindowIcon(window, surface);
 		SDL_FreeSurface(surface);
 		surface = nullptr;
@@ -216,7 +216,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 }
 
 void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
-	if (frame_buffer != nullptr) {
+	if (frame_buffer) {
 		const glm::ivec2 source_dimensions = frame_buffer->get_integral_dimensions();
 		const glm::ivec2 destination_dimensions = this->get_integral_dimensions();
 		frame_buffer_t::bind(nullptr, frame_buffer_binding_t::Write, 0);
@@ -226,7 +226,7 @@ void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
 }
 
 void video_t::flush() const {
-	if (window != nullptr and context != nullptr) {
+	if (window and context) {
 		SDL_GL_SwapWindow(window);
 	}
 }

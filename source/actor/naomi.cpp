@@ -637,7 +637,7 @@ void naomi_state_t::do_fire(const input_t& input, audio_t& audio, kernel_t& kern
 		flags[naomi_flags_t::Firing] = true;
 		if (!chroniker[naomi_timer_t::Reloading]) {
 			glm::ivec4* weapon = kernel.get_item_ptr();
-			if (weapon != nullptr and weapon->w != 0 and weapon->y > 0) {
+			if (weapon and weapon->w != 0 and weapon->y > 0) {
 				glm::vec2 position = location.position;
 				direction_t direction = location.direction;
 				glm::vec2 velocity = kinematics.velocity;

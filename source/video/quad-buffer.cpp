@@ -166,7 +166,7 @@ quad_buffer_t::~quad_buffer_t() {
 }
 
 void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify) {
-	if (allocator != nullptr and allocator->valid()) {
+	if (allocator and allocator->valid()) {
 		this->destroy();
 		this->allocator = allocator;
 		this->usage = usage;
@@ -182,7 +182,7 @@ void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usag
 		glCheck(glBindBuffer(GL_ARRAY_BUFFER, buffer));
 		allocator->bind(true);
 
-		if (specify.detail != nullptr) {
+		if (specify.detail) {
 			specify.detail();
 		}
 		glCheck(glBindVertexArray(0));
@@ -192,7 +192,7 @@ void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usag
 }
 
 void quad_buffer_t::create(arch_t length) {
-	if (allocator != nullptr and allocator->valid() and arrays != 0) {
+	if (allocator and allocator->valid() and arrays != 0) {
 		this->length = length;
 
 		uint_t gl_enum = gfx_t::get_buffer_usage_gl_enum(usage);
@@ -219,7 +219,7 @@ void quad_buffer_t::destroy() {
 }
 
 bool quad_buffer_t::update(const vertex_t* vertices, arch_t count, arch_t offset) {
-	if (allocator == nullptr) {
+	if (!allocator) {
 		return false;
 	} else if (!allocator->valid() or !arrays) {
 		return false;
@@ -245,7 +245,7 @@ bool quad_buffer_t::update(const vertex_t* vertices) {
 }
 
 void quad_buffer_t::draw(arch_t count) const {
-	if (allocator != nullptr and allocator->valid() and arrays != 0) {
+	if (allocator and allocator->valid() and arrays != 0) {
 		count = quad_allocator_t::convert(count);
 		glCheck(glBindVertexArray(arrays));
 		glCheck(glDrawElements(

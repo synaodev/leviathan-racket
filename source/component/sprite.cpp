@@ -97,14 +97,14 @@ void sprite_t::new_state(arch_t state) {
 }
 
 glm::vec2 sprite_t::action_point(arch_t state, arch_t variation, mirroring_t mirroring, glm::vec2 position) const {
-	if (file != nullptr) {
+	if (file) {
 		return position + file->get_action_point(state, variation, mirroring);
 	}
 	return position;
 }
 
 bool sprite_t::finished() const {
-	if (file != nullptr) {
+	if (file) {
 		return file->is_finished(state, frame, timer);
 	}
 	return true;
@@ -112,7 +112,7 @@ bool sprite_t::finished() const {
 
 void sprite_t::update(kontext_t& kontext, real64_t delta) {
 	kontext.slice<sprite_t, location_t>().each([delta](entt::entity, sprite_t& sprite, const location_t& location) {
-		if (sprite.file != nullptr) {
+		if (sprite.file) {
 			sprite.file->update(
 				delta,
 				sprite.amend,
@@ -141,7 +141,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 	arch_t current = 0;
 	if (!panic) {
 		view.each([&viewport, &current](entt::entity, const sprite_t& sprite) {
-			if (sprite.file != nullptr) {
+			if (sprite.file) {
 				if (sprite.file->visible(
 					viewport,
 					sprite.state,
@@ -159,7 +159,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 		previous = current;
 	}
 	view.each([&renderer, &viewport, panic](entt::entity, const sprite_t& sprite) {
-		if (sprite.file != nullptr and sprite.layer != layer_value::Invisible) {
+		if (sprite.file and sprite.layer != layer_value::Invisible) {
 			if ((sprite.angle + sprite.shake) != 0.0f) {
 				sprite.file->render(
 					renderer,

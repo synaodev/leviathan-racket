@@ -98,7 +98,7 @@ bool texture_t::valid() const {
 
 uint_t texture_t::get_handle() const {
 	this->assure();
-	if (allocator != nullptr) {
+	if (allocator) {
 		return allocator->texture().id;
 	}
 	return 0;
@@ -219,7 +219,7 @@ bool atlas_t::valid() const {
 
 uint_t atlas_t::get_handle() const {
 	this->assure();
-	if (allocator != nullptr) {
+	if (allocator) {
 		return allocator->atlas().id;
 	}
 	return 0;
@@ -340,7 +340,7 @@ bool palette_t::valid() const {
 
 uint_t palette_t::get_handle() const {
 	this->assure();
-	if (allocator != nullptr) {
+	if (allocator) {
 		return allocator->palette().id;
 	}
 	return 0;

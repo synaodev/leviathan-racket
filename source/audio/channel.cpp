@@ -53,7 +53,7 @@ void channel_t::destroy() {
 }
 
 bool channel_t::attach() {
-	if (current != nullptr) {
+	if (current) {
 		ready = false;
 		this->stop();
 		current->binder.erase(this);
@@ -66,11 +66,11 @@ bool channel_t::attach() {
 bool channel_t::attach(const noise_t* noise) {
 	if (!ready or current != noise) {
 		this->stop();
-		if (current != nullptr) {
+		if (current) {
 			current->binder.erase(this);
 			current = nullptr;
 		}
-		if (noise != nullptr and noise->ready) {
+		if (noise and noise->ready) {
 			// noise->assure();
 			ready = true;
 			current = noise;

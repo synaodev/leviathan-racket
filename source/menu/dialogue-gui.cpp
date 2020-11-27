@@ -42,7 +42,7 @@ dialogue_gui_t::dialogue_gui_t() :
 bool dialogue_gui_t::init(receiver_t& receiver) {
 	const animation_t* faces_animation = vfs::animation(res::anim::Faces);
 	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
-	if (faces_animation == nullptr or heads_animation == nullptr) {
+	if (!faces_animation or !heads_animation) {
 		synao_log("Dialogue GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
@@ -65,7 +65,7 @@ void dialogue_gui_t::reset() {
 
 bool dialogue_gui_t::refresh() {
 	const font_t* font = vfs::font(0);
-	if (font == nullptr) {
+	if (!font) {
 		synao_log("Dialogue GUI is missing font and cannot be rendered!\n");
 		return false;
 	}
@@ -246,7 +246,7 @@ void dialogue_gui_t::set_delay() {
 }
 
 void dialogue_gui_t::ask_question(const CScriptArray* array) {
-	if (array != nullptr and array->GetSize() > 0) {
+	if (array and array->GetSize() > 0) {
 		flags[dialogue_flag_t::Question] = true;
 		flags[dialogue_flag_t::Writing] = false;
 		text.set_string("  ");

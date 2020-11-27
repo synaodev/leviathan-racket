@@ -59,7 +59,7 @@ void attribute_gui_t::handle(tileset_viewer_t& tileset_viewer, renderer_t& rende
 		ImGui::ListBox(
 			"Files", &index,
 			[] (void_t data, sint_t index, const byte_t** output) {
-				if (data == nullptr or output == nullptr) {
+				if (!data or !output) {
 					return false;
 				}
 				const std::vector<std::string>* files = reinterpret_cast<std::vector<std::string>*>(data);

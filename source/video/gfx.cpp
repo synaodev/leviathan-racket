@@ -70,7 +70,7 @@ void gfx_t::set_blend_mode(blend_mode_t blend_mode) {
 void gfx_t::set_pipeline(const pipeline_t* pipeline) {
 	if (this->pipeline != pipeline) {
 		this->pipeline = pipeline;
-		if (pipeline != nullptr) {
+		if (pipeline) {
 			if (pipeline_t::has_separable()) {
 				glCheck(glBindProgramPipeline(pipeline->handle));
 			} else {
@@ -83,7 +83,7 @@ void gfx_t::set_pipeline(const pipeline_t* pipeline) {
 void gfx_t::set_sampler_allocator(const sampler_allocator_t* sampler_allocator) {
 	if (this->sampler_allocator != sampler_allocator) {
 		this->sampler_allocator = sampler_allocator;
-		if (sampler_allocator != nullptr) {
+		if (sampler_allocator) {
 			auto& texture = sampler_allocator->texture();
 			glCheck(glActiveTexture(GL_TEXTURE0));
 			glCheck(glBindTexture(texture.type, texture.id));
@@ -103,7 +103,7 @@ void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
 		if (sampler_list[index] != color_buffer) {
 			sampler_list[index] = color_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (color_buffer != nullptr) {
+			if (color_buffer) {
 				if (color_buffer->layers > 1) {
 					glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, color_buffer->handle));
 				} else {
@@ -120,7 +120,7 @@ void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
 		if (sampler_list[index] != depth_buffer) {
 			sampler_list[index] = depth_buffer;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (depth_buffer != nullptr and !depth_buffer->compress) {
+			if (depth_buffer and !depth_buffer->compress) {
 				glCheck(glBindTexture(GL_TEXTURE_2D, depth_buffer->handle));
 			}
 			sampler_allocator = nullptr;
@@ -130,7 +130,7 @@ void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
 
 void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
 	if (index < sampler_list.size()) {
-		if (sampler_list[index] != nullptr) {
+		if (sampler_list[index]) {
 			sampler_list[index] = nullptr;
 			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
 			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
@@ -143,7 +143,7 @@ void gfx_t::set_buffer(const const_buffer_t* buffer, arch_t index) {
 	if (index < buffer_list.size()) {
 		if (buffer_list[index] != buffer) {
 			buffer_list[index] = buffer;
-			if (buffer != nullptr) {
+			if (buffer) {
 				glCheck(glBindBufferBase(
 					GL_UNIFORM_BUFFER,
 					static_cast<uint_t>(index),

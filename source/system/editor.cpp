@@ -66,11 +66,11 @@ editor_t::editor_t() :
 }
 
 editor_t::~editor_t() {
-	if (context != nullptr) {
+	if (context) {
 		ImGui_ImplOpenGL3_Shutdown();
 		context = nullptr;
 	}
-	if (window != nullptr) {
+	if (window) {
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
 		window = nullptr;

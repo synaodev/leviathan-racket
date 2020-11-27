@@ -158,7 +158,7 @@ static setup_file_t load_config() {
 static bool mount(const byte_t* provided_directory) {
 	// Save initial working directory before attempting to change it
 	const std::string working_directory = vfs::working_directory();
-	if (provided_directory != nullptr) {
+	if (provided_directory) {
 		if (vfs::mount(provided_directory, false)) {
 			return true;
 		} else {
@@ -205,7 +205,7 @@ int main(int argc, char** argv) {
 		const byte_t* directory = nullptr;
 		for (sint_t it = 1; it < argc; ++it) {
 			const byte_t* option = argv[it];
-			if (directory == nullptr) {
+			if (!directory) {
 				directory = option;
 			} else {
 				break;

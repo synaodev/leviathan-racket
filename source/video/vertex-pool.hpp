@@ -31,7 +31,7 @@ private:
 
 template<typename V>
 inline V* vertex_pool_t::at(arch_t index) {
-	if (specify.detail == nullptr) {
+	if (!specify.detail) {
 		return nullptr;
 	}
 	static_assert(std::is_base_of<vertex_t, V>::value);
@@ -40,7 +40,7 @@ inline V* vertex_pool_t::at(arch_t index) {
 
 template<typename V>
 inline const V* vertex_pool_t::at(arch_t index) const {
-	if (specify.detail == nullptr) {
+	if (!specify.detail) {
 		return nullptr;
 	}
 	static_assert(std::is_base_of<vertex_t, V>::value);

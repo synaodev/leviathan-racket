@@ -27,7 +27,7 @@ void draw_item_view_t::init(const texture_t* texture, const palette_t* palette, 
 
 void draw_item_view_t::handle(const kernel_t& kernel) {
 	const glm::ivec4* item_ptr = kernel.get_item_ptr();
-	if (item_ptr != nullptr) {
+	if (item_ptr) {
 		scheme.set_direction(
 			static_cast<direction_t>(item_ptr->x - 1) // TODO: Static anaylsis doesn't like this
 		);

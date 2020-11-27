@@ -42,7 +42,7 @@ receiver_t::receiver_t() :
 
 receiver_t::~receiver_t() {
 	// If boot isn't null it's been fully initialized.
-	if (boot != nullptr) {
+	if (boot) {
 		asIScriptModule* boot_module = engine->GetModuleByIndex(0);
 		boot_module->UnbindAllImportedFunctions();
 		// Now calling discard_all_events will fully unlink all modules.
@@ -50,31 +50,31 @@ receiver_t::~receiver_t() {
 		boot->Release();
 		boot = nullptr;
 	}
-	if (state != nullptr) {
+	if (state) {
 		state->Release();
 		state = nullptr;
 	}
-	if (engine != nullptr) {
+	if (engine) {
 		engine->ShutDownAndRelease();
 		engine = nullptr;
 	}
 }
 
 bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext) {
-	if (engine != nullptr) {
+	if (engine) {
 		synao_log("Scripting engine already exists!\n");
 		return false;
 	}
-	if (state != nullptr) {
+	if (state) {
 		synao_log("Scripting state already exists!\n");
 		return false;
 	}
-	if (boot != nullptr) {
+	if (boot) {
 		synao_log("Scripting boot function already exists!\n");
 		return false;
 	}
 	engine = asCreateScriptEngine(ANGELSCRIPT_VERSION);
-	if (engine == nullptr) {
+	if (!engine) {
 		synao_log("Scripting engine creation failed!\n");
 		return false;
 	}
@@ -85,7 +85,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 		camera, naomi_state, kontext
 	);
 	state = engine->CreateContext();
-	if (state == nullptr) {
+	if (!state) {
 		synao_log("Scripting state creation failed!\n");
 		return false;
 	}
@@ -99,7 +99,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 	}
 	asIScriptModule* boot_module = engine->GetModuleByIndex(0);
 	boot = boot_module->GetFunctionByIndex(0);
-	if (boot == nullptr) {
+	if (!boot) {
 		synao_log("Couldn't find any functions in boot module!\n");
 		return false;
 	}
@@ -198,11 +198,11 @@ bool receiver_t::load(const std::string& name) {
 
 bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_ONLY_IF_EXISTS);
-	if (module != nullptr) {
+	if (module) {
 		synao_log("Module \"{}\" already exists!\n", name);
 	} else {
 		module = engine->GetModule(name.c_str(), asGM_ALWAYS_CREATE);
-		if (module == nullptr) {
+		if (!module) {
 			synao_log("Couldn't allocate script module \"{}\" during loading process!\n", name);
 			return false;
 		}
@@ -271,13 +271,13 @@ void receiver_t::run_death(arch_t type) {
 void receiver_t::push_from_symbol(sint_t id, const std::string& module_name, const std::string& symbol) {
 	auto it = events.find(id);
 	if (it != events.end()) {
-		if (it->second != nullptr) {
+		if (it->second) {
 			it->second->Release();
 			it->second = nullptr;
 		}
 	}
 	asIScriptFunction* function = this->find_from_symbol(module_name, symbol);
-	if (function != nullptr) {
+	if (function) {
 		function->AddRef();
 		events[id] = function;
 	}
@@ -286,12 +286,12 @@ void receiver_t::push_from_symbol(sint_t id, const std::string& module_name, con
 void receiver_t::push_from_function(sint_t id, asIScriptFunction* function) {
 	auto it = events.find(id);
 	if (it != events.end()) {
-		if (it->second != nullptr) {
+		if (it->second) {
 			it->second->Release();
 			it->second = nullptr;
 		}
 	}
-	if (function != nullptr) {
+	if (function) {
 		events[id] = function;
 	}
 }
@@ -317,7 +317,7 @@ std::string receiver_t::verify(asIScriptFunction* imported) const {
 	// 	engine->GetModuleByIndex(0);
 	// asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
 	// const byte_t* source = module->GetImportedFunctionSourceModule(index);
-	// if (source == nullptr) {
+	// if (!source) {
 	// 	return std::string();
 	// }
 	// return source;
@@ -327,7 +327,7 @@ std::string receiver_t::verify(asIScriptFunction* imported) const {
 			asIScriptModule* module = engine->GetModuleByIndex(it);
 			asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
 			const byte_t* source = module->GetImportedFunctionSourceModule(index);
-			if (source != nullptr) {
+			if (source) {
 				return source;
 			}
 		}
@@ -374,9 +374,9 @@ void receiver_t::calls_callback(asIScriptContext* ctx, uint_t* calls) {
 
 asIScriptFunction* receiver_t::find_from_index(const std::string& module_name, arch_t index) const {
 	asIScriptModule* module = engine->GetModule(module_name.c_str(), asGM_ONLY_IF_EXISTS);
-	if (module != nullptr) {
+	if (module) {
 		asIScriptFunction* function = module->GetFunctionByIndex(static_cast<asUINT>(index));
-		if (function != nullptr) {
+		if (function) {
 			return function;
 		}
 	}
@@ -386,9 +386,9 @@ asIScriptFunction* receiver_t::find_from_index(const std::string& module_name, a
 asIScriptFunction* receiver_t::find_from_symbol(const std::string& module_name, const std::string& symbol) const {
 	const std::string declaration = "void " + symbol + "()";
 	asIScriptModule* module = engine->GetModule(module_name.c_str(), asGM_ONLY_IF_EXISTS);
-	if (module != nullptr) {
+	if (module) {
 		asIScriptFunction* function = module->GetFunctionByDecl(declaration.c_str());
-		if (function != nullptr) {
+		if (function) {
 			return function;
 		}
 	}
@@ -397,7 +397,7 @@ asIScriptFunction* receiver_t::find_from_symbol(const std::string& module_name, 
 
 asIScriptFunction* receiver_t::find_from_declaration(const std::string& module_name, const std::string& declaration) const {
 	asIScriptModule* module = engine->GetModule(module_name.c_str(), asGM_ONLY_IF_EXISTS);
-	if (module != nullptr) {
+	if (module) {
 		return module->GetFunctionByDecl(declaration.c_str());
 	}
 	return nullptr;
@@ -405,7 +405,7 @@ asIScriptFunction* receiver_t::find_from_declaration(const std::string& module_n
 
 asIScriptFunction* receiver_t::find_from_declaration(const std::string& declaration) const {
 	asIScriptModule* module = engine->GetModuleByIndex(0);
-	if (module != nullptr) {
+	if (module) {
 		return module->GetFunctionByDecl(declaration.c_str());
 	}
 	return nullptr;
@@ -431,7 +431,7 @@ bool receiver_t::has_linked_functions(asIScriptModule* source_module, asIScriptM
 }
 
 void receiver_t::execute_function(asIScriptFunction* function) {
-	if (function != nullptr) {
+	if (function) {
 		sint_t r = state->Prepare(function);
 		if (r >= 0) {
 			bitmask[rec_bits_t::Running] = true;
@@ -454,7 +454,7 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 }
 
 void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_t> args) {
-	if (function != nullptr and state->Prepare(function) >= 0) {
+	if (function and state->Prepare(function) >= 0) {
 		bitmask[rec_bits_t::Running] = true;
 		bitmask[rec_bits_t::Waiting] = false;
 		bitmask[rec_bits_t::Stalled] = false;
@@ -490,13 +490,13 @@ void receiver_t::close_dependencies(kernel_t& kernel, const stack_gui_t& stack_g
 
 void receiver_t::discard_all_events() {
 	for (auto&& event : events) {
-		if (event.second != nullptr) {
+		if (event.second) {
 			event.second->Release();
 			event.second = nullptr;
 		}
 	}
 	events.clear();
-	if (current != nullptr) {
+	if (current) {
 		const byte_t* current_name = current->GetName();
 		asUINT module_count = engine->GetModuleCount();
 		for (asUINT i = 0; i < module_count; ++i) {
@@ -526,18 +526,18 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 	for (asUINT it = 0; it < count; ++it) {
 		const byte_t* name = module->GetImportedFunctionSourceModule(it);
 		asIScriptModule* source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
-		if (source == nullptr and !this->load(name, rec_loading_t::Import)) {
+		if (!source and !this->load(name, rec_loading_t::Import)) {
 			synao_log("Couldn't allocate script module during linking process!\n");
 			break;
 		}
 		source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
-		if (source == nullptr) {
+		if (!source) {
 			synao_log("Couldn't allocate script module during linking process... again!\n");
 			break;
 		}
 		const byte_t* declaration = module->GetImportedFunctionDeclaration(it);
 		asIScriptFunction* function = source->GetFunctionByDecl(declaration);
-		if (function == nullptr) {
+		if (!function) {
 			synao_log("Couldn't find imported script function with declaration: {}!\n", declaration);
 			break;
 		}

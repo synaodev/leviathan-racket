@@ -109,14 +109,14 @@ const atlas_t* font_t::get_atlas() const {
 }
 
 sint_t font_t::get_atlas_name() const {
-	if (atlas != nullptr) {
+	if (atlas) {
 		return atlas->get_name();
 	}
 	return 0;
 }
 
 glm::vec2 font_t::get_inverse_dimensions() const {
-	if (atlas != nullptr) {
+	if (atlas) {
 		return atlas->get_inverse_dimensions();
 	}
 	return glm::one<glm::vec2>();

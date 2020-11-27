@@ -56,7 +56,7 @@ bool setup_chunk_t::swap(const std::string& lhk, const std::string& rhk) {
 			rhp = &pair;
 		}
 	}
-	if (lhp != nullptr and rhp != nullptr) {
+	if (lhp and rhp) {
 		std::swap(lhp->second, rhp->second);
 		return true;
 	}

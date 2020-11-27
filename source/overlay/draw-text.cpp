@@ -42,7 +42,7 @@ void draw_text_t::increment() {
 }
 
 void draw_text_t::render(renderer_t& renderer) const {
-	if (!quads.empty() and font != nullptr) {
+	if (font and !quads.empty()) {
 		auto& list = renderer.display_list(
 			layer,
 			blend_mode_t::Alpha,
@@ -171,7 +171,7 @@ layer_t draw_text_t::get_layer() const {
 }
 
 glm::vec2 draw_text_t::get_font_size() const {
-	if (font != nullptr) {
+	if (font) {
 		return font->get_dimensions();
 	}
 	return glm::zero<glm::vec2>();
@@ -180,7 +180,7 @@ glm::vec2 draw_text_t::get_font_size() const {
 void draw_text_t::generate() {
 	amend = true;
 	quads.clear();
-	if (font != nullptr and !buffer.empty()) {
+	if (font and !buffer.empty()) {
 		arch_t spaces_chars = std::count_if(
 			buffer.begin(),
 			buffer.begin() + current,

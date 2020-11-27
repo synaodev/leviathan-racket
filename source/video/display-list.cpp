@@ -19,7 +19,7 @@ display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const pip
 	quad_buffer()
 {
 	vertex_spec_t specify;
-	if (pipeline != nullptr) {
+	if (pipeline) {
 		specify = pipeline->get_specify();
 	}
 	quad_pool.setup(specify);

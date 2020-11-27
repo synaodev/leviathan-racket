@@ -164,16 +164,16 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 			glCheck(glGenProgramPipelines(1, &handle));
 			glCheck(glBindProgramPipeline(handle));
 
-			if (vert != nullptr and vert->stage == shader_stage_t::Vertex) {
+			if (vert and vert->stage == shader_stage_t::Vertex) {
 				glCheck(glUseProgramStages(handle, GL_VERTEX_SHADER_BIT, vert->handle));
 				specify = shader_t::attributes(vert->handle);
 			}
 
-			if (frag != nullptr and frag->stage == shader_stage_t::Fragment) {
+			if (frag and frag->stage == shader_stage_t::Fragment) {
 				glCheck(glUseProgramStages(handle, GL_FRAGMENT_SHADER_BIT, frag->handle));
 			}
 
-			if (geom != nullptr and geom->stage == shader_stage_t::Geometry) {
+			if (geom and geom->stage == shader_stage_t::Geometry) {
 				glCheck(glUseProgramStages(handle, GL_GEOMETRY_SHADER_BIT, geom->handle));
 			}
 
@@ -191,13 +191,13 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 			sint_t success = 0;
 			glCheck(handle = glCreateProgram());
 
-			if (vert != nullptr and vert->stage == shader_stage_t::Vertex) {
+			if (vert and vert->stage == shader_stage_t::Vertex) {
 				glCheck(glAttachShader(handle, vert->handle));
 			}
-			if (frag != nullptr and frag->stage == shader_stage_t::Fragment) {
+			if (frag and frag->stage == shader_stage_t::Fragment) {
 				glCheck(glAttachShader(handle, frag->handle));
 			}
-			if (geom != nullptr and geom->stage == shader_stage_t::Geometry) {
+			if (geom and geom->stage == shader_stage_t::Geometry) {
 				glCheck(glAttachShader(handle, geom->handle));
 			}
 
@@ -213,13 +213,13 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 				specify = shader_t::attributes(handle);
 			}
 
-			if (vert != nullptr) {
+			if (vert) {
 				glCheck(glDetachShader(handle, vert->handle));
 			}
-			if (frag != nullptr) {
+			if (frag) {
 				glCheck(glDetachShader(handle, frag->handle));
 			}
-			if (geom != nullptr) {
+			if (geom) {
 				glCheck(glDetachShader(handle, geom->handle));
 			}
 		}

@@ -44,7 +44,7 @@ vertex_spec_t& vertex_spec_t::operator=(vertex_spec_t&& that) noexcept {
 }
 
 bool vertex_spec_t::compare(const uint_t* lhv, const uint_t* rhv) {
-	if (lhv == nullptr or rhv == nullptr) {
+	if (!lhv or !rhv) {
 		synao_log("Warning! vertex_spec_t::compare has null inputs!\n");
 		return false;
 	}

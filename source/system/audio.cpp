@@ -19,35 +19,35 @@ audio_t::audio_t() :
 audio_t::~audio_t() {
 	tasks.clear();
 	channels.clear();
-	if (context != nullptr) {
+	if (context) {
 		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(reinterpret_cast<ALCcontext*>(context));
 		context = nullptr;
 	}
-	if (device != nullptr) {
+	if (device) {
 		alcCloseDevice(reinterpret_cast<ALCdevice*>(device));
 		device = nullptr;
 	}
 }
 
 bool audio_t::init(const setup_file_t& config) {
-	if (device != nullptr) {
+	if (device) {
 		synao_log("OpenAL device already exists!\n");
 		return false;
 	}
-	if (context != nullptr) {
+	if (context) {
 		synao_log("OpenAL context already exists!\n");
 		return false;
 	}
 
 	device = alcOpenDevice(nullptr);
-	if (device == nullptr) {
+	if (!device) {
 		synao_log("OpenAL device creation failed!\n");
 		return false;
 	}
 
 	context = alcCreateContext(reinterpret_cast<ALCdevice*>(device), nullptr);
-	if (context == nullptr) {
+	if (!context) {
 		synao_log("OpenAL context creation failed!\n");
 		return false;
 	}
@@ -76,7 +76,7 @@ void audio_t::flush() {
 			}
 		}
 		auto remover = [](audio_task_t& task) {
-			if (task.second == nullptr) {
+			if (!task.second) {
 				return true;
 			}
 			if (task.second->error()) {

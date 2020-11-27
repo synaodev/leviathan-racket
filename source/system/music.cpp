@@ -66,12 +66,12 @@ bool music_t::init(const setup_file_t& config) {
 		synao_log("Music device is already running!\n");
 		return false;
 	}
-	if (service != nullptr) {
+	if (service) {
 		synao_log("Pxtone service already exists!\n");
 		return false;
 	}
 	service = std::make_unique<pxtnService>();
-	if (service == nullptr) {
+	if (!service) {
 		synao_log("Pxtone service creation failed!\n");
 		return false;
 	}
@@ -100,7 +100,7 @@ bool music_t::load(const std::string& title) {
 	if (this->title == title) {
 		return true;
 	}
-	if (service == nullptr) {
+	if (!service) {
 		return false;
 	}
 	this->clear();
@@ -143,7 +143,7 @@ bool music_t::load(const std::string& title, real_t start_point, real_t fade_len
 }
 
 bool music_t::play(real_t start_point, real_t fade_length) {
-	if (service == nullptr) {
+	if (!service) {
 		return false;
 	}
 	if (playing) {
@@ -171,7 +171,7 @@ void music_t::pause() {
 }
 
 bool music_t::resume(real_t fade_length) {
-	if (service == nullptr) {
+	if (!service) {
 		return false;
 	}
 	if (!playing and service->moo_is_valid_data()) {
@@ -182,7 +182,7 @@ bool music_t::resume(real_t fade_length) {
 
 void music_t::clear() {
 	this->pause();
-	if (service != nullptr) {
+	if (service) {
 		service->clear();
 	}
 	title.clear();
@@ -193,14 +193,14 @@ bool music_t::running() const {
 }
 
 void music_t::fade_out(real_t fade_length) {
-	if (service != nullptr and playing) {
+	if (service and playing) {
 		service->moo_set_fade(-1, fade_length);
 	}
 }
 
 void music_t::set_looping(bool looping) {
 	this->looping = looping;
-	if (service != nullptr and playing) {
+	if (service and playing) {
 		service->moo_set_loop(looping);
 	}
 }
@@ -211,7 +211,7 @@ bool music_t::get_looping() const {
 
 void music_t::set_volume(real_t volume) {
 	this->volume = volume;
-	if (service != nullptr and playing) {
+	if (service and playing) {
 		service->moo_set_master_volume(volume);
 	}
 }
@@ -221,7 +221,7 @@ real_t music_t::get_volume() const {
 }
 
 void music_t::process(music_t* music) {
-	if (music == nullptr) {
+	if (!music) {
 		synao_log("Music thread should not print this message!\n");
 		return;
 	}

@@ -8,6 +8,8 @@
 #include "../system/renderer.hpp"
 
 #include <fstream>
+#include <glm/common.hpp>
+#include <glm/gtc/constants.hpp>
 
 static constexpr arch_t kMaskLength = 256;
 static const glm::vec2 kDefaultPosition = glm::vec2(120.0f, 16.0f);
@@ -40,7 +42,7 @@ void tileset_viewer_t::reset() {
 }
 
 void tileset_viewer_t::handle(const input_t& input) {
-	if (!file.empty() and texture != nullptr) {
+	if (!file.empty() and texture) {
 		if (select) {
 			bool pressed = false;
 			if (input.pressed[btn_t::Up]) {
@@ -134,7 +136,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 				.vtx_transform_write(cursor.left_top())
 			.end();
 		}
-		if (texture != nullptr) {
+		if (texture) {
 			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
@@ -159,7 +161,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 			);
 			list.skip(display_list_t::SingleQuad);
 		}
-		if (texture != nullptr) {
+		if (texture) {
 			auto& list = renderer.display_list(
 				layer_value::Automatic,
 				blend_mode_t::Alpha,
@@ -175,7 +177,7 @@ bool tileset_viewer_t::load(const std::string& path, renderer_t& renderer) {
 	select = false;
 	if (file != path) {
 		texture = vfs::texture(path);
-		if (texture == nullptr) {
+		if (!texture) {
 			return false;
 		}
 		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);

@@ -32,7 +32,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	const animation_t* items_animation = vfs::animation(res::anim::Items);
 	const texture_t* texture = vfs::texture(res::img::Heads);
 	const palette_t* palette = vfs::palette(res::pal::Heads);
-	if (heads_animation == nullptr or items_animation == nullptr or texture == nullptr or palette == nullptr) {
+	if (!heads_animation or !items_animation or !texture or !palette) {
 		synao_log("HeadsUp GUI is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
@@ -73,7 +73,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 
 bool headsup_gui_t::refresh() {
 	const font_t* font = vfs::font(kHeadFontIndex);
-	if (font == nullptr) {
+	if (!font) {
 		synao_log("HeadsUp GUI is missing a font and so titles cannot be rendered!\n");
 		return false;
 	}

@@ -41,7 +41,7 @@ image_t image_t::generate(const std::string& full_path) {
 		&channels,
 		STBI_rgb_alpha
 	);
-	if (data != nullptr) {
+	if (data) {
 		image.dimensions = glm::ivec2(width, height);
 		image.pixels.resize(
 			static_cast<arch_t>(width) *

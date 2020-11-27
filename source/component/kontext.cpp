@@ -277,7 +277,7 @@ void kontext_t::set_event(sint_t identity, asIScriptFunction* function) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
 		std::invoke(push_event, identity, function);
-	} else if (function != nullptr) {
+	} else if (function) {
 		function->Release();
 	}
 }
@@ -295,7 +295,7 @@ void kontext_t::set_fight(sint_t identity, asIScriptFunction* function) {
 		health.flags[health_flags_t::MajorFight] = true;
 
 		std::invoke(push_event, identity, function);
-	} else if (function != nullptr) {
+	} else if (function) {
 		function->Release();
 	}
 }

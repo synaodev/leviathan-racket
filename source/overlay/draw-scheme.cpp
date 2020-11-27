@@ -18,7 +18,7 @@ draw_scheme_t::draw_scheme_t() :
 }
 
 void draw_scheme_t::update(real64_t delta) {
-	if (file != nullptr) {
+	if (file) {
 		file->update(
 			delta,
 			amend,
@@ -30,7 +30,7 @@ void draw_scheme_t::update(real64_t delta) {
 }
 
 void draw_scheme_t::render(renderer_t& renderer) const {
-	if (file != nullptr and visible) {
+	if (file and visible) {
 		file->render(
 			renderer,
 			amend,
@@ -113,7 +113,7 @@ void draw_scheme_t::mut_position(glm::vec2 offset) {
 }
 
 bool draw_scheme_t::is_finished() const {
-	if (file != nullptr) {
+	if (file) {
 		return file->is_finished(state, frame, timer);
 	}
 	return true;

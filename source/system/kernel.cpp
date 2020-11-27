@@ -113,7 +113,7 @@ bool kernel_t::read_stream(const std::string& path) {
 void kernel_t::write_data(setup_file_t& file) const {
 	file.set("Status", "Timer", timer);
 	file.set("Status", "Cursor", cursor);
-	if (item_ptr != nullptr) {
+	if (item_ptr) {
 		sint64_t item_ptr_literal = std::distance(&items[0], (const glm::ivec4*)item_ptr);
 		file.set("Status", "ItemPtr", item_ptr_literal);
 	} else {
@@ -208,7 +208,7 @@ void kernel_t::buffer_field(const std::string& field, sint_t identity) {
 }
 
 void kernel_t::buffer_field(asIScriptFunction* handle, sint_t identity) {
-	if (handle != nullptr) {
+	if (handle) {
 		const std::string location = std::invoke(verify, handle);
 		if (!location.empty()) {
 			bitmask[kernel_state_t::Field] = true;
@@ -312,7 +312,7 @@ void kernel_t::rid_item(sint_t type) {
 }
 
 void kernel_t::shift_item(arch_t deleted) {
-	if (item_ptr != nullptr) {
+	if (item_ptr) {
 		arch_t item_ptr_literal = item_ptr - &items[0];
 		if (item_ptr_literal == deleted) {
 			item_ptr = nullptr;
@@ -406,7 +406,7 @@ glm::ivec4 kernel_t::get_item_at(arch_t index) const {
 }
 
 arch_t kernel_t::get_item_ptr_index() const {
-	if (item_ptr != nullptr) {
+	if (item_ptr) {
 		return std::distance(&items[0], (const glm::ivec4*)item_ptr);
 	}
 	return (arch_t)-1;

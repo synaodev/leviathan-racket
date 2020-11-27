@@ -39,7 +39,7 @@ input_t::~input_t() {
 	meta_pressed.clear();
 	meta_holding.clear();
 #endif
-	if (device != nullptr) {
+	if (device) {
 		SDL_JoystickClose(device);
 		device = nullptr;
 	}
@@ -49,13 +49,13 @@ bool input_t::init(const setup_file_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
 	this->all_macrofile_settings(config);
-	if (device != nullptr) {
+	if (device) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;
 	}
 	if (SDL_NumJoysticks() != 0) {
 		device = SDL_JoystickOpen(0);
-		if (device == nullptr) {
+		if (!device) {
 			synao_log("Joystick cannot be created at startup! SDL Error: {}\n", SDL_GetError());
 			return false;
 		}
@@ -65,7 +65,7 @@ bool input_t::init(const setup_file_t& config) {
 }
 
 bool input_t::save(const setup_file_t& config) {
-	if (player != nullptr and player->recording()) {
+	if (player and player->recording()) {
 		std::string macro;
 		config.get("Setup", "MacroFile", macro);
 		if (!player->write(macro)) {
@@ -79,7 +79,7 @@ bool input_t::save(const setup_file_t& config) {
 policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 	SDL_Event evt;
 	while (SDL_PollEvent(&evt) != 0) {
-		if (callback != nullptr) {
+		if (callback) {
 			std::invoke(callback, &evt);
 		}
 		switch (evt.type) {
@@ -247,9 +247,9 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_JOYDEVICEADDED: {
-			if (evt.jdevice.which == 0 and device == nullptr) {
+			if (evt.jdevice.which == 0 and !device) {
 				device = SDL_JoystickOpen(0);
-				if (device == nullptr) {
+				if (!device) {
 					synao_log("Couldn't open joystick! SDL Error: {}\n", SDL_GetError());
 				}
 			}
@@ -257,7 +257,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		case SDL_JOYDEVICEREMOVED: {
 			if (evt.jdevice.which == 0) {
-				if (device != nullptr) {
+				if (device) {
 					SDL_JoystickClose(device);
 					device = nullptr;
 				}
@@ -280,7 +280,7 @@ policy_t input_t::poll(policy_t policy) {
 }
 
 void input_t::advance() {
-	if (player != nullptr) {
+	if (player) {
 		if (player->recording()) {
 			player->store(pressed, holding);
 		} else if (player->playing()) {

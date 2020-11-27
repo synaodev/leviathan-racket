@@ -18,7 +18,7 @@ bool routine_ctor_generator_t::init(std::unordered_map<entt::id_type, routine_ct
 	bool result = true;
 	auto& callback_list = get_ctor_callback_list();
 	for (auto&& callback : callback_list) {
-		if (callback != nullptr) {
+		if (callback) {
 			std::invoke(callback, ctor_table);
 		} else {
 			synao_log("Constructor table should not have null entries!\n");
