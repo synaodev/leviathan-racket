@@ -5,8 +5,8 @@
 #include <atomic>
 #include <array>
 
-#include "./image.hpp"
 #include "./sampler.hpp"
+#include "../resource/image.hpp"
 
 struct thread_pool_t;
 

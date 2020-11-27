@@ -1,7 +1,7 @@
 #include "./draw-title-view.hpp"
 
+#include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
-#include "../utility/vfs.hpp"
 
 static constexpr real64_t kFadeTime = 0.048;
 

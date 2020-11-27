@@ -1,10 +1,10 @@
 #include "./wgt-audio.hpp"
 
 #include "../resource/id.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/music.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/setup-file.hpp"
 
 #include <glm/common.hpp>

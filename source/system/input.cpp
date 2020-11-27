@@ -1,8 +1,8 @@
 #include "./input.hpp"
 
+#include "../resource/vfs.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/rng.hpp"
 
 #include <functional>

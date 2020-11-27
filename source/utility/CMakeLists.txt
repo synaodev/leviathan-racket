@@ -4,5 +4,4 @@ target_sources (naomi PRIVATE
 	"rng.cpp"
 	"setup-file.cpp"
 	"utf32.cpp"
-	"vfs.cpp"
 )

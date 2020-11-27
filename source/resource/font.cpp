@@ -1,8 +1,8 @@
 #include "./font.hpp"
-#include "./texture.hpp"
+#include "./vfs.hpp"
 
-#include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
+#include "../video/texture.hpp"
 
 #include <fstream>
 #include <glm/gtc/constants.hpp>

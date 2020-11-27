@@ -2,7 +2,7 @@
 #include "./location.hpp"
 #include "./kontext.hpp"
 
-#include "../utility/vfs.hpp"
+#include "../resource/vfs.hpp"
 #include "../utility/logger.hpp"
 
 #include <glm/common.hpp>

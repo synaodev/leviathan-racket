@@ -1,10 +1,10 @@
 #include "./animation.hpp"
+#include "./vfs.hpp"
 
 #include "../system/renderer.hpp"
 #include "../utility/thread-pool.hpp"
 #include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 
 #include <glm/common.hpp>
 #include <glm/gtc/vec1.hpp>

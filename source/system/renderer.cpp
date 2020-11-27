@@ -1,9 +1,9 @@
 #include "./renderer.hpp"
 #include "./video.hpp"
 
+#include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 #include "../video/frame-buffer.hpp"
 
 #include <limits>

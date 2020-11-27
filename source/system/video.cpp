@@ -1,12 +1,12 @@
 #include "./video.hpp"
 
-#include "../video/image.hpp"
-#include "../video/frame-buffer.hpp"
-#include "../video/gl-check.hpp"
+#include "../resource/image.hpp"
+#include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
+#include "../video/frame-buffer.hpp"
+#include "../video/gl-check.hpp"
 
 #include <glm/common.hpp>
 #include <SDL2/SDL.h>

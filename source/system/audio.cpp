@@ -1,9 +1,9 @@
 #include "./audio.hpp"
 
 #include "../audio/al-check.hpp"
+#include "../resource/vfs.hpp"
 #include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 
 static constexpr arch_t kSoundChannels = 12;
 

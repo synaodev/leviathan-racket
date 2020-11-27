@@ -3,10 +3,10 @@
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 
+#include "../resource/font.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/renderer.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/utf32.hpp"
-#include "../video/font.hpp"
 
 #include <algorithm>
 

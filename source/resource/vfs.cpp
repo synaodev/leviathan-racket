@@ -1,6 +1,7 @@
 #include "./vfs.hpp"
-#include "./logger.hpp"
-#include "./setup-file.hpp"
+
+#include "../utility/logger.hpp"
+#include "../utility/setup-file.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -522,12 +523,12 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	return &it->second;
 }
 
-std::string vfs::event_path(const std::string& name, rec_loading_t flags) {
+std::string vfs::event_path(const std::string& name, event_loading_t flags) {
 	if (!vfs::device) {
 		synao_log("Couldn't find path for event: {}!\n", name);
 		return std::string();
 	}
-	if (flags & rec_loading_t::Global) {
+	if (flags & event_loading_t::Global) {
 		return kEventPath + name + ".as";
 	}
 	return kEventPath + vfs::device->language + '/' + name + ".as";

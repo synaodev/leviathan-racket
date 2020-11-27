@@ -6,12 +6,11 @@
 #include <unordered_map>
 #include <entt/core/hashed_string.hpp>
 
-#include "./thread-pool.hpp"
+#include "./animation.hpp"
+#include "./font.hpp"
 
 #include "../audio/noise.hpp"
-#include "../resource/animation.hpp"
-#include "../system/receiver.hpp"
-#include "../video/font.hpp"
+#include "../utility/thread-pool.hpp"
 #include "../video/texture.hpp"
 #include "../video/pipeline.hpp"
 
@@ -61,7 +60,7 @@ namespace vfs {
 	const palette_t* palette(const std::string& name);
 	const atlas_t* atlas(const std::string& name);
 	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
-	std::string event_path(const std::string& name, rec_loading_t flags);
+	std::string event_path(const std::string& name, event_loading_t flags);
 	const noise_t* noise(const std::string& name);
 	const noise_t* noise(const entt::hashed_string& entry);
 	const animation_t* animation(const std::string& name);

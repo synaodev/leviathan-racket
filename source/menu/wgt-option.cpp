@@ -3,10 +3,10 @@
 #include "./headsup-gui.hpp"
 
 #include "../resource/id.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../utility/vfs.hpp"
 
 static constexpr arch_t kOptionTotalOptions = 6;
 static const glm::vec2 kOptionDefaultPosition = glm::vec2(4.0f, 2.0f);

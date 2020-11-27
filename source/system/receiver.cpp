@@ -11,9 +11,9 @@
 #include "../menu/dialogue-gui.hpp"
 #include "../menu/inventory-gui.hpp"
 #include "../menu/headsup-gui.hpp"
+#include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/rng.hpp"
 
 #include <cstring>
@@ -93,7 +93,7 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 		synao_log("Creating line callback for script state failed!\n");
 		return false;
 	}
-	if (!this->load(kBootFile, rec_loading_t::Global)) {
+	if (!this->load(kBootFile, event_loading_t::Global)) {
 		synao_log("Global module loading failed!\n");
 		return false;
 	}
@@ -189,14 +189,14 @@ bool receiver_t::running() const {
 }
 
 bool receiver_t::load(const kernel_t& kernel) {
-	return this->load(kernel.get_field(), rec_loading_t::None);
+	return this->load(kernel.get_field(), event_loading_t::Zero);
 }
 
 bool receiver_t::load(const std::string& name) {
-	return this->load(name, rec_loading_t::None);
+	return this->load(name, event_loading_t::Zero);
 }
 
-bool receiver_t::load(const std::string& name, rec_loading_t flags) {
+bool receiver_t::load(const std::string& name, event_loading_t flags) {
 	asIScriptModule* module = engine->GetModule(name.c_str(), asGM_ONLY_IF_EXISTS);
 	if (module) {
 		synao_log("Module \"{}\" already exists!\n", name);
@@ -220,7 +220,7 @@ bool receiver_t::load(const std::string& name, rec_loading_t flags) {
 		}
 		this->link_imported_functions(module);
 	}
-	if (flags == rec_loading_t::None) {
+	if (flags == event_loading_t::Zero) {
 		current = module;
 	}
 	return true;
@@ -526,7 +526,7 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 	for (asUINT it = 0; it < count; ++it) {
 		const byte_t* name = module->GetImportedFunctionSourceModule(it);
 		asIScriptModule* source = engine->GetModule(name, asGM_ONLY_IF_EXISTS);
-		if (!source and !this->load(name, rec_loading_t::Import)) {
+		if (!source and !this->load(name, event_loading_t::Import)) {
 			synao_log("Couldn't allocate script module during linking process!\n");
 			break;
 		}

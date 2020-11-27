@@ -1,9 +1,9 @@
 #include "./headsup-gui.hpp"
 
 #include "../resource/id.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/logger.hpp"
 
 #include <angelscript/scriptarray.h>

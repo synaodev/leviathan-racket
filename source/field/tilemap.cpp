@@ -3,8 +3,8 @@
 #include "./camera.hpp"
 #include "./properties.hpp"
 
+#include "../resource/vfs.hpp"
 #include "../system/renderer.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/constants.hpp"
 
 #include <glm/common.hpp>

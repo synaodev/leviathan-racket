@@ -25,6 +25,16 @@ namespace layer_value {
 
 using layer_t = __enum_layer::type;
 
+namespace __enum_event_loading {
+	enum type : arch_t {
+		Zero	= 0 << 0,
+		Global	= 1 << 0,
+		Import	= 1 << 1
+	};
+}
+
+using event_loading_t = __enum_event_loading::type;
+
 namespace __enum_direction {
 	enum type : arch_t {
 		Right 	= 0 << 0,

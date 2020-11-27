@@ -4,13 +4,13 @@
 #include "./headsup-gui.hpp"
 
 #include "../resource/id.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/renderer.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 
 static constexpr arch_t kWrongItem = (arch_t)-1;
 static constexpr arch_t kTotalItem = 30;

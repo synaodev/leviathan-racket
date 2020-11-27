@@ -27,16 +27,6 @@ namespace __enum_receiver_bits {
 
 using rec_bits_t = __enum_receiver_bits::type;
 
-namespace __enum_receiver_loading {
-	enum type : arch_t {
-		None   = 0 << 0,
-		Global = 1 << 0,
-		Import = 1 << 1
-	};
-}
-
-using rec_loading_t = __enum_receiver_loading::type;
-
 struct input_t;
 struct audio_t;
 struct music_t;
@@ -63,7 +53,7 @@ public:
 	bool running() const;
 	bool load(const kernel_t& kernel);
 	bool load(const std::string& name);
-	bool load(const std::string& name, rec_loading_t flags);
+	bool load(const std::string& name, event_loading_t flags);
 	void run_function(kernel_t& kernel);
 	void run_event(sint_t id);
 	void run_inventory(arch_t type, arch_t index);

@@ -1,7 +1,7 @@
 #include "./attribute-gui.hpp"
 
 #include "../field/tileset-viewer.hpp"
-#include "../utility/vfs.hpp"
+#include "../resource/vfs.hpp"
 
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS

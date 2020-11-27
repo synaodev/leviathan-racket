@@ -6,6 +6,7 @@
 #include "../component/location.hpp"
 #include "../component/health.hpp"
 #include "../field/properties.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/video.hpp"
@@ -13,7 +14,6 @@
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
-#include "../utility/vfs.hpp"
 
 static const byte_t kStatProgPath[] = "_prog.cfg";
 static const byte_t kStatCpntPath[] = "_check.cfg";

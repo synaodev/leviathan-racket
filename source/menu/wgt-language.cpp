@@ -3,10 +3,10 @@
 #include "./headsup-gui.hpp"
 
 #include "../resource/id.hpp"
+#include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../utility/vfs.hpp"
 #include "../utility/setup-file.hpp"
 
 static constexpr arch_t kTotalVisible = 9;

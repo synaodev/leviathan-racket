@@ -1,8 +1,8 @@
 #include "./pipeline.hpp"
 #include "./gl-check.hpp"
 
+#include "../resource/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/vfs.hpp"
 
 /*
 	When separable programs are available:

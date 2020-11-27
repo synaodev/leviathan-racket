@@ -11,7 +11,7 @@
 #include "./renderer.hpp"
 #include "./runtime.hpp"
 
-#include "../utility/vfs.hpp"
+#include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"

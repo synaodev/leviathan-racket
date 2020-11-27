@@ -25,13 +25,14 @@
 #include <tmxlite/ObjectGroup.hpp>
 #include <pxtone/pxtnService.h>
 
+#include "./resource/vfs.hpp"
+
 #include "./utility/constants.hpp"
 #include "./utility/enums.hpp"
 #include "./utility/logger.hpp"
 #include "./utility/rect.hpp"
 #include "./utility/rng.hpp"
 #include "./utility/setup-file.hpp"
-#include "./utility/vfs.hpp"
 #include "./utility/watch.hpp"
 
 #endif // LEVIATHAN_INCLUDED_STDAFX_HPP
