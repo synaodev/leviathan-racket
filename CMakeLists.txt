@@ -2,21 +2,27 @@ cmake_minimum_required (VERSION 3.13)
 
 # Check for ccache on Linux
 
-if (UNIX AND NOT APPLE)
+if (UNIX)
 	find_program (CCACHE_PROGRAM "ccache")
 	if (CCACHE_PROGRAM)
-		set_property (GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
-		message ("Using ccache!")
+		set (C_LAUNCHER ${CCACHE_PROGRAM})
+		set (CXX_LAUNCHER ${CCACHE_PROGRAM})
+		configure_file ("ccache-c.sh" "launch-c.sh")
+		configure_file ("ccache-cxx.sh" "launch-cxx.sh")
+		execute_process (COMMAND chmod a+rx
+			"${CMAKE_BINARY_DIR}/launch-c.sh"
+			"${CMAKE_BINARY_DIR}/launch-cxx.sh"
+		)
+		if (CMAKE_GENERATOR STREQUAL "Xcode")
+			set (CMAKE_XCODE_ATTRIBUTE_CC "${CMAKE_BINARY_DIR}/launch-c.sh")
+			set (CMAKE_XCODE_ATTRIBUTE_CXX "${CMAKE_BINARY_DIR}/launch-cxx.sh")
+			set (CMAKE_XCODE_ATTRIBUTE_LD "${CMAKE_BINARY_DIR}/launch-c.sh")
+			set (CMAKE_XCODE_ATTRIBUTE_LDPLUSPLUS "${CMAKE_BINARY_DIR}/launch-cxx.sh")
+		else ()
+			set (CMAKE_C_COMPILER_LAUNCHER "${CMAKE_BINARY_DIR}/launch-c.sh")
+			set (CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_BINARY_DIR}/launch-cxx.sh")
+		endif ()
 	endif ()
-endif ()
-
-# Building with profile time info
-
-if (NOT DEFINED PROFILE_TIME)
-	set (PROFILE_TIME OFF)
-elseif (NOT UNIX OR APPLE)
-	set (PROFILE_TIME OFF)
-	message (FATAL_ERROR "Can't profile on this system! Sorry!")
 endif ()
 
 # Building with precompiled headers
