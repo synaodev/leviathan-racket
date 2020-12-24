@@ -3,6 +3,8 @@
 
 #include "./draw-text.hpp"
 
+struct dialogue_gui_t;
+
 struct draw_title_view_t : public not_copyable_t {
 public:
 	draw_title_view_t();
@@ -10,7 +12,7 @@ public:
 	draw_title_view_t& operator=(draw_title_view_t&&) = default;
 	~draw_title_view_t() = default;
 public:
-	void handle();
+	void handle(const dialogue_gui_t& dialogue_gui);
 	void render(renderer_t& renderer) const;
 	void invalidate() const;
 	void push(const std::string& string, arch_t font_index);

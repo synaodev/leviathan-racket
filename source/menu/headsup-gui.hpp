@@ -47,7 +47,7 @@ public:
 	bool init(receiver_t& receiver);
 	bool refresh();
 	void reset();
-	void handle(const kernel_t& kernel);
+	void handle(const kernel_t& kernel, const dialogue_gui_t& dialogue_gui);
 	void update(real64_t delta);
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	void invalidate() const;

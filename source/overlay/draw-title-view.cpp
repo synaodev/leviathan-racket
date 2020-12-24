@@ -1,5 +1,6 @@
 #include "./draw-title-view.hpp"
 
+#include "../menu/dialogue-gui.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 
@@ -14,10 +15,10 @@ draw_title_view_t::draw_title_view_t() :
 
 }
 
-void draw_title_view_t::handle() {
+void draw_title_view_t::handle(const dialogue_gui_t& dialogue_gui) {
 	if (!head.empty()) {
 		timer -= constants::MinInterval();
-		if (timer <= 0.0) {
+		if (dialogue_gui.get_flag(dialogue_flag_t::Textbox) or timer <= 0.0) {
 			this->set_head();
 		}
 	}

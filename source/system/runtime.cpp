@@ -99,7 +99,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		stack_gui.handle(config, input, video, audio, music, kernel, headsup_gui);
 		dialogue_gui.handle(input, audio);
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup_gui);
-		headsup_gui.handle(kernel);
+		headsup_gui.handle(kernel, dialogue_gui);
 		if (!kernel.has(kernel_state_t::Freeze)) {
 			camera.handle(kontext, naomi);
 			naomi.handle(input, audio, kernel, receiver, headsup_gui, kontext, tilemap);

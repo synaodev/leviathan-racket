@@ -92,8 +92,8 @@ void headsup_gui_t::reset() {
 	fade.reset();
 }
 
-void headsup_gui_t::handle(const kernel_t& kernel) {
-	title_view.handle();
+void headsup_gui_t::handle(const kernel_t& kernel, const dialogue_gui_t& dialogue_gui) {
+	title_view.handle(dialogue_gui);
 	item_view.handle(kernel);
 	fade.handle();
 }
