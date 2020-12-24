@@ -7,6 +7,10 @@
 		"English", "Yes", "No", "Error"
 	],
 
+	"Events": [
+		"english"
+	],
+
 	"Options" : [
 		"Leviathan Racket:\n\n",
 		"\t Return\n",

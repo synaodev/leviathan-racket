@@ -25,6 +25,7 @@ static constexpr arch_t kDebugFontIndex = 4;
 static constexpr byte_t kOrganization[] = "studio-synao";
 static constexpr byte_t kApplication[] 	= "leviathan";
 static constexpr byte_t kLanguage[] 	= "english";
+static constexpr byte_t kEventEntry[]	= "Events";
 
 #define kDATA_ROUTE "data/"
 static constexpr byte_t kDataRoute[] 	= kDATA_ROUTE;
@@ -531,7 +532,7 @@ std::string vfs::event_path(const std::string& name, event_loading_t flags) {
 	if (flags & event_loading_t::Global) {
 		return kEventPath + name + ".as";
 	}
-	return kEventPath + vfs::device->language + '/' + name + ".as";
+	return kEventPath + vfs::i18n_find(kEventEntry, 0) + '/' + name + ".as";
 }
 
 const noise_t* vfs::noise(const std::string& name) {
