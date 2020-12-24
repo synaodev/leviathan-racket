@@ -70,9 +70,9 @@ public:
 	bool has(kernel_state_t state) const;
 	void set_file_index(arch_t file_index);
 	void set_cursor(glm::ivec2 cursor);
-	void set_item(sint_t type, sint_t count, sint_t limit, sint_t optor);
+	void set_item(sint_t type, sint_t count, sint_t limit, sint_t option);
 	void set_item_limit(sint_t type, sint_t limit);
-	void set_item_optor(sint_t type, sint_t optor);
+	void set_item_option(sint_t type, sint_t option);
 	void add_item(sint_t type, sint_t count, sint_t limit);
 	void sub_item(sint_t type, sint_t count);
 	void rid_item(sint_t type);
@@ -80,6 +80,7 @@ public:
 	void set_item_ptr_index();
 	void set_item_ptr_index(arch_t index);
 	void set_flag(arch_t index, bool value);
+	void set_flag_range(arch_t from, arch_t to, bool value);
 	arch_t get_file_index() const;
 	const std::string& get_language() const;
 	const std::string& get_field() const;
@@ -95,6 +96,7 @@ public:
 	glm::ivec4* get_item_ptr();
 	const glm::ivec4* get_item_ptr() const;
 	bool get_flag(arch_t index) const;
+	bool get_flag_range(arch_t from, arch_t to) const;
 private:
 	std::function<std::string(asIScriptFunction*)> verify;
 	std::bitset<kernel_state_t::Total> bitmask;

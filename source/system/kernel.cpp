@@ -244,12 +244,12 @@ void kernel_t::set_cursor(glm::ivec2 cursor) {
 	this->cursor = cursor;
 }
 
-void kernel_t::set_item(sint_t type, sint_t count, sint_t limit, sint_t optor) {
+void kernel_t::set_item(sint_t type, sint_t count, sint_t limit, sint_t option) {
 	for (auto&& item : items) {
 		if (item.x == type) {
 			item.y = glm::clamp(count, 0, limit);
 			item.z = limit;
-			item.w = optor;
+			item.w = option;
 			break;
 		}
 	}
@@ -264,10 +264,10 @@ void kernel_t::set_item_limit(sint_t type, sint_t limit) {
 	}
 }
 
-void kernel_t::set_item_optor(sint_t type, sint_t optor) {
+void kernel_t::set_item_option(sint_t type, sint_t option) {
 	for (auto&& item : items) {
 		if (item.x == type) {
-			item.w = optor;
+			item.w = option;
 			break;
 		}
 	}
@@ -357,6 +357,12 @@ void kernel_t::set_flag(arch_t index, bool value) {
 	}
 }
 
+void kernel_t::set_flag_range(arch_t from, arch_t to, bool value) {
+	for (arch_t it = from; it <= to; ++it) {
+		this->set_flag(it, value);
+	}
+}
+
 arch_t kernel_t::get_file_index() const {
 	return file_index;
 }
@@ -431,4 +437,13 @@ bool kernel_t::get_flag(arch_t index) const {
 		return flags[ondex] & convert;
 	}
 	return false;
+}
+
+bool kernel_t::get_flag_range(arch_t from, arch_t to) const {
+	for (arch_t it = from; it <= to; ++it) {
+		if (!this->get_flag(it)) {
+			return false;
+		}
+	}
+	return true;
 }

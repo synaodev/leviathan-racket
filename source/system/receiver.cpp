@@ -669,17 +669,23 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Getting Flags
 	r = engine->RegisterGlobalFunction("bool get_flag(arch_t index)", WRAP_MFN(kernel_t, get_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
+	// Getting Flag Range
+	r = engine->RegisterGlobalFunction("bool get_flag_range(arch_t from, arch_t to)", WRAP_MFN(kernel_t, get_flag_range), asCALL_THISCALL_ASGLOBAL, &kernel);
+	assert(r >= 0);
 	// Setting Flags
 	r = engine->RegisterGlobalFunction("void set_flag(arch_t index, bool value)", WRAP_MFN(kernel_t, set_flag), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
+	// Setting Flag Range
+	r = engine->RegisterGlobalFunction("void set_flag_range(arch_t from, arch_t to, bool value)", WRAP_MFN(kernel_t, set_flag_range), asCALL_THISCALL_ASGLOBAL, &kernel);
+	assert(r >= 0);
 	// Setting Items
-	r = engine->RegisterGlobalFunction("void set_item(sint32_t type, sint32_t count, sint32_t limit, sint32_t optor)", WRAP_MFN(kernel_t, set_item), asCALL_THISCALL_ASGLOBAL, &kernel);
+	r = engine->RegisterGlobalFunction("void set_item(sint32_t type, sint32_t count, sint32_t limit, sint32_t option)", WRAP_MFN(kernel_t, set_item), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Setting Item Limit
 	r = engine->RegisterGlobalFunction("void set_item_limit(sint32_t type, sint32_t limit)", WRAP_MFN(kernel_t, set_item_limit), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
-	// Setting Item Optor
-	r = engine->RegisterGlobalFunction("void set_item_optor(sint32_t type, sint32_t optor)", WRAP_MFN(kernel_t, set_item_optor), asCALL_THISCALL_ASGLOBAL, &kernel);
+	// Setting Item Option
+	r = engine->RegisterGlobalFunction("void set_item_option(sint32_t type, sint32_t option)", WRAP_MFN(kernel_t, set_item_option), asCALL_THISCALL_ASGLOBAL, &kernel);
 	assert(r >= 0);
 	// Adding Items
 	r = engine->RegisterGlobalFunction("void add_item(sint32_t type, sint32_t count, sint32_t limit)", WRAP_MFN(kernel_t, add_item), asCALL_THISCALL_ASGLOBAL, &kernel);
