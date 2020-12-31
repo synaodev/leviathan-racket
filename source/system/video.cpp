@@ -172,12 +172,12 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	}
 	// Clear and swap so the screen isn't left blank.
 	if (editor) {
-		frame_buffer_t::clear(
+		frame_buffer::clear(
 			constants::EditorDimensions<sint_t>(),
 			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
 		);
 	} else {
-		frame_buffer_t::clear(
+		frame_buffer::clear(
 			constants::NormalDimensions<sint_t>() * params.scaling,
 			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
 		);
@@ -213,16 +213,6 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	}
 	synao_log("Video system initialized.\n");
 	return true;
-}
-
-void video_t::submit(const frame_buffer_t* frame_buffer, arch_t index) const {
-	if (frame_buffer) {
-		const glm::ivec2 source_dimensions = frame_buffer->get_integral_dimensions();
-		const glm::ivec2 destination_dimensions = this->get_integral_dimensions();
-		frame_buffer_t::bind(nullptr, frame_buffer_binding_t::Write, 0);
-		frame_buffer_t::bind(frame_buffer, frame_buffer_binding_t::Read, index);
-		frame_buffer_t::blit(source_dimensions, destination_dimensions);
-	}
 }
 
 void video_t::flush() const {

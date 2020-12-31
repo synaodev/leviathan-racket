@@ -6,7 +6,6 @@
 #include "../utility/watch.hpp"
 
 struct setup_file_t;
-struct frame_buffer_t;
 
 struct screen_params_t {
 public:
@@ -45,7 +44,6 @@ public:
 	~video_t();
 public:
 	bool init(const setup_file_t& config, bool editor = false);
-	void submit(const frame_buffer_t* frame_buffer, arch_t index) const;
 	void flush() const;
 	void set_parameters(screen_params_t params);
 	const screen_params_t& get_parameters() const;

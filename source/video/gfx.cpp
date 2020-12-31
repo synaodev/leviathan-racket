@@ -10,10 +10,8 @@ gfx_t::gfx_t() :
 	blend_mode(blend_mode_t::Disable),
 	pipeline(nullptr),
 	sampler_allocator(nullptr),
-	sampler_list{},
 	buffer_list{}
 {
-	sampler_list.fill(nullptr);
 	buffer_list.fill(nullptr);
 }
 
@@ -93,48 +91,6 @@ void gfx_t::set_sampler_allocator(const sampler_allocator_t* sampler_allocator) 
 			auto& atlas = sampler_allocator->atlas();
 			glCheck(glActiveTexture(GL_TEXTURE2));
 			glCheck(glBindTexture(atlas.type, atlas.id));
-			sampler_list.fill(nullptr);
-		}
-	}
-}
-
-void gfx_t::set_sampler(const color_buffer_t* color_buffer, arch_t index) {
-	if (index < sampler_list.size()) {
-		if (sampler_list[index] != color_buffer) {
-			sampler_list[index] = color_buffer;
-			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (color_buffer) {
-				if (color_buffer->layers > 1) {
-					glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, color_buffer->handle));
-				} else {
-					glCheck(glBindTexture(GL_TEXTURE_2D, color_buffer->handle));
-				}
-			}
-			sampler_allocator = nullptr;
-		}
-	}
-}
-
-void gfx_t::set_sampler(const depth_buffer_t* depth_buffer, arch_t index) {
-	if (index < sampler_list.size()) {
-		if (sampler_list[index] != depth_buffer) {
-			sampler_list[index] = depth_buffer;
-			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			if (depth_buffer and !depth_buffer->compress) {
-				glCheck(glBindTexture(GL_TEXTURE_2D, depth_buffer->handle));
-			}
-			sampler_allocator = nullptr;
-		}
-	}
-}
-
-void gfx_t::set_sampler(std::nullptr_t, arch_t index) {
-	if (index < sampler_list.size()) {
-		if (sampler_list[index]) {
-			sampler_list[index] = nullptr;
-			glCheck(glActiveTexture(GL_TEXTURE0 + static_cast<uint_t>(index)));
-			glCheck(glBindTexture(GL_TEXTURE_2D, 0));
-			sampler_allocator = nullptr;
 		}
 	}
 }

@@ -134,7 +134,7 @@ void renderer_t::flush(const video_t& video, const glm::mat4& viewport) {
 
 void renderer_t::flush(const glm::ivec2& dimensions) {
 	// Draw Lists
-	frame_buffer_t::clear(dimensions);
+	frame_buffer::clear(dimensions);
 	for (auto&& list : display_lists) {
 		list.flush(internal_state, &sampler_allocator);
 	}

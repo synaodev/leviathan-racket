@@ -47,10 +47,7 @@ struct sampler_data_t;
 struct sampler_allocator_t;
 struct texture_t;
 struct palette_t;
-struct color_buffer_t;
-struct depth_buffer_t;
 struct const_buffer_t;
-struct frame_buffer_t;
 
 struct gfx_t : public not_copyable_t {
 public:
@@ -63,9 +60,6 @@ public:
 	void set_blend_mode(blend_mode_t blend_mode);
 	void set_pipeline(const pipeline_t* pipeline);
 	void set_sampler_allocator(const sampler_allocator_t* sampler_allocator);
-	void set_sampler(const color_buffer_t* texture, arch_t index);
-	void set_sampler(const depth_buffer_t* depth_buffer, arch_t index);
-	void set_sampler(std::nullptr_t, arch_t index);
 	void set_buffer(const const_buffer_t* buffer, arch_t index);
 public:
 	static uint_t get_compare_func_gl_enum(compare_func_t func);
@@ -78,7 +72,6 @@ private:
 	blend_mode_t blend_mode;
 	const pipeline_t* pipeline;
 	const sampler_allocator_t* sampler_allocator;
-	std::array<const sampler_t*, 4> sampler_list;
 	std::array<const const_buffer_t*, 4> buffer_list;
 };
 
