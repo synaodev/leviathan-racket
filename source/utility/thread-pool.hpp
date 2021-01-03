@@ -41,6 +41,21 @@ public:
 		}
 		return !threads.empty();
 	}
+	void destroy() {
+		shutdown = true;
+		if (!threads.empty()) {
+			{
+				std::unique_lock<std::mutex> lock{ conditional_mutex };
+				conditional_lock.notify_all();
+			}
+			for (auto&& thread : threads) {
+				if (thread.joinable()) {
+					thread.join();
+				}
+			}
+			threads.clear();
+		}
+	}
 	template<typename Func, typename...Args>
 	auto push(Func&& func, Args&& ... args) -> std::future<decltype(func(args...))> {
 		std::function<decltype(func(args...))()> process = std::bind(

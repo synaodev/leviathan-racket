@@ -181,6 +181,12 @@ animation_t::animation_t() :
 
 }
 
+animation_t::~animation_t() {
+	if (future.valid()) {
+		future.wait();
+	}
+}
+
 animation_t::animation_t(animation_t&& that) noexcept : animation_t() {
 	if (this != &that) {
 		std::atomic<bool> temp = ready.load();
