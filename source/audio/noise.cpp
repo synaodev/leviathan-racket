@@ -46,7 +46,7 @@ noise_t::~noise_t() {
 }
 
 static ALenum get_format_enum(const SDL_AudioSpec* audio_spec) {
-	assert(audio_spec != nullptr);
+	assert(audio_spec);
 	ALenum type;
 	if (audio_spec->channels == 1) {
 		if (audio_spec->format == AUDIO_U8 or audio_spec->format == AUDIO_S8) {

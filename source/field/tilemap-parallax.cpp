@@ -90,7 +90,7 @@ void tilemap_parallax_t::render(renderer_t& renderer, rect_t viewport, const tex
 		program_t::Sprites
 	);
 	if (indices == 0) {
-		sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
+		sint_t texture_name = texture ? texture->get_name() : 0;
 		for (real_t y = viewport.y + position.y - dimensions.y; y < viewport.bottom(); y += dimensions.y) {
 			for (real_t x = viewport.x + position.x - dimensions.x; x < viewport.right(); x += dimensions.x) {
 				list.begin(display_list_t::SingleQuad)

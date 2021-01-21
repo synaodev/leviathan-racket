@@ -309,18 +309,6 @@ void receiver_t::suspend() {
 }
 
 std::string receiver_t::verify(asIScriptFunction* imported) const {
-	// if (imported->GetFuncType() != asFUNC_IMPORTED) {
-	// 	return std::string();
-	// }
-	// asIScriptModule* module = current != nullptr ?
-	// 	current :
-	// 	engine->GetModuleByIndex(0);
-	// asUINT index = module->GetImportedFunctionIndexByDecl(imported->GetDeclaration());
-	// const byte_t* source = module->GetImportedFunctionSourceModule(index);
-	// if (!source) {
-	// 	return std::string();
-	// }
-	// return source;
 	if (imported->GetFuncType() == asFUNC_IMPORTED) {
 		asUINT count = engine->GetModuleCount();
 		for (asUINT it = 0; it < count; ++it) {
@@ -364,7 +352,7 @@ void receiver_t::error_callback(const asSMessageInfo* msg, void_t) {
 }
 
 void receiver_t::calls_callback(asIScriptContext* ctx, uint_t* calls) {
-	assert(calls != nullptr);
+	assert(calls);
 	(*calls)++;
 	if (*calls >= kMaxCalls) {
 		*calls = 0;

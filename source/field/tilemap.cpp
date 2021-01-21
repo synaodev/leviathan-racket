@@ -103,7 +103,7 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 void tilemap_t::push_layer(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	if (!attribute_key.empty()) {
-		glm::vec2 inverse = layer_texture != nullptr ?
+		glm::vec2 inverse = layer_texture ?
 			layer_texture->get_inverse_dimensions() :
 			glm::zero<glm::vec2>();
 		auto& recent = tilemap_layers.emplace_back(dimensions);
@@ -120,7 +120,7 @@ void tilemap_t::push_parallax(const std::unique_ptr<tmx::Layer>& layer) {
 	amend = true;
 	const std::string& path = static_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
 	parallax_texture = vfs::texture(ftcv::path_to_name(path));
-	glm::vec2 parallax_dimensions = parallax_texture != nullptr ?
+	glm::vec2 parallax_dimensions = parallax_texture ?
 		parallax_texture->get_dimensions() :
 		glm::zero<glm::vec2>();
 	auto& recent = tilemap_parallaxes.emplace_back();

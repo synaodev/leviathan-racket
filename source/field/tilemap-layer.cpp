@@ -91,7 +91,7 @@ void tilemap_layer_t::handle(arch_t range, glm::ivec2 first, glm::ivec2 last, gl
 	indices = 0;
 	glm::vec2 pos = glm::vec2(first * constants::TileSize<sint_t>());
 	glm::vec2 uvs = glm::zero<glm::vec2>();
-	sint_t texID = texture != nullptr ? texture->get_name() : 0;
+	sint_t texID = texture ? texture->get_name() : 0;
 	for (sint_t y = first.y; y < last.y; ++y) {
 		for (sint_t x = first.x; x < last.x; ++x) {
 			arch_t index = static_cast<arch_t>(x) + static_cast<arch_t>(y) * static_cast<arch_t>(map_size.x);

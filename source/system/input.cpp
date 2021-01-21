@@ -300,7 +300,7 @@ void input_t::flush() {
 }
 
 bool input_t::has_controller() const {
-	return device != nullptr;
+	return device;
 }
 
 bool input_t::has_valid_scanner() const {

@@ -233,12 +233,12 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
-				palette != nullptr ? program_t::Indexed : program_t::Sprites
+				palette ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
 				amend = false;
-				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-				sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
+				sint_t texture_name = texture ? texture->get_name() : 0;
+				sint_t palette_name = palette ? palette->get_name() + table : 0;
 				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale, pivot, angle)
@@ -260,12 +260,12 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			auto& list = renderer.display_list(
 				layer,
 				blend_mode_t::Alpha,
-				palette != nullptr ? program_t::Indexed : program_t::Sprites
+				palette ? program_t::Indexed : program_t::Sprites
 			);
 			if (amend or panic) {
 				amend = false;
-				sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-				sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
+				sint_t texture_name = texture ? texture->get_name() : 0;
+				sint_t palette_name = palette ? palette->get_name() + table : 0;
 				list.begin(display_list_t::SingleQuad)
 					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
 					.vtx_transform_write(position - sequorig, scale)
@@ -283,15 +283,15 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 		auto& list = renderer.display_list(
 			layer_value::Persistent,
 			blend_mode_t::Alpha,
-			palette != nullptr ? program_t::Indexed : program_t::Sprites
+			palette ? program_t::Indexed : program_t::Sprites
 		);
 		if (amend) {
 			amend = false;
 			glm::vec2 sequsize = sequences[state].get_dimensions();
 			glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
 			rect_t seququads = sequences[state].get_quad(inverts, frame, variation);
-			sint_t texture_name = texture != nullptr ? texture->get_name() : 0;
-			sint_t palette_name = palette != nullptr ? palette->get_name() + table : 0;
+			sint_t texture_name = texture ? texture->get_name() : 0;
+			sint_t palette_name = palette ? palette->get_name() + table : 0;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_major_write(seququads, sequsize, mirroring_t::None, 1.0f, texture_name, palette_name)
 				.vtx_transform_write(position - sequorig)
