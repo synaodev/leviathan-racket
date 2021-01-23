@@ -13,8 +13,8 @@
 #define _SAMPLING_TOP    32767 //  16 bit max
 #define _KEY_TOP        0x3200 //  40 key
 
-#define _smp_num_rand    44100
-#define _smp_num         (int32_t)( _BASIC_SPS / _BASIC_FREQUENCY )
+#define _SMP_NUM_RAND    44100
+#define _SMP_NUM         (int32_t)( _BASIC_SPS / _BASIC_FREQUENCY )
 
 
 enum _RANDOMTYPE
@@ -77,14 +77,14 @@ void _set_ocsillator( _OSCILLATOR *p_to, pxNOISEDESIGN_OSCILLATOR *p_from, int32
 
 	// offset
 	if( p_to->ran_type != _RANDOM_None ) p_to->offset = 0;
-	else                                 p_to->offset = (double) _smp_num * ( p_from->offset / 100 );
+	else                                 p_to->offset = (double) _SMP_NUM * ( p_from->offset / 100 );
 
 	p_to->volume     = p_from->volume / 100;
 	p_to->p_smp      = p_tbl;
 	p_to->bReverse   = p_from->b_rev;
 
 	p_to->rdm_start  = 0;
-	p_to->rdm_index  = (int32_t)( (double)(_smp_num_rand) * ( p_from->offset / 100 ) );
+	p_to->rdm_index  = (int32_t)( (double)(_SMP_NUM_RAND) * ( p_from->offset / 100 ) );
 	p = p_tbl_rand;
 	p_to->rdm_margin = p[ p_to->rdm_index ];
 
@@ -93,17 +93,17 @@ void _set_ocsillator( _OSCILLATOR *p_to, pxNOISEDESIGN_OSCILLATOR *p_from, int32
 void _incriment( _OSCILLATOR *p_osc, double incriment, const short *p_tbl_rand )
 {
 	p_osc->offset += incriment;
-	if( p_osc->offset > _smp_num )
+	if( p_osc->offset > _SMP_NUM )
 	{
-		p_osc->offset     -= _smp_num;
-		if( p_osc->offset >= _smp_num ) p_osc->offset = 0;
+		p_osc->offset     -= _SMP_NUM;
+		if( p_osc->offset >= _SMP_NUM ) p_osc->offset = 0;
 
 		if( p_osc->ran_type != _RANDOM_None )
 		{
 			const short *p = p_tbl_rand;
 			p_osc->rdm_start  = p[ p_osc->rdm_index ];
 			p_osc->rdm_index++;
-			if( p_osc->rdm_index >= _smp_num_rand ) p_osc->rdm_index = 0;
+			if( p_osc->rdm_index >= _SMP_NUM_RAND ) p_osc->rdm_index = 0;
 			p_osc->rdm_margin = p[ p_osc->rdm_index ] - p_osc->rdm_start;
 		}
 	}
@@ -163,7 +163,7 @@ bool pxtnPulse_NoiseBuilder::Init()
 								{ 9,128},{10,128},{11,128},{12,128}, {13,128},{14,128},{15,128},{16,128},};
 	pxtnPOINT overtones_rect2[8] = { {1,128},{3,128},{5,128},{7,128}, {9,128},{11,128},{13,128},{15,128},};
 
-	pxtnPOINT coodi_tri[ 4 ] = { {0,0}, {_smp_num/4,128}, {_smp_num*3/4,-128}, {_smp_num,0} };
+	pxtnPOINT coodi_tri[ 4 ] = { {0,0}, {_SMP_NUM/4,128}, {_SMP_NUM*3/4,-128}, {_SMP_NUM,0} };
 
 	if( _b_init ) return true;
 
@@ -172,31 +172,31 @@ bool pxtnPulse_NoiseBuilder::Init()
 
 	for( s = 0; s < pxWAVETYPE_num; s++ ) _p_tables[ s ] = NULL;
 
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_None    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Sine    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw     ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Random  ], sizeof(short) * _smp_num_rand ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw2    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect2   ], sizeof(short) * _smp_num      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_None    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Sine    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw     ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Random  ], sizeof(short) * _SMP_NUM_RAND ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw2    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect2   ], sizeof(short) * _SMP_NUM      ) ) goto End;
 
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Tri     ], sizeof(short) * _smp_num      ) ) goto End;
-//	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Random2 ], sizeof(short) * _smp_num_rand ) ) goto End; x
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect3   ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect4   ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect8   ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect16  ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw3    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw4    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw6    ], sizeof(short) * _smp_num      ) ) goto End;
-	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw8    ], sizeof(short) * _smp_num      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Tri     ], sizeof(short) * _SMP_NUM      ) ) goto End;
+//	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Random2 ], sizeof(short) * _SMP_NUM_RAND ) ) goto End; x
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect3   ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect4   ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect8   ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Rect16  ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw3    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw4    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw6    ], sizeof(short) * _SMP_NUM      ) ) goto End;
+	if( !pxtnMem_zero_alloc( (void **)&_p_tables[ pxWAVETYPE_Saw8    ], sizeof(short) * _SMP_NUM      ) ) goto End;
 
 	// none --
 
     // sine --
-	osci.ReadyGetSample( overtones_sine, 1, 128, _smp_num, 0 );
+	osci.ReadyGetSample( overtones_sine, 1, 128, _SMP_NUM, 0 );
 	p = _p_tables[ pxWAVETYPE_Sine ];
-	for( s = 0; s < _smp_num; s++ )
+	for( s = 0; s < _SMP_NUM; s++ )
 	{
 		work = osci.GetOneSample_Overtone( s ); if( work > 1.0 ) work = 1.0; if( work < -1.0 ) work = -1.0;
 		*p = (short)( work * _SAMPLING_TOP );
@@ -206,25 +206,25 @@ bool pxtnPulse_NoiseBuilder::Init()
 	// saw down --
 	p = _p_tables[ pxWAVETYPE_Saw ];
 	work = _SAMPLING_TOP + _SAMPLING_TOP;
-	for( s = 0; s < _smp_num; s++ ){
-		*p = (short)( _SAMPLING_TOP - work * s / _smp_num );
+	for( s = 0; s < _SMP_NUM; s++ ){
+		*p = (short)( _SAMPLING_TOP - work * s / _SMP_NUM );
 		p++;
 	}
 
 	// rect --
 	p = _p_tables[ pxWAVETYPE_Rect ];
-	for( s = 0; s < _smp_num / 2; s++ ){ *p = (short)( _SAMPLING_TOP  ); p++; }
-	for( s    ; s < _smp_num    ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM / 2; s++ ){ *p = (short)( _SAMPLING_TOP  ); p++; }
+	for( s    ; s < _SMP_NUM    ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 
 	// random --
 	p = _p_tables[ pxWAVETYPE_Random ];
 	_random_reset();
-	for( s = 0; s < _smp_num_rand; s++ ){ *p = _random_get(); p++; }
+	for( s = 0; s < _SMP_NUM_RAND; s++ ){ *p = _random_get(); p++; }
 
     // saw2 --
-	osci.ReadyGetSample( overtones_saw2, 16, 128, _smp_num, 0 );
+	osci.ReadyGetSample( overtones_saw2, 16, 128, _SMP_NUM, 0 );
 	p = _p_tables[ pxWAVETYPE_Saw2 ];
-	for( s = 0; s < _smp_num; s++ )
+	for( s = 0; s < _SMP_NUM; s++ )
 	{
 		work = osci.GetOneSample_Overtone( s ); if( work > 1.0 ) work = 1.0; if( work < -1.0 ) work = -1.0;
 		*p = (short)( work * _SAMPLING_TOP );
@@ -232,9 +232,9 @@ bool pxtnPulse_NoiseBuilder::Init()
 	}
 
     // rect2 --
-	osci.ReadyGetSample( overtones_rect2, 8, 128, _smp_num, 0 );
+	osci.ReadyGetSample( overtones_rect2, 8, 128, _SMP_NUM, 0 );
 	p = _p_tables[ pxWAVETYPE_Rect2 ];
-	for( s = 0; s < _smp_num; s++ )
+	for( s = 0; s < _SMP_NUM; s++ )
 	{
 		work = osci.GetOneSample_Overtone( s ); if( work > 1.0 ) work = 1.0; if( work < -1.0 ) work = -1.0;
 		*p = (short)( work * _SAMPLING_TOP );
@@ -242,9 +242,9 @@ bool pxtnPulse_NoiseBuilder::Init()
 	}
 
 	// Triangle --
-	osci.ReadyGetSample( coodi_tri, 4, 128, _smp_num, _smp_num );
+	osci.ReadyGetSample( coodi_tri, 4, 128, _SMP_NUM, _SMP_NUM );
 	p = _p_tables[ pxWAVETYPE_Tri ];
-	for( s = 0; s < _smp_num; s++ )
+	for( s = 0; s < _SMP_NUM; s++ )
 	{
 		work = osci.GetOneSample_Coodinate( s ); if( work > 1.0 ) work = 1.0; if( work < -1.0 ) work = -1.0;
 		*p = (short)( work * _SAMPLING_TOP );
@@ -255,53 +255,53 @@ bool pxtnPulse_NoiseBuilder::Init()
 
 	// Rect-3  --
 	p = _p_tables[ pxWAVETYPE_Rect3 ];
-	for( s = 0; s < _smp_num /  3; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM /  3; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 	// Rect-4   --
 	p = _p_tables[ pxWAVETYPE_Rect4 ];
-	for( s = 0; s < _smp_num /  4; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM /  4; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 	// Rect-8   --
 	p = _p_tables[ pxWAVETYPE_Rect8 ];
-	for( s = 0; s < _smp_num /  8; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM /  8; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 	// Rect-16  --
 	p = _p_tables[ pxWAVETYPE_Rect16 ];
-	for( s = 0; s < _smp_num / 16; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM / 16; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 
 	// Saw-3    --
 	p = _p_tables[ pxWAVETYPE_Saw3 ];
-	for( s = 0; s < _smp_num /  3; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
-	for( s    ; s < _smp_num*2/ 3; s++ ){ *p = (short)(              0 ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
+	for( s = 0; s < _SMP_NUM /  3; s++ ){ *p = (short)(  _SAMPLING_TOP ); p++; }
+	for( s    ; s < _SMP_NUM*2/ 3; s++ ){ *p = (short)(              0 ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP ); p++; }
 
 	// Saw-4    --
 	p = _p_tables[ pxWAVETYPE_Saw4 ];
-	for( s = 0; s < _smp_num  / 4; s++ ){ *p = (short)(  _SAMPLING_TOP   ); p++; }
-	for( s    ; s < _smp_num*2/ 4; s++ ){ *p = (short)(  _SAMPLING_TOP/3 ); p++; }
-	for( s    ; s < _smp_num*3/ 4; s++ ){ *p = (short)( -_SAMPLING_TOP/3 ); p++; }
-	for( s    ; s < _smp_num     ; s++ ){ *p = (short)( -_SAMPLING_TOP   ); p++; }
+	for( s = 0; s < _SMP_NUM  / 4; s++ ){ *p = (short)(  _SAMPLING_TOP   ); p++; }
+	for( s    ; s < _SMP_NUM*2/ 4; s++ ){ *p = (short)(  _SAMPLING_TOP/3 ); p++; }
+	for( s    ; s < _SMP_NUM*3/ 4; s++ ){ *p = (short)( -_SAMPLING_TOP/3 ); p++; }
+	for( s    ; s < _SMP_NUM     ; s++ ){ *p = (short)( -_SAMPLING_TOP   ); p++; }
 
 	// Saw-6    --
 	p = _p_tables[ pxWAVETYPE_Saw6 ];
-	a = _smp_num *1 / 6; v =  _SAMPLING_TOP                    ; for( s = 0; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *2 / 6; v =  _SAMPLING_TOP - _SAMPLING_TOP*2/5; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *3 / 6; v =                  _SAMPLING_TOP  /5; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *4 / 6; v =                - _SAMPLING_TOP  /5; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *5 / 6; v = -_SAMPLING_TOP + _SAMPLING_TOP*2/5; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num       ; v = -_SAMPLING_TOP                    ; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *1 / 6; v =  _SAMPLING_TOP                    ; for( s = 0; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *2 / 6; v =  _SAMPLING_TOP - _SAMPLING_TOP*2/5; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *3 / 6; v =                  _SAMPLING_TOP  /5; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *4 / 6; v =                - _SAMPLING_TOP  /5; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *5 / 6; v = -_SAMPLING_TOP + _SAMPLING_TOP*2/5; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM       ; v = -_SAMPLING_TOP                    ; for( s    ; s < a; s++ ){ *p = v; p++; }
 
 	// Saw-8    --
 	p = _p_tables[ pxWAVETYPE_Saw8 ];
-	a = _smp_num *1 / 8; v =  _SAMPLING_TOP                    ; for( s = 0; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *2 / 8; v =  _SAMPLING_TOP - _SAMPLING_TOP*2/7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *3 / 8; v =  _SAMPLING_TOP - _SAMPLING_TOP*4/7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *4 / 8; v =                  _SAMPLING_TOP  /7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *5 / 8; v =                - _SAMPLING_TOP  /7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *6 / 8; v = -_SAMPLING_TOP + _SAMPLING_TOP*4/7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num *7 / 8; v = -_SAMPLING_TOP + _SAMPLING_TOP*2/7; for( s    ; s < a; s++ ){ *p = v; p++; }
-	a = _smp_num       ; v = -_SAMPLING_TOP                    ; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *1 / 8; v =  _SAMPLING_TOP                    ; for( s = 0; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *2 / 8; v =  _SAMPLING_TOP - _SAMPLING_TOP*2/7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *3 / 8; v =  _SAMPLING_TOP - _SAMPLING_TOP*4/7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *4 / 8; v =                  _SAMPLING_TOP  /7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *5 / 8; v =                - _SAMPLING_TOP  /7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *6 / 8; v = -_SAMPLING_TOP + _SAMPLING_TOP*4/7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM *7 / 8; v = -_SAMPLING_TOP + _SAMPLING_TOP*2/7; for( s    ; s < a; s++ ){ *p = v; p++; }
+	a = _SMP_NUM       ; v = -_SAMPLING_TOP                    ; for( s    ; s < a; s++ ){ *p = v; p++; }
 
 	_b_init = true;
 End:
@@ -411,7 +411,7 @@ pxtnPulse_PCM *pxtnPulse_NoiseBuilder::BuildNoise( pxtnPulse_Noise *p_noise, int
 						else               work = 0;
 						break;
 					case _RANDOM_Saw:
-						if( po->offset >= 0 ) work = po->rdm_start + po->rdm_margin * (int32_t)po->offset / _smp_num;
+						if( po->offset >= 0 ) work = po->rdm_start + po->rdm_margin * (int32_t)po->offset / _SMP_NUM;
 						else                  work = 0;
 						break;
 					case _RANDOM_Rect:
@@ -431,7 +431,7 @@ pxtnPulse_PCM *pxtnPulse_NoiseBuilder::BuildNoise( pxtnPulse_Noise *p_noise, int
 						vol    = (double)po->p_smp[ offset ];
 						break;
 					case _RANDOM_Saw:
-						vol = po->rdm_start + po->rdm_margin * (int32_t)po->offset / _smp_num;
+						vol = po->rdm_start + po->rdm_margin * (int32_t)po->offset / _SMP_NUM;
 						break;
 					case _RANDOM_Rect:
 						vol = po->rdm_start;
@@ -475,7 +475,7 @@ pxtnPulse_PCM *pxtnPulse_NoiseBuilder::BuildNoise( pxtnPulse_Noise *p_noise, int
 					fre = _KEY_TOP * po->p_smp[ offset ] / _SAMPLING_TOP;
 					break;
 				case _RANDOM_Saw:
-					fre = po->rdm_start + po->rdm_margin * (int32_t) po->offset / _smp_num;
+					fre = po->rdm_start + po->rdm_margin * (int32_t) po->offset / _SMP_NUM;
 					break;
 				case _RANDOM_Rect:
 					fre = po->rdm_start;
