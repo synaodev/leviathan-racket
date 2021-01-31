@@ -15,7 +15,7 @@
 #include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
 
-#include <angelscript.h>
+#include <angelscript/angelscript.h>
 #include <glm/gtc/constants.hpp>
 #include <tmxlite/ObjectGroup.hpp>
 
