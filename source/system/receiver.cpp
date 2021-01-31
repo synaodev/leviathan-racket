@@ -17,7 +17,7 @@
 #include "../utility/rng.hpp"
 
 #include <cstring>
-#include <angelscript/angelscript.h>
+#include <angelscript.h>
 #include <angelscript/scriptstdstring.h>
 #include <angelscript/scriptarray.h>
 

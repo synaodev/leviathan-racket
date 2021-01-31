@@ -2,7 +2,7 @@
 #include "./input.hpp"
 
 #include <fstream>
-#include <angelscript/angelscript.h>
+#include <angelscript.h>
 
 #include <glm/vec4.hpp>
 #include <glm/common.hpp>
