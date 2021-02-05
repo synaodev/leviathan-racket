@@ -174,9 +174,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	// Set global nvidia bool so everything works properly
 	const byte_t* vendor = nullptr;
 	glCheck(vendor = (const byte_t*)glGetString(GL_VENDOR));
-	if (std::strcmp(vendor, "NVIDIA Corporation") == 0) {
-		opengl_nvidia_card = true;
-	}
+	synao_log("Video card vendor is {}!\n", vendor);
 	// Clear and swap so the screen isn't left blank.
 	if (editor) {
 		frame_buffer::clear(

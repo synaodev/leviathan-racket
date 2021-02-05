@@ -9,6 +9,11 @@ layout(location = 0) in vec2 position;
 out STAGE {
 	layout(location = 0) vec4 color;
 } vs;
+out gl_PerVertex {
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+};
 void main() {
 	gl_Position = vec4(position, 0.0f, 1.0f);
 	vs.color = vec4(1.0f);
@@ -34,6 +39,11 @@ layout(location = 2) in vec4 color;
 out STAGE {
 	layout(location = 0) vec4 color;
 } vs;
+out gl_PerVertex {
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+};
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.color = color;
@@ -70,6 +80,11 @@ out STAGE {
 	layout(location = 2) flat int texID;
 	layout(location = 3) flat int palID;
 } vs;
+out gl_PerVertex {
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+};
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
@@ -117,6 +132,11 @@ out STAGE {
 	layout(location = 2) flat int atlas;
 	layout(location = 3) flat int table;
 } vs;
+out gl_PerVertex {
+	vec4 gl_Position;
+	float gl_PointSize;
+	float gl_ClipDistance[];
+};
 void main() {
 	gl_Position = viewports[0] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;

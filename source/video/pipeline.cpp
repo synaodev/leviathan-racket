@@ -47,17 +47,48 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 		uint_t gl_enum = gfx_t::get_shader_stage_gl_enum(stage);
 
 		if (pipeline_t::has_separable()) {
-			glCheck(handle = glCreateShaderProgramv(gl_enum, 1, &source_pointer));
-			glCheck(glValidateProgram(handle));
-			sint_t length = 0;
-			glCheck(glGetProgramiv(handle, GL_INFO_LOG_LENGTH, &length));
-			if (length > 0) {
-				byte_t log[1024];
-				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to create separable program! Error: {}\n", log);
-				this->destroy();
+			uint_t object = 0;
+			glCheck(object = glCreateShader(gl_enum));
+			if (!object) {
+				synao_log("Failed to create shader for unknown reason!\n");
 				return false;
 			}
+			glCheck(glShaderSource(object, 1, &source_pointer, NULL));
+			glCheck(glCompileShader(object));
+
+			sint_t success = 0;
+			glCheck(glGetShaderiv(object, GL_COMPILE_STATUS, &success));
+			if (!success) {
+				byte_t log[1024];
+				glCheck(glGetShaderInfoLog(object, sizeof(log), 0, log));
+				synao_log("Failed to compile shader: {}\n", log);
+				glCheck(glDeleteShader(object));
+				return false;
+			}
+
+			glCheck(handle = glCreateProgram());
+			if (!handle) {
+				synao_log("Failed to create program for unknown reason!\n");
+				glCheck(glDeleteShader(object));
+				return false;
+			}
+			glCheck(glProgramParameteri(handle, GL_PROGRAM_SEPARABLE, true));
+			glCheck(glAttachShader(handle, object));
+			glCheck(glLinkProgram(handle));
+
+			sint_t linking = 0;
+			glCheck(glGetProgramiv(handle, GL_LINK_STATUS, &linking));
+			if (!linking) {
+				byte_t log[1024];
+				glCheck(glGetProgramInfoLog(handle, sizeof(log), 0, log));
+				synao_log("Failed to link program! Error: {}\n", log);
+				glCheck(glDetachShader(handle, object));
+				glCheck(glDeleteShader(object));
+				return false;
+			}
+
+			glCheck(glDetachShader(handle, object));
+			glCheck(glDeleteShader(object));
 		} else {
 			glCheck(handle = glCreateShader(gl_enum));
 			glCheck(glShaderSource(handle, 1, &source_pointer, NULL));
@@ -68,7 +99,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 			if (!success) {
 				byte_t log[1024];
 				glCheck(glGetShaderInfoLog(handle, sizeof(log), 0, log));
-				synao_log("Failed to compile vertex shader: {}\n", log);
+				synao_log("Failed to compile shader: {}\n", log);
 				this->destroy();
 				return false;
 			}
@@ -166,7 +197,9 @@ bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader
 		if (pipeline_t::has_separable()) {
 			sint_t length = 0;
 			glCheck(glGenProgramPipelines(1, &handle));
-			glCheck(glBindProgramPipeline(handle));
+
+			// NVIDIA doesn't like when you do this
+			// glCheck(glBindProgramPipeline(handle));
 
 			if (vert and vert->stage == shader_stage_t::Vertex) {
 				glCheck(glUseProgramStages(handle, GL_VERTEX_SHADER_BIT, vert->handle));
@@ -295,7 +328,7 @@ const vertex_spec_t& pipeline_t::get_specify() const {
 }
 
 bool pipeline_t::has_separable() {
-	return opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2;
+	return opengl_version[0] == 4 and opengl_version[1] >= 2;
 }
 
 bool pipeline_t::has_uniform_azdo() {
