@@ -109,16 +109,18 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 		uint_t vltype = 0;
 		sint_t active = 0;
 		sint_t placmt = GL_INVALID_INDEX;
+		sint_t unused_0 = 0;
+		sint_t unused_1 = 0;
 
 		glCheck(glGetProgramiv(program_handle, GL_ACTIVE_ATTRIBUTES, &active));
 		std::vector<uint_t> typeslist = std::vector<uint_t>(static_cast<arch_t>(active) + 1, 0);
 
 		assert(glGetActiveAttrib != nullptr);
 
-		for (sint_t it = 0; it < active; ++it) {
+		for (uint_t it = 0; it < active; ++it) {
 			glCheck(glGetActiveAttrib(
 				program_handle, it, sizeof(buffer),
-				nullptr, nullptr, &vltype, buffer
+				&unused_0, &unused_1, &vltype, buffer
 			));
 
 			glCheck(placmt = glGetAttribLocation(program_handle, buffer));
