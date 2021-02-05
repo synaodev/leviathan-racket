@@ -113,6 +113,8 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 		glCheck(glGetProgramiv(program_handle, GL_ACTIVE_ATTRIBUTES, &active));
 		std::vector<uint_t> typeslist = std::vector<uint_t>(static_cast<arch_t>(active) + 1, 0);
 
+		assert(glGetActiveAttrib != nullptr);
+
 		for (sint_t it = 0; it < active; ++it) {
 			glCheck(glGetActiveAttrib(
 				program_handle, it, sizeof(buffer),
@@ -291,7 +293,7 @@ const vertex_spec_t& pipeline_t::get_specify() const {
 }
 
 bool pipeline_t::has_separable() {
-	return opengl_version[0] == 4 and opengl_version[1] >= 2;
+	return opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2;
 }
 
 bool pipeline_t::has_uniform_azdo() {

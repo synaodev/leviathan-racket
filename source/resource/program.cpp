@@ -265,49 +265,49 @@ namespace program {
 		);
 	}
 	std::string minor_vert() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kMinorVert420;
 		}
 		return kMinorVert330;
 	}
 	std::string blank_vert() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kBlankVert420;
 		}
 		return kBlankVert330;
 	}
 	std::string major_vert() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kMajorVert420;
 		}
 		return kMajorVert330;
 	}
 	std::string fonts_vert() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kFontsVert420;
 		}
 		return kFontsVert330;
 	}
 	std::string colors_frag() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kColorsFrag420;
 		}
 		return kColorsFrag330;
 	}
 	std::string sprites_frag() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kSpritesFrag420;
 		}
 		return kSpritesFrag330;
 	}
 	std::string indexed_frag() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kIndexedFrag420;
 		}
 		return kIndexedFrag330;
 	}
 	std::string channels_frag() {
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
+		if (opengl_nvidia_card == false and opengl_version[0] == 4 and opengl_version[1] >= 2) {
 			return kChannelsFrag420;
 		}
 		return kChannelsFrag330;

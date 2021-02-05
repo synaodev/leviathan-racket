@@ -8,6 +8,7 @@
 #include "../video/frame-buffer.hpp"
 #include "../video/gl-check.hpp"
 
+#include <cstring>
 #include <glm/common.hpp>
 #include <SDL2/SDL.h>
 
@@ -169,6 +170,12 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	if (gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress) == 0) {
 		synao_log("OpenGL Extension loading failed!\n");
 		return false;
+	}
+	// Set global nvidia bool so everything works properly
+	const byte_t* vendor = nullptr;
+	glCheck(vendor = (const byte_t*)glGetString(GL_VENDOR));
+	if (std::strcmp(vendor, "NVIDIA Corporation") == 0) {
+		opengl_nvidia_card = true;
 	}
 	// Clear and swap so the screen isn't left blank.
 	if (editor) {

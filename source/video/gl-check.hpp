@@ -7,6 +7,7 @@
 #include "../types.hpp"
 
 extern glm::ivec2 opengl_version;
+extern bool_t opengl_nvidia_card;
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 	namespace priv {
