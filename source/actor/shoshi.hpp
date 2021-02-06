@@ -16,17 +16,17 @@ namespace ai {
 		bool_t augment;
 	};
 	namespace shoshi {
-		constexpr entt::hashed_string type = "shoshi"_hs;
+		constexpr entt::hashed_string type = "shoshi";
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_carry {
-		constexpr entt::hashed_string type = "shoshi_carry"_hs;
+		constexpr entt::hashed_string type = "shoshi_carry";
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace shoshi_follow {
-		constexpr entt::hashed_string type = "shoshi_follow"_hs;
+		constexpr entt::hashed_string type = "shoshi_follow";
 		void ctor(entt::entity s, kontext_t& kontext);
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}

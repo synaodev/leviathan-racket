@@ -8,23 +8,23 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 	namespace kyoko {
-		constexpr entt::hashed_string type = "kyoko"_hs;
+		constexpr entt::hashed_string type = "kyoko";
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace nauzika {
-		constexpr entt::hashed_string type = "nauzika"_hs;
+		constexpr entt::hashed_string type = "nauzika";
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace senma {
-		constexpr entt::hashed_string type = "senma"_hs;
+		constexpr entt::hashed_string type = "senma";
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace fox {
-		constexpr entt::hashed_string type = "fox"_hs;
+		constexpr entt::hashed_string type = "fox";
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 	namespace gyo {
-		constexpr entt::hashed_string type = "gyo"_hs;
+		constexpr entt::hashed_string type = "gyo";
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 }
