@@ -1,5 +1,22 @@
 cmake_minimum_required (VERSION 3.13)
 
+# Project definition
+
+project (LeviathanRacket)
+
+set (LeviathanRacket_VERSION_MAJOR 0)
+set (LeviathanRacket_VERSION_MINOR 0)
+set (LeviathanRacket_VERSION_PATCH 0)
+set (LeviathanRacket_VERSION_TWEAK 0)
+
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+set (CMAKE_CXX_EXTENSIONS OFF)
+set (CMAKE_C_STANDARD 11)
+set (CMAKE_C_STANDARD_REQUIRED ON)
+set (CMAKE_C_EXTENSIONS OFF)
+set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Check for ccache on Linux
 
 if (UNIX)
@@ -43,23 +60,6 @@ if (NOT DEFINED META_BUILD)
 	message ("Defaulting to building without meta menu...")
 	set (META_BUILD OFF)
 endif ()
-
-# Project definition
-
-project (LeviathanRacket)
-
-set (LeviathanRacket_VERSION_MAJOR 0)
-set (LeviathanRacket_VERSION_MINOR 0)
-set (LeviathanRacket_VERSION_PATCH 0)
-set (LeviathanRacket_VERSION_TWEAK 0)
-
-set (CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_STANDARD_REQUIRED ON)
-set (CMAKE_CXX_EXTENSIONS OFF)
-set (CMAKE_C_STANDARD 11)
-set (CMAKE_C_STANDARD_REQUIRED ON)
-set (CMAKE_C_EXTENSIONS OFF)
-set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Target
 
