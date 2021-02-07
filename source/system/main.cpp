@@ -107,18 +107,17 @@ static std::string get_boot_path() {
 static void write_config(setup_file_t& config, const std::string& boot_path) {
 	config.clear(boot_path);
 	config.set("Setup", "MetaMenu", 0);
-	config.set("Setup", "OpenGL4X", 1);
+	config.set("Setup", "LegacyGL", 0);
 	config.set("Setup", "Language", std::string("english"));
 	config.set("Video", "VerticalSync", 0);
 	config.set("Video", "Fullscreen", 0);
 	config.set("Video", "ScaleFactor", 3);
 	config.set("Video", "FrameLimiter", 60);
-	config.set("Video", "UseOpenGL4", 1);
 	config.set("Audio", "Volume", 1.0f);
 	config.set("Music", "Volume", 0.34f);
 	config.set("Music", "Channels", 2);
 	config.set("Music", "SamplingRate", 44100);
-	config.set("Music", "kBufferedTime", 0.1f);
+	config.set("Music", "BufferedTime", 0.1f);
 	config.set("Input", "KeyJump", (sint_t)SDL_SCANCODE_Z);
 	config.set("Input", "KeyHammer", (sint_t)SDL_SCANCODE_X);
 	config.set("Input", "KeyItem", (sint_t)SDL_SCANCODE_LSHIFT);

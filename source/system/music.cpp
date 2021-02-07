@@ -58,7 +58,7 @@ bool music_t::init(const setup_file_t& config) {
 	channels = glm::clamp(channels, 1, 2);
 	config.get("Music", "SamplingRate",	sampling_rate);
 	sampling_rate = glm::clamp(sampling_rate, 11025, 44100);
-	config.get("Music", "kBufferedTime", buffered_time);
+	config.get("Music", "BufferedTime", buffered_time);
 	buffered_time = glm::clamp(buffered_time, 0.1f, 0.75f);
 	config.get("Music", "Volume", volume);
 	volume = glm::clamp(volume, 0.0f, 1.0f);

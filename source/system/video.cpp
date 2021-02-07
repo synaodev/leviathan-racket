@@ -33,22 +33,23 @@ video_t::~video_t() {
 }
 
 bool video_t::init(const setup_file_t& config, bool editor) {
+	// Raw setup parameters retrieved.
+	config.get("Setup", "MetaMenu", meta);
+	sint_t major = 4;
+	sint_t minor = 6;
+	{
+		bool_t opengl3 = false;
+		config.get("Setup", "LegacyGL", opengl3);
+		if (opengl3) {
+			major = 3;
+			minor = 3;
+		}
+	}
 	// Raw screen parameters retrieved.
 	config.get("Video", "VerticalSync", params.vsync);
 	config.get("Video", "Fullscreen", 	params.full);
 	config.get("Video", "ScaleFactor", params.scaling);
 	config.get("Video", "FrameLimiter", params.framerate);
-	config.get("Setup", "MetaMenu", meta);
-	sint_t major = 4;
-	sint_t minor = 6;
-	{
-		bool_t opengl_4 = true;
-		config.get("Setup", "OpenGL4X", opengl_4);
-		if (!opengl_4) {
-			major = 3;
-			minor = 3;
-		}
-	}
 	// Setup parameters.
 	params.scaling = glm::clamp(
 		params.scaling,
@@ -163,7 +164,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		return false;
 	}
 	synao_log("OpenGL Version is {}.{}!\n", major, minor);
-	// Set global version object so everything works properly
+	// Set global version object so everything works properly.
 	opengl_version[0] = major;
 	opengl_version[1] = minor;
 	// Load OpenGL extensions with GLAD
@@ -171,7 +172,7 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		synao_log("OpenGL Extension loading failed!\n");
 		return false;
 	}
-	// Set global nvidia bool so everything works properly
+	// Print vendor information for debugging purposes.
 	const byte_t* vendor = nullptr;
 	glCheck(vendor = (const byte_t*)glGetString(GL_VENDOR));
 	synao_log("Video card vendor is {}!\n", vendor);
