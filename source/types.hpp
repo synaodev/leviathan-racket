@@ -55,6 +55,8 @@
 #elif defined(_MSC_VER)
 	#define LEVIATHAN_COMPILER_MSVC
 	#define LEVIATHAN_TOOLCHAIN_MSVC
+	#define and &&
+	#define or ||
 #else
 	#error "Target compiler and toolchain are not supported!"
 #endif

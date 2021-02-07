@@ -39,7 +39,7 @@ source distribution.
 #include <ctime>
 
 #ifdef _MSC_VER
-#define NOMINMAX
+//#define NOMINMAX
 #include <Windows.h>
 #endif //_MSC_VER
 
@@ -48,7 +48,7 @@ source distribution.
 	#include <android/log.h>
 
 
-	#define  LOG_TAG    "TMXlite-Debug" 
+	#define  LOG_TAG    "TMXlite-Debug"
 	//#define  ALOG(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 
 	#define LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -104,11 +104,11 @@ namespace tmx
             if (output == Output::Console || output == Output::All)
             {
                 if (type == Type::Error) {
-#ifdef __ANDROID__	
-					
+#ifdef __ANDROID__
+
 					int outstringLength = outstring.length();
 					char outstring_chararray[outstringLength+1];
-					strcpy(outstring_chararray, outstring.c_str()); 
+					strcpy(outstring_chararray, outstring.c_str());
 					LOGE("%s",outstring_chararray);
 #endif
                     std::cerr << outstring << std::endl;
@@ -116,7 +116,7 @@ namespace tmx
 #ifdef __ANDROID__
 					int outstringLength = outstring.length();
 					char outstring_chararray[outstringLength+1];
-					strcpy(outstring_chararray, outstring.c_str()); 
+					strcpy(outstring_chararray, outstring.c_str());
 					LOGI("%s", outstring_chararray);
 #endif
                     std::cout << outstring << std::endl;
@@ -128,7 +128,16 @@ namespace tmx
 
 #ifdef _MSC_VER
                 outstring += "\n";
-                OutputDebugString(outstring.c_str());
+				// OutputDebugString(outstring.c_str());
+				{
+					int len = 0;
+					int slength = (int)outstring.length() + 1;
+					len = MultiByteToWideChar(CP_ACP, 0, outstring.c_str(), slength, 0, 0);
+					wchar_t* buf = new wchar_t[len];
+					MultiByteToWideChar(CP_ACP, 0, outstring.c_str(), slength, buf, len);
+					OutputDebugString(buf);
+					delete[] buf;
+				}
 #endif //_MSC_VER
             }
             if (output == Output::File || output == Output::All)
@@ -139,7 +148,12 @@ namespace tmx
                 {
 #ifndef __ANDROID__
                     std::time_t time = std::time(nullptr);
-                    auto tm = *std::localtime(&time);
+#if defined(_MSC_VER) && defined(_UNICODE)
+					struct tm tm;
+					localtime_s(&tm, &time);
+#else
+					auto tm = *std::localtime(&time);
+#endif // _MSC_VER
 					//put_time isn't implemented by the ndk versions of the stl
                     file.imbue(std::locale());
                     file << std::put_time(&tm, "%d/%m/%y-%H:%M:%S: ");

@@ -20,9 +20,9 @@ static const glm::vec2 kArrowOffset = glm::vec2(5.0f, 10.0f);
 static const glm::vec2 kTextOffsetA = glm::vec2(10.0f, 6.0f);
 static const glm::vec2 kTextOffsetB = glm::vec2(68.0f, 6.0f);
 
-static constexpr real_t kKeyHeldDelay = constants::MinInterval();
-static constexpr real_t kDefaultDelay = constants::MinInterval() * 2.8778;
-static constexpr real_t kHighestDelay = constants::MinInterval() * 6.0;
+static constexpr real_t kKeyHeldDelay = constants::MinInterval<real_t>();
+static constexpr real_t kDefaultDelay = constants::MinInterval<real_t>() * 2.8778f;
+static constexpr real_t kHighestDelay = constants::MinInterval<real_t>() * 6.0f;
 
 dialogue_gui_t::dialogue_gui_t() :
 	amend(true),

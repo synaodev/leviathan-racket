@@ -148,7 +148,7 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 
 		assert(glGetActiveAttrib != nullptr);
 
-		for (uint_t it = 0; it < active; ++it) {
+		for (sint_t it = 0; it < active; ++it) {
 			glCheck(glGetActiveAttrib(
 				program_handle, it, sizeof(buffer),
 				&unused_0, &unused_1, &vltype, buffer
