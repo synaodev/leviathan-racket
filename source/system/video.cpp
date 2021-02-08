@@ -23,7 +23,7 @@ video_t::video_t() :
 
 video_t::~video_t() {
 	if (context) {
-		SDL_GL_DeleteContext(reinterpret_cast<SDL_GLContext>(context));
+		SDL_GL_DeleteContext(context);
 		context = nullptr;
 	}
 	if (window) {
