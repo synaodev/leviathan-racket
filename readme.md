@@ -16,6 +16,7 @@ I hope to release in Winter 2021.
 - [Glad](https://glad.dav1d.de)
 - [Pxtone](https://pxtone.org/developer)
 - [Tmxlite](https://github.com/fallahn/tmxlite)
+- [toml++](https://github.com/marzer/tomlplusplus)
 - [PugiXML](https://github.com/zeux/pugixml)
 - [miniz](https://github.com/richgel999/miniz)
 ## Building From Source
