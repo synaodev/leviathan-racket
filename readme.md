@@ -3,21 +3,21 @@ This is the current official repository for Leviathan Racket.
 I hope to release in Winter 2021.
 ## Required Dependencies
 - [fmt](https://github.com/fmtlib/fmt)
-- [OpenAL](https://github.com/kcat/openal-soft)
-- [Angelscript](https://github.com/codecat/angelscript-mirror)
+- [openal](https://github.com/kcat/openal-soft)
+- [angelscript](https://github.com/codecat/angelscript-mirror)
 - [glm](https://github.com/g-truc/glm)
-- [EnTT](https://github.com/skypjack/entt)
-- [SDL2](https://www.libsdl.org/download-2.0.php)
+- [entt](https://github.com/skypjack/entt)
+- [sdl2](https://www.libsdl.org/download-2.0.php)
 ## Included Dependencies
 - [ghc](https://github.com/gulrak/filesystem)
-- [ImGui](https://github.com/ocornut/imgui)
-- [Nlohmann-JSON](https://github.com/nlohmann/json)
+- [glad](https://glad.dav1d.de)
+- [imgui](https://github.com/ocornut/imgui)
+- [json](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
-- [Glad](https://glad.dav1d.de)
-- [Pxtone](https://pxtone.org/developer)
-- [Tmxlite](https://github.com/fallahn/tmxlite)
+- [pxtone](https://pxtone.org/developer)
+- [tmxlite](https://github.com/fallahn/tmxlite)
 - [toml++](https://github.com/marzer/tomlplusplus)
-- [PugiXML](https://github.com/zeux/pugixml)
+- [pugixml](https://github.com/zeux/pugixml)
 - [miniz](https://github.com/richgel999/miniz)
 ## Building From Source
 - General:
@@ -70,4 +70,3 @@ The dependencies required to run the python scripts are in `requirements.txt`. T
   glCheck, alCheck, and the UTF32 to UTF8 conversion functions come from them.
 - Daisuke Amaya:
   He created Cave Story, which inspired this game, and develops Pxtone, which I used to compose the music.
-

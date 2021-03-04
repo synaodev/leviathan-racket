@@ -228,10 +228,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	// Register SIGINT handler
-	auto s = std::signal(SIGINT, sigint_handler);
-	if (!s) {
-		synao_log("s is null\n");
-	}
+	std::signal(SIGINT, sigint_handler);
 	// Initialize SDL2
 	if (std::atexit(SDL_Quit) != 0) {
 		synao_log("Pushing to \"std::atexit\" buffer failed!\n");
