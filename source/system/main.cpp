@@ -2,6 +2,8 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <csignal>
+#include <atomic>
 #include <SDL2/SDL.h>
 
 #include "./input.hpp"
@@ -16,6 +18,11 @@
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
 
+static std::atomic<bool> interrupt = false;
+static void sigint_handler(int) {
+	interrupt = true;
+}
+
 static constexpr uint_t kStopDelay = 40;
 static constexpr uint_t kNormDelay = 10;
 
@@ -29,6 +36,10 @@ static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audi
 	synao_log("Entering main loop...\n");
 	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
+		if (interrupt) {
+			synao_log("[SIGINT]\n");
+			break;
+		}
 		policy = input.poll(policy, meta_state_t::get_event_callback());
 		if (policy != policy_t::Stop) {
 			runtime.update(head_watch.restart());
@@ -215,6 +226,11 @@ int main(int argc, char** argv) {
 			synao_log("Fatal error! Could not mount filesystem!\n");
 			return EXIT_FAILURE;
 		}
+	}
+	// Register SIGINT handler
+	auto s = std::signal(SIGINT, sigint_handler);
+	if (!s) {
+		synao_log("s is null\n");
 	}
 	// Initialize SDL2
 	if (std::atexit(SDL_Quit) != 0) {

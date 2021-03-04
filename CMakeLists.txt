@@ -2,12 +2,12 @@ cmake_minimum_required (VERSION 3.13)
 
 # Project definition
 
-project (LeviathanRacket)
+project (LEVIATHAN_RACKET)
 
-set (LeviathanRacket_VERSION_MAJOR 0)
-set (LeviathanRacket_VERSION_MINOR 0)
-set (LeviathanRacket_VERSION_PATCH 0)
-set (LeviathanRacket_VERSION_TWEAK 0)
+set (LEVIATHAN_RACKET_VERSION_MAJOR 0)
+set (LEVIATHAN_RACKET_VERSION_MINOR 0)
+set (LEVIATHAN_RACKET_VERSION_PATCH 0)
+set (LEVIATHAN_RACKET_VERSION_TWEAK 0)
 
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -63,7 +63,7 @@ endif ()
 
 # Target
 
-add_executable (naomi)
+add_executable (lvrk)
 
 # Configure
 

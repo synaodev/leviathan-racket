@@ -56,18 +56,18 @@ endif ()
 
 # Link/Include
 
-target_link_libraries (naomi PRIVATE
+target_link_libraries (lvrk PRIVATE
 	Angelscript::angelscript
 	EnTT::EnTT
 	${FMT_LIBRARY}
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}
 )
-target_include_directories (naomi PRIVATE
+target_include_directories (lvrk PRIVATE
 	${GENERAL_INCLUDE_DIR}
 	${FMT_INCLUDE_DIR}
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 )
 
-target_compile_definitions (naomi PRIVATE "-DFMT_HEADER_ONLY")
+target_compile_definitions (lvrk PRIVATE "-DFMT_HEADER_ONLY")

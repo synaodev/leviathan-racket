@@ -8,7 +8,7 @@ else ()
 	set (STLFS_LIBS "stdc++fs")
 endif ()
 
-target_link_libraries (naomi PRIVATE
+target_link_libraries (lvrk PRIVATE
 	Threads::Threads
 	${STLFS_LIBS}
 	${CMAKE_DL_LIBS}
