@@ -1,4 +1,4 @@
-# #!/usr/bin/env python3
+#!/usr/bin/env python3
 
 # import os, sys, struct, ctypes
 # import OpenGL.GL as gl
@@ -252,5 +252,9 @@
 #         return -1
 #     return loop()
 
-# if __name__ == '__main__':
-#     sys.exit(main())
+def main() -> int:
+    print('[TODO: Rewrite tilekey application]\n')
+    return -1
+
+if __name__ == '__main__':
+    sys.exit(main())
