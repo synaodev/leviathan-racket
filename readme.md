@@ -1,6 +1,5 @@
 # Leviathan Racket
-This is the current official repository for Leviathan Racket.
-I hope to release in Winter 2021.
+This is the current official repository for Leviathan Racket. I work on this game in my spare time, so there is no release date currently.
 ## Required Dependencies
 - [fmt](https://github.com/fmtlib/fmt)
 - [openal](https://github.com/kcat/openal-soft)
@@ -52,21 +51,26 @@ I hope to release in Winter 2021.
     - `set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)`
     - `set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)`
   - The "additional dependencies" variable needs to be set to directories containing these libraries:
-    - libwinpthread-1.dll
-    - libgcc_s_seh-1.dll
-    - libstdc++-6.dll
+    - `libwinpthread-1.dll`
+    - `libgcc_s_seh-1.dll`
+    - `libstdc++-6.dll`
   - If vcpkg fails to build SDL2 using MinGW and cites the `-mwindows` flag as a problem for pkgconfig, open SDL2's portfile and comment out the call to `vcpkg_fixup_pkgconfig`.
   - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic`
   - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
-## Scripts
-The dependencies required to run the python scripts are in `requirements.txt`. The bash scripts only run on Linux, unfortunately.
+## Python 3 Scripts
+The dependencies required to run the python scripts are in `requirements.txt`.
 - `make-config.py` generates a default configuration file called `boot.cfg`.
-- `make-tilekey.py` opens an editor that allows for modification of tileset attributes.
-- `make-palette.py` generates palettes and index textures from a given texture atlas.
-- `make-symlink.py` creates symlinks for SDL_PrefPath() directories in the "data" folder.
-- `windows.sh` cross-compiles and packs the game for Windows using vcpkg, cmake, mingw, and 7zip.
+- `make-tilekey.py` opens an editor that allows for modification of tileset attributes. Not complete.
+- `make-palette.py` generates a palette and index texture from a given texture atlas.
+- `make-symlink.py` creates local links to SDL_PrefPath() directories. Helpful for debugging.
 ## Thank You
-- SFML Team:
-  glCheck, alCheck, and the UTF32 to UTF8 conversion functions come from them.
-- Daisuke Amaya:
-  He created Cave Story, which inspired this game, and develops Pxtone, which I used to compose the music.
+- [Daisuke Amaya](https://en.wikipedia.org/wiki/Daisuke_Amaya):
+  The developer of Cave Story. He also currently develops Pxtone Collage, which I am using to compose the soundtrack. If not for his work, this project would not exist.
+- [Christopher Hebert](https://github.com/chebert):
+  The creator of an extraordinary video series called [Reconstructing Cave Story](https://youtube.com/playlist?list=PL006xsVEsbKjSKBmLu1clo85yLrwjY67X). The tilemap collision system is heavily based on his tilemap collision system.
+- [SFML Team](https://github.com/sfml):
+  The UTF8-UTF32 conversion functions and the *lCheck() debug macros all come from the [SFML library](https://github.com/sfml/sfml).
+- [Jakob Progsch](https://github.com/progschj):
+  The thread pool implementation is based on [his repository](https://github.com/progschj/ThreadPool).
+- [Mikola Lysenko](https://github.com/mikolalysenko):
+  The tilemap raycast algorithm is based on [his repository](https://github.com/mikolalysenko/voxel-raycast).

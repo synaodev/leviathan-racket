@@ -9,7 +9,9 @@
 
 #include "./safe-queue.hpp"
 
-// Sort of like https://github.com/progschj/ThreadPool
+// Based on Jakob Progsch's C++11 thread pool implementation
+// https://github.com/progschj/ThreadPool
+
 struct thread_pool_t : public not_copyable_t {
 public:
 	thread_pool_t() :

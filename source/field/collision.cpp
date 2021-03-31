@@ -90,6 +90,9 @@ public:
 	real_t coordinate;
 };
 
+// Watch Christopher Hebert's videos to understand the tilemap collision system.
+// https://youtu.be/xJQ6ptFf3PU
+
 static collision_result_t test_collision(const rect_t& delta, const collision::info_t& info, side_t opposite, real_t perpendicular_position, real_t leading_position, bool should_test_slopes) {
 	collision_result_t result = collision_result_t(leading_position);
 	if (info.attribute & tileflag_t::Block) {
@@ -206,6 +209,9 @@ std::optional<glm::vec2> collision::find_intersection(glm::vec2 ray_pos, glm::ve
 	}
 	return ray_pos + ray_dir * T1;
 }
+
+// This is a 2D version of Mikola Lysenko's voxel raycast algorithm
+// https://github.com/mikolalysenko/voxel-raycast
 
 glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, glm::vec2 direction) {
 	real_t len = 0.0f;
