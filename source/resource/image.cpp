@@ -48,7 +48,7 @@ image_t image_t::generate(const std::string& full_path) {
 			static_cast<arch_t>(height) *
 			sizeof(uint_t)
 		);
-		std::memcpy(&image.pixels[0], data, image.pixels.size());
+		std::copy(data, data + image.pixels.size(), image.pixels.begin());
 		stbi_image_free(data);
 	} else {
 		synao_log("Failed to load image from {}!\n", full_path);
