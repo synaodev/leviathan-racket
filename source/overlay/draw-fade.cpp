@@ -3,14 +3,6 @@
 
 static constexpr real_t kChange = 8.0f;
 
-draw_fade_t::draw_fade_t() :
-	amend(true),
-	state(fade_state_t::DoneOut),
-	bounding(0.0f, 0.0f, 0.0f, 0.0f)
-{
-
-}
-
 void draw_fade_t::init() {
 	this->reset();
 }
@@ -18,7 +10,7 @@ void draw_fade_t::init() {
 void draw_fade_t::reset() {
 	amend = true;
 	state = fade_state_t::DoneOut;
-	bounding = rect_t(0.0f, 0.0f, 320.0f, 180.0f);
+	bounding = { 0.0f, 0.0f, 320.0f, 180.0f };
 }
 
 void draw_fade_t::handle() {

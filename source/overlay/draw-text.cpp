@@ -10,17 +10,7 @@
 
 #include <algorithm>
 
-draw_text_t::draw_text_t() :
-	amend(false),
-	font(nullptr),
-	position(0.0f),
-	origin(0.0f),
-	layer(layer_value::Persistent),
-	color(1.0f),
-	current(0),
-	buffer(),
-	quads()
-{
+draw_text_t::draw_text_t() {
 	auto specify = vertex_spec_t::from(vtx_fonts_t::name());
 	quads.setup(specify);
 }
@@ -64,7 +54,7 @@ void draw_text_t::set_font(const font_t* font) {
 	this->font = font;
 }
 
-void draw_text_t::set_string(std::string words, bool immediate) {
+void draw_text_t::set_string(const std::string& words, bool immediate) {
 	buffer.clear();
 	utf8_to_utf32(
 		words.begin(),
@@ -77,7 +67,7 @@ void draw_text_t::set_string(std::string words, bool immediate) {
 	this->generate();
 }
 
-void draw_text_t::append_string(std::string words, bool immediate) {
+void draw_text_t::append_string(const std::string& words, bool immediate) {
 	utf8_to_utf32(
 		words.begin(),
 		words.end(),
@@ -89,27 +79,29 @@ void draw_text_t::append_string(std::string words, bool immediate) {
 	this->generate();
 }
 
-void draw_text_t::set_color(glm::vec4 color) {
+void draw_text_t::set_color(const glm::vec4& color) {
 	this->color = color;
 	this->generate();
 }
 
-void draw_text_t::set_position(glm::vec2 position) {
+void draw_text_t::set_position(const glm::vec2& position) {
 	this->position = glm::round(position);
 	this->generate();
 }
 
 void draw_text_t::set_position(real_t x, real_t y) {
-	this->set_position(glm::vec2(x, y));
+	const glm::vec2 p { x, y };
+	this->set_position(p);
 }
 
-void draw_text_t::set_origin(glm::vec2 origin) {
+void draw_text_t::set_origin(const glm::vec2& origin) {
 	this->origin = glm::round(origin);
 	this->generate();
 }
 
 void draw_text_t::set_origin(real_t x, real_t y) {
-	this->set_origin(glm::vec2(x, y));
+	const glm::vec2 o { x, y };
+	this->set_origin(o);
 }
 
 void draw_text_t::set_layer(layer_t layer) {
@@ -145,24 +137,24 @@ rect_t draw_text_t::bounds() const {
 				bottom = marked.y;
 			}
 		}
-		return rect_t(
+		return {
 			left, top,
 			right - left,
 			bottom - top
-		);
+		};
 	}
-	return rect_t();
+	return {};
 }
 
 const font_t* draw_text_t::get_font() const {
 	return font;
 }
 
-glm::vec2 draw_text_t::get_position() const {
+const glm::vec2& draw_text_t::get_position() const {
 	return position;
 }
 
-glm::vec2 draw_text_t::get_origin() const {
+const glm::vec2& draw_text_t::get_origin() const {
 	return origin;
 }
 
@@ -192,51 +184,52 @@ void draw_text_t::generate() {
 		glm::vec2 start_dim = font->get_dimensions();
 		glm::vec2 start_inv = font->get_inverse_dimensions();
 		sint_t atlas_name = font->get_atlas_name();
-		char32_t p = U'\0';
+		char32_t previous = U'\0';
 		for (arch_t it = 0, qindex = 0; it < current; ++it, ++qindex) {
 			char32_t& c = buffer[it];
 			switch (c) {
 			case U'\t': {
 				const font_glyph_t& glyph = font->glyph(U' ');
-				p = U' ';
+				previous = U' ';
 
-				start_pos.x += glyph.w * 4.0f;
+				start_pos.x += (glyph.w * 4.0f);
 				--qindex;
 				break;
 			}
 			case U'\n': {
-				p = U'\0';
+				previous = U'\0';
 
-				start_pos.x = (position - origin).x;
+				start_pos.x = position.x - origin.x;
 				start_pos.y += start_dim.y;
 				--qindex;
 				break;
 			}
 			default: {
 				const font_glyph_t& glyph = font->glyph(c);
-				const real_t kerning = font->kerning(p, c);
-				p = c;
+				const real_t kerning = font->kerning(previous, c);
+				previous = c;
 
 				vtx_fonts_t* quad = quads.at<vtx_fonts_t>(qindex * display_list_t::SingleQuad);
-				quad[0].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset);
+
+				quad[0].position = { start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset };
 				quad[0].uvcoords = glm::vec2(glyph.x, glyph.y) * start_inv;
 				quad[0].color = color;
 				quad[0].atlas = atlas_name;
 				quad[0].table = glyph.table;
 
-				quad[1].position = glm::vec2(start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h);
+				quad[1].position = { start_pos.x + glyph.x_offset, start_pos.y + glyph.y_offset + glyph.h };
 				quad[1].uvcoords = glm::vec2(glyph.x, glyph.y + glyph.h) * start_inv;
 				quad[1].color = color;
 				quad[1].atlas = atlas_name;
 				quad[1].table = glyph.table;
 
-				quad[2].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset);
+				quad[2].position = { start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset };
 				quad[2].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y) * start_inv;
 				quad[2].color = color;
 				quad[2].atlas = atlas_name;
 				quad[2].table = glyph.table;
 
-				quad[3].position = glm::vec2(start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h);
+				quad[3].position = { start_pos.x + glyph.x_offset + glyph.w, start_pos.y + glyph.y_offset + glyph.h };
 				quad[3].uvcoords = glm::vec2(glyph.x + glyph.w, glyph.y + glyph.h) * start_inv;
 				quad[3].color = color;
 				quad[3].atlas = atlas_name;

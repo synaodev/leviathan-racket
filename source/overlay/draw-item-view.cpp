@@ -2,18 +2,10 @@
 
 #include "../system/kernel.hpp"
 
-draw_item_view_t::draw_item_view_t() :
-	rect(),
-	scheme(),
-	ammo()
-{
-
-}
-
 void draw_item_view_t::init(const texture_t* texture, const palette_t* palette, const animation_t* heads_animation, const animation_t* items_animation) {
-	rect.set_file(heads_animation);
-	rect.set_state(2);
-	rect.set_position(280.0f, 2.0f);
+	view.set_file(heads_animation);
+	view.set_state(2);
+	view.set_position(280.0f, 2.0f);
 	scheme.set_file(items_animation);
 	scheme.set_state(0);
 	scheme.set_position(283.0f, 5.0f);
@@ -44,14 +36,14 @@ void draw_item_view_t::handle(const kernel_t& kernel) {
 
 void draw_item_view_t::render(renderer_t& renderer) const {
 	if (scheme.get_direction() != direction_t::Invalid) {
-		rect.render(renderer);
+		view.render(renderer);
 		scheme.render(renderer);
 		ammo.render(renderer);
 	}
 }
 
 void draw_item_view_t::invalidate() const {
-	rect.invalidate();
+	view.invalidate();
 	scheme.invalidate();
 	ammo.invalidate();
 }

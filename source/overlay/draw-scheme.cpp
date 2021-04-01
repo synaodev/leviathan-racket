@@ -3,20 +3,6 @@
 #include "../resource/animation.hpp"
 #include "../system/renderer.hpp"
 
-draw_scheme_t::draw_scheme_t() :
-	amend(true),
-	file(nullptr),
-	visible(true),
-	timer(0.0),
-	state(0),
-	direction(direction_t::Right),
-	frame(0),
-	table(0),
-	position(0.0f)
-{
-
-}
-
 void draw_scheme_t::update(real64_t delta) {
 	if (file) {
 		file->update(
@@ -91,11 +77,11 @@ void draw_scheme_t::set_table(sint_t table) {
 }
 
 void draw_scheme_t::set_position(real_t x, real_t y) {
-	glm::vec2 p = glm::vec2(x, y);
+	const glm::vec2 p { x, y };
 	this->set_position(p);
 }
 
-void draw_scheme_t::set_position(glm::vec2 position) {
+void draw_scheme_t::set_position(const glm::vec2& position) {
 	if (this->position != position) {
 		this->amend = true;
 		this->position = position;
@@ -103,11 +89,11 @@ void draw_scheme_t::set_position(glm::vec2 position) {
 }
 
 void draw_scheme_t::mut_position(real_t x, real_t y) {
-	glm::vec2 o = glm::vec2(x, y);
+	const glm::vec2 o { x, y };
 	this->mut_position(o);
 }
 
-void draw_scheme_t::mut_position(glm::vec2 offset) {
+void draw_scheme_t::mut_position(const glm::vec2& offset) {
 	this->amend = true;
 	this->position += offset;
 }
@@ -139,6 +125,6 @@ sint_t draw_scheme_t::get_table() const {
 	return table;
 }
 
-glm::vec2 draw_scheme_t::get_position() const {
+const glm::vec2& draw_scheme_t::get_position() const {
 	return position;
 }

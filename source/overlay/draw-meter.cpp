@@ -9,17 +9,9 @@ static const glm::vec2 kGraphedPosition		= glm::vec2(302.0f, 142.0f);
 static const glm::vec2 kVaryingPosition 	= kGraphedPosition + glm::vec2(9.0f, 1.0f);
 static const glm::vec2 kVaryingDimensions 	= glm::vec2(6.0f, 94.0f);
 
-draw_meter_t::draw_meter_t() :
-	amend(false),
-	current(0),
-	varying(kGraphedPosition, kVaryingDimensions),
-	graphed()
-{
-
-}
-
 void draw_meter_t::init(const animation_t* animation) {
 	this->reset();
+	varying = { kGraphedPosition, kVaryingDimensions };
 	graphed.set_file(animation);
 	graphed.set_state(3);
 	graphed.set_position(kVaryingPosition);

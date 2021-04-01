@@ -7,7 +7,7 @@
 
 struct draw_meter_t : public not_copyable_t {
 public:
-	draw_meter_t();
+	draw_meter_t() = default;
 	draw_meter_t(draw_meter_t&&) = default;
 	draw_meter_t& operator=(draw_meter_t&&) = default;
 	~draw_meter_t() = default;
@@ -19,10 +19,10 @@ public:
 	void render(renderer_t& renderer) const;
 	void set_values(sint_t current, sint_t maximum);
 private:
-	mutable bool_t amend;
-	sint_t current;
-	rect_t varying;
-	draw_scheme_t graphed;
+	mutable bool_t amend { false };
+	sint_t current { 0 };
+	rect_t varying {};
+	draw_scheme_t graphed {};
 };
 
 #endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_METER_HPP

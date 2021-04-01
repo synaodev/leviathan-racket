@@ -7,17 +7,7 @@
 
 static constexpr arch_t kLoopPoint = 7;
 
-draw_units_t::draw_units_t() :
-	amend(false),
-	position(0.0f),
-	bounding(0.0f, 0.0f, 0.0f, 0.0f),
-	current_value(0),
-	maximum_value(0),
-	table(0),
-	texture(nullptr),
-	palette(nullptr),
-	quads()
-{
+draw_units_t::draw_units_t() {
 	auto specify = vertex_spec_t::from(vtx_major_t::name());
 	quads.setup(specify);
 }
@@ -45,21 +35,21 @@ void draw_units_t::render(renderer_t& renderer) const {
 }
 
 void draw_units_t::set_position(real_t x, real_t y) {
-	amend = true;
-	this->position = glm::vec2(x, y);
+	const glm::vec2 p { x, y };
+	this->set_position(p);
 }
 
-void draw_units_t::set_position(glm::vec2 position) {
+void draw_units_t::set_position(const glm::vec2& position) {
 	amend = true;
 	this->position = position;
 }
 
 void draw_units_t::set_bounding(real_t x, real_t y, real_t w, real_t h) {
-	amend = true;
-	this->bounding = rect_t(x, y, w, h);
+	const rect_t r { x, y, w, h };
+	this->set_bounding(r);
 }
 
-void draw_units_t::set_bounding(rect_t bounding) {
+void draw_units_t::set_bounding(const rect_t& bounding) {
 	amend = true;
 	this->bounding = bounding;
 }
@@ -103,7 +93,7 @@ void draw_units_t::set_palette(const palette_t* palette) {
 	this->palette = palette;
 }
 
-glm::vec2 draw_units_t::get_position() const {
+const glm::vec2& draw_units_t::get_position() const {
 	return position;
 }
 
@@ -120,7 +110,7 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 		vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
 
 		glm::vec2 uvs = bounding.left_top();
-		if (current > 0 and it <= current - 1) {
+		if (current > 0 and it <= (current - 1)) {
 			uvs.x += bounding.w;
 		}
 
@@ -131,14 +121,14 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 		quad[0].texID = texID;
 		quad[0].palID = palID;
 
-		quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
+		quad[1].position = { pos.x, pos.y + bounding.h };
 		quad[1].matrix = 0;
 		quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
 		quad[1].alpha = 1.0f;
 		quad[1].texID = texID;
 		quad[1].palID = palID;
 
-		quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
+		quad[2].position = { pos.x + bounding.w, pos.y };
 		quad[2].matrix = 0;
 		quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
 		quad[2].alpha = 1.0f;

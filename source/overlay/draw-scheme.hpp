@@ -10,7 +10,7 @@ struct animation_t;
 
 struct draw_scheme_t : public not_copyable_t {
 public:
-	draw_scheme_t();
+	draw_scheme_t() = default;
 	draw_scheme_t(draw_scheme_t&&) = default;
 	draw_scheme_t& operator=(draw_scheme_t&&) = default;
 	~draw_scheme_t() = default;
@@ -25,28 +25,28 @@ public:
 	void set_frame(arch_t frame);
 	void set_table(sint_t table);
 	void set_position(real_t x, real_t y);
-	void set_position(glm::vec2 position);
+	void set_position(const glm::vec2& position);
 	void mut_position(real_t x, real_t y);
-	void mut_position(glm::vec2 offset);
+	void mut_position(const glm::vec2& offset);
 	bool is_finished() const;
 	real64_t get_timer() const;
 	arch_t get_state() const;
 	direction_t get_direction() const;
 	arch_t get_frame() const;
 	sint_t get_table() const;
-	glm::vec2 get_position() const;
+	const glm::vec2& get_position() const;
 public:
 	static constexpr arch_t NonState = (arch_t)-1;
 private:
-	mutable bool_t amend;
-	const animation_t* file;
-	bool_t visible;
-	real64_t timer;
-	arch_t state;
-	direction_t direction;
-	arch_t frame;
-	sint_t table;
-	glm::vec2 position;
+	mutable bool_t amend { true };
+	const animation_t* file { nullptr };
+	bool_t visible { true };
+	real64_t timer { 0.0 };
+	arch_t state { 0 };
+	direction_t direction { direction_t::Right };
+	arch_t frame { 0 };
+	sint_t table { 0 };
+	glm::vec2 position {};
 };
 
 #endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP

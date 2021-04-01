@@ -6,15 +6,6 @@
 
 static constexpr real64_t kFadeTime = 0.048;
 
-draw_title_view_t::draw_title_view_t() :
-	timer(0.0),
-	head(),
-	lite(),
-	cards()
-{
-
-}
-
 void draw_title_view_t::handle(const dialogue_gui_t& dialogue_gui) {
 	if (!head.empty()) {
 		timer -= constants::MinInterval();
@@ -62,18 +53,18 @@ void draw_title_view_t::set_font(const font_t* font) {
 	cards.clear();
 }
 
-void draw_title_view_t::set_persistent(glm::vec2 position, glm::vec4 color) {
+void draw_title_view_t::set_persistent(const glm::vec2& position, const glm::vec4& color) {
 	head.set_position(position);
 	lite.set_position(position);
 	lite.set_color(color);
 }
 
-void draw_title_view_t::set_persistent(real_t x, real_t y, glm::vec4 color) {
-	glm::vec2 position = glm::vec2(x, y);
-	this->set_persistent(position, color);
+void draw_title_view_t::set_persistent(real_t x, real_t y, const glm::vec4& color) {
+	const glm::vec2 p { x, y };
+	this->set_persistent(p, color);
 }
 
-void draw_title_view_t::set_position(arch_t index, glm::vec2 position) {
+void draw_title_view_t::set_position(arch_t index, const glm::vec2& position) {
 	if (index < cards.size()) {
 		auto& card = cards[index];
 		card.set_position(position);
@@ -81,14 +72,14 @@ void draw_title_view_t::set_position(arch_t index, glm::vec2 position) {
 }
 
 void draw_title_view_t::set_position(arch_t index, real_t x, real_t y) {
-	glm::vec2 position = glm::vec2(x, y);
-	this->set_position(index, position);
+	const glm::vec2 p { x, y };
+	this->set_position(index, p);
 }
 
 void draw_title_view_t::set_centered(arch_t index, bool x, bool y) {
 	if (index < cards.size()) {
 		auto& card = cards[index];
-		rect_t bounds = card.bounds();
+		const rect_t bounds = card.bounds();
 		card.set_origin(
 			x ? bounds.w / 2.0f : 0.0f,
 			y ? bounds.h / 2.0f : 0.0f

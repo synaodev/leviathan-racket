@@ -18,7 +18,7 @@ using fade_state_t = __enum_fade_state::type;
 
 struct draw_fade_t : public not_copyable_t {
 public:
-	draw_fade_t();
+	draw_fade_t() = default;
 	draw_fade_t(draw_fade_t&&) = default;
 	draw_fade_t& operator=(draw_fade_t&&) = default;
 	~draw_fade_t() = default;
@@ -34,9 +34,9 @@ public:
 	bool is_moving() const;
 	bool is_visible() const;
 private:
-	mutable bool_t amend;
-	fade_state_t state;
-	rect_t bounding;
+	mutable bool_t amend { false };
+	fade_state_t state { fade_state_t::DoneOut };
+	rect_t bounding {};
 };
 
 #endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP

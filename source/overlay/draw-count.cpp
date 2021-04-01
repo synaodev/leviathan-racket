@@ -1,29 +1,16 @@
 #include "./draw-count.hpp"
 
+#include <glm/exponential.hpp>
 #include <glm/gtc/constants.hpp>
 
 #include "../video/texture.hpp"
 #include "../system/renderer.hpp"
 
-static constexpr sint_t kFirst = -4735916;
 static constexpr sint_t kRadix = 10;
 static constexpr sint_t kMinus = 10;
 static constexpr sint_t kPoint = 12;
 
-draw_count_t::draw_count_t() :
-	amend(false),
-	layer(layer_value::Persistent),
-	backwards(false),
-	visible(false),
-	table(0),
-	position(0.0f),
-	bounding(0.0f, 0.0f, 0.0f, 0.0f),
-	value(kFirst),
-	minimum_zeroes(0),
-	texture(nullptr),
-	palette(nullptr),
-	quads()
-{
+draw_count_t::draw_count_t() {
 	auto specify = vertex_spec_t::from(vtx_major_t::name());
 	quads.setup(specify);
 }
@@ -74,32 +61,31 @@ void draw_count_t::set_table(sint_t table) {
 }
 
 void draw_count_t::set_position(real_t x, real_t y) {
-	amend = true;
-	this->position = glm::vec2(x, y);
+	const glm::vec2 p { x, y };
+	this->set_position(p);
 }
 
-void draw_count_t::set_position(glm::vec2 position) {
+void draw_count_t::set_position(const glm::vec2& position) {
 	amend = true;
 	this->position = position;
 }
 
 void draw_count_t::mut_position(real_t x, real_t y) {
-	amend = true;
-	this->position.x += x;
-	this->position.y += y;
+	const glm::vec2 p { x, y };
+	this->mut_position(p);
 }
 
-void draw_count_t::mut_position(glm::vec2 offset) {
+void draw_count_t::mut_position(const glm::vec2& offset) {
 	amend = true;
 	this->position += offset;
 }
 
 void draw_count_t::set_bounding(real_t x, real_t y, real_t w, real_t h) {
-	amend = true;
-	this->bounding = rect_t(x, y, w, h);
+	const rect_t r { x, y, w, h };
+	this->set_bounding(r);
 }
 
-void draw_count_t::set_bounding(rect_t bounding) {
+void draw_count_t::set_bounding(const rect_t& bounding) {
 	amend = true;
 	this->bounding = bounding;
 }
@@ -116,7 +102,7 @@ void draw_count_t::new_value(sint_t number) {
 		number /= kRadix;
 	} while (number != 0);
 	if (minimum_zeroes != 0) {
-		for (arch_t e = value != 0 ? 0 : 1; e < minimum_zeroes; ++e) {
+		for (sint_t e = value != 0 ? 0 : 1; e < minimum_zeroes; ++e) {
 			if (value < quick_power_of_10(e)) {
 				buffer.push_back(0);
 			}
@@ -150,7 +136,7 @@ void draw_count_t::set_palette(const palette_t* palette) {
 	this->palette = palette;
 }
 
-glm::vec2 draw_count_t::get_position() const {
+const glm::vec2& draw_count_t::get_position() const {
 	return position;
 }
 
@@ -162,21 +148,21 @@ bool draw_count_t::is_visible() const {
 	return visible;
 }
 
-sint_t draw_count_t::quick_power_of_10(arch_t exponent) {
+sint_t draw_count_t::quick_power_of_10(sint_t exponent) {
 	static const sint_t powers[10] = {
 		1, 10, 100, 1000,
 		10000, 100000, 1000000,
 		10000000, 100000000, 1000000000
 	};
-	if (exponent < 10) {
+	if (exponent >= 0 and exponent < 10) {
 		return powers[exponent];
 	}
-	return 0;
+	return glm::pow(10, exponent);
 }
 
 void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	amend = true;
-	if (buffer.size() != quads.size() / display_list_t::SingleQuad) {
+	if (buffer.size() != (quads.size() / display_list_t::SingleQuad)) {
 		quads.resize(buffer.size() * display_list_t::SingleQuad);
 	}
 	glm::vec2 pos = position;
@@ -186,10 +172,10 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	arch_t qindex = 0;
 	if (backwards) {
 		for (auto it = buffer.begin(); it != buffer.end(); ++it, ++qindex) {
-			glm::vec2 txcd = glm::vec2(
+			const glm::vec2 txcd {
 				bounding.x + static_cast<real_t>(*it) * bounding.w,
 				bounding.y
-			);
+			};
 			this->generate_one(
 				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
 				pos, txcd, inv, texID, palID
@@ -200,10 +186,10 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 		}
 	} else {
 		for (auto it = buffer.rbegin(); it != buffer.rend(); ++it, ++qindex) {
-			glm::vec2 txcd = glm::vec2(
+			const glm::vec2 txcd {
 				bounding.x + static_cast<real_t>(*it) * bounding.w,
 				bounding.y
-			);
+			};
 			this->generate_one(
 				quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad),
 				pos, txcd, inv, texID, palID
@@ -223,14 +209,14 @@ void draw_count_t::generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs,
 	quad[0].texID = texID;
 	quad[0].palID = palID;
 
-	quad[1].position = glm::vec2(pos.x, pos.y + bounding.h);
+	quad[1].position = { pos.x, pos.y + bounding.h };
 	quad[1].matrix = 0;
 	quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
 	quad[1].alpha = 1.0f;
 	quad[1].texID = texID;
 	quad[1].palID = palID;
 
-	quad[2].position = glm::vec2(pos.x + bounding.w, pos.y);
+	quad[2].position = { pos.x + bounding.w, pos.y };
 	quad[2].matrix = 0;
 	quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
 	quad[2].alpha = 1.0f;
