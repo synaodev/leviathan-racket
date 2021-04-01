@@ -8,14 +8,14 @@ std::string setup_chunk_t::get(const std::string& key) const {
 			return pair.second;
 		}
 	}
-	return std::string();
+	return {};
 }
 
 std::string setup_chunk_t::get(arch_t index) const {
 	if (index < data.size()) {
 		return data.at(index).second;
 	}
-	return std::string();
+	return {};
 }
 
 arch_t setup_chunk_t::get_length() const {
@@ -36,7 +36,7 @@ void setup_chunk_t::set(const std::string& key, const std::string& value) {
 	data.emplace_back(key, value);
 }
 
-void setup_chunk_t::set(std::pair<std::string, std::string>& kvp) {
+void setup_chunk_t::set(const std::pair<std::string, std::string>& kvp) {
 	for (auto&& pair : data) {
 		if (pair.first == kvp.first) {
 			pair.second = kvp.second;
@@ -69,27 +69,10 @@ void setup_chunk_t::write_to(std::string& buffer) const {
 	}
 }
 
-setup_file_t::setup_file_t(setup_file_t&& that) noexcept : setup_file_t() {
-	if (this != &that) {
-		std::swap(origin, that.origin);
-		std::swap(data, that.data);
-		std::swap(locale, that.locale);
-	}
-}
-
-setup_file_t& setup_file_t::operator=(setup_file_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(origin, that.origin);
-		std::swap(data, that.data);
-		std::swap(locale, that.locale);
-	}
-	return *this;
-}
-
 bool setup_file_t::load(const std::string& full_path) {
 	data.clear();
 	origin = full_path;
-	std::ifstream file(full_path, std::ios::binary);
+	std::ifstream file { full_path, std::ios::binary };
 	if (file.is_open()) {
 		return this->read(file);
 	}
@@ -101,7 +84,7 @@ bool setup_file_t::save() {
 }
 
 bool setup_file_t::save(const std::string& full_path) {
-	std::ofstream file(full_path, std::ios::binary);
+	std::ofstream file { full_path, std::ios::binary };
 	if (file.is_open()) {
 		return this->write(file);
 	}
@@ -114,7 +97,8 @@ void setup_file_t::clear(const std::string& full_path) {
 }
 
 void setup_file_t::clear() {
-	this->clear("");
+	origin.clear();
+	data.clear();
 }
 
 arch_t setup_file_t::size() const {
