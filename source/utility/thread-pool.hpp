@@ -6,48 +6,21 @@
 #include <atomic>
 #include <thread>
 #include <vector>
-
-#include "./safe-queue.hpp"
+#include <queue>
 
 // Based on Jakob Progsch's C++11 thread pool implementation
 // https://github.com/progschj/ThreadPool
 
 struct thread_pool_t : public not_copyable_t {
 public:
-	thread_pool_t() :
-		shutdown(false),
-		queue(),
-		threads(),
-		conditional_mutex(),
-		conditional_lock() {}
-	thread_pool_t(const thread_pool_t&) = delete;
+	thread_pool_t() = default;
 	thread_pool_t(thread_pool_t&&) = delete;
-	thread_pool_t& operator=(const thread_pool_t&) = delete;
 	thread_pool_t& operator=(thread_pool_t&&) = delete;
 	~thread_pool_t() {
-		if (!threads.empty()) {
-			shutdown = true;
-			conditional_lock.notify_all();
-			for (auto&& thread : threads) {
-				if (thread.joinable()) {
-					thread.join();
-				}
-			}
-		}
-	}
-public:
-	bool init(arch_t count) {
-		threads.resize(count);
-		for (auto&& thread : threads) {
-			thread = std::thread(worker_t(this));
-		}
-		return !threads.empty();
-	}
-	void destroy() {
 		shutdown = true;
 		if (!threads.empty()) {
 			{
-				std::unique_lock<std::mutex> lock{ conditional_mutex };
+				std::unique_lock<std::mutex> notify_lock { conditional_mutex };
 				conditional_lock.notify_all();
 			}
 			for (auto&& thread : threads) {
@@ -58,6 +31,17 @@ public:
 			threads.clear();
 		}
 	}
+public:
+	bool init(arch_t count) {
+		if (threads.empty()) {
+			threads.resize(count);
+			for (auto&& thread : threads) {
+				thread = std::thread(worker_t(this));
+			}
+			return true;
+		}
+		return false;
+	}
 	template<typename Func, typename...Args>
 	auto push(Func&& func, Args&& ... args) -> std::future<decltype(func(args...))> {
 		std::function<decltype(func(args...))()> process = std::bind(
@@ -67,15 +51,17 @@ public:
 		std::function<void()> wrapper = [task_pointer] {
 			(*task_pointer)();
 		};
-		queue.enqueue(wrapper);
+		{
+			std::unique_lock<std::mutex> push_lock { queue_mutex };
+			queue.push(wrapper);
+		}
 		conditional_lock.notify_one();
 		return task_pointer->get_future();
 	}
 private:
 	struct worker_t {
 	public:
-		worker_t(thread_pool_t* thread_pool) : thread_pool(thread_pool) {}
-		worker_t() : worker_t(nullptr) {}
+		worker_t(thread_pool_t* boss) : boss(boss) {}
 		worker_t(const worker_t&) = default;
 		worker_t(worker_t&&) = default;
 		worker_t& operator=(const worker_t&) = default;
@@ -84,26 +70,41 @@ private:
 	public:
 		void operator()() {
 			std::function<void()> process;
-			bool dequeued;
-			while (!thread_pool->shutdown) {
+			bool dequeued = false;
+			while (!boss->shutdown) {
 				{
-					std::unique_lock<std::mutex> lock{ thread_pool->conditional_mutex };
-					if (thread_pool->queue.empty()) {
-						thread_pool->conditional_lock.wait(lock);
+					std::unique_lock<std::mutex> wait_lock { boss->conditional_mutex };
+					bool empty = false;
+					{
+						std::unique_lock<std::mutex> empty_lock { boss->queue_mutex };
+						empty = boss->queue.empty();
 					}
-					dequeued = thread_pool->queue.dequeue(process);
+					if (empty) {
+						boss->conditional_lock.wait(wait_lock);
+					}
+					{
+						std::unique_lock<std::mutex> dequeued_lock { boss->queue_mutex };
+						if (!boss->queue.empty()) {
+							process = std::move(boss->queue.front());
+							boss->queue.pop();
+							dequeued = true;
+						} else {
+							dequeued = false;
+						}
+					}
 				}
 				if (dequeued) {
-					process();
+					std::invoke(process);
 				}
 			}
 		}
 	private:
-		thread_pool_t* thread_pool;
+		thread_pool_t* boss { nullptr };
 	};
 private:
-	std::atomic<bool> shutdown;
-	safe_queue_t<std::function<void()> > queue;
+	std::atomic<bool> shutdown { false };
+	std::queue<std::function<void()> > queue;
+	std::mutex queue_mutex;
 	std::vector<std::thread> threads;
 	std::mutex conditional_mutex;
 	std::condition_variable conditional_lock;
