@@ -11,8 +11,8 @@ struct animation_t;
 struct draw_scheme_t : public not_copyable_t {
 public:
 	draw_scheme_t() = default;
-	draw_scheme_t(draw_scheme_t&&) = default;
-	draw_scheme_t& operator=(draw_scheme_t&&) = default;
+	draw_scheme_t(draw_scheme_t&&) noexcept = default;
+	draw_scheme_t& operator=(draw_scheme_t&&) noexcept = default;
 	~draw_scheme_t() = default;
 public:
 	void update(real64_t delta);

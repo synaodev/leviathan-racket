@@ -32,8 +32,8 @@ public:
 	void write_to(std::string& buffer) const;
 	bool swap(const std::string& lhk, const std::string& rhk);
 private:
-	std::string title;
-	std::vector<std::pair<std::string, std::string> > data;
+	std::string title {};
+	std::vector<std::pair<std::string, std::string> > data {};
 };
 
 struct setup_file_t : public not_copyable_t {
@@ -67,9 +67,9 @@ public:
 	template<typename T, glm::length_t L, glm::qualifier Q> void set(const std::string& title, const std::string& key, const glm::vec<L, T, Q>& value);
 	template<typename T> T convert_to(const std::string& input) const;
 private:
-	std::string origin;
-	std::vector<setup_chunk_t> data;
-	std::locale locale;
+	std::string origin {};
+	std::vector<setup_chunk_t> data {};
+	std::locale locale {};
 };
 
 template<typename T>

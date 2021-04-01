@@ -14,8 +14,8 @@
 struct thread_pool_t : public not_copyable_t {
 public:
 	thread_pool_t() = default;
-	thread_pool_t(thread_pool_t&&) = delete;
-	thread_pool_t& operator=(thread_pool_t&&) = delete;
+	thread_pool_t(thread_pool_t&&) noexcept = delete;
+	thread_pool_t& operator=(thread_pool_t&&) noexcept = delete;
 	~thread_pool_t() {
 		shutdown = true;
 		if (!threads.empty()) {
@@ -59,13 +59,11 @@ public:
 		return task_pointer->get_future();
 	}
 private:
-	struct worker_t {
+	struct worker_t : public not_copyable_t {
 	public:
 		worker_t(thread_pool_t* boss) : boss(boss) {}
-		worker_t(const worker_t&) = default;
-		worker_t(worker_t&&) = default;
-		worker_t& operator=(const worker_t&) = default;
-		worker_t& operator=(worker_t&&) = default;
+		worker_t(worker_t&&) noexcept = default;
+		worker_t& operator=(worker_t&&) noexcept = default;
 		~worker_t() = default;
 	public:
 		void operator()() {
@@ -103,11 +101,11 @@ private:
 	};
 private:
 	std::atomic<bool> shutdown { false };
-	std::queue<std::function<void()> > queue;
-	std::mutex queue_mutex;
-	std::vector<std::thread> threads;
-	std::mutex conditional_mutex;
-	std::condition_variable conditional_lock;
+	std::queue<std::function<void()> > queue {};
+	std::mutex queue_mutex {};
+	std::vector<std::thread> threads {};
+	std::mutex conditional_mutex {};
+	std::condition_variable conditional_lock {};
 };
 
 #endif // LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP

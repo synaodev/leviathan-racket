@@ -8,8 +8,8 @@ struct dialogue_gui_t;
 struct draw_title_view_t : public not_copyable_t {
 public:
 	draw_title_view_t() = default;
-	draw_title_view_t(draw_title_view_t&&) = default;
-	draw_title_view_t& operator=(draw_title_view_t&&) = default;
+	draw_title_view_t(draw_title_view_t&&) noexcept = default;
+	draw_title_view_t& operator=(draw_title_view_t&&) noexcept = default;
 	~draw_title_view_t() = default;
 public:
 	void handle(const dialogue_gui_t& dialogue_gui);

@@ -8,8 +8,8 @@
 struct draw_meter_t : public not_copyable_t {
 public:
 	draw_meter_t() = default;
-	draw_meter_t(draw_meter_t&&) = default;
-	draw_meter_t& operator=(draw_meter_t&&) = default;
+	draw_meter_t(draw_meter_t&&) noexcept = default;
+	draw_meter_t& operator=(draw_meter_t&&) noexcept = default;
 	~draw_meter_t() = default;
 public:
 	void init(const animation_t* animation);

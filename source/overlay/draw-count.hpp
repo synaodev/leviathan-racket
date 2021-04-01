@@ -12,8 +12,8 @@ struct palette_t;
 struct draw_count_t : public not_copyable_t {
 public:
 	draw_count_t();
-	draw_count_t(draw_count_t&&) = default;
-	draw_count_t& operator=(draw_count_t&&) = default;
+	draw_count_t(draw_count_t&&) noexcept = default;
+	draw_count_t& operator=(draw_count_t&&) noexcept = default;
 	~draw_count_t() = default;
 public:
 	void invalidate() const;

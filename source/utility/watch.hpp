@@ -11,9 +11,9 @@ public:
 		point = std::chrono::high_resolution_clock::now();
 	}
 	watch_t(const watch_t&) = default;
-	watch_t(watch_t&&) = default;
+	watch_t(watch_t&&) noexcept = default;
 	watch_t& operator=(const watch_t&) = default;
-	watch_t& operator=(watch_t&&) = default;
+	watch_t& operator=(watch_t&&) noexcept = default;
 	~watch_t() = default;
 public:
 	real64_t elapsed() const {
@@ -30,7 +30,7 @@ public:
 		return std::chrono::system_clock::now().time_since_epoch().count();
 	}
 private:
-	std::chrono::time_point<std::chrono::high_resolution_clock> point;
+	std::chrono::time_point<std::chrono::high_resolution_clock> point {};
 };
 
 #endif // LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP

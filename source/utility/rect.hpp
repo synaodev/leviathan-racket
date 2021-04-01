@@ -78,12 +78,12 @@ public:
 	}
 	inline real_t right() const { return x + w; }
 	inline real_t bottom() const { return y + h; }
-	inline glm::vec2 left_top() const { return glm::vec2(x, y); }
-	inline glm::vec2 left_bottom() const { return glm::vec2(x, y + h); }
-	inline glm::vec2 right_top() const { return glm::vec2(x + w, y); }
-	inline glm::vec2 right_bottom() const { return glm::vec2(x + w, y + h); }
-	inline glm::vec2 dimensions() const { return glm::vec2(w, h); }
-	inline glm::vec2 center() const { return glm::vec2(x + (w / 2.0f), y + (h / 2.0f)); }
+	inline glm::vec2 left_top() const { return { x, y }; }
+	inline glm::vec2 left_bottom() const { return { x, y + h }; }
+	inline glm::vec2 right_top() const { return { x + w, y }; }
+	inline glm::vec2 right_bottom() const { return { x + w, y + h }; }
+	inline glm::vec2 dimensions() const { return { w, h }; }
+	inline glm::vec2 center() const { return { x + (w / 2.0f), y + (h / 2.0f) }; }
 	inline real_t center_x() const { return x + (w / 2.0f); }
 	inline real_t center_y() const { return y + (h / 2.0f); }
 	void push_fix(rect_t& that) const {
