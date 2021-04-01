@@ -74,3 +74,5 @@ The dependencies required to run the python scripts are in `requirements.txt`.
   The thread pool implementation is based on [his repository](https://github.com/progschj/ThreadPool).
 - [Mikola Lysenko](https://github.com/mikolalysenko):
   The tilemap raycast algorithm is based on [his repository](https://github.com/mikolalysenko/voxel-raycast).
+- [Caitlin Shaw](http://nxengine.sourceforge.net/):
+  The actor routine tables are generated using C++ preprocessor macros. This idea comes from the rather unorthodox InitList system in [NxEngine](https://github.com/nxengine/nxengine-evo/), which is used to initialize AI functions at startup.
