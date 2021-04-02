@@ -32,7 +32,7 @@ video_t::~video_t() {
 	}
 }
 
-bool video_t::init(const setup_file_t& config, bool editor) {
+bool video_t::init(const setup_file_t& config) {
 	// Raw setup parameters retrieved.
 	config.get("Setup", "MetaMenu", meta);
 	sint_t major = 4;
@@ -92,25 +92,14 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 		return false;
 	}
 	// Create window.
-	if (editor) {
-		window = SDL_CreateWindow(
-			constants::EditorName,
-			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
-			constants::EditorWidth<sint_t>(),
-			constants::EditorHeight<sint_t>(),
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-		);
-	} else {
-		window = SDL_CreateWindow(
-			constants::NormalName,
-			SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED,
-			constants::NormalWidth<sint_t>() * params.scaling,
-			constants::NormalHeight<sint_t>() * params.scaling,
-			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-		);
-	}
+	window = SDL_CreateWindow(
+		constants::NormalName,
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
+		constants::NormalWidth<sint_t>() * params.scaling,
+		constants::NormalHeight<sint_t>() * params.scaling,
+		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+	);
 	if (!window) {
 		synao_log("Window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
@@ -177,20 +166,13 @@ bool video_t::init(const setup_file_t& config, bool editor) {
 	glCheck(vendor = (const byte_t*)glGetString(GL_VENDOR));
 	synao_log("Video card vendor is {}!\n", vendor);
 	// Clear and swap so the screen isn't left blank.
-	if (editor) {
-		frame_buffer::clear(
-			constants::EditorDimensions<sint_t>(),
-			glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)
-		);
-	} else {
-		frame_buffer::clear(
-			constants::NormalDimensions<sint_t>() * params.scaling,
-			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
-		);
-	}
+	frame_buffer::clear(
+		constants::NormalDimensions<sint_t>() * params.scaling,
+		glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
+	);
 	SDL_GL_SwapWindow(window);
 	// Try to set v-sync state.
-	if (!editor and SDL_GL_SetSwapInterval(params.vsync) < 0) {
+	if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
 		synao_log("Vertical sync after OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
@@ -282,10 +264,6 @@ glm::vec2 video_t::get_dimensions() const {
 
 glm::ivec2 video_t::get_integral_dimensions() const {
 	return constants::NormalDimensions<sint_t>() * params.scaling;
-}
-
-glm::ivec2 video_t::get_editor_dimensions() const {
-	return constants::EditorDimensions<sint_t>();
 }
 
 bool video_t::get_meta_option() const {

@@ -43,13 +43,12 @@ public:
 	video_t& operator=(video_t&&) = default;
 	~video_t();
 public:
-	bool init(const setup_file_t& config, bool editor = false);
+	bool init(const setup_file_t& config);
 	void flush() const;
 	void set_parameters(screen_params_t params);
 	const screen_params_t& get_parameters() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
-	glm::ivec2 get_editor_dimensions() const;
 	bool get_meta_option() const;
 	auto get_device() const {
 		return std::make_tuple(window, context);

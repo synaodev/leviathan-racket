@@ -65,7 +65,7 @@ public:
 	template<typename T> void set(const std::string& title, const std::string& key, const T& value);
 	template<typename T> void set(const std::string& title, const std::string& key, const std::vector<T>& value);
 	template<typename T, glm::length_t L, glm::qualifier Q> void set(const std::string& title, const std::string& key, const glm::vec<L, T, Q>& value);
-	template<typename T> T convert_to(const std::string& input) const;
+	template<typename T> static T convert_to(const std::string& input);
 private:
 	std::string origin {};
 	std::vector<setup_chunk_t> data {};
@@ -249,7 +249,7 @@ inline void setup_file_t::set(const std::string& title, const std::string& key, 
 }
 
 template<typename T>
-inline T setup_file_t::convert_to(const std::string& input) const {
+inline T setup_file_t::convert_to(const std::string& input) {
 	static_assert(std::is_integral<T>::value or std::is_floating_point<T>::value);
 	if constexpr (std::is_integral<T>::value) {
 		return static_cast<T>(std::stoi(input));
@@ -259,12 +259,12 @@ inline T setup_file_t::convert_to(const std::string& input) const {
 }
 
 template<>
-inline byte_t setup_file_t::convert_to<byte_t>(const std::string& input) const {
+inline byte_t setup_file_t::convert_to<byte_t>(const std::string& input) {
 	return input[0];
 }
 
 template<>
-inline std::string setup_file_t::convert_to<std::string>(const std::string& input) const {
+inline std::string setup_file_t::convert_to<std::string>(const std::string& input) {
 	return input;
 }
 

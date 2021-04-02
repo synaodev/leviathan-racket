@@ -12,22 +12,10 @@ namespace constants {
 	template<typename T>
 	constexpr T NormalHeight() { return static_cast<T>(180); }
 	template<typename T>
-	constexpr T EditorWidth() { return static_cast<T>(800); }
-	template<typename T>
-	constexpr T EditorHeight() { return constants::EditorWidth<T>(); }
-	template<typename T>
 	glm::vec<2, T, glm::packed_highp> NormalDimensions() {
 		return glm::vec<2, T, glm::packed_highp>(
 			constants::NormalWidth<T>(),
 			constants::NormalHeight<T>()
-		);
-	}
-	constexpr byte_t EditorName[] = "Leviathan Editor";
-	template<typename T>
-	glm::vec<2, T, glm::packed_highp> EditorDimensions() {
-		return glm::vec<2, T, glm::packed_highp>(
-			constants::EditorWidth<T>(),
-			constants::EditorHeight<T>()
 		);
 	}
 	template<typename T>
