@@ -14,14 +14,6 @@
 #include "../system/renderer.hpp"
 #include "../system/kernel.hpp"
 
-stack_gui_t::stack_gui_t() :
-	amend(true),
-	release(false),
-	widgets()
-{
-
-}
-
 void stack_gui_t::reset() {
 	amend = true;
 	release = false;

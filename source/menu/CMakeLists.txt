@@ -12,5 +12,4 @@ target_sources (lvrk PRIVATE
 	"wgt-language.cpp"
 	"wgt-option.cpp"
 	"wgt-video.cpp"
-	"widget.cpp"
 )

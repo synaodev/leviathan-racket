@@ -8,7 +8,9 @@
 
 struct wgt_language_t : public widget_i {
 public:
-	wgt_language_t(arch_t flags);
+	wgt_language_t() = default;
+	wgt_language_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_language_t(wgt_language_t&&) = default;
 	wgt_language_t& operator=(wgt_language_t&&) = default;
 	~wgt_language_t() = default;
@@ -21,10 +23,12 @@ public:
 private:
 	void setup_text();
 private:
-	std::vector<std::string> languages;
-	arch_t cursor, first, last;
-	draw_text_t text;
-	draw_scheme_t arrow;
+	std::vector<std::string> languages {};
+	arch_t cursor { 0 };
+	arch_t first { 0 };
+	arch_t last { 0 };
+	draw_text_t text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_LANGUAGE_HPP

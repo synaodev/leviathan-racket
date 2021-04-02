@@ -8,18 +8,10 @@
 #include "../utility/setup-file.hpp"
 
 #include <glm/common.hpp>
+#include <fmt/core.h>
 
 static constexpr arch_t kVideoTotalOptions = 2;
 static const glm::vec2 kVideoDefaultPosition = glm::vec2(4.0f, 2.0f);
-
-wgt_video_t::wgt_video_t(arch_t flags) :
-	widget_i(flags),
-	cursor(0),
-	text(),
-	arrow()
-{
-
-}
 
 void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
@@ -49,7 +41,7 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 			arrow.mut_position(0.0f, text.get_font_size().y);
 		}
 	} else if (input.pressed[btn_t::Right] or input.pressed[btn_t::Left]) {
-		screen_params_t params = video.get_parameters();
+		auto params = video.get_parameters();
 		switch (cursor) {
 			case 0: {
 				params.full = !params.full;
@@ -116,14 +108,14 @@ void wgt_video_t::invalidate() const {
 }
 
 void wgt_video_t::setup_text(const screen_params_t& params) {
-	std::string data;
-	data += vfs::i18n_find("Video", 0, 1);
-	data += params.full ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2);
-	data += '\n';
-	data += vfs::i18n_find("Video", 2);
-	data += std::to_string(params.scaling);
-	data += '\n';
-	data += vfs::i18n_find("Video", 3);
-	data += params.vsync ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2);
-	text.set_string(data);
+	fmt::memory_buffer data;
+	fmt::format_to(data, "{}{}\n{}{}\n{}{}",
+	 	vfs::i18n_find("Video", 0, 1),
+	 	params.full ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2),
+	 	vfs::i18n_find("Video", 2),
+	 	params.scaling,
+	 	vfs::i18n_find("Video", 3),
+	 	params.vsync ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2)
+	);
+	text.set_string(fmt::to_string(data));
 }

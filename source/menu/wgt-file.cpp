@@ -12,16 +12,6 @@
 static constexpr arch_t kFileTotalOptions = 2;
 static const glm::vec2 kFileDefaultPosition = glm::vec2(4.0f, 2.0f);
 
-wgt_file_t::wgt_file_t(arch_t flags) :
-	widget_i(flags),
-	file_op(wgt_file_op_t::Unknown),
-	cursor(0),
-	text(),
-	arrow()
-{
-
-}
-
 void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t& kernel) {
 	ready = true;
 	cursor = kernel.get_file_index();
@@ -62,7 +52,9 @@ void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio,
 		}
 	} else if (input.pressed[btn_t::Yes]) {
 		active = false;
-		file_op = bitmask.any() ? wgt_file_op_t::Saving : wgt_file_op_t::Loading;
+		file_op = bitmask.any() ?
+			wgt_file_op_t::Saving :
+			wgt_file_op_t::Loading;
 		audio.play(res::sfx::TitleBeg, 0);
 		kernel.set_file_index(cursor);
 	} else if (input.pressed[btn_t::No] or input.pressed[btn_t::Options]) {

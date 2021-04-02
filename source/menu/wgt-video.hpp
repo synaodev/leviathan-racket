@@ -10,7 +10,9 @@ struct screen_params_t;
 
 struct wgt_video_t : public widget_i {
 public:
-	wgt_video_t(arch_t flags);
+	wgt_video_t() = default;
+	wgt_video_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_video_t(wgt_video_t&&) = default;
 	wgt_video_t& operator=(wgt_video_t&&) = default;
 	~wgt_video_t() = default;
@@ -23,9 +25,9 @@ public:
 private:
 	void setup_text(const screen_params_t& params);
 private:
-	arch_t cursor;
-	draw_text_t text;
-	draw_scheme_t arrow;
+	arch_t cursor { 0 };
+	draw_text_t text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_VIDEO_HPP

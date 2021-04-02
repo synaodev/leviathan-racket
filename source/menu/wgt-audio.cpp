@@ -7,19 +7,11 @@
 #include "../system/music.hpp"
 #include "../utility/setup-file.hpp"
 
+#include <fmt/core.h>
 #include <glm/common.hpp>
 
 static constexpr arch_t kAudioTotalOptions = 2;
 static const glm::vec2 kAudioDefaultPosition = glm::vec2(4.0f, 2.0f);
-
-wgt_audio_t::wgt_audio_t(arch_t flags) :
-	widget_i(flags),
-	cursor(0),
-	text(),
-	arrow()
-{
-
-}
 
 void wgt_audio_t::init(const input_t&, const video_t&, audio_t& audio, const music_t& music, kernel_t&) {
 	ready = true;
@@ -108,12 +100,20 @@ void wgt_audio_t::invalidate() const {
 }
 
 void wgt_audio_t::setup_text(const audio_t& audio, const music_t& music) {
-	std::string data;
-	data += vfs::i18n_find("Audio", 0, 1);
-	data += std::to_string(audio.get_volume());
-	data += '\n';
-	data += vfs::i18n_find("Audio", 2);
-	data += std::to_string(music.get_volume());
-	data += '\n';
-	text.set_string(data);
+	fmt::memory_buffer data;
+	fmt::format_to(data, "{}{}\n{}{}\n",
+		vfs::i18n_find("Audio", 0, 1),
+		audio.get_volume(),
+		vfs::i18n_find("Audio", 2),
+		music.get_volume()
+	);
+	text.set_string(fmt::to_string(data));
+	// std::string data;
+	// data += vfs::i18n_find("Audio", 0, 1);
+	// data += std::to_string(audio.get_volume());
+	// data += '\n';
+	// data += vfs::i18n_find("Audio", 2);
+	// data += std::to_string(music.get_volume());
+	// data += '\n';
+	// text.set_string(data);
 }

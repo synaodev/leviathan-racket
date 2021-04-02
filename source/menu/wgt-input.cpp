@@ -6,26 +6,14 @@
 #include "../system/audio.hpp"
 #include "../utility/setup-file.hpp"
 
+#include <fmt/core.h>
+
 static constexpr arch_t kInputTotalOptionsA = 11;
 static constexpr arch_t kInputTotalOptionsB = 7;
 static constexpr real64_t kInputTotalDelays = 0.32;
 static const glm::vec2 kInputDefaultPosition = glm::vec2(4.0f, 2.0f);
 static const glm::vec2 kInputAddingPositions = glm::vec2(3.0f, 16.0f);
 static const glm::vec2 kInputRightsPositions = glm::vec2(175.0f, 16.0f);
-
-wgt_input_t::wgt_input_t(arch_t flags) :
-	widget_i(flags),
-	siding(false),
-	waiting(false),
-	flashed(false),
-	cursor(0),
-	header(),
-	left_text(),
-	right_text(),
-	arrow()
-{
-
-}
 
 void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
@@ -167,16 +155,32 @@ void wgt_input_t::invalidate() const {
 }
 
 void wgt_input_t::setup_text(const input_t& input) {
-	std::string data;
+	fmt::memory_buffer data;
 	for (arch_t it = 0; it < 12; ++it) {
-		data += vfs::i18n_find("Input", it + 1);
-		data += input.get_scancode_name(it);
+		fmt::format_to(data, "{}{}",
+			vfs::i18n_find("Input", it + 1),
+			input.get_scancode_name(it)
+		);
 	}
-	left_text.set_string(data);
+	left_text.set_string(fmt::to_string(data));
 	data.clear();
 	for (arch_t it = 0; it < 8; ++it) {
-		data += vfs::i18n_find("Input", it + 1);
-		data += input.get_joystick_button(it);
+		fmt::format_to(data, "{}{}",
+			vfs::i18n_find("Input", it + 1),
+			input.get_joystick_button(it)
+		);
 	}
-	right_text.set_string(data);
+	right_text.set_string(fmt::to_string(data));
+	// std::string data;
+	// for (arch_t it = 0; it < 12; ++it) {
+	// 	data += vfs::i18n_find("Input", it + 1);
+	// 	data += input.get_scancode_name(it);
+	// }
+	// left_text.set_string(data);
+	// data.clear();
+	// for (arch_t it = 0; it < 8; ++it) {
+	// 	data += vfs::i18n_find("Input", it + 1);
+	// 	data += input.get_joystick_button(it);
+	// }
+	// right_text.set_string(data);
 }

@@ -8,7 +8,9 @@
 
 struct wgt_option_t : public widget_i {
 public:
-	wgt_option_t(arch_t flags);
+	wgt_option_t() = default;
+	wgt_option_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_option_t(wgt_option_t&&) = default;
 	wgt_option_t& operator=(wgt_option_t&&) = default;
 	~wgt_option_t() = default;
@@ -19,9 +21,9 @@ public:
 	void render(renderer_t& renderer) const override;
 	void invalidate() const override;
 private:
-	arch_t cursor;
-	draw_text_t text;
-	draw_scheme_t arrow;
+	arch_t cursor { 0 };
+	draw_text_t text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_OPTION_HPP

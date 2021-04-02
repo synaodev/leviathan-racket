@@ -8,7 +8,9 @@
 
 struct wgt_input_t : public widget_i {
 public:
-	wgt_input_t(arch_t flags);
+	wgt_input_t() = default;
+	wgt_input_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_input_t(wgt_input_t&&) = default;
 	wgt_input_t& operator=(wgt_input_t&&) = default;
 	~wgt_input_t() = default;
@@ -21,12 +23,14 @@ public:
 private:
 	void setup_text(const input_t& input);
 private:
-	bool_t siding;
-	bool_t waiting;
-	bool_t flashed;
-	arch_t cursor;
-	draw_text_t header, left_text, right_text;
-	draw_scheme_t arrow;
+	bool_t siding { false };
+	bool_t waiting { false };
+	bool_t flashed { false };
+	arch_t cursor { 0 };
+	draw_text_t header {};
+	draw_text_t left_text {};
+	draw_text_t right_text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_INPUT_HPP

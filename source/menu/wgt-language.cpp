@@ -9,24 +9,15 @@
 #include "../system/kernel.hpp"
 #include "../utility/setup-file.hpp"
 
+#include <fmt/core.h>
+
 static constexpr arch_t kTotalVisible = 9;
 static const glm::vec2 kLangDefaultPosition = glm::vec2(4.0f, 2.0f);
 static const glm::vec2 kLangBottomPosition = glm::vec2(120.0f, 2.0f);
 
-wgt_language_t::wgt_language_t(arch_t flags) :
-	widget_i(flags),
-	languages(),
-	cursor(0),
-	first(0),
-	last(kTotalVisible),
-	text(),
-	arrow()
-{
-
-}
-
 void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
+	last = kTotalVisible;
 	const std::string i18n_path = vfs::resource_path(vfs_resource_path_t::I18N);
 	languages = vfs::file_list(i18n_path);
 	text.set_font(vfs::font(0));
@@ -112,8 +103,14 @@ void wgt_language_t::invalidate() const {
 }
 
 void wgt_language_t::setup_text() {
-	text.set_string(vfs::i18n_find("Language", 0));
+	fmt::memory_buffer data;
+	data.append(vfs::i18n_find("Language", 0));
 	for (arch_t it = first; it < languages.size() and it != last; ++it) {
-		text.append_string("\t " + languages[it] + '\n');
+		fmt::format_to(data, "\t {}\n", languages[it]);
 	}
+	text.set_string(fmt::to_string(data));
+	// text.set_string(vfs::i18n_find("Language", 0));
+	// for (arch_t it = first; it < languages.size() and it != last; ++it) {
+	// 	text.append_string("\t " + languages[it] + '\n');
+	// }
 }

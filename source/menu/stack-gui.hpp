@@ -8,7 +8,7 @@
 
 struct stack_gui_t : public not_copyable_t {
 public:
-	stack_gui_t();
+	stack_gui_t() = default;
 	stack_gui_t(stack_gui_t&&) = default;
 	stack_gui_t& operator=(stack_gui_t&&) = default;
 	~stack_gui_t() = default;
@@ -23,9 +23,9 @@ public:
 	void clear();
 	bool empty() const;
 private:
-	mutable bool_t amend;
-	bool_t release;
-	std::vector<std::unique_ptr<widget_i> > widgets;
+	mutable bool_t amend { true };
+	bool_t release { false };
+	std::vector<std::unique_ptr<widget_i> > widgets {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP

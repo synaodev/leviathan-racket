@@ -8,7 +8,9 @@
 
 struct wgt_audio_t : public widget_i {
 public:
-	wgt_audio_t(arch_t flags);
+	wgt_audio_t() = default;
+	wgt_audio_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_audio_t(wgt_audio_t&&) = default;
 	wgt_audio_t& operator=(wgt_audio_t&&) = default;
 	~wgt_audio_t() = default;
@@ -21,9 +23,9 @@ public:
 private:
 	void setup_text(const audio_t& audio, const music_t& music);
 private:
-	arch_t cursor;
-	draw_text_t text;
-	draw_scheme_t arrow;
+	arch_t cursor { 0 };
+	draw_text_t text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_AUDIO_HPP

@@ -32,8 +32,9 @@ struct headsup_gui_t;
 
 struct widget_i : public not_copyable_t {
 public:
-	widget_i();
-	widget_i(arch_t flags);
+	widget_i() = default;
+	widget_i(arch_t flags) :
+		bitmask(flags) {}
 	widget_i(widget_i&&) = default;
 	widget_i& operator=(widget_i&&) = default;
 	virtual ~widget_i() = default;
@@ -43,12 +44,18 @@ public:
 	virtual void update(real64_t delta) = 0;
 	virtual void render(renderer_t& renderer) const = 0;
 	virtual void invalidate() const = 0;
-	bool is_ready() const;
-	bool is_active() const;
-	bool get_flag(arch_t index) const;
+	inline bool is_ready() const { return ready; }
+	inline bool is_active() const { return active; }
+	bool get_flag(arch_t index) const {
+		if (index >= bitmask.size()) {
+			return false;
+		}
+		return bitmask[index];
+	}
 protected:
-	bool_t ready, active;
-	std::bitset<8> bitmask;
+	bool_t ready { false };
+	bool_t active { true };
+	std::bitset<8> bitmask { 0 };
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_HPP

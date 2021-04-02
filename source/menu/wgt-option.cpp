@@ -11,15 +11,6 @@
 static constexpr arch_t kOptionTotalOptions = 6;
 static const glm::vec2 kOptionDefaultPosition = glm::vec2(4.0f, 2.0f);
 
-wgt_option_t::wgt_option_t(arch_t flags) :
-	widget_i(flags),
-	cursor(0),
-	text(),
-	arrow()
-{
-
-}
-
 void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const music_t&, kernel_t& kernel) {
 	ready = true;
 	audio.play(res::sfx::Inven);

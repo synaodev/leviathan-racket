@@ -17,6 +17,7 @@
 	#define using_namespace(NSP) namespace NSP = ghc::filesystem
 #endif
 
+#include <fmt/core.h>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL_filesystem.h>
 
@@ -379,34 +380,46 @@ bool vfs::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, 
 
 std::string vfs::i18n_find(const std::string& segment, arch_t index) {
 	if (!vfs::device) {
-		return std::string();
+		return {};
 	}
 	auto it = vfs::device->i18n.find(segment);
 	if (it == vfs::device->i18n.end()) {
-		return std::string();
+		return {};
 	}
-	std::string result;
+	fmt::memory_buffer result;
 	if (index < it->second.size()) {
-		result = it->second[index];
+		result.append(it->second[index]);
 	}
-	return result;
+	return fmt::to_string(result);
+	// std::string result;
+	// if (index < it->second.size()) {
+	// 	result = it->second[index];
+	// }
+	// return result;
 }
 
 std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last) {
 	if (!vfs::device) {
-		return std::string();
+		return {};
 	}
 	auto it = vfs::device->i18n.find(segment);
 	if (it == vfs::device->i18n.end()) {
-		return std::string();
+		return {};
 	}
-	std::string result;
+	fmt::memory_buffer result;
 	if (first < it->second.size() and last < it->second.size()) {
 		for (arch_t index = first; index <= last; ++index) {
-			result += it->second[index];
+			result.append(it->second[index]);
 		}
 	}
-	return result;
+	return fmt::to_string(result);
+	// std::string result;
+	// if (first < it->second.size() and last < it->second.size()) {
+	// 	for (arch_t index = first; index <= last; ++index) {
+	// 		result += it->second[index];
+	// 	}
+	// }
+	// return result;
 }
 
 arch_t vfs::i18n_size(const std::string& segment) {

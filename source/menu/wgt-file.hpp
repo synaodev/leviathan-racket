@@ -18,7 +18,9 @@ using wgt_file_op_t = __enum_wgt_file_op::type;
 
 struct wgt_file_t : public widget_i {
 public:
-	wgt_file_t(arch_t flags);
+	wgt_file_t() = default;
+	wgt_file_t(arch_t flags) :
+		widget_i(flags) {}
 	wgt_file_t(wgt_file_t&&) = default;
 	wgt_file_t& operator=(wgt_file_t&&) = default;
 	~wgt_file_t() = default;
@@ -29,10 +31,10 @@ public:
 	void render(renderer_t& renderer) const override;
 	void invalidate() const override;
 private:
-	wgt_file_op_t file_op;
-	arch_t cursor;
-	draw_text_t text;
-	draw_scheme_t arrow;
+	wgt_file_op_t file_op { wgt_file_op_t::Unknown };
+	arch_t cursor { 0 };
+	draw_text_t text {};
+	draw_scheme_t arrow {};
 };
 
 #endif // LEVIATHAN_INCLUDED_MENU_WIDGET_FILE_HPP
