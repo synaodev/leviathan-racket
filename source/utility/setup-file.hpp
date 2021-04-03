@@ -23,16 +23,15 @@ public:
 	setup_chunk_t& operator=(setup_chunk_t&&) noexcept = default;
 	~setup_chunk_t() = default;
 public:
-	arch_t get_length() const;
-	const std::string& get_title() const;
 	std::string get(const std::string& key) const;
 	std::string get(arch_t index) const;
 	void set(const std::string& key, const std::string& value);
 	void set(const std::pair<std::string, std::string>& kvp);
-	void write_to(std::string& buffer) const;
+	void write_to(fmt::memory_buffer& buffer) const;
 	bool swap(const std::string& lhk, const std::string& rhk);
-private:
+public:
 	std::string title {};
+private:
 	std::vector<std::pair<std::string, std::string> > data {};
 };
 
@@ -74,68 +73,91 @@ private:
 
 template<typename T>
 inline void setup_file_t::get(const std::string& title, const std::string& key, T& value) const {
-	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			const std::string str = chunk.get(key);
-			if (!str.empty()) {
-				value = convert_to<T>(str);
-			}
+	for (arch_t it = 0; it < data.size(); ++it) {
+		if (data[it].title == title) {
+			this->get(it, key, value);
 			break;
 		}
 	}
+	// for (auto&& chunk : data) {
+	// 	if (chunk.get_title() == title) {
+	// 		const std::string str = chunk.get(key);
+	// 		if (!str.empty()) {
+	// 			value = convert_to<T>(str);
+	// 		}
+	// 		break;
+	// 	}
+	// }
 }
 
 template<typename T>
 inline void setup_file_t::get(const std::string& title, const std::string& key, std::vector<T>& value) const {
-	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			const std::string str = chunk.get(key);
-			if (!str.empty()) {
-				std::string output;
-				std::istringstream parser { str };
-				while (std::getline(parser, output, ',')) {
-					value.push_back(convert_to<T>(output));
-				}
-			}
+	for (arch_t it = 0; it < data.size(); ++it) {
+		if (data[it].title == title) {
+			this->get(it, key, value);
 			break;
 		}
 	}
+	// for (auto&& chunk : data) {
+	// 	if (chunk.get_title() == title) {
+	// 		const std::string str = chunk.get(key);
+	// 		if (!str.empty()) {
+	// 			std::string output;
+	// 			std::istringstream parser { str };
+	// 			while (std::getline(parser, output, ',')) {
+	// 				value.push_back(convert_to<T>(output));
+	// 			}
+	// 		}
+	// 		break;
+	// 	}
+	// }
 }
 
 template<typename T, arch_t L>
 inline void setup_file_t::get(const std::string& title, const std::string& key, std::array<T, L>& value) const {
-	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			const std::string str = chunk.get(key);
-			if (!str.empty()) {
-				std::string output;
-				std::istringstream parser { str };
-				arch_t n = 0;
-				while (std::getline(parser, output, ',') and n < L) {
-					value[n++] = convert_to<T>(output);
-				}
-			}
+	for (arch_t it = 0; it < data.size(); ++it) {
+		if (data[it].title == title) {
+			this->get(it, key, value);
 			break;
 		}
 	}
+	// for (auto&& chunk : data) {
+	// 	if (chunk.get_title() == title) {
+	// 		const std::string str = chunk.get(key);
+	// 		if (!str.empty()) {
+	// 			std::string output;
+	// 			std::istringstream parser { str };
+	// 			arch_t n = 0;
+	// 			while (std::getline(parser, output, ',') and n < L) {
+	// 				value[n++] = convert_to<T>(output);
+	// 			}
+	// 		}
+	// 		break;
+	// 	}
+	// }
 }
 
 template<typename T, glm::length_t L, glm::qualifier Q>
 inline void setup_file_t::get(const std::string& title, const std::string& key, glm::vec<L, T, Q>& value) const {
-	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			const std::string str = chunk.get(key);
-			if (!str.empty()) {
-				std::string output;
-				std::istringstream parser { str };
-				glm::length_t n = 0;
-				while (std::getline(parser, output, ',') and n < L) {
-					value[n++] = convert_to<T>(output);
-				}
-			}
-			break;
+	for (arch_t it = 0; it < data.size(); ++it) {
+		if (data[it].title == title) {
+			this->get(it, key, value);
 		}
 	}
+	// for (auto&& chunk : data) {
+	// 	if (chunk.get_title() == title) {
+	// 		const std::string str = chunk.get(key);
+	// 		if (!str.empty()) {
+	// 			std::string output;
+	// 			std::istringstream parser { str };
+	// 			glm::length_t n = 0;
+	// 			while (std::getline(parser, output, ',') and n < L) {
+	// 				value[n++] = convert_to<T>(output);
+	// 			}
+	// 		}
+	// 		break;
+	// 	}
+	// }
 }
 
 template<typename T>
@@ -148,6 +170,9 @@ inline void setup_file_t::get(arch_t index, const std::string& key, T& value) co
 
 template<typename T>
 inline void setup_file_t::get(arch_t index, const std::string& key, std::vector<T>& value) const {
+	if (index >= data.size()) {
+		return;
+	}
 	const std::string str = data[index].get(key);
 	if (!str.empty()) {
 		std::string output;
@@ -160,6 +185,9 @@ inline void setup_file_t::get(arch_t index, const std::string& key, std::vector<
 
 template<typename T, arch_t L>
 inline void setup_file_t::get(arch_t index, const std::string& key, std::array<T, L>& value) const {
+	if (index >= data.size()) {
+		return;
+	}
 	const std::string str = data[index].get(key);
 	if (!str.empty()) {
 		std::string output;
@@ -173,6 +201,9 @@ inline void setup_file_t::get(arch_t index, const std::string& key, std::array<T
 
 template<typename T, glm::length_t L, glm::qualifier Q>
 inline void setup_file_t::get(arch_t index, const std::string& key, glm::vec<L, T, Q>& value) const {
+	if (index >= data.size()) {
+		return;
+	}
 	const std::string str = data[index].get(key);
 	if (!str.empty()) {
 		std::string output;
@@ -188,64 +219,86 @@ template<typename T>
 inline void setup_file_t::set(const std::string& title, const std::string& key, const T& value) {
 	// Find and set chunk key-value-pair if it exists
 	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			chunk.set(key, fmt::format("{}", value));
+		if (chunk.title == title) {
+			chunk.set(key, fmt::to_string(value));
 			return;
 		}
 	}
 	// If chunk doesn't exist, create it
 	auto& chunk = data.emplace_back(title);
-	chunk.set(key, fmt::format("{}", value));
+	chunk.set(key, fmt::to_string(value));
 }
 
 template<typename T>
 inline void setup_file_t::set(const std::string& title, const std::string& key, const std::vector<T>& value) {
+	// String builder
+	auto builder = [](const std::vector<T>& value) {
+		fmt::memory_buffer result;
+		for (auto it = value.begin(); it != value.end() - 1; ++it) {
+			fmt::format(result, "{}, ", *it);
+		}
+		fmt::format_to(result, "{}", value.back());
+		return fmt::to_string(result);
+	};
 	// Find and set chunk key-value-pair if it exists
 	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			std::string buffer;
-			for (auto it = value.begin(); it != value.end() - 1; ++it) {
-				buffer += fmt::format("{}", *it) + ", ";
-			}
-			buffer += fmt::format("{}", value.back());
-			chunk.set(key, buffer);
+		if (chunk.title == title) {
+			// std::string buffer;
+			// for (auto it = value.begin(); it != value.end() - 1; ++it) {
+			// 	buffer += fmt::format("{}", *it) + ", ";
+			// }
+			// buffer += fmt::format("{}", value.back());
+			// chunk.set(key, buffer);
+			chunk.set(key, std::invoke(builder, value));
 			return;
 		}
 	}
 
 	// If chunk doesn't exist, create it
 	auto& chunk = data.emplace_back(title);
-	std::string buffer;
-	for (auto it = value.begin(); it != value.end() - 1; ++it) {
-		buffer += fmt::format("{}", *it) + ", ";
-	}
-	buffer += fmt::format("{}", value.back());
-	chunk.set(key, buffer);
+	// std::string buffer;
+	// for (auto it = value.begin(); it != value.end() - 1; ++it) {
+	// 	buffer += fmt::format("{}", *it) + ", ";
+	// }
+	// buffer += fmt::format("{}", value.back());
+	// chunk.set(key, buffer);
+	chunk.set(key, std::invoke(builder, value));
 }
 
 template<typename T, glm::length_t L, glm::qualifier Q>
 inline void setup_file_t::set(const std::string& title, const std::string& key, const glm::vec<L, T, Q>& value) {
+	// String builder
+	auto builder = [](const glm::vec<L, T, Q>& value) {
+		fmt::memory_buffer result;
+		for (glm::length_t it = 0; it < L - 1; ++it) {
+			fmt::format_to(result, "{}, ", value[it]);
+		}
+		fmt::format_to(result, "{}", value[L - 1]);
+		return fmt::to_string(result);
+	};
 	// Find and set chunk key-value-pair if it exists
 	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
-			std::string buffer;
-			for (glm::length_t it = 0; it < L - 1; ++it) {
-				buffer += fmt::format("{}", value[it]) + ", ";
-			}
-			buffer += fmt::format("{}", value[L - 1]);
-			chunk.set(key, buffer);
+		if (chunk.title == title) {
+			// std::string buffer;
+			// for (glm::length_t it = 0; it < L - 1; ++it) {
+			// 	buffer += fmt::format("{}", value[it]) + ", ";
+			// }
+			// buffer += fmt::format("{}", value[L - 1]);
+			// chunk.set(key, buffer);
+			chunk.set(key, std::invoke(builder, value));
 			return;
 		}
 	}
 
 	// If chunk doesn't exist, create it
 	auto& chunk = data.emplace_back(title);
-	std::string buffer;
-	for (glm::length_t it = 0; it < L - 1; ++it) {
-		buffer += fmt::format("{}", value[it]) + ", ";
-	}
-	buffer += fmt::format("{}", value[L - 1]);
-	chunk.set(key, buffer);
+	// std::string buffer;
+	// for (glm::length_t it = 0; it < L - 1; ++it) {
+	// 	buffer += fmt::format("{}", value[it]) + ", ";
+	// }
+	// buffer += fmt::format("{}", value[L - 1]);
+	// chunk.set(key, buffer);
+	chunk.set(key, std::invoke(builder, value));
 }
 
 template<typename T>

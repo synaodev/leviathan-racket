@@ -18,14 +18,6 @@ std::string setup_chunk_t::get(arch_t index) const {
 	return {};
 }
 
-arch_t setup_chunk_t::get_length() const {
-	return data.size();
-}
-
-const std::string& setup_chunk_t::get_title() const {
-	return title;
-}
-
 void setup_chunk_t::set(const std::string& key, const std::string& value) {
 	for (auto&& pair : data) {
 		if (pair.first == key) {
@@ -63,9 +55,10 @@ bool setup_chunk_t::swap(const std::string& lhk, const std::string& rhk) {
 	return false;
 }
 
-void setup_chunk_t::write_to(std::string& buffer) const {
+void setup_chunk_t::write_to(fmt::memory_buffer& buffer) const {
 	for (auto&& pair : data) {
-		buffer.append(pair.first + " = " + pair.second + '\n');
+		fmt::format_to(buffer, "{} = {}\n", pair.first, pair.second);
+		// buffer.append(pair.first + " = " + pair.second + '\n');
 	}
 }
 
@@ -107,7 +100,7 @@ arch_t setup_file_t::size() const {
 
 bool setup_file_t::swap(const std::string& title, const std::string& lhk, const std::string& rhk) {
 	for (auto&& chunk : data) {
-		if (chunk.get_title() == title) {
+		if (chunk.title == title) {
 			return chunk.swap(lhk, rhk);
 		}
 	}
@@ -122,7 +115,7 @@ bool setup_file_t::read(std::ifstream& file) {
 		if (!kvp.first.empty()) {
 			if (kvp.first[0] != '!') {
 				for (auto&& chunk : data) {
-					if (chunk.get_title() == title) {
+					if (chunk.title == title) {
 						chunk.set(kvp);
 					}
 				}
@@ -136,11 +129,20 @@ bool setup_file_t::read(std::ifstream& file) {
 }
 
 bool setup_file_t::write(std::ofstream& file) const {
-	for (auto&& chunk : data) {
-		std::string buffer = "\n[" + chunk.get_title() + "]\n\n";
-		chunk.write_to(buffer);
-		file.write(buffer.c_str(), buffer.size());
+	// for (auto&& chunk : data) {
+	// 	std::string buffer = "\n[" + chunk.title + "]\n\n";
+	// 	chunk.write_to(buffer);
+	// 	file.write(buffer.c_str(), buffer.size());
+	// }
+	if (data.empty()) {
+		return false;
 	}
+	fmt::memory_buffer buffer;
+	for (auto&& chunk : data) {
+		fmt::format_to(buffer, "\n[{}]\n\n", chunk.title);
+		chunk.write_to(buffer);
+	}
+	file.write(buffer.data(), buffer.size());
 	return true;
 }
 
@@ -172,7 +174,7 @@ std::pair<std::string, std::string> setup_file_t::parse(const std::string& line)
 		this->sanitize(title);
 		return std::make_pair("!", title);
 	}
-	return std::make_pair(std::string(), std::string());
+	return {};
 }
 
 void setup_file_t::sanitize(std::string& value) const {
