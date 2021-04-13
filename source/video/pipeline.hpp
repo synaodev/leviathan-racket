@@ -9,7 +9,7 @@
 
 struct shader_t : public not_copyable_t {
 public:
-	shader_t();
+	shader_t() = default;
 	shader_t(shader_t&& that) noexcept;
 	shader_t& operator=(shader_t&& that) noexcept;
 	~shader_t();
@@ -21,13 +21,13 @@ public:
 	static vertex_spec_t attributes(uint_t program_handle);
 private:
 	friend struct pipeline_t;
-	uint_t handle;
-	shader_stage_t stage;
+	uint_t handle { 0 };
+	shader_stage_t stage { shader_stage_t::Vertex };
 };
 
 struct pipeline_t : public not_copyable_t {
 public:
-	pipeline_t();
+	pipeline_t() = default;
 	pipeline_t(pipeline_t&& that) noexcept;
 	pipeline_t& operator=(pipeline_t&& that) noexcept;
 	~pipeline_t();
@@ -42,8 +42,8 @@ public:
 	static bool has_uniform_azdo();
 private:
 	friend struct gfx_t;
-	uint_t handle;
-	vertex_spec_t specify;
+	uint_t handle {};
+	vertex_spec_t specify {};
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP

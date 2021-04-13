@@ -26,70 +26,87 @@ public:
 
 struct vtx_minor_t : public crtp_vertex_t<vtx_minor_t> {
 public:
-	glm::vec2 position;
+	vtx_minor_t() = default;
+	vtx_minor_t(const vtx_minor_t&) = default;
+	vtx_minor_t(vtx_minor_t&&) noexcept = default;
+	vtx_minor_t& operator=(const vtx_minor_t&) = default;
+	vtx_minor_t& operator=(vtx_minor_t&&) noexcept = default;
+	~vtx_minor_t() = default;
 public:
-	vtx_minor_t() : position(0.0f) {}
+	glm::vec2 position {};
 };
 
 struct vtx_blank_t : public crtp_vertex_t<vtx_blank_t> {
-	glm::vec2 position;
-	sint_t matrix;
-	glm::vec4 color;
 public:
-	vtx_blank_t() :
-		position(0.0f),
-		matrix(0),
-		color(1.0f) {}
+	vtx_blank_t() = default;
+	vtx_blank_t(const vtx_blank_t&) = default;
+	vtx_blank_t(vtx_blank_t&&) noexcept = default;
+	vtx_blank_t& operator=(const vtx_blank_t&) = default;
+	vtx_blank_t& operator=(vtx_blank_t&&) noexcept = default;
+	~vtx_blank_t() = default;
+public:
+	glm::vec2 position {};
+	sint_t matrix { 0 };
+	glm::vec4 color { 1.0f };
 };
 
 struct vtx_major_t : public crtp_vertex_t<vtx_major_t> {
-	glm::vec2 position;
-	sint_t matrix;
-	glm::vec2 uvcoords;
-	real_t alpha;
-	sint_t texID, palID;
 public:
-	vtx_major_t() :
-		position(0.0f),
-		matrix(0),
-		uvcoords(0.0f),
-		alpha(0.0f),
-		texID(0),
-		palID(0) {}
+	vtx_major_t() = default;
+	vtx_major_t(const vtx_major_t&) = default;
+	vtx_major_t(vtx_major_t&&) noexcept = default;
+	vtx_major_t& operator=(const vtx_major_t&) = default;
+	vtx_major_t& operator=(vtx_major_t&&) noexcept = default;
+	~vtx_major_t() = default;
+public:
+	glm::vec2 position {};
+	sint_t matrix { 0 };
+	glm::vec2 uvcoords {};
+	real_t alpha { 0.0f };
+	sint_t texID { 0 };
+	sint_t palID { 0 };
 };
 
 struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {
-	glm::vec2 position;
-	glm::vec2 uvcoords;
-	glm::vec4 color;
-	sint_t atlas;
-	sint_t table;
 public:
-	vtx_fonts_t() :
-		position(0.0f),
-		uvcoords(0.0f),
-		color(1.0f),
-		atlas(0),
-		table(0) {}
+	vtx_fonts_t() = default;
+	vtx_fonts_t(const vtx_fonts_t&) = default;
+	vtx_fonts_t(vtx_fonts_t&&) noexcept = default;
+	vtx_fonts_t& operator=(const vtx_fonts_t&) = default;
+	vtx_fonts_t& operator=(vtx_fonts_t&&) noexcept = default;
+	~vtx_fonts_t() = default;
+public:
+	glm::vec2 position {};
+	glm::vec2 uvcoords {};
+	glm::vec4 color { 1.0f };
+	sint_t atlas { 0 };
+	sint_t table { 0 };
 };
 
 struct vertex_spec_t {
 public:
-	void(*detail)(void);
-	arch_t length;
+	void(*detail)(void) { nullptr };
+	arch_t length { 0 };
 public:
-	vertex_spec_t();
-	vertex_spec_t(const vertex_spec_t& that);
-	vertex_spec_t(vertex_spec_t&& that) noexcept;
-	vertex_spec_t& operator=(const vertex_spec_t& that);
-	vertex_spec_t& operator=(vertex_spec_t&& that) noexcept;
+	vertex_spec_t() = default;
+	vertex_spec_t(const vertex_spec_t& that) = default;
+	vertex_spec_t(vertex_spec_t&& that) noexcept = default;
+	vertex_spec_t& operator=(const vertex_spec_t& that) = default;
+	vertex_spec_t& operator=(vertex_spec_t&& that) noexcept = default;
 	~vertex_spec_t() = default;
 public:
 	static bool compare(const uint_t* lhv, const uint_t* rhv);
 	static vertex_spec_t from(const uint_t* list);
 	static vertex_spec_t from(arch_t vtx);
-	bool operator==(const vertex_spec_t& that);
-	bool operator!=(const vertex_spec_t& that);
+	bool operator==(const vertex_spec_t& that) {
+		return (
+			this->detail == that.detail and
+			this->length == that.length
+		);
+	}
+	bool operator!=(const vertex_spec_t& that) {
+		return !(*this == that);
+	}
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP

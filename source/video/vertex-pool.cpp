@@ -2,28 +2,6 @@
 
 #include "../utility/logger.hpp"
 
-vertex_pool_t::vertex_pool_t() :
-	specify(),
-	memory()
-{
-
-}
-
-vertex_pool_t::vertex_pool_t(vertex_pool_t&& that) noexcept : vertex_pool_t() {
-	if (this != &that) {
-		std::swap(specify, that.specify);
-		std::swap(memory, that.memory);
-	}
-}
-
-vertex_pool_t& vertex_pool_t::operator=(vertex_pool_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(specify, that.specify);
-		std::swap(memory, that.memory);
-	}
-	return *this;
-}
-
 void vertex_pool_t::setup(vertex_spec_t specify) {
 	this->specify = specify;
 	this->clear();

@@ -8,9 +8,9 @@
 
 struct vertex_pool_t : public not_copyable_t {
 public:
-	vertex_pool_t();
-	vertex_pool_t(vertex_pool_t&& that) noexcept;
-	vertex_pool_t& operator=(vertex_pool_t&& that) noexcept;
+	vertex_pool_t() = default;
+	vertex_pool_t(vertex_pool_t&& that) noexcept = default;
+	vertex_pool_t& operator=(vertex_pool_t&& that) noexcept = default;
 	~vertex_pool_t() = default;
 public:
 	void setup(vertex_spec_t specify);
@@ -25,8 +25,8 @@ public:
 	template<typename V> const V* at(arch_t index) const;
 	const vertex_spec_t& get_specify() const;
 private:
-	vertex_spec_t specify;
-	std::vector<byte_t> memory;
+	vertex_spec_t specify {};
+	std::vector<byte_t> memory {};
 };
 
 template<typename V>

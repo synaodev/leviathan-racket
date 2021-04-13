@@ -13,13 +13,6 @@
 	- pipeline_t's handle is an OGL program object.
 */
 
-shader_t::shader_t() :
-	handle(0),
-	stage(shader_stage_t::Vertex)
-{
-
-}
-
 shader_t::shader_t(shader_t&& that) noexcept : shader_t() {
 	if (this != &that) {
 		std::swap(handle, that.handle);
@@ -164,13 +157,6 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 		desc = vertex_spec_t::from(typeslist.data());
 	}
 	return desc;
-}
-
-pipeline_t::pipeline_t() :
-	handle(0),
-	specify()
-{
-
 }
 
 pipeline_t::pipeline_t(pipeline_t&& that) noexcept : pipeline_t() {

@@ -5,14 +5,6 @@
 #include <limits>
 #include <glm/common.hpp>
 
-quad_allocator_t::quad_allocator_t() :
-	primitive(primitive_t::Triangles),
-	handle(0),
-	length(0)
-{
-
-}
-
 quad_allocator_t::quad_allocator_t(quad_allocator_t&& that) noexcept : quad_allocator_t() {
 	if (this != &that) {
 		std::swap(primitive, that.primitive);
@@ -125,17 +117,6 @@ std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, p
 		ut += 4;
 	}
 	return result;
-}
-
-quad_buffer_t::quad_buffer_t() :
-	allocator(nullptr),
-	usage(buffer_usage_t::Static),
-	specify(),
-	arrays(0),
-	buffer(0),
-	length(0)
-{
-
 }
 
 quad_buffer_t::quad_buffer_t(quad_buffer_t&& that) noexcept : quad_buffer_t() {

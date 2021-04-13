@@ -6,43 +6,6 @@
 #include <utility>
 #include <cstddef>
 
-vertex_spec_t::vertex_spec_t() :
-	detail(nullptr),
-	length(0)
-{
-
-}
-
-vertex_spec_t::vertex_spec_t(const vertex_spec_t& that) : vertex_spec_t() {
-	if (this != &that) {
-		detail = that.detail;
-		length = that.length;
-	}
-}
-
-vertex_spec_t::vertex_spec_t(vertex_spec_t&& that) noexcept : vertex_spec_t() {
-	if (this != &that) {
-		std::swap(detail, that.detail);
-		std::swap(length, that.length);
-	}
-}
-
-vertex_spec_t& vertex_spec_t::operator=(const vertex_spec_t& that) {
-	if (this != &that) {
-		detail = that.detail;
-		length = that.length;
-	}
-	return *this;
-}
-
-vertex_spec_t& vertex_spec_t::operator=(vertex_spec_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(detail, that.detail);
-		std::swap(length, that.length);
-	}
-	return *this;
-}
-
 bool vertex_spec_t::compare(const uint_t* lhv, const uint_t* rhv) {
 	if (!lhv or !rhv) {
 		synao_log("Warning! vertex_spec_t::compare has null inputs!\n");
@@ -189,15 +152,4 @@ vertex_spec_t vertex_spec_t::from(arch_t name) {
 		synao_log("Warning! vertex_spec_t result has a length of zero!\n");
 	}
 	return result;
-}
-
-bool vertex_spec_t::operator==(const vertex_spec_t& that) {
-	return (
-		this->detail == that.detail and
-		this->length == that.length
-	);
-}
-
-bool vertex_spec_t::operator!=(const vertex_spec_t& that) {
-	return !(*this == that);
 }

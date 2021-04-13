@@ -10,7 +10,7 @@ struct quad_buffer_t;
 
 struct quad_allocator_t : public not_copyable_t {
 public:
-	quad_allocator_t();
+	quad_allocator_t() = default;
 	quad_allocator_t(quad_allocator_t&& that) noexcept;
 	quad_allocator_t& operator=(quad_allocator_t&& that) noexcept;
 	~quad_allocator_t();
@@ -25,14 +25,14 @@ public:
 	static arch_t convert(arch_t length);
 	static std::vector<uint16_t> generate(arch_t length, arch_t offset, primitive_t primitive);
 private:
-	primitive_t primitive;
-	uint_t handle;
-	arch_t length;
+	primitive_t primitive { primitive_t::Triangles };
+	uint_t handle { 0 };
+	arch_t length { 0 };
 };
 
 struct quad_buffer_t : public not_copyable_t {
 public:
-	quad_buffer_t();
+	quad_buffer_t() = default;
 	quad_buffer_t(quad_buffer_t&& that) noexcept;
 	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept;
 	~quad_buffer_t();
@@ -49,11 +49,12 @@ public:
 	arch_t get_length() const;
 private:
 	friend struct gfx_t;
-	const quad_allocator_t* allocator;
-	buffer_usage_t usage;
-	vertex_spec_t specify;
-	uint_t arrays, buffer;
-	arch_t length;
+	const quad_allocator_t* allocator { nullptr };
+	buffer_usage_t usage { buffer_usage_t::Static };
+	vertex_spec_t specify {};
+	uint_t arrays { 0 };
+	uint_t buffer { 0 };
+	arch_t length { 0 };
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_QUAD_BUFFER_HPP

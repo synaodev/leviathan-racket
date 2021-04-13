@@ -5,7 +5,7 @@
 
 struct const_buffer_t : public not_copyable_t {
 public:
-	const_buffer_t();
+	const_buffer_t() = default;
 	const_buffer_t(const_buffer_t&& that) noexcept;
 	const_buffer_t& operator=(const_buffer_t&& that) noexcept;
 	~const_buffer_t();
@@ -24,10 +24,10 @@ public:
 	static bool has_immutable_option();
 private:
 	friend struct gfx_t;
-	buffer_usage_t usage;
-	bool_t immuts;
-	uint_t handle;
-	arch_t length;
+	buffer_usage_t usage { buffer_usage_t::Static };
+	bool_t immuts { false };
+	uint_t handle { 0 };
+	arch_t length { 0 };
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_CONST_BUFFER_HPP

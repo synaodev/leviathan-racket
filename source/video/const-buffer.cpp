@@ -3,15 +3,6 @@
 
 #include <utility>
 
-const_buffer_t::const_buffer_t() :
-	usage(buffer_usage_t::Static),
-	immuts(false),
-	handle(0),
-	length(0)
-{
-
-}
-
 const_buffer_t::const_buffer_t(const_buffer_t&& that) noexcept : const_buffer_t() {
 	if (this != &that) {
 		std::swap(usage, that.usage);
