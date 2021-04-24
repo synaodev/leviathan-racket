@@ -121,15 +121,22 @@ bool vfs_t::init(const setup_file_t& config) {
 		return false;
 	}
 	vfs::device = this;
-	config.get("Setup", "Language", vfs::device->language);
-	if (!vfs::try_language(vfs::device->language)) {
-		synao_log("Error! Couldn't load first language: {}\n", vfs::device->language);
+
+	// Setup Language
+	std::string language = kLanguage;
+	config.get("Setup", "Language", language);
+	if (!vfs::try_language(language)) {
+		synao_log("Error! Couldn't load first language: {}\n", language);
 		return false;
 	}
+
+	// Setup Thread Pool
 	if (!vfs::device->thread_pool.init(kTotalThreads)) {
 		synao_log("Error! Couldn't create thread pool!\n");
 		return false;
 	}
+
+	// Setup Filesystem
 	vfs::device->personal = vfs::personal_directory();
 	if (vfs::device->personal.empty()) {
 		synao_log("Error! Couldn't find directory to store persistent data!\n");

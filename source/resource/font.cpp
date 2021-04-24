@@ -8,32 +8,7 @@
 #include <glm/gtc/constants.hpp>
 #include <nlohmann/json.hpp>
 
-font_t::font_t() :
-	glyphs(),
-	dimensions(0.0f),
-	atlas(nullptr)
-{
-
-}
-
-font_t::font_t(font_t&& that) noexcept : font_t() {
-	if (this != &that) {
-		std::swap(glyphs, that.glyphs);
-		std::swap(kernings, that.kernings);
-		std::swap(dimensions, that.dimensions);
-		std::swap(atlas, that.atlas);
-	}
-}
-
-font_t& font_t::operator=(font_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(glyphs, that.glyphs);
-		std::swap(kernings, that.kernings);
-		std::swap(dimensions, that.dimensions);
-		std::swap(atlas, that.atlas);
-	}
-	return *this;
-}
+const font_glyph_t font_t::kNullGlyph {};
 
 void font_t::load(const std::string& directory, const std::string& name) {
 	auto make_table = [](const std::string& value) {
@@ -45,21 +20,26 @@ void font_t::load(const std::string& directory, const std::string& name) {
 		default: return 0;
 		}
 	};
-	if (glyphs.size() > 0) {
+
+	if (!glyphs.empty()) {
 		synao_log("Warning! Tried to overwrite font!\n");
 		return;
 	}
+
 	const std::string full_path = directory + name;
-	std::ifstream ifs(full_path, std::ios::binary);
+	std::ifstream ifs { full_path, std::ios::binary };
+
 	if (ifs.is_open()) {
 		nlohmann::json file = nlohmann::json::parse(ifs);
 		auto block = file["font"];
+
 		dimensions.x = std::stof(block["common"]["-base"].get<std::string>());
 		dimensions.y = std::stof(block["common"]["-lineHeight"].get<std::string>());
+
 		atlas = vfs::atlas(block["pages"]["page"]["-file"].get<std::string>());
 		for (auto ot : block["chars"]["char"]) {
 			char32_t id = std::stoi(ot["-id"].get<std::string>());
-			const font_glyph_t glyph(
+			const font_glyph_t glyph {
 				std::stof(ot["-x"].get<std::string>()),
 				std::stof(ot["-y"].get<std::string>()),
 				std::stof(ot["-width"].get<std::string>()),
@@ -67,10 +47,11 @@ void font_t::load(const std::string& directory, const std::string& name) {
 				std::stof(ot["-xoffset"].get<std::string>()),
 				std::stof(ot["-yoffset"].get<std::string>()),
 				std::stof(ot["-xadvance"].get<std::string>()),
-				make_table(ot["-chnl"].get<std::string>())
-			);
+				std::invoke(make_table, ot["-chnl"].get<std::string>())
+			};
 			glyphs[id] = glyph;
 		}
+
 		if (block.find("kernings") != block.end()) {
 			for (auto ot : block["kernings"]["kerning"]) {
 				char32_t first = std::stoi(ot["-first"].get<std::string>());
@@ -85,10 +66,9 @@ void font_t::load(const std::string& directory, const std::string& name) {
 }
 
 const font_glyph_t& font_t::glyph(char32_t code_point) const {
-	static const font_glyph_t kInvalidGlyph = font_glyph_t();
 	auto it = glyphs.find(code_point);
 	if (it == glyphs.end()) {
-		return kInvalidGlyph;
+		return kNullGlyph;
 	}
 	return it->second;
 }

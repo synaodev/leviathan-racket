@@ -117,4 +117,13 @@ public:
 	not_copyable_t& operator=(const not_copyable_t&) = delete;
 };
 
+struct not_moveable_t {
+public:
+	not_moveable_t() = default;
+	not_moveable_t(const not_moveable_t&) = default;
+	not_moveable_t& operator=(const not_moveable_t&) = default;
+	not_moveable_t(not_moveable_t&&) = delete;
+	not_moveable_t& operator=(not_moveable_t&&) = delete;
+};
+
 #endif // LEVIATHAN_INCLUDED_TYPES_HPP

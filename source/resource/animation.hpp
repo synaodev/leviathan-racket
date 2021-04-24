@@ -16,50 +16,57 @@ struct renderer_t;
 
 struct sequence_frame_t {
 public:
-	glm::vec2 position, origin;
+	glm::vec2 position {};
+	glm::vec2 origin {};
 public:
-	sequence_frame_t(glm::vec2 position, glm::vec2 origin) :
+	sequence_frame_t(const glm::vec2& position, const glm::vec2& origin) :
 		position(position),
 		origin(origin) {}
 	sequence_frame_t() = default;
 	sequence_frame_t(const sequence_frame_t&) = default;
 	sequence_frame_t(sequence_frame_t&& that) = default;
-	sequence_frame_t& operator=(const sequence_frame_t&) = default;
-	sequence_frame_t& operator=(sequence_frame_t&&) = default;
+	sequence_frame_t& operator=(const sequence_frame_t&) noexcept = default;
+	sequence_frame_t& operator=(sequence_frame_t&&) noexcept = default;
 	~sequence_frame_t() = default;
 };
 
 struct animation_sequence_t : public not_copyable_t {
 public:
-	animation_sequence_t();
-	animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t reflect);
-	animation_sequence_t(animation_sequence_t&& that) noexcept;
-	animation_sequence_t& operator=(animation_sequence_t&& that) noexcept;
+	animation_sequence_t() = default;
+	animation_sequence_t(const glm::vec2& dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t reflect) :
+		frames(),
+		action_points(),
+		dimensions(dimensions),
+		delay(delay),
+		total(total),
+		repeat(repeat),
+		reflect(reflect) {}
+	animation_sequence_t(animation_sequence_t&& that) noexcept = default;
+	animation_sequence_t& operator=(animation_sequence_t&& that) noexcept = default;
 	~animation_sequence_t() = default;
 public:
-	void append(glm::vec2 axnpnt);
-	void append(glm::vec2 invert, glm::vec2 start, glm::vec4 points);
+	void append(const glm::vec2& action_point);
+	void append(const glm::vec2& invert, const glm::vec2& start, const glm::vec4& points);
 	void update(real64_t delta, bool_t& amend, real64_t& timer, arch_t& frame) const;
 	const sequence_frame_t& get_frame(arch_t frame, arch_t variation) const;
-	rect_t get_quad(glm::vec2 invert, arch_t frame, arch_t variation) const;
+	rect_t get_quad(const glm::vec2& invert, arch_t frame, arch_t variation) const;
 	glm::vec2 get_dimensions() const;
 	glm::vec2 get_origin(arch_t frame, arch_t variation, mirroring_t mirroring) const;
 	glm::vec2 get_action_point(arch_t variation, mirroring_t mirroring) const;
 	bool is_finished(arch_t frame, real64_t timer) const;
 private:
-	std::vector<sequence_frame_t> frames;
-	std::vector<glm::vec2> action_points;
-	glm::vec2 dimensions;
-	real64_t delay;
-	arch_t total;
-	bool_t repeat, reflect;
+	std::vector<sequence_frame_t> frames {};
+	std::vector<glm::vec2> action_points {};
+	glm::vec2 dimensions {};
+	real64_t delay { 0.0 };
+	arch_t total { 0 };
+	bool_t repeat { true };
+	bool_t reflect { false };
 };
 
-struct animation_t : public not_copyable_t {
+struct animation_t : public not_copyable_t, public not_moveable_t {
 public:
-	animation_t();
-	animation_t(animation_t&& that) noexcept;
-	animation_t& operator=(animation_t&& that) noexcept;
+	animation_t() = default;
 	~animation_t();
 public:
 	void update(real64_t delta, bool_t& amend, arch_t state, real64_t& timer, arch_t& frame) const;
@@ -74,12 +81,12 @@ public:
 	glm::vec2 get_origin(arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring) const;
 	glm::vec2 get_action_point(arch_t state, arch_t variation, mirroring_t mirroring) const;
 private:
-	std::atomic<bool> ready;
-	std::future<void> future;
-	std::vector<animation_sequence_t> sequences;
-	glm::vec2 inverts;
-	const texture_t* texture;
-	const palette_t* palette;
+	std::atomic<bool> ready { false };
+	std::future<void> future {};
+	std::vector<animation_sequence_t> sequences {};
+	glm::vec2 inverts { 1.0f };
+	const texture_t* texture { nullptr };
+	const palette_t* palette { nullptr };
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP

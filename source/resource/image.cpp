@@ -7,30 +7,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
-image_t::image_t() :
-	dimensions(0),
-	pixels()
-{
-
-}
-
-image_t::image_t(image_t&& that) noexcept : image_t() {
-	if (this != &that) {
-		std::swap(dimensions, that.dimensions);
-		std::swap(pixels, that.pixels);
-	}
-}
-
-image_t& image_t::operator=(image_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(dimensions, that.dimensions);
-		std::swap(pixels, that.pixels);
-	}
-	return *this;
-}
-
 image_t image_t::generate(const std::string& full_path) {
 	image_t image;
+
 	sint_t width = 0;
 	sint_t height = 0;
 	sint_t channels = 0;
@@ -53,6 +32,7 @@ image_t image_t::generate(const std::string& full_path) {
 	} else {
 		synao_log("Failed to load image from {}!\n", full_path);
 	}
+
 	return image;
 }
 
@@ -81,7 +61,7 @@ const byte_t& image_t::operator[](arch_t index) const {
 	return pixels[index];
 }
 
-glm::ivec2 image_t::get_dimensions() const {
+const glm::ivec2& image_t::get_dimensions() const {
 	return dimensions;
 }
 

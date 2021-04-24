@@ -90,18 +90,19 @@ public:
 		return map.find(key);
 	}
 public:
-	thread_pool_t thread_pool;
-	std::mutex storage_mutex;
-	std::string personal, language;
-	sampler_allocator_t* sampler_allocator;
-	std::unordered_map<std::string, std::vector<std::string> > i18n;
-	std::unordered_map<std::string, texture_t> textures;
-	std::unordered_map<std::string, palette_t> palettes;
-	std::unordered_map<std::string, atlas_t> atlases;
-	std::unordered_map<std::string, shader_t> shaders;
-	std::unordered_map<entt::id_type, noise_t> noises;
-	std::unordered_map<entt::id_type, animation_t> animations;
-	std::unordered_map<std::string, font_t> fonts;
+	thread_pool_t thread_pool {};
+	std::mutex storage_mutex {};
+	std::string personal {};
+	std::string language {};
+	sampler_allocator_t* sampler_allocator { nullptr };
+	std::unordered_map<std::string, std::vector<std::string> > i18n {};
+	std::unordered_map<std::string, texture_t> textures {};
+	std::unordered_map<std::string, palette_t> palettes {};
+	std::unordered_map<std::string, atlas_t> atlases {};
+	std::unordered_map<std::string, shader_t> shaders {};
+	std::unordered_map<entt::id_type, noise_t> noises {};
+	std::unordered_map<entt::id_type, animation_t> animations {};
+	std::unordered_map<std::string, font_t> fonts {};
 };
 
 #endif // LEVIATHAN_INCLUDED_UTILITY_VFS_HPP

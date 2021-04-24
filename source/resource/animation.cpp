@@ -10,86 +10,37 @@
 #include <glm/gtc/vec1.hpp>
 #include <glm/gtc/constants.hpp>
 
-animation_sequence_t::animation_sequence_t() :
-	frames(),
-	action_points(),
-	dimensions(0.0f),
-	delay(0.0),
-	total(0),
-	repeat(true),
-	reflect(false)
-{
-
-}
-
-animation_sequence_t::animation_sequence_t(glm::vec2 dimensions, real64_t delay, arch_t total, bool_t repeat, bool_t reflect) :
-	frames(),
-	action_points(),
-	dimensions(dimensions),
-	delay(delay),
-	total(total),
-	repeat(repeat),
-	reflect(reflect)
-{
-
-}
-
-animation_sequence_t::animation_sequence_t(animation_sequence_t&& that) noexcept : animation_sequence_t() {
-	if (this != &that) {
-		std::swap(frames, that.frames);
-		std::swap(action_points, that.action_points);
-		std::swap(dimensions, that.dimensions);
-		std::swap(delay, that.delay);
-		std::swap(total, that.total);
-		std::swap(repeat, that.repeat);
-		std::swap(reflect, that.reflect);
-	}
-}
-
-animation_sequence_t& animation_sequence_t::operator=(animation_sequence_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(frames, that.frames);
-		std::swap(action_points, that.action_points);
-		std::swap(dimensions, that.dimensions);
-		std::swap(delay, that.delay);
-		std::swap(total, that.total);
-		std::swap(repeat, that.repeat);
-		std::swap(reflect, that.reflect);
-	}
-	return *this;
-}
-
-void animation_sequence_t::append(glm::vec2 action_point) {
+void animation_sequence_t::append(const glm::vec2& action_point) {
 	action_points.push_back(action_point);
 }
 
-void animation_sequence_t::append(glm::vec2 invert, glm::vec2 start, glm::vec4 points) {
+void animation_sequence_t::append(const glm::vec2& invert, const glm::vec2& start, const glm::vec4& points) {
 	const glm::vec2 position = invert * (start + (glm::vec2(points[0], points[1]) * dimensions));
 	const glm::vec2 origin = glm::vec2(points[2], points[3]);
 	frames.emplace_back(position, origin);
 }
 
 const sequence_frame_t& animation_sequence_t::get_frame(arch_t frame, arch_t variation) const {
-	static const sequence_frame_t kFrameZero = sequence_frame_t(
+	static const sequence_frame_t kNullFrame = sequence_frame_t {
 		glm::zero<glm::vec2>(),
 		glm::one<glm::vec2>()
-	);
+	};
 	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
 		return frames[index];
 	}
-	return kFrameZero;
+	return kNullFrame;
 }
 
-rect_t animation_sequence_t::get_quad(glm::vec2 invert, arch_t frame, arch_t variation) const {
+rect_t animation_sequence_t::get_quad(const glm::vec2& invert, arch_t frame, arch_t variation) const {
 	arch_t index = frame + (variation * total);
 	if (index < frames.size()) {
 		return rect_t(frames[index].position, dimensions * invert);
 	}
-	return rect_t(
+	return rect_t {
 		glm::zero<glm::vec2>(),
 		glm::one<glm::vec2>()
-	);
+	};
 }
 
 glm::vec2 animation_sequence_t::get_dimensions() const {
@@ -110,7 +61,7 @@ glm::vec2 animation_sequence_t::get_origin(arch_t frame, arch_t variation, mirro
 		}
 		return origin;
 	}
-	return glm::zero<glm::vec2>();
+	return {};
 }
 
 glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t mirroring) const {
@@ -132,7 +83,7 @@ glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t m
 		}
 		return action_point;
 	}
-	return glm::zero<glm::vec2>();
+	return {};
 }
 
 void animation_sequence_t::update(real64_t delta, bool_t& amend, real64_t& timer, arch_t& frame) const {
@@ -170,50 +121,10 @@ bool animation_sequence_t::is_finished(arch_t frame, real64_t timer) const {
 	return false;
 }
 
-animation_t::animation_t() :
-	ready(false),
-	future(),
-	sequences(),
-	inverts(1.0f),
-	texture(nullptr),
-	palette(nullptr)
-{
-
-}
-
 animation_t::~animation_t() {
 	if (future.valid()) {
 		future.wait();
 	}
-}
-
-animation_t::animation_t(animation_t&& that) noexcept : animation_t() {
-	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
-
-		std::swap(future, that.future);
-		std::swap(sequences, that.sequences);
-		std::swap(inverts, that.inverts);
-		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
-	}
-}
-
-animation_t& animation_t::operator=(animation_t&& that) noexcept {
-	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
-
-		std::swap(future, that.future);
-		std::swap(sequences, that.sequences);
-		std::swap(inverts, that.inverts);
-		std::swap(texture, that.texture);
-		std::swap(palette, that.palette);
-	}
-	return *this;
 }
 
 void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& timer, arch_t& frame) const {
@@ -408,7 +319,7 @@ glm::vec2 animation_t::get_origin(arch_t state, arch_t frame, arch_t variation, 
 	if (state < sequences.size()) {
 		return sequences[state].get_origin(frame, variation, mirroring);
 	}
-	return glm::zero<glm::vec2>();
+	return {};
 }
 
 glm::vec2 animation_t::get_action_point(arch_t state, arch_t variation, mirroring_t mirroring) const {
@@ -416,5 +327,5 @@ glm::vec2 animation_t::get_action_point(arch_t state, arch_t variation, mirrorin
 	if (state < sequences.size()) {
 		return sequences[state].get_action_point(variation, mirroring);
 	}
-	return glm::zero<glm::vec2>();
+	return {};
 }
