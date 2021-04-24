@@ -59,6 +59,8 @@ sampler_data_t::~sampler_data_t() {
 	}
 }
 
+sampler_data_t sampler_allocator_t::kNullHandle {};
+
 sampler_allocator_t::sampler_allocator_t(sampler_allocator_t&& that) noexcept : sampler_allocator_t() {
 	if (this != &that) {
 		std::swap(highest, that.highest);
@@ -81,11 +83,14 @@ sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) 
 }
 
 bool sampler_allocator_t::create(pixel_format_t highest, pixel_format_t lowest) {
+	const glm::ivec2 texture_dims { kDimensions, kDimensions };
+	const glm::ivec2 palette_dims { kColorsMax, kTotalPals };
+
 	this->highest = highest;
 	this->lowest = lowest;
-	auto& t = this->texture(glm::ivec2(kDimensions, kDimensions));
-	auto& p = this->palette(glm::ivec2(kColorsMax, kTotalPals));
-	auto& s = this->atlas(glm::ivec2(kDimensions, kDimensions));
+	auto& t = this->texture(texture_dims);
+	auto& p = this->palette(palette_dims);
+	auto& s = this->atlas(texture_dims);
 	return true;
 }
 
@@ -100,6 +105,7 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 			uint_t handle = 0;
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(
 					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
@@ -118,6 +124,7 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 			} else {
@@ -135,7 +142,6 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 		return textures;
 	}
 	synao_log("Error! Texture size must be 256x256! This one is {}x{}!\n", dimensions.x, dimensions.y);
-	static sampler_data_t kNullHandle = sampler_data_t{};
 	return kNullHandle;
 }
 
@@ -154,6 +160,7 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 			uint_t handle = 0;
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_1D_ARRAY, handle));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage2D(
 					GL_TEXTURE_1D_ARRAY, kMipMapPals,
@@ -171,6 +178,7 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexParameteri(GL_TEXTURE_1D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 			} else {
@@ -188,7 +196,6 @@ sampler_data_t& sampler_allocator_t::palette(const glm::ivec2& dimensions) {
 		return palettes;
 	}
 	synao_log("Error! Palette size must be 32 colors! This one is {}!\n", dimensions.x);
-	static sampler_data_t kNullHandle = sampler_data_t{};
 	return kNullHandle;
 }
 
@@ -207,6 +214,7 @@ sampler_data_t& sampler_allocator_t::atlas(const glm::ivec2& dimensions) {
 			uint_t handle = 0;
 			glCheck(glGenTextures(1, &handle));
 			glCheck(glBindTexture(GL_TEXTURE_2D_ARRAY, handle));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(
 					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
@@ -225,6 +233,7 @@ sampler_data_t& sampler_allocator_t::atlas(const glm::ivec2& dimensions) {
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 			glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR));
 			} else {
@@ -242,7 +251,6 @@ sampler_data_t& sampler_allocator_t::atlas(const glm::ivec2& dimensions) {
 		return atlases;
 	}
 	synao_log("Error! Atlas size must be 256x256! This one is {}x{}!\n", dimensions.x, dimensions.y);
-	static sampler_data_t kNullHandle = sampler_data_t{};
 	return kNullHandle;
 }
 

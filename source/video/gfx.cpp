@@ -5,16 +5,6 @@
 #include "./const-buffer.hpp"
 #include "./frame-buffer.hpp"
 
-gfx_t::gfx_t() :
-	depth_func(compare_func_t::Disable),
-	blend_mode(blend_mode_t::Disable),
-	pipeline(nullptr),
-	sampler_allocator(nullptr),
-	buffer_list{}
-{
-	buffer_list.fill(nullptr);
-}
-
 void gfx_t::set_depth_func(compare_func_t depth_func) {
 	if (this->depth_func != depth_func) {
 		if (depth_func == compare_func_t::Disable) {
@@ -85,9 +75,11 @@ void gfx_t::set_sampler_allocator(const sampler_allocator_t* sampler_allocator) 
 			auto& texture = sampler_allocator->texture();
 			glCheck(glActiveTexture(GL_TEXTURE0));
 			glCheck(glBindTexture(texture.type, texture.id));
+
 			auto& palette = sampler_allocator->palette();
 			glCheck(glActiveTexture(GL_TEXTURE1));
 			glCheck(glBindTexture(palette.type, palette.id));
+
 			auto& atlas = sampler_allocator->atlas();
 			glCheck(glActiveTexture(GL_TEXTURE2));
 			glCheck(glBindTexture(atlas.type, atlas.id));

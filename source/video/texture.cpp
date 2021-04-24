@@ -8,27 +8,35 @@
 
 texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 }
 
 texture_t& texture_t::operator=(texture_t&& that) noexcept {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 	return *this;
 }
@@ -54,8 +62,10 @@ void texture_t::assure() {
 		if (!image.empty()) {
 			const glm::ivec2 dimensions = image.get_dimensions();
 			auto& handle = allocator->texture(dimensions);
+
 			this->dimensions = dimensions;
 			this->name = handle.count;
+
 			if ((handle.count + 1) < sampler_t::get_maximum_textures()) {
 				// Save previous unit and set to working unit
 				sint_t previous = 0;
@@ -129,27 +139,35 @@ glm::ivec2 texture_t::get_integral_dimensions() const {
 
 atlas_t::atlas_t(atlas_t&& that) noexcept : atlas_t() {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 }
 
 atlas_t& atlas_t::operator=(atlas_t&& that) noexcept {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 	return *this;
 }
@@ -175,8 +193,10 @@ void atlas_t::assure() {
 		if (!image.empty()) {
 			const glm::ivec2 dimensions = image.get_dimensions();
 			auto& handle = allocator->atlas(dimensions);
+
 			this->dimensions = dimensions;
 			this->name = handle.count;
+
 			if ((handle.count + 1) < sampler_t::get_maximum_atlases()) {
 				// Save previous unit and set to working unit
 				sint_t previous = 0;
@@ -250,27 +270,35 @@ glm::ivec2 atlas_t::get_integral_dimensions() const {
 
 palette_t::palette_t(palette_t&& that) noexcept : palette_t() {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 }
 
 palette_t& palette_t::operator=(palette_t&& that) noexcept {
 	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
+		bool this_temp = ready.load();
+		ready.store(false);
+		bool that_temp = that.ready.load();
+		that.ready.store(false);
 
 		std::swap(future, that.future);
 		std::swap(allocator, that.allocator);
 		std::swap(name, that.name);
 		std::swap(dimensions, that.dimensions);
+
+		ready.store(that_temp);
+		that.ready.store(this_temp);
 	}
 	return *this;
 }
@@ -296,8 +324,10 @@ void palette_t::assure() {
 		if (!image.empty()) {
 			const glm::ivec2 dimensions = image.get_dimensions();
 			auto& handle = allocator->palette(dimensions);
+
 			this->dimensions = dimensions;
 			this->name = handle.count;
+
 			if ((handle.count + dimensions.y) < sampler_t::get_maximum_palettes()) {
 				// Save previous unit and set to working unit
 				sint_t previous = 0;

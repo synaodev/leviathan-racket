@@ -51,7 +51,7 @@ struct const_buffer_t;
 
 struct gfx_t : public not_copyable_t {
 public:
-	gfx_t();
+	gfx_t() = default;
 	gfx_t(gfx_t&&) noexcept = default;
 	gfx_t& operator=(gfx_t&&) noexcept = default;
 	~gfx_t() = default;
@@ -68,11 +68,13 @@ public:
 	static uint_t get_pixel_format_gl_enum(pixel_format_t format);
 	static uint_t get_shader_stage_gl_enum(shader_stage_t stage);
 private:
-	compare_func_t depth_func;
-	blend_mode_t blend_mode;
-	const pipeline_t* pipeline;
-	const sampler_allocator_t* sampler_allocator;
-	std::array<const const_buffer_t*, 4> buffer_list;
+	compare_func_t depth_func { compare_func_t::Disable };
+	blend_mode_t blend_mode { blend_mode_t::Disable };
+	const pipeline_t* pipeline { nullptr };
+	const sampler_allocator_t* sampler_allocator { nullptr };
+	std::array<const const_buffer_t*, 4> buffer_list {
+		nullptr, nullptr, nullptr, nullptr
+	};
 };
 
 #endif // LEVIATHAN_INCLUDED_VIDEO_GFX_HPP
