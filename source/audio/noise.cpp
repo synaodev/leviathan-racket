@@ -7,44 +7,6 @@
 #include <cstring>
 #include <SDL2/SDL_audio.h>
 
-noise_t::noise_t() :
-	ready(false),
-	future(),
-	handle(0),
-	binder()
-{
-
-}
-
-noise_t::noise_t(noise_t&& that) noexcept : noise_t() {
-	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
-
-		std::swap(future, that.future);
-		std::swap(handle, that.handle);
-		std::swap(binder, that.binder);
-	}
-}
-
-noise_t& noise_t::operator=(noise_t&& that) noexcept {
-	if (this != &that) {
-		std::atomic<bool> temp = ready.load();
-		ready.store(that.ready.load());
-		that.ready.store(temp.load());
-
-		std::swap(future, that.future);
-		std::swap(handle, that.handle);
-		std::swap(binder, that.binder);
-	}
-	return *this;
-}
-
-noise_t::~noise_t() {
-	this->destroy();
-}
-
 static ALenum get_format_enum(const SDL_AudioSpec* audio_spec) {
 	assert(audio_spec);
 	ALenum type;

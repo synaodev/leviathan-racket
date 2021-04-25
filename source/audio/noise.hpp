@@ -11,12 +11,12 @@
 struct thread_pool_t;
 struct channel_t;
 
-struct noise_t : public not_copyable_t {
+struct noise_t : public not_copyable_t, public not_moveable_t {
 public:
-	noise_t();
-	noise_t(noise_t&& that) noexcept;
-	noise_t& operator=(noise_t&& that) noexcept;
-	~noise_t();
+	noise_t() = default;
+	~noise_t() {
+		this->destroy();
+	}
 public:
 	void load(const std::string& full_path);
 	void load(const std::string& full_path, thread_pool_t& thread_pool);
@@ -26,10 +26,10 @@ public:
 	bool error() const;
 private:
 	friend struct channel_t;
-	std::atomic<bool> ready;
-	std::future<void> future;
-	uint_t handle;
-	mutable std::set<channel_t*> binder;
+	std::atomic<bool> ready { false };
+	std::future<void> future {};
+	uint_t handle { 0 };
+	mutable std::set<channel_t*> binder {};
 };
 
 #endif // LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP

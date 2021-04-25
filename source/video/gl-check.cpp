@@ -1,6 +1,6 @@
 #include "./gl-check.hpp"
 
-glm::ivec2 opengl_version = glm::ivec2(1, 0);
+glm::ivec2 opengl_version = { 1, 0 };
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 #include "../utility/logger.hpp"
@@ -34,7 +34,7 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 		default:
 			break;
 		}
-		std::string fstr = file;
+		const std::string fstr = file;
 		synao_log(
 			"An internal OpenGL call failed in {} ({})!\n"
 			"Expression:\n\t{}\n"
@@ -42,7 +42,6 @@ void priv::glCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 			fstr.substr(fstr.find_last_of("\\/") + 1),
 			line, expression, error, description
 		);
-		sint_t i = 0;
 	}
 }
 

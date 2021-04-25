@@ -2,35 +2,6 @@
 #include "./al-check.hpp"
 #include "./noise.hpp"
 
-channel_t::channel_t() :
-	ready(false),
-	handle(0),
-	current(nullptr)
-{
-
-}
-
-channel_t::channel_t(channel_t&& that) noexcept : channel_t() {
-	if (this != &that) {
-		std::swap(ready, that.ready);
-		std::swap(current, that.current);
-		std::swap(handle, that.handle);
-	}
-}
-
-channel_t& channel_t::operator=(channel_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(ready, that.ready);
-		std::swap(current, that.current);
-		std::swap(handle, that.handle);
-	}
-	return *this;
-}
-
-channel_t::~channel_t() {
-	this->destroy();
-}
-
 void channel_t::create() {
 	if (!handle) {
 		alCheck(alGenSources(1, &handle));

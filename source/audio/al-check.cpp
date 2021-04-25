@@ -32,7 +32,7 @@ void priv::alCheckError(const byte_t* file, uint_t line, const byte_t* expressio
 		default:
 			break;
 		}
-		std::string fstr = file;
+		const std::string fstr = file;
 		synao_log(
 			"An internal OpenAL call failed in {} ({})!\n"
 			"Expression:\n\t{}\n"

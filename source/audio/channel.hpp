@@ -7,10 +7,12 @@ struct noise_t;
 
 struct channel_t : public not_copyable_t {
 public:
-	channel_t();
-	channel_t(channel_t&& that) noexcept;
-	channel_t& operator=(channel_t&& that) noexcept;
-	~channel_t();
+	channel_t() = default;
+	channel_t(channel_t&& that) noexcept = default;
+	channel_t& operator=(channel_t&& that) noexcept = default;
+	~channel_t() {
+		this->destroy();
+	}
 public:
 	void create();
 	void create(real_t volume);
@@ -26,9 +28,9 @@ public:
 	bool paused() const;
 	real_t get_volume() const;
 private:
-	bool_t ready;
-	uint_t handle;
-	const noise_t* current;
+	bool_t ready { false };
+	uint_t handle { 0 };
+	const noise_t* current { nullptr };
 };
 
 #endif // LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP
