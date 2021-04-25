@@ -10,9 +10,11 @@
 struct shader_t : public not_copyable_t {
 public:
 	shader_t() = default;
-	shader_t(shader_t&& that) noexcept;
-	shader_t& operator=(shader_t&& that) noexcept;
-	~shader_t();
+	shader_t(shader_t&& that) noexcept = default;
+	shader_t& operator=(shader_t&& that) noexcept = default;
+	~shader_t() {
+		this->destroy();
+	}
 public:
 	bool load(const std::string& full_path, shader_stage_t stage);
 	bool from(const std::string& source, shader_stage_t stage);
@@ -28,9 +30,11 @@ private:
 struct pipeline_t : public not_copyable_t {
 public:
 	pipeline_t() = default;
-	pipeline_t(pipeline_t&& that) noexcept;
-	pipeline_t& operator=(pipeline_t&& that) noexcept;
-	~pipeline_t();
+	pipeline_t(pipeline_t&& that) noexcept = default;
+	pipeline_t& operator=(pipeline_t&& that) noexcept = default;
+	~pipeline_t() {
+		this->destroy();
+	}
 public:
 	bool create(const shader_t* vert, const shader_t* frag, const shader_t* geom);
 	bool create(const shader_t* vert, const shader_t* frag);

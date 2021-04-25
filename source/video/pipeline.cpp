@@ -13,25 +13,6 @@
 	- pipeline_t's handle is an OGL program object.
 */
 
-shader_t::shader_t(shader_t&& that) noexcept : shader_t() {
-	if (this != &that) {
-		std::swap(handle, that.handle);
-		std::swap(stage, that.stage);
-	}
-}
-
-shader_t& shader_t::operator=(shader_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(handle, that.handle);
-		std::swap(stage, that.stage);
-	}
-	return *this;
-}
-
-shader_t::~shader_t() {
-	this->destroy();
-}
-
 bool shader_t::from(const std::string& source, shader_stage_t stage) {
 	if (!handle) {
 		this->stage = stage;
@@ -157,25 +138,6 @@ vertex_spec_t shader_t::attributes(uint_t program_handle) {
 		desc = vertex_spec_t::from(typeslist.data());
 	}
 	return desc;
-}
-
-pipeline_t::pipeline_t(pipeline_t&& that) noexcept : pipeline_t() {
-	if (this != &that) {
-		std::swap(handle, that.handle);
-		std::swap(specify, that.specify);
-	}
-}
-
-pipeline_t& pipeline_t::operator=(pipeline_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(handle, that.handle);
-		std::swap(specify, that.specify);
-	}
-	return *this;
-}
-
-pipeline_t::~pipeline_t() {
-	this->destroy();
 }
 
 bool pipeline_t::create(const shader_t* vert, const shader_t* frag, const shader_t* geom) {

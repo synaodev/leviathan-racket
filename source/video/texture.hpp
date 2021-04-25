@@ -10,12 +10,14 @@
 
 struct thread_pool_t;
 
-struct texture_t : public not_copyable_t, public sampler_t {
+struct texture_t : public not_copyable_t, public not_moveable_t, public sampler_t {
 public:
 	texture_t() = default;
-	texture_t(texture_t&& that) noexcept;
-	texture_t& operator=(texture_t&& that) noexcept;
-	~texture_t();
+	~texture_t() {
+		if (future.valid()) {
+			auto result = future.get();
+		}
+	}
 public:
 	void load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool);
 	void assure();
@@ -35,12 +37,14 @@ private:
 	glm::ivec2 dimensions {};
 };
 
-struct atlas_t : public not_copyable_t, public sampler_t {
+struct atlas_t : public not_copyable_t, public not_moveable_t, public sampler_t {
 public:
 	atlas_t() = default;
-	atlas_t(atlas_t&& that) noexcept;
-	atlas_t& operator=(atlas_t&& that) noexcept;
-	~atlas_t();
+	~atlas_t() {
+		if (future.valid()) {
+			auto result = future.get();
+		}
+	}
 public:
 	void load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool);
 	void assure();
@@ -63,9 +67,11 @@ private:
 struct palette_t : public not_copyable_t, public sampler_t {
 public:
 	palette_t() = default;
-	palette_t(palette_t&& that) noexcept;
-	palette_t& operator=(palette_t&& that) noexcept;
-	~palette_t();
+	~palette_t() {
+		if (future.valid()) {
+			auto result = future.get();
+		}
+	}
 public:
 	void load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool);
 	void assure();

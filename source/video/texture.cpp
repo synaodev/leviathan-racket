@@ -6,47 +6,6 @@
 
 #include <glm/gtc/constants.hpp>
 
-texture_t::texture_t(texture_t&& that) noexcept : texture_t() {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-}
-
-texture_t& texture_t::operator=(texture_t&& that) noexcept {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-	return *this;
-}
-
-texture_t::~texture_t() {
-	if (future.valid()) {
-		auto result = future.get();
-	}
-}
-
 void texture_t::load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool) {
 	assert(!ready);
 	this->allocator = allocator;
@@ -137,47 +96,6 @@ glm::ivec2 texture_t::get_integral_dimensions() const {
 	return dimensions;
 }
 
-atlas_t::atlas_t(atlas_t&& that) noexcept : atlas_t() {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-}
-
-atlas_t& atlas_t::operator=(atlas_t&& that) noexcept {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-	return *this;
-}
-
-atlas_t::~atlas_t() {
-	if (future.valid()) {
-		auto result = future.get();
-	}
-}
-
 void atlas_t::load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool) {
 	assert(!ready);
 	this->allocator = allocator;
@@ -266,47 +184,6 @@ glm::vec2 atlas_t::get_inverse_dimensions() const {
 glm::ivec2 atlas_t::get_integral_dimensions() const {
 	this->assure();
 	return dimensions;
-}
-
-palette_t::palette_t(palette_t&& that) noexcept : palette_t() {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-}
-
-palette_t& palette_t::operator=(palette_t&& that) noexcept {
-	if (this != &that) {
-		bool this_temp = ready.load();
-		ready.store(false);
-		bool that_temp = that.ready.load();
-		that.ready.store(false);
-
-		std::swap(future, that.future);
-		std::swap(allocator, that.allocator);
-		std::swap(name, that.name);
-		std::swap(dimensions, that.dimensions);
-
-		ready.store(that_temp);
-		that.ready.store(this_temp);
-	}
-	return *this;
-}
-
-palette_t::~palette_t() {
-	if (future.valid()) {
-		auto result = future.get();
-	}
 }
 
 void palette_t::load(const std::string& full_path, sampler_allocator_t* allocator, thread_pool_t& thread_pool) {

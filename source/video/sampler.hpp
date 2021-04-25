@@ -19,9 +19,13 @@ public:
 		type(type),
 		count(count) {}
 	sampler_data_t() = default;
-	sampler_data_t(sampler_data_t&&) noexcept;
-	sampler_data_t& operator=(sampler_data_t&&) noexcept;
-	~sampler_data_t();
+	sampler_data_t(sampler_data_t&&) noexcept = default;
+	sampler_data_t& operator=(sampler_data_t&&) noexcept = default;
+	~sampler_data_t() {
+		this->destroy();
+	}
+public:
+	void destroy();
 public:
 	uint_t id { 0 };
 	uint_t type { 0 };
@@ -31,8 +35,8 @@ public:
 struct sampler_allocator_t : public not_copyable_t {
 public:
 	sampler_allocator_t() = default;
-	sampler_allocator_t(sampler_allocator_t&& that) noexcept;
-	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept;
+	sampler_allocator_t(sampler_allocator_t&& that) noexcept = default;
+	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept = default;
 	~sampler_allocator_t() = default;
 public:
 	bool create(pixel_format_t highest, pixel_format_t lowest);

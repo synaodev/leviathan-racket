@@ -11,9 +11,11 @@ struct quad_buffer_t;
 struct quad_allocator_t : public not_copyable_t {
 public:
 	quad_allocator_t() = default;
-	quad_allocator_t(quad_allocator_t&& that) noexcept;
-	quad_allocator_t& operator=(quad_allocator_t&& that) noexcept;
-	~quad_allocator_t();
+	quad_allocator_t(quad_allocator_t&& that) noexcept = default;
+	quad_allocator_t& operator=(quad_allocator_t&& that) noexcept = default;
+	~quad_allocator_t() {
+		this->destroy();
+	}
 public:
 	bool create(primitive_t primitive, arch_t length);
 	void destroy();
@@ -33,9 +35,11 @@ private:
 struct quad_buffer_t : public not_copyable_t {
 public:
 	quad_buffer_t() = default;
-	quad_buffer_t(quad_buffer_t&& that) noexcept;
-	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept;
-	~quad_buffer_t();
+	quad_buffer_t(quad_buffer_t&& that) noexcept = default;
+	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept = default;
+	~quad_buffer_t() {
+		this->destroy();
+	}
 public:
 	void setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify);
 	void create(arch_t length);

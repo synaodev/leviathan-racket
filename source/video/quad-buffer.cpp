@@ -5,27 +5,6 @@
 #include <limits>
 #include <glm/common.hpp>
 
-quad_allocator_t::quad_allocator_t(quad_allocator_t&& that) noexcept : quad_allocator_t() {
-	if (this != &that) {
-		std::swap(primitive, that.primitive);
-		std::swap(handle, that.handle);
-		std::swap(length, that.length);
-	}
-}
-
-quad_allocator_t& quad_allocator_t::operator=(quad_allocator_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(primitive, that.primitive);
-		std::swap(handle, that.handle);
-		std::swap(length, that.length);
-	}
-	return *this;
-}
-
-quad_allocator_t::~quad_allocator_t() {
-	this->destroy();
-}
-
 bool quad_allocator_t::create(primitive_t primitive, arch_t length) {
 	if (handle != 0) {
 		return false;
@@ -117,33 +96,6 @@ std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, p
 		ut += 4;
 	}
 	return result;
-}
-
-quad_buffer_t::quad_buffer_t(quad_buffer_t&& that) noexcept : quad_buffer_t() {
-	if (this != &that) {
-		std::swap(allocator, that.allocator);
-		std::swap(usage, that.usage);
-		std::swap(specify, that.specify);
-		std::swap(arrays, that.arrays);
-		std::swap(buffer, that.buffer);
-		std::swap(length, that.length);
-	}
-}
-
-quad_buffer_t& quad_buffer_t::operator=(quad_buffer_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(allocator, that.allocator);
-		std::swap(usage, that.usage);
-		std::swap(specify, that.specify);
-		std::swap(arrays, that.arrays);
-		std::swap(buffer, that.buffer);
-		std::swap(length, that.length);
-	}
-	return *this;
-}
-
-quad_buffer_t::~quad_buffer_t() {
-	this->destroy();
 }
 
 void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify) {

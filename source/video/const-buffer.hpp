@@ -6,9 +6,11 @@
 struct const_buffer_t : public not_copyable_t {
 public:
 	const_buffer_t() = default;
-	const_buffer_t(const_buffer_t&& that) noexcept;
-	const_buffer_t& operator=(const_buffer_t&& that) noexcept;
-	~const_buffer_t();
+	const_buffer_t(const_buffer_t&& that) noexcept = default;
+	const_buffer_t& operator=(const_buffer_t&& that) noexcept = default;
+	~const_buffer_t() {
+		this->destroy();
+	}
 public:
 	void setup(buffer_usage_t usage);
 	void create(arch_t length);

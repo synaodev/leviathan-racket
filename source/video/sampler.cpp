@@ -32,24 +32,7 @@ sint_t sampler_t::get_maximum_atlases() {
 	return kTotalAtlas;
 }
 
-sampler_data_t::sampler_data_t(sampler_data_t&& that) noexcept : sampler_data_t() {
-	if (this != &that) {
-		std::swap(id, that.id);
-		std::swap(type, that.type);
-		std::swap(count, that.count);
-	}
-}
-
-sampler_data_t& sampler_data_t::operator=(sampler_data_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(id, that.id);
-		std::swap(type, that.type);
-		std::swap(count, that.count);
-	}
-	return *this;
-}
-
-sampler_data_t::~sampler_data_t() {
+void sampler_data_t::destroy() {
 	if (id != 0) {
 		glCheck(glBindTexture(type, 0));
 		glCheck(glDeleteTextures(1, &id));
@@ -60,27 +43,6 @@ sampler_data_t::~sampler_data_t() {
 }
 
 sampler_data_t sampler_allocator_t::kNullHandle {};
-
-sampler_allocator_t::sampler_allocator_t(sampler_allocator_t&& that) noexcept : sampler_allocator_t() {
-	if (this != &that) {
-		std::swap(highest, that.highest);
-		std::swap(lowest, that.lowest);
-		std::swap(textures, that.textures);
-		std::swap(palettes, that.palettes);
-		std::swap(atlases, that.atlases);
-	}
-}
-
-sampler_allocator_t& sampler_allocator_t::operator=(sampler_allocator_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(highest, that.highest);
-		std::swap(lowest, that.lowest);
-		std::swap(textures, that.textures);
-		std::swap(palettes, that.palettes);
-		std::swap(atlases, that.atlases);
-	}
-	return *this;
-}
 
 bool sampler_allocator_t::create(pixel_format_t highest, pixel_format_t lowest) {
 	const glm::ivec2 texture_dims { kDimensions, kDimensions };

@@ -3,29 +3,6 @@
 
 #include <utility>
 
-const_buffer_t::const_buffer_t(const_buffer_t&& that) noexcept : const_buffer_t() {
-	if (this != &that) {
-		std::swap(usage, that.usage);
-		std::swap(immuts, that.immuts);
-		std::swap(handle, that.handle);
-		std::swap(length, that.length);
-	}
-}
-
-const_buffer_t& const_buffer_t::operator=(const_buffer_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(usage, that.usage);
-		std::swap(immuts, that.immuts);
-		std::swap(handle, that.handle);
-		std::swap(length, that.length);
-	}
-	return *this;
-}
-
-const_buffer_t::~const_buffer_t() {
-	this->destroy();
-}
-
 void const_buffer_t::setup(buffer_usage_t usage) {
 	this->destroy();
 	this->usage = usage;
