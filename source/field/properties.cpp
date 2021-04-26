@@ -50,34 +50,34 @@ namespace ftcv {
 		if (property.getType() == tmx::Property::Type::Colour) {
 			return color_to_color(property.getColourValue());
 		}
-		return glm::zero<glm::vec4>();
+		return {};
 	}
 
 	glm::vec4 color_to_color(const tmx::Colour& color) {
-		return glm::vec4(
+		return {
 			static_cast<real_t>(color.r) / 255.0f,
 			static_cast<real_t>(color.g) / 255.0f,
 			static_cast<real_t>(color.b) / 255.0f,
 			static_cast<real_t>(color.a) / 255.0f
-		);
+		};
 	}
 
 	glm::vec2 vec_to_vec(const tmx::Vector2f& position) {
-		return glm::vec2(position.x, position.y);
+		return { position.x, position.y };
 	}
 
 	std::string prop_to_string(const tmx::Property& property) {
 		if (property.getType() == tmx::Property::Type::String) {
 			return property.getStringValue();
 		}
-		return std::string();
+		return {};
 	}
 
 	std::string prop_to_path(const tmx::Property& property) {
 		if (property.getType() == tmx::Property::Type::File) {
 			return path_to_name(property.getFileValue());
 		}
-		return std::string();
+		return {};
 	}
 
 	std::string path_to_name(const std::string& path) {
@@ -86,11 +86,11 @@ namespace ftcv {
 	}
 
 	rect_t rect_to_rect(const tmx::FloatRect& rectangle) {
-		return rect_t(
+		return {
 			rectangle.left,
 			rectangle.top,
 			rectangle.width,
 			rectangle.height
-		);
+		};
 	}
 }

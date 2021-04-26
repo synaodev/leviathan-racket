@@ -8,22 +8,6 @@
 #include <glm/exponential.hpp>
 #include <glm/trigonometric.hpp>
 
-collision::info_t::info_t(glm::ivec2 index, uint_t attribute) :
-	index(index),
-	attribute(attribute),
-	coordinate(0.0f)
-{
-
-}
-
-collision::info_t::info_t() :
-	index(0),
-	attribute(0),
-	coordinate(0.0f)
-{
-
-}
-
 rect_t collision::info_t::hitbox() const {
 	return rect_t(
 		glm::vec2(index) * constants::TileSize<real_t>(),
@@ -74,29 +58,26 @@ static real_t use_slope_height(const collision::info_t& info) {
 
 struct collision_result_t {
 public:
-	collision_result_t() :
-		valid(false),
-		coordinate(0.0f) {}
 	collision_result_t(real_t coordinate) :
-		valid(false),
 		coordinate(coordinate) {}
+	collision_result_t() = default;
 	collision_result_t(const collision_result_t&) = default;
 	collision_result_t& operator=(const collision_result_t&) = default;
-	collision_result_t(collision_result_t&&) = default;
-	collision_result_t& operator=(collision_result_t&&) = default;
+	collision_result_t(collision_result_t&&) noexcept = default;
+	collision_result_t& operator=(collision_result_t&&) noexcept = default;
 	~collision_result_t() = default;
 public:
-	bool_t valid;
-	real_t coordinate;
+	bool_t valid { false };
+	real_t coordinate { 0.0f };
 };
 
 // Watch Christopher Hebert's videos to understand the tilemap collision system.
 // https://youtu.be/xJQ6ptFf3PU
 
 static collision_result_t test_collision(const rect_t& delta, const collision::info_t& info, side_t opposite, real_t perpendicular_position, real_t leading_position, bool should_test_slopes) {
-	collision_result_t result = collision_result_t(leading_position);
+	collision_result_t result { leading_position };
 	if (info.attribute & tileflag_t::Block) {
-		rect_t hitbox = info.hitbox();
+		const rect_t hitbox = info.hitbox();
 		if (delta.overlaps(hitbox)) {
 			switch (opposite) {
 			case side_t::Right: {
@@ -133,7 +114,7 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 			}
 		}
 	} else if (should_test_slopes and (info.attribute & tileflag_t::Slope) and is_slope_opposing_side(info, opposite)) {
-		rect_t hitbox = info.hitbox();
+		const rect_t hitbox = info.hitbox();
 		real_t multiplier = use_slope_multiplier(info);
 		real_t height = use_slope_height(info);
 		result.coordinate = side_fn::vert(opposite) ?
@@ -163,7 +144,7 @@ std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<ph
 			sint_t y = !horizontal ? primary : secondary;
 			sint_t x = horizontal ? primary : secondary;
 			uint_t a = tilemap.get_attribute(x, y);
-			collision::info_t info = collision::info_t(glm::ivec2(x, y), a);
+			collision::info_t info { glm::ivec2(x, y), a };
 			if (info.attribute & tileflag_t::OutBounds) {
 				return info;
 			}
@@ -216,19 +197,19 @@ std::optional<glm::vec2> collision::find_intersection(glm::vec2 ray_pos, glm::ve
 glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, glm::vec2 direction) {
 	real_t len = 0.0f;
 	glm::vec2 index = glm::floor(origin);
-	glm::vec2 step(
+	glm::vec2 step {
 		direction[0] > 0.0f ? 1.0f : -1.0f,
 		direction[1] > 0.0f ? 1.0f : -1.0f
-	);
+	};
 	glm::vec2 len_delta = glm::abs(1.0f / direction);
-	glm::vec2 distance(
+	glm::vec2 distance {
 		step[0] > 0.0f ? index[0] + 1.0f - origin[0] : origin[0] - index[0],
 		step[1] > 0.0f ? index[1] + 1.0f - origin[1] : origin[1] - index[1]
-	);
-	glm::vec2 max_delta(
+	};
+	glm::vec2 max_delta {
 		len_delta[0] < std::numeric_limits<real_t>::infinity() ? len_delta[0] * distance[0] : std::numeric_limits<real_t>::infinity(),
 		len_delta[1] < std::numeric_limits<real_t>::infinity() ? len_delta[1] * distance[1] : std::numeric_limits<real_t>::infinity()
-	);
+	};
 	while (len <= max_length) {
 		glm::length_t I = max_delta[0] < max_delta[1] ? 0 : 1;
 		index[I] += step[I];
@@ -240,10 +221,10 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 		if (attr != tileflag_t::Empty and !(attr & (tileflag_t::FallThrough | tileflag_t::OutBounds))) {
 			if (attr & tileflag_t::Block) {
 				if (attr & tileflag_t::Hooked) {
-					return glm::vec2(
+					return {
 						tilemap_t::extend(x_pos) + (constants::HalfTile<real_t>()),
 						tilemap_t::extend(y_pos) + (constants::HalfTile<real_t>())
-					);
+					};
 				}
 				return origin + len * direction;
 			} else if (attr & tileflag_t::Slope) {
@@ -291,7 +272,7 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 }
 
 glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle) {
-	glm::vec2 direction = glm::vec2(glm::cos(angle), glm::sin(angle));
+	glm::vec2 direction { glm::cos(angle), glm::sin(angle) };
 	return trace_ray(
 		tilemap,
 		max_length,

@@ -9,31 +9,16 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-static const glm::vec2 kDefaultSpeed  = glm::vec2(16.0f, 8.0f);
-static const glm::vec2 kDefaultLowest = glm::vec2(8.0f, 6.0f);
-static const glm::vec2 kDefaultCenter = (constants::NormalDimensions<real_t>() / 2.0f) + kDefaultLowest;
-
-camera_t::camera_t() :
-	identity(0),
-	cycling(false),
-	indefinite(false),
-	timer(0.0),
-	view_limits(kDefaultLowest, constants::NormalDimensions<real_t>()),
-	position(kDefaultCenter),
-	dimensions(constants::NormalDimensions<real_t>()),
-	offsets(0.0f),
-	quake_power(0.0f),
-	view_angle(0.0f)
-{
-
-}
+static const glm::vec2 kDefaultSpeed { 16.0f, 8.0f };
+static const glm::vec2 kDefaultLowest { 8.0f, 6.0f };
+static const glm::vec2 kDefaultCenter { (constants::NormalDimensions<real_t>() / 2.0f) + kDefaultLowest };
 
 void camera_t::reset() {
 	identity = 0;
 	cycling = false;
 	indefinite = false;
 	timer = 0.0;
-	view_limits = rect_t(kDefaultLowest, constants::NormalDimensions<real_t>());
+	view_limits = rect_t { kDefaultLowest, constants::NormalDimensions<real_t>() };
 	position = kDefaultCenter;
 	dimensions = constants::NormalDimensions<real_t>();
 	offsets = glm::zero<glm::vec2>();
@@ -87,16 +72,17 @@ void camera_t::update(real64_t delta) {
 	}
 }
 
-void camera_t::set_view_limits(rect_t view_limits) {
+void camera_t::set_view_limits(const rect_t& view_limits) {
 	this->view_limits.w = view_limits.w - 16.0f;
 	this->view_limits.h = view_limits.h - 12.0f;
 	position = kDefaultCenter;
 	dimensions = constants::NormalDimensions<real_t>();
 }
 
-void camera_t::set_focus(glm::vec2 position) {
-	view_limits.push_fix(position, dimensions);
-	this->position = position;
+void camera_t::set_focus(const glm::vec2& position) {
+	glm::vec2 temp { position };
+	view_limits.push_fix(temp, dimensions);
+	this->position = temp;
 }
 
 void camera_t::follow(sint_t identity) {
@@ -136,7 +122,7 @@ rect_t camera_t::get_viewport() const {
 	);
 }
 
-arch_t camera_t::get_tile_range(glm::ivec2 first, glm::ivec2 last) const {
+arch_t camera_t::get_tile_range(const glm::ivec2& first, const glm::ivec2& last) const {
 	glm::ivec2 result = last - first;
 	return
 		static_cast<arch_t>(result.x) *
