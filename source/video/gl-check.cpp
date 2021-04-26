@@ -1,6 +1,6 @@
 #include "./gl-check.hpp"
 
-glm::ivec2 opengl_version = { 1, 0 };
+glm::ivec2 opengl_version { 1, 0 };
 
 #ifdef LEVIATHAN_BUILD_DEBUG
 #include "../utility/logger.hpp"
