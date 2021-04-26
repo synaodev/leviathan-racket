@@ -30,16 +30,11 @@ struct kontext_t;
 
 struct health_t {
 public:
-	health_t() :
-		flags(0),
-		current(2),
-		maximum(2),
-		leviathan(0),
-		damage(0) {}
+	health_t() = default;
 	health_t(const health_t&) = default;
 	health_t& operator=(const health_t&) = default;
-	health_t(health_t&&) = default;
-	health_t& operator=(health_t&&) = default;
+	health_t(health_t&&) noexcept = default;
+	health_t& operator=(health_t&&) noexcept = default;
 	~health_t() = default;
 public:
 	void reset(sint_t current, sint_t maximum, sint_t leviathan, sint_t damage);
@@ -48,9 +43,11 @@ public:
 public:
 	static void handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi, kontext_t& kontext);
 public:
-	std::bitset<health_flags_t::Total> flags;
-	sint_t current, maximum;
-	sint_t leviathan, damage;
+	std::bitset<health_flags_t::Total> flags { 0 };
+	sint_t current { 2 };
+	sint_t maximum { 2 };
+	sint_t leviathan { 0 };
+	sint_t damage { 0 };
 };
 
 #endif // LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP

@@ -12,24 +12,6 @@
 static constexpr real_t kLongFactor  = 2.0f;
 static constexpr real_t kShortFactor = 3.0f;
 
-kinematics_t::kinematics_t(glm::vec2 velocity) :
-	flags(0),
-	velocity(velocity),
-	anchor(0.0f),
-	tether(0.0f)
-{
-
-}
-
-kinematics_t::kinematics_t() :
-	flags(0),
-	velocity(0.0f),
-	anchor(0.0f),
-	tether(0.0f)
-{
-
-}
-
 void kinematics_t::reset() {
 	flags.reset();
 	velocity = glm::zero<glm::vec2>();
@@ -38,10 +20,10 @@ void kinematics_t::reset() {
 }
 
 void kinematics_t::accel_angle(real_t angle, real_t speed) {
-	velocity = glm::vec2(
+	velocity = {
 		glm::cos(angle) * speed,
 		glm::sin(angle) * speed
-	);
+	};
 }
 
 void kinematics_t::accel_x(real_t amount, real_t limit) {
@@ -148,13 +130,13 @@ void kinematics_t::do_angle(location_t& location, kinematics_t& kinematics, glm:
 			kinematics.anchor.y - test_point.y,
 			kinematics.anchor.x - test_point.x
 		);
-		glm::vec2 normal = glm::vec2(glm::cos(angle), glm::sin(angle));
+		glm::vec2 normal { glm::cos(angle), glm::sin(angle) };
 		test_point += (normal * (distance - kinematics.tether));
 		location.position = test_point - location.bounding.center();
 		if (inertia != glm::zero<glm::vec2>()) {
 			normal = glm::normalize(test_point - kinematics.anchor);
-			glm::vec2 perpendicular = glm::vec2(normal.y, -normal.x);
-			glm::vec2 redirection = perpendicular * glm::dot(perpendicular, inertia);
+			const glm::vec2 perpendicular { normal.y, -normal.x };
+			const glm::vec2 redirection = perpendicular * glm::dot(perpendicular, inertia);
 			if (redirection != glm::zero<glm::vec2>()) {
 				inertia = glm::normalize(redirection) * glm::length(inertia);
 			}
@@ -165,7 +147,7 @@ void kinematics_t::do_angle(location_t& location, kinematics_t& kinematics, glm:
 void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap) {
 	if (!kinematics.flags[phy_t::Noclip]) {
 		side_t side = inertia > 0.0f ? side_t::Right : side_t::Left;
-		std::optional<collision::info_t> info = collision::attempt(
+		auto info = collision::attempt(
 			kinematics_t::predict(location, side, inertia),
 			kinematics.flags,
 			tilemap,
@@ -192,7 +174,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap) {
 	if (!kinematics.flags[phy_t::Noclip]) {
 		side_t side = inertia > 0.0f ? side_t::Bottom : side_t::Top;
-		std::optional<collision::info_t> info = collision::attempt(
+		auto info = collision::attempt(
 			kinematics_t::predict(location, side, inertia),
 			kinematics.flags,
 			tilemap,

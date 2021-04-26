@@ -8,64 +8,8 @@
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 
-sprite_t::sprite_t(const entt::hashed_string& entry) :
-	file(nullptr),
-	amend(false),
-	timer(0.0),
-	alpha(1.0f),
-	table(0),
-	state(0),
-	direction(direction_t::Right),
-	mirroring(mirroring_t::None),
-	frame(0),
-	layer(layer_value::Automatic),
-	scale(1.0f),
-	position(0.0f),
-	pivot(0.0f),
-	angle(0.0f),
-	shake(0.0f)
-{
+sprite_t::sprite_t(const entt::hashed_string& entry) {
 	file = vfs::animation(entry);
-}
-
-sprite_t::sprite_t(const animation_t* file) :
-	file(file),
-	amend(false),
-	timer(0.0),
-	alpha(1.0f),
-	table(0),
-	state(0),
-	direction(direction_t::Right),
-	mirroring(mirroring_t::None),
-	frame(0),
-	layer(layer_value::Automatic),
-	scale(1.0f),
-	position(0.0f),
-	pivot(0.0f),
-	angle(0.0f),
-	shake(0.0f)
-{
-
-}
-
-sprite_t::sprite_t() :
-	file(nullptr),
-	amend(false),
-	timer(0.0),
-	alpha(1.0f),
-	table(0),
-	state(0),
-	variation(0),
-	mirroring(mirroring_t::None),
-	frame(0),
-	layer(layer_value::Automatic),
-	scale(1.0f),
-	position(0.0f),
-	pivot(0.0f),
-	angle(0.0f),
-	shake(0.0f)
-{
-
 }
 
 void sprite_t::reset() {
@@ -96,7 +40,7 @@ void sprite_t::new_state(arch_t state) {
 	}
 }
 
-glm::vec2 sprite_t::action_point(arch_t state, arch_t variation, mirroring_t mirroring, glm::vec2 position) const {
+glm::vec2 sprite_t::action_point(arch_t state, arch_t variation, mirroring_t mirroring, const glm::vec2& position) const {
 	if (file) {
 		return position + file->get_action_point(state, variation, mirroring);
 	}
@@ -135,10 +79,12 @@ void sprite_t::update(kontext_t& kontext, real64_t delta) {
 	});
 }
 
-void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport, bool_t panic) {
+void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, const rect_t& viewport, bool_t panic) {
+	// Keep track of previous visible sprite count
 	static arch_t previous = 0;
-	const auto view = kontext.slice<sprite_t>();
 	arch_t current = 0;
+
+	const auto view = kontext.slice<sprite_t>();
 	if (!panic) {
 		view.each([&viewport, &current](entt::entity, const sprite_t& sprite) {
 			if (sprite.file) {
@@ -155,6 +101,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t vie
 				}
 			}
 		});
+		// If the visible sprite count is different, redraw all sprites
 		panic = previous != current;
 		previous = current;
 	}

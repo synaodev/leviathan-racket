@@ -11,12 +11,13 @@ struct kontext_t;
 
 struct kinematics_t {
 public:
-	kinematics_t(glm::vec2 velocity);
-	kinematics_t();
+	kinematics_t(const glm::vec2& velocity) :
+		velocity(velocity) {}
+	kinematics_t() = default;
 	kinematics_t(const kinematics_t&) = default;
 	kinematics_t& operator=(const kinematics_t&) = default;
-	kinematics_t(kinematics_t&&) = default;
-	kinematics_t& operator=(kinematics_t&&) = default;
+	kinematics_t(kinematics_t&&) noexcept = default;
+	kinematics_t& operator=(kinematics_t&&) noexcept = default;
 	~kinematics_t() = default;
 public:
 	void reset();
@@ -37,9 +38,10 @@ private:
 	static void do_x(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap);
 	static void do_y(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap);
 public:
-	std::bitset<phy_t::Total> flags;
-	glm::vec2 velocity, anchor;
-	real_t tether;
+	std::bitset<phy_t::Total> flags { 0 };
+	glm::vec2 velocity {};
+	glm::vec2 anchor {};
+	real_t tether { 0.0f };
 };
 
 #endif // LEVIATHAN_INCLUDED_COMPONENT_KINEMATICS_HPP

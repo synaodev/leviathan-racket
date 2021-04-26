@@ -31,20 +31,6 @@ bool routine_ctor_generator_t::init(std::unordered_map<entt::id_type, routine_ct
 	return result;
 }
 
-routine_t::routine_t(routine_tick_fn tick) :
-	state(0),
-	tick(tick)
-{
-
-}
-
-routine_t::routine_t() :
-	state(0),
-	tick(nullptr)
-{
-
-}
-
 void routine_t::handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap) {
 	auto view = kontext.slice<routine_t>();
 	if (!view.empty()) {

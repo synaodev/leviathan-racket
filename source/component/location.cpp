@@ -3,39 +3,15 @@
 
 #include "../system/renderer.hpp"
 
-location_t::location_t() :
-	position(0.0f),
-	direction(direction_t::Right),
-	bounding(0.0f, 0.0f, 16.0f, 16.0f)
-{
-
-}
-
-location_t::location_t(glm::vec2 position) :
-	position(position),
-	direction(direction_t::Right),
-	bounding(0.0f, 0.0f, 16.0f, 16.0f)
-{
-
-}
-
-location_t::location_t(glm::vec2 position, direction_t direction) :
-	position(position),
-	direction(direction),
-	bounding(0.0f, 0.0f, 16.0f, 16.0f)
-{
-
-}
-
 glm::vec2 location_t::center() const {
 	return position + bounding.center();
 }
 
 rect_t location_t::hitbox() const {
-	return rect_t(
+	return rect_t {
 		position + bounding.left_top(),
 		bounding.dimensions()
-	);
+	};
 }
 
 bool location_t::overlap(const location_t& that) const {
@@ -66,15 +42,15 @@ void location_t::vert(direction_t bits) {
 	}
 }
 
-void location_t::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
-	const glm::vec4 color = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+void location_t::render(const kontext_t& kontext, renderer_t& renderer, const rect_t& viewport) {
+	const glm::vec4 color { 1.0f, 1.0f, 1.0f, 0.5f };
 	auto& list = renderer.display_list(
 		layer_value::Foreground,
 		blend_mode_t::Add,
 		program_t::Colors
 	);
 	kontext.slice<location_t>().each([&list, &viewport, &color](entt::entity, const location_t& location) {
-		rect_t hitbox = location.hitbox();
+		const rect_t hitbox = location.hitbox();
 		if (hitbox.overlaps(viewport)) {
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(hitbox, color)

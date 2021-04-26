@@ -19,7 +19,7 @@ struct naomi_state_t;
 struct kontext_t;
 struct tilemap_t;
 
-struct routine_tuple_t : public not_copyable_t {
+struct routine_tuple_t : public not_copyable_t, public not_moveable_t {
 public:
 	routine_tuple_t(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap) :
 		input(input),
@@ -31,8 +31,6 @@ public:
 		naomi(naomi),
 		kontext(kontext),
 		tilemap(tilemap) {}
-	routine_tuple_t(routine_tuple_t&&) = delete;
-	routine_tuple_t& operator=(routine_tuple_t&&) = delete;
 	~routine_tuple_t() = default;
 public:
 	const input_t& input;
@@ -49,13 +47,9 @@ public:
 using routine_ctor_fn = void(*)(entt::entity, kontext_t&);
 using routine_tick_fn = void(*)(entt::entity, routine_tuple_t&);
 
-struct routine_ctor_generator_t {
+struct routine_ctor_generator_t : public not_copyable_t, public not_moveable_t {
 public:
 	routine_ctor_generator_t(void(*callback)(std::unordered_map<entt::id_type, routine_ctor_fn>&));
-	routine_ctor_generator_t(const routine_ctor_generator_t&) = delete;
-	routine_ctor_generator_t& operator=(const routine_ctor_generator_t&) = delete;
-	routine_ctor_generator_t(routine_ctor_generator_t&&) = delete;
-	routine_ctor_generator_t& operator=(routine_ctor_generator_t&&) = delete;
 	~routine_ctor_generator_t() = default;
 public:
 	static bool init(std::unordered_map<entt::id_type, routine_ctor_fn>& ctor_table);
@@ -63,18 +57,19 @@ public:
 
 struct routine_t {
 public:
-	routine_t(routine_tick_fn tick);
-	routine_t();
+	routine_t(routine_tick_fn tick) :
+		tick(tick) {}
+	routine_t() = default;
 	routine_t(const routine_t&) = default;
 	routine_t& operator=(const routine_t&) = default;
-	routine_t(routine_t&&) = default;
-	routine_t& operator=(routine_t&&) = default;
+	routine_t(routine_t&&) noexcept = default;
+	routine_t& operator=(routine_t&&) noexcept = default;
 	~routine_t() = default;
 public:
 	static void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi, kontext_t& kontext, const tilemap_t& tilemap);
 public:
-	arch_t state;
-	routine_tick_fn tick;
+	arch_t state { 0 };
+	routine_tick_fn tick { nullptr };
 };
 
 #define LEVIATHAN_CTOR_TABLE_CREATE(TYPE, SYM)															\

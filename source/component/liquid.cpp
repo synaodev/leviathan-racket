@@ -5,38 +5,6 @@
 #include "../system/audio.hpp"
 #include "../system/renderer.hpp"
 
-#include <entt/entity/entity.hpp>
-
-liquid_body_t::liquid_body_t(rect_t hitbox) :
-	amend(true),
-	hitbox(hitbox)
-{
-
-}
-
-liquid_body_t::liquid_body_t() :
-	amend(true),
-	hitbox()
-{
-
-}
-
-liquid_listener_t::liquid_listener_t(const entt::hashed_string& particle, const entt::hashed_string& sound) :
-	liquid(entt::null),
-	particle(particle),
-	sound(sound)
-{
-
-}
-
-liquid_listener_t::liquid_listener_t() :
-	liquid(entt::null),
-	particle(),
-	sound()
-{
-
-}
-
 void liquid::handle(audio_t& audio, kontext_t& kontext, const location_t& location, liquid_listener_t& listener) {
 	auto checker = [&location, &listener](entt::entity liquid, const liquid_body_t& body) {
 		if (listener.liquid == entt::null and location.overlap(body.hitbox)) {
@@ -83,6 +51,7 @@ void liquid::handle(audio_t& audio, kontext_t& kontext) {
 }
 
 void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
+	const glm::vec4 water_color { 0.0f, 0.25f, 0.5f, 0.5f };
 	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
 		auto& list = renderer.display_list(
@@ -90,13 +59,13 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 			blend_mode_t::Add,
 			program_t::Colors
 		);
-		view.each([&list, &viewport](entt::entity, const liquid_body_t& instance) {
+		view.each([&list, &viewport, &water_color](entt::entity, const liquid_body_t& instance) {
 			if (!instance.hitbox.overlaps(viewport)) {
 				instance.amend = true;
 			} else if (instance.amend) {
 				instance.amend = false;
 				list.begin(display_list_t::SingleQuad)
-					.vtx_blank_write(instance.hitbox, glm::vec4(0.0f, 0.25f, 0.5f, 0.5f))
+					.vtx_blank_write(instance.hitbox, water_color)
 					.vtx_transform_write(instance.hitbox.left_top())
 				.end();
 			} else {

@@ -19,18 +19,6 @@
 #include <glm/gtc/constants.hpp>
 #include <tmxlite/ObjectGroup.hpp>
 
-kontext_t::kontext_t() :
-	panic_draw(false),
-	registry(),
-	spawn_commands(),
-	ctor_table(),
-	run_event(),
-	push_event(),
-	push_meter()
-{
-
-}
-
 bool kontext_t::init(receiver_t& receiver, headsup_gui_t& headsup_gui) {
 	run_event = [&receiver](sint_t id) {
 		receiver.run_event(id);
@@ -76,7 +64,7 @@ void kontext_t::update(real64_t delta) {
 	blinker_t::update(*this, delta);
 }
 
-void kontext_t::render(renderer_t& renderer, rect_t viewport) const {
+void kontext_t::render(renderer_t& renderer, const rect_t& viewport) const {
 	sprite_t::render(*this, renderer, viewport, panic_draw);
 	liquid::render(*this, renderer, viewport);
 #ifdef LEVIATHAN_USES_META
@@ -131,7 +119,7 @@ void kontext_t::kill_id(sint_t identity) {
 static const byte_t kMapActor[] = "actor";
 static const byte_t kMapWater[] = "water";
 
-bool kontext_t::create(const std::string& name, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags) {
+bool kontext_t::create(const std::string& name, const glm::vec2& position, direction_t direction, sint_t identity, arch_t flags) {
 	const entt::hashed_string type{name.c_str()};
 	auto iter = ctor_table.find(type.value());
 	if (iter != ctor_table.end()) {
@@ -180,8 +168,8 @@ bool kontext_t::create_minimally(const std::string& name, real_t x, real_t y, si
 void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kernel_t& kernel, receiver_t& receiver) {
 	auto& objects = static_cast<tmx::ObjectGroup*>(layer.get())->getObjects();
 	for (auto&& object : objects) {
-		const std::string& name = object.getName();
-		const std::string& type = object.getType();
+		auto& name = object.getName();
+		auto& type = object.getType();
 		if (type == kMapActor) {
 			direction_t direction = direction_t::Right;
 			std::string symbol;
@@ -197,13 +185,13 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 				glm::vec2 position = ftcv::vec_to_vec(object.getPosition());
 				if (this->create(name, position, direction, identity, flags)) {
 					if (identity != 0) {
-						const std::string& field = kernel.get_field();
+						auto& field = kernel.get_field();
 						receiver.push_from_symbol(identity, field, symbol);
 					}
 				}
 			}
 		} else if (type == kMapWater) {
-			rect_t hitbox = ftcv::rect_to_rect(object.getAABB());
+			const rect_t hitbox = ftcv::rect_to_rect(object.getAABB());
 			entt::entity actor = registry.create();
 			registry.emplace<actor_header_t>(actor);
 			registry.emplace<liquid_body_t>(actor, hitbox);
@@ -211,7 +199,7 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 	}
 }
 
-void kontext_t::smoke(glm::vec2 position, arch_t count) {
+void kontext_t::smoke(const glm::vec2& position, arch_t count) {
 	while (count > 0) {
 		this->spawn(ai::smoke::type, position);
 		--count;
@@ -219,10 +207,11 @@ void kontext_t::smoke(glm::vec2 position, arch_t count) {
 }
 
 void kontext_t::smoke(real_t x, real_t y, arch_t count) {
-	this->smoke(glm::vec2(x, y), count);
+	const glm::vec2 position { x, y };
+	this->smoke(position, count);
 }
 
-void kontext_t::shrapnel(glm::vec2 position, arch_t count) {
+void kontext_t::shrapnel(const glm::vec2& position, arch_t count) {
 	while (count > 0) {
 		this->spawn(ai::shrapnel::type, position);
 		--count;
@@ -230,7 +219,8 @@ void kontext_t::shrapnel(glm::vec2 position, arch_t count) {
 }
 
 void kontext_t::shrapnel(real_t x, real_t y, arch_t count) {
-	this->shrapnel(glm::vec2(x, y), count);
+	const glm::vec2 position { x, y };
+	this->shrapnel(position, count);
 }
 
 void kontext_t::bump(sint_t identity, real_t velocity_x, real_t velocity_y) {

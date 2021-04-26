@@ -27,27 +27,27 @@ struct tilemap_t;
 
 struct kontext_t : public not_copyable_t {
 public:
-	kontext_t();
-	kontext_t(kontext_t&&) = default;
-	kontext_t& operator=(kontext_t&&) = default;
+	kontext_t() = default;
+	kontext_t(kontext_t&&) noexcept = default;
+	kontext_t& operator=(kontext_t&&) noexcept = default;
 	~kontext_t() = default;
 public:
 	bool init(receiver_t& receiver, headsup_gui_t& headsup_gui);
 	void reset();
 	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, const tilemap_t& tilemap);
 	void update(real64_t delta);
-	void render(renderer_t& renderer, rect_t viewport) const;
+	void render(renderer_t& renderer, const rect_t& viewport) const;
 	entt::entity search_type(const entt::hashed_string& type) const;
 	entt::entity search_id(sint_t identity) const;
 	void destroy_id(sint_t identity);
 	void kill_id(sint_t identity);
 	bool create(const actor_spawn_t& spawn);
-	bool create(const std::string& name, glm::vec2 position, direction_t direction, sint_t identity, arch_t flags);
+	bool create(const std::string& name, const glm::vec2& position, direction_t direction, sint_t identity, arch_t flags);
 	bool create_minimally(const std::string& name, real_t x, real_t y, sint_t identity);
 	void setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kernel_t& kernel, receiver_t& receiver);
-	void smoke(glm::vec2 position, arch_t count);
+	void smoke(const glm::vec2& position, arch_t count);
 	void smoke(real_t x, real_t y, arch_t count);
-	void shrapnel(glm::vec2 position, arch_t count);
+	void shrapnel(const glm::vec2& position, arch_t count);
 	void shrapnel(real_t x, real_t y, arch_t count);
 	void bump(sint_t identity, real_t velocity_x, real_t velocity_y);
 	void animate(sint_t identity, arch_t state, arch_t variation);
@@ -84,13 +84,13 @@ public:
 	template<typename Component, typename Compare, typename... Args>
 	void sort(Compare compare, Args&& ...args);
 private:
-	mutable bool_t panic_draw;
-	entt::registry registry;
-	std::vector<actor_spawn_t> spawn_commands;
-	std::unordered_map<entt::id_type, routine_ctor_fn> ctor_table;
-	std::function<void(sint_t)> run_event;
-	std::function<void(sint_t, asIScriptFunction*)> push_event;
-	std::function<void(sint_t, sint_t)> push_meter;
+	mutable bool_t panic_draw { false };
+	entt::registry registry {};
+	std::vector<actor_spawn_t> spawn_commands {};
+	std::unordered_map<entt::id_type, routine_ctor_fn> ctor_table {};
+	std::function<void(sint_t)> run_event {};
+	std::function<void(sint_t, asIScriptFunction*)> push_event {};
+	std::function<void(sint_t, sint_t)> push_meter {};
 };
 
 inline void kontext_t::run(const actor_trigger_t& trigger) const {

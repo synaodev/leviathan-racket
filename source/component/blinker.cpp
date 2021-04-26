@@ -4,24 +4,6 @@
 
 #include "../utility/rng.hpp"
 
-blinker_t::blinker_t(arch_t first_state, arch_t blink_state) :
-	enable(true),
-	timer(0.0),
-	first_state(first_state),
-	blink_state(blink_state)
-{
-
-}
-
-blinker_t::blinker_t() :
-	enable(true),
-	timer(0.0),
-	first_state(0),
-	blink_state(0)
-{
-
-}
-
 void blinker_t::update(kontext_t& kontext, real64_t delta) {
 	kontext.slice<blinker_t, sprite_t>().each([delta](entt::entity, blinker_t& blinker, sprite_t& sprite) {
 		if (blinker.enable) {
