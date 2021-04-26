@@ -33,28 +33,6 @@ namespace kNao {
 	static constexpr sint_t Oxygens = 1500;
 }
 
-naomi_state_t::naomi_state_t() :
-	flags(0),
-	equips(0),
-	chroniker(),
-	riding(0.0f),
-	view_point(0.0f),
-	reticule(0.0f),
-	backend(nullptr),
-	last_direction(direction_t::Right),
-	max_hspeed(0.0f),
-	max_hsling(0.0f),
-	max_vspeed(0.0f),
-	move_accel(0.0f),
-	move_decel(0.0f),
-	jump_power(0.0f),
-	jump_added(0.0f),
-	grav_speed(0.0f),
-	dash_speed(0.0f)
-{
-
-}
-
 bool naomi_state_t::init(kontext_t& kontext) {
 	// First instance of entt::entity will always be zero.
 	backend = kontext.backend();
@@ -65,14 +43,19 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	}
 	auto& location = backend->emplace<location_t>(actor);
 	backend->emplace<kinematics_t>(actor);
+
 	auto& sprite = backend->emplace<sprite_t>(actor, res::anim::Naomi);
 	backend->emplace<health_t>(actor);
+
 	auto& blinker = backend->emplace<blinker_t>(actor);
 	backend->emplace<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
-	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
+
+	location.bounding = { 4.0f, 0.0f, 8.0f, 16.0f };
 	sprite.layer = 0.35f;
+
 	blinker.blink_state = naomi_anim_t::Blinking;
 	blinker.first_state = naomi_anim_t::Idle;
+
 	synao_log("Naomi is ready.\n");
 	return true;
 }
@@ -85,6 +68,7 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
+
 	location.direction = direction_t::Right;
 	kinematics.reset();
 	kinematics.flags[phy_t::Bottom] = true;
@@ -113,7 +97,7 @@ void naomi_state_t::reset(kontext_t& kontext) {
 	this->set_phys_const(false);
 }
 
-void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips) {
+void naomi_state_t::reset(kontext_t& kontext, const glm::vec2& position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips) {
 	entt::entity actor = this->get_actor();
 
 	auto& location = kontext.get<location_t>(actor);
@@ -121,8 +105,10 @@ void naomi_state_t::reset(kontext_t& kontext, glm::vec2 position, direction_t di
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
+
 	location.position = position;
 	location.direction = direction;
+
 	kinematics.reset();
 	kinematics.flags[phy_t::Bottom] = true;
 	sprite.reset();
@@ -201,6 +187,7 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 	auto& sprite = kontext.get<sprite_t>(actor);
 	auto& health = kontext.get<health_t>(actor);
 	auto& listener = kontext.get<liquid_listener_t>(actor);
+
 	this->do_begin(audio, kinematics);
 	if (flags[naomi_flags_t::Killed]) {
 		this->do_killed(location, kinematics);
@@ -322,6 +309,7 @@ void naomi_state_t::solids(entt::entity other, kontext_t& kontext, const tilemap
 	real_t n_top = naomi_hitbox.y;
 	real_t n_right = naomi_hitbox.right();
 	real_t n_bottom	= naomi_hitbox.bottom();
+
 	const auto& other_location = kontext.get<location_t>(other);
 	rect_t other_hitbox	= other_location.hitbox();
 	real_t o_left = other_hitbox.x;
@@ -419,7 +407,7 @@ void naomi_state_t::set_teleport_location(real_t x, real_t y) {
 	entt::entity actor = this->get_actor();
 
 	auto& location = backend->get<location_t>(actor);
-	location.position = glm::vec2(x, y) * 16.0f;
+	location.position = { x * 16.0f, y * 16.0f };
 }
 
 void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
@@ -450,12 +438,13 @@ void naomi_state_t::bump_kinematics(direction_t direction) {
 
 	auto& location = backend->get<location_t>(actor);
 	auto& kinematics = backend->get<kinematics_t>(actor);
+
 	if (direction & direction_t::Left) {
 		location.hori(direction_t::Right);
-		kinematics.velocity = glm::vec2(-1.0f, -2.5f);
+		kinematics.velocity = { -1.0f, -2.5f };
 	} else {
 		location.hori(direction_t::Left);
-		kinematics.velocity = glm::vec2(1.0f, -2.5f);
+		kinematics.velocity = { 1.0f, -2.5f };
 	}
 }
 
@@ -595,7 +584,9 @@ void naomi_state_t::do_invincible(sprite_t& sprite) {
 			sprite.layer = layer_value::Automatic;
 		} else {
 			sprite.amend = true;
-			sprite.layer = sprite.layer != layer_value::Automatic ? layer_value::Automatic : layer_value::Invisible;
+			sprite.layer = sprite.layer != layer_value::Automatic ?
+				layer_value::Automatic :
+				layer_value::Invisible;
 		}
 	}
 }
@@ -638,17 +629,20 @@ void naomi_state_t::do_fire(const input_t& input, audio_t& audio, kernel_t& kern
 		if (!chroniker[naomi_timer_t::Reloading]) {
 			glm::ivec4* weapon = kernel.get_item_ptr();
 			if (weapon and weapon->w != 0 and weapon->y > 0) {
+
 				glm::vec2 position = location.position;
 				direction_t direction = location.direction;
 				glm::vec2 velocity = kinematics.velocity;
 				oriented_t oriented = sprite.oriented;
 				mirroring_t mirroring = sprite.mirroring;
+
 				glm::vec2 action_point = sprite.action_point(
 					naomi_anim_t::JumpingFiring,
 					oriented,
 					mirroring,
 					position
 				);
+
 				switch (weapon->x) {
 				case naomi_weapon_t::None: {
 					break;
@@ -884,7 +878,8 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 			}
 			if (flags[naomi_flags_t::DashingCeiling]) {
 				real_t speed = location.direction & direction_t::Left ?
-					-dash_speed : dash_speed;
+					-dash_speed :
+					dash_speed;
 				if (kinematics.flags[phy_t::Right]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -931,7 +926,8 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 				}
 			} else if (flags[naomi_flags_t::DashingWalls]) {
 				real_t speed = location.direction & direction_t::Up ?
-					dash_speed : -dash_speed;
+					dash_speed :
+					-dash_speed;
 				if (kinematics.flags[phy_t::Top]) {
 					kinematics.flags[phy_t::Right] = false;
 					kinematics.flags[phy_t::Left] = false;
@@ -973,7 +969,8 @@ void naomi_state_t::do_light_dash(const input_t& input, kontext_t& kontext, loca
 				}
 			} else {
 				real_t speed = location.direction & direction_t::Left ?
-					-dash_speed : dash_speed;
+					-dash_speed :
+					dash_speed;
 				if (kinematics.flags[phy_t::Right]) {
 					flags[naomi_flags_t::DashingWalls] = true;
 					flags[naomi_flags_t::CannotFall] = true;
@@ -1040,7 +1037,8 @@ void naomi_state_t::do_wall_kick(const input_t& input, audio_t& audio, const til
 		if (!kinematics.flags[phy_t::Bottom]) {
 			if (flags[naomi_flags_t::WallJumping]) {
 				kinematics.velocity.x = location.direction & direction_t::Left ?
-					-max_hspeed : max_hspeed;
+					-max_hspeed :
+					max_hspeed;
 				if (chroniker[naomi_timer_t::WallJumping]-- <= 0) {
 					chroniker[naomi_timer_t::WallJumping] = 0;
 					flags[naomi_flags_t::WallJumping] = false;
@@ -1081,13 +1079,15 @@ void naomi_state_t::do_wall_kick(const input_t& input, audio_t& audio, const til
 
 void naomi_state_t::do_cam_move(const location_t& location) {
 	real_t x_move = location.direction & direction_t::Left ?
-		view_point.x - 1.0f : view_point.x + 1.0f;
+		view_point.x - 1.0f :
+		view_point.x + 1.0f;
 	real_t y_move = location.direction & direction_t::Up ?
-		-32.0f : 0.0f;
-	view_point = glm::vec2(
+		-32.0f :
+		0.0f;
+	view_point = {
 		glm::clamp(x_move, -32.0f, 32.0f),
 		y_move
-	);
+	};
 }
 
 void naomi_state_t::do_physics(kinematics_t& kinematics) {

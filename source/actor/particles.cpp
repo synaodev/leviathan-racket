@@ -23,7 +23,7 @@ void ai::particles::tick(entt::entity s, routine_tuple_t& rtp) {
 void ai::smoke::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 8.0f;
-	location.bounding = rect_t(6.0f, 6.0f, 4.0f, 4.0f);
+	location.bounding = { 6.0f, 6.0f, 4.0f, 4.0f };
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.accel_angle(
@@ -55,10 +55,8 @@ void ai::smoke::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::shrapnel::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position += glm::vec2(
-		rng::next(-3.0f, 3.0f) - 8.0f,
-		rng::next(-3.0f, 3.0f) - 8.0f
-	);
+	location.position.x += rng::next(-3.0f, 3.0f) - 8.0f;
+	location.position.y += rng::next(-3.0f, 3.0f) - 8.0f;
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
@@ -89,11 +87,14 @@ void ai::shrapnel::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::dust::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding =  rect_t(0.0f, 0.0f, 1.0f, 1.0f);
+	location.bounding =  { 0.0f, 0.0f, 1.0f, 1.0f };
+
 	auto& kinematics = kontext.get<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
+
 	real_t variation = rng::next(-0.08f, 0.08f);
 	real_t speed = rng::next(3.0f, 4.0f);
+
 	if (location.direction & direction_t::Down) {
 		location.position += glm::vec2(
 			rng::next(-6.0f, 6.0f), 8.0f
@@ -142,7 +143,8 @@ void ai::dust::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::splash::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position -= glm::vec2(8.0f, 16.0f);
+	location.position.x -= 8.0f;
+	location.position.y -= 16.0f;
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Splash);
 	sprite.layer = 0.6f;
@@ -231,7 +233,7 @@ void ai::barrier::ctor(entt::entity s, kontext_t& kontext) {
 
 	sprite.variation = location.direction & direction_t::Left;
 	sprite.layer = 0.6f;
-	sprite.scale = glm::vec2(2.0f);
+	sprite.scale = { 2.0f, 2.0f };
 	sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);

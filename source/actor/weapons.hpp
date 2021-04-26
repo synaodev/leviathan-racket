@@ -8,7 +8,7 @@ namespace ai {
 		entt::entity find_closest(entt::entity s, kontext_t& kontext);
 		entt::entity find_hooked(entt::entity s, kontext_t& kontext);
 		bool damage_check(entt::entity s, kontext_t& kontext);
-		bool damage_range(entt::entity s, kontext_t& kontext, glm::vec2 center, glm::vec2 dimensions);
+		bool damage_range(entt::entity s, kontext_t& kontext, const glm::vec2& center, const glm::vec2& dimensions);
 		bool reverse_range(entt::entity s, kontext_t& kontext);
 	}
 	namespace frontier {

@@ -154,14 +154,14 @@ using naomi_death_t = __enum_naomi_death::type;
 
 struct naomi_state_t : public not_copyable_t {
 public:
-	naomi_state_t();
-	naomi_state_t(naomi_state_t&&) = default;
-	naomi_state_t& operator=(naomi_state_t&&) = default;
+	naomi_state_t() = default;
+	naomi_state_t(naomi_state_t&&) noexcept = default;
+	naomi_state_t& operator=(naomi_state_t&&) noexcept = default;
 	~naomi_state_t() = default;
 public:
 	bool init(kontext_t& kontext);
 	void reset(kontext_t& kontext);
-	void reset(kontext_t& kontext, glm::vec2 position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips);
+	void reset(kontext_t& kontext, const glm::vec2& position, direction_t direction, sint_t current_barrier, sint_t maximum_barrier, sint_t leviathan, arch_t hexadecimal_equips);
 	void setup(audio_t& audio, const kernel_t& kernel, camera_t& camera, kontext_t& kontext);
 	void handle(const input_t& input, audio_t& audio, kernel_t& kernel, receiver_t& receiver, headsup_gui_t& headsup_gui, kontext_t& kontext, const tilemap_t& tilemap);
 	void damage(entt::entity other, audio_t& audio, kontext_t& kontext);
@@ -207,16 +207,23 @@ private:
 	void do_death(receiver_t& receiver, const kinematics_t& kinematics, const health_t& health);
 	void do_headsup(headsup_gui_t& headsup_gui, const health_t& health);
 private:
-	std::bitset<naomi_flags_t::Total> flags;
-	std::bitset<naomi_equips_t::Total> equips;
-	std::vector<sint64_t> chroniker;
-	glm::vec2 riding, view_point, reticule;
-	entt::registry* backend;
-	direction_t last_direction;
-	real_t max_hspeed, max_hsling, max_vspeed;
-	real_t move_accel, move_decel;
-	real_t jump_power, jump_added;
-	real_t grav_speed, dash_speed;
+	std::bitset<naomi_flags_t::Total> flags { 0 };
+	std::bitset<naomi_equips_t::Total> equips { 0 };
+	std::vector<sint64_t> chroniker {};
+	glm::vec2 riding {};
+	glm::vec2 view_point {};
+	glm::vec2 reticule {};
+	entt::registry* backend { nullptr };
+	direction_t last_direction { direction_t::Right };
+	real_t max_hspeed { 0.0f };
+	real_t max_hsling { 0.0f };
+	real_t max_vspeed { 0.0f };
+	real_t move_accel { 0.0f };
+	real_t move_decel { 0.0f };
+	real_t jump_power { 0.0f };
+	real_t jump_added { 0.0f };
+	real_t grav_speed { 0.0f };
+	real_t dash_speed { 0.0f };
 };
 
 #endif // LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP

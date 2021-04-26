@@ -23,7 +23,7 @@
 
 entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& kontext) {
 	std::vector<std::pair<entt::entity, real_t> > closelist;
-	glm::vec2 center = kontext.get<location_t>(s).center();
+	const glm::vec2 center = kontext.get<location_t>(s).center();
 	kontext.slice<actor_header_t, location_t, health_t>().each([&closelist, &center](entt::entity actor, const actor_header_t&, const location_t& location, const health_t& health) {
 		if (health.flags[health_flags_t::Leviathan]) {
 			auto element = std::make_pair(
@@ -43,7 +43,7 @@ entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& kontext) {
 
 entt::entity ai::weapons::find_hooked(entt::entity s, kontext_t& kontext) {
 	entt::entity result = entt::null;
-	rect_t zone = kontext.get<location_t>(s).hitbox();
+	const rect_t zone = kontext.get<location_t>(s).hitbox();
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (result != entt::null) {
 			if ((health.flags[health_flags_t::Hookable]) and location.overlap(zone)) {
@@ -57,7 +57,7 @@ entt::entity ai::weapons::find_hooked(entt::entity s, kontext_t& kontext) {
 
 bool ai::weapons::damage_check(entt::entity s, kontext_t& kontext) {
 	entt::entity result = entt::null;
-	rect_t zone = kontext.get<location_t>(s).hitbox();
+	const rect_t zone = kontext.get<location_t>(s).hitbox();
 	auto& attacker = kontext.get<health_t>(s);
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &attacker, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
@@ -71,9 +71,9 @@ bool ai::weapons::damage_check(entt::entity s, kontext_t& kontext) {
 	return result != entt::null;
 }
 
-bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, glm::vec2 center, glm::vec2 dimensions) {
+bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, const glm::vec2& center, const glm::vec2& dimensions) {
 	entt::entity result = entt::null;
-	rect_t zone = rect_t(center - dimensions / 2.0f, dimensions);
+	const rect_t zone { center - dimensions / 2.0f, dimensions };
 	auto& attacker = kontext.get<health_t>(s);
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone, &attacker](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
@@ -89,7 +89,7 @@ bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, glm::vec2 cen
 
 bool ai::weapons::reverse_range(entt::entity s, kontext_t& kontext) {
 	entt::entity result = entt::null;
-	rect_t zone = kontext.get<location_t>(s).hitbox();
+	const rect_t zone = kontext.get<location_t>(s).hitbox();
 	kontext.slice<actor_header_t, location_t, kinematics_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, kinematics_t& kinematics, health_t& health) {
 		if (health.flags[health_flags_t::Deflectable] and location.overlap(zone)) {
 			health.flags[health_flags_t::Leviathan] = false;
@@ -106,7 +106,8 @@ void ai::frontier::ctor(entt::entity s, kontext_t& kontext) {
 		rng::next(-2.0f, 2.0f) - 8.0f,
 		rng::next(-2.0f, 2.0f) - 8.0f
 	);
-	location.bounding = rect_t(6.0f, 6.0f, 4.0f, 4.0f);
+	location.bounding = { 6.0f, 6.0f, 4.0f, 4.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	real_t variation = rng::next(-0.261799f, 0.261799f);
 	if (location.direction & direction_t::Down) {
@@ -118,10 +119,11 @@ void ai::frontier::ctor(entt::entity s, kontext_t& kontext) {
 	} else {
 		kinematics.accel_angle(variation, 5.0f);
 	}
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Frontier);
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
-	sprite.pivot = glm::vec2(8.0f);
+	sprite.pivot = { 8.0f, 8.0f };
 	sprite.angle = rng::next(0.0f, glm::two_pi<real_t>());
 
 	auto& health = kontext.assign_if<health_t>(s);
@@ -136,10 +138,12 @@ void ai::frontier::ctor(entt::entity s, kontext_t& kontext) {
 void ai::frontier::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
 	auto& listener = rtp.kontext.get<liquid_listener_t>(s);
+
 	if (listener.liquid != entt::null and rtp.kontext.valid(listener.liquid)) {
 		auto& location = rtp.kontext.get<location_t>(s);
 		location.position.y = rtp.kontext.get<liquid_body_t>(listener.liquid).hitbox.y;
 	}
+
 	if (timer[0]-- <= 0 or weapons::damage_check(s, rtp.kontext)) {
 		rtp.kontext.dispose(s);
 	} else {
@@ -155,7 +159,8 @@ void ai::toxitier::ctor(entt::entity s, kontext_t& kontext) {
 		rng::next(-2.0f, 2.0f) - 8.0f,
 		rng::next(-2.0f, 2.0f) - 8.0f
 	);
-	location.bounding = rect_t(6.0f, 6.0f, 4.0f, 4.0f);
+	location.bounding = { 6.0f, 6.0f, 4.0f, 4.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	real_t variation = rng::next(-0.261799f, 0.261799f);
 	if (location.direction & direction_t::Down) {
@@ -167,12 +172,15 @@ void ai::toxitier::ctor(entt::entity s, kontext_t& kontext) {
 	} else {
 		kinematics.accel_angle(variation, 3.0f);
 	}
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Frontier);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 3;
+
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 60;
 	kontext.assign_if<liquid_listener_t>(s);
@@ -184,6 +192,7 @@ void ai::toxitier::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
 	auto& listener = rtp.kontext.get<liquid_listener_t>(s);
+
 	if (listener.liquid == entt::null or
 		!rtp.kontext.valid(listener.liquid) or
 		timer[0]-- <= 0 or
@@ -199,10 +208,12 @@ void ai::toxitier::tick(entt::entity s, routine_tuple_t& rtp) {
 void ai::weak_hammer::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 8.0f;
-	location.bounding = rect_t(2.0f, 2.0f, 12.0f, 12.0f);
+	location.bounding = { 2.0f, 2.0f, 12.0f, 12.0f };
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Hammer);
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
 	if (location.direction & direction_t::Down) {
@@ -218,8 +229,10 @@ void ai::weak_hammer::ctor(entt::entity s, kontext_t& kontext) {
 	} else {
 		kinematics.velocity.x += 5.0f;
 	}
+
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 9;
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 1;
 	kontext.assign_if<routine_t>(s, tick);
@@ -228,6 +241,7 @@ void ai::weak_hammer::ctor(entt::entity s, kontext_t& kontext) {
 void ai::weak_hammer::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
 	auto& routine = rtp.kontext.get<routine_t>(s);
+
 	if (timer[0]-- <= 0) {
 		rtp.kontext.dispose(s);
 	} else if (!routine.state and weapons::damage_check(s, rtp.kontext)) {
@@ -241,11 +255,13 @@ void ai::weak_hammer::tick(entt::entity s, routine_tuple_t& rtp) {
 void ai::strong_hammer::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 12.0f;
-	location.bounding = rect_t(4.0f, 4.0f, 16.0f, 16.0f);
+	location.bounding = { 4.0f, 4.0f, 16.0f, 16.0f };
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Hammer);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
 	if (location.direction & direction_t::Down) {
@@ -261,8 +277,10 @@ void ai::strong_hammer::ctor(entt::entity s, kontext_t& kontext) {
 	} else {
 		kinematics.velocity.x += 6.0f;
 	}
+
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 12;
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 4;
 	kontext.assign_if<routine_t>(s, tick);
@@ -283,8 +301,8 @@ void ai::strong_hammer::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::holy_lance::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position -= glm::vec2(8.0f);
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 8.0f);
+	location.position -= 8.0f;
+	location.bounding = { 4.0f, 4.0f, 8.0f, 8.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.layer = 0.6f;
@@ -306,6 +324,7 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
 	auto& routine = rtp.kontext.get<routine_t>(s);
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
+
 	switch (routine.state) {
 	case 0: /* Search Hooked */ {
 		if (timer[0]++ < 10) {
@@ -388,14 +407,17 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::holy_tether::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(0.0f, 0.0f, 1.0f, 1.0f);
+	location.bounding = { 0.0f, 0.0f, 1.0f, 1.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
-	sprite.pivot = glm::vec2(0.5f);
+	sprite.pivot = { 0.5f, 0.5f };
+
 	kontext.assign_if<routine_t>(s, tick);
 }
 
@@ -413,9 +435,7 @@ void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 		location.position = naomi_center;
 		sprite.amend = true;
 		sprite.angle = angle;
-		sprite.scale = glm::vec2(
-			glm::distance(naomi_center, actor_center), 1.0f
-		);
+		sprite.scale = { glm::distance(naomi_center, actor_center), 1.0f };
 	} else {
 		rtp.kontext.dispose(s);
 	}
@@ -427,7 +447,8 @@ void ai::kannon::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 8.0f;
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 8.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 8.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	if (location.direction & direction_t::Down) {
 		kinematics.velocity.x = 0.0f;
@@ -483,6 +504,7 @@ void ai::kannon::tick(entt::entity s, routine_tuple_t& rtp) {
 			0.1f : -0.1f, kTopSpeed
 		);
 	}
+
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
 	if (kinematics.any_side() or
 		weapons::damage_check(s, rtp.kontext) or
@@ -502,10 +524,12 @@ void ai::nail_ray::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 16.0f;
-	location.bounding = rect_t(8.0f, 8.0f, 16.0f, 16.0f);
+	location.bounding = { 8.0f, 8.0f, 16.0f, 16.0f };
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::NailRay);
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	if (location.direction & direction_t::Down) {
 		kinematics.velocity.y = kTopSpeed;
@@ -513,11 +537,12 @@ void ai::nail_ray::ctor(entt::entity s, kontext_t& kontext) {
 	} else if (location.direction & direction_t::Up) {
 		kinematics.velocity.y = -kTopSpeed;
 	} else if (location.direction & direction_t::Left) {
-		kinematics.velocity = glm::vec2(-kTopSpeed, kLowSpeed);
+		kinematics.velocity = { -kTopSpeed, kLowSpeed };
 		sprite.mirroring = mirroring_t::Horizontal;
 	} else {
-		kinematics.velocity = glm::vec2(kTopSpeed, kLowSpeed);
+		kinematics.velocity = { kTopSpeed, kLowSpeed };
 	}
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 4;
 	kontext.assign_if<actor_timer_t>(s);
@@ -528,6 +553,7 @@ void ai::nail_ray::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
+
 	if (kinematics.any_side() or timer[0]++ > 42) {
 		rtp.audio.play(res::sfx::Bwall, 5);
 		rtp.kontext.spawn(ai::blast_small::type, location.center());
@@ -541,14 +567,17 @@ void ai::nail_ray::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::wolf_vulcan::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(0.0f, 0.0f, 1.0f, 1.0f);
+	location.bounding = { 0.0f, 0.0f, 1.0f, 1.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
-	sprite.pivot = glm::vec2(0.5f);
+	sprite.pivot = { 0.5f, 0.5f };
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 4;
 	kontext.assign_if<actor_timer_t>(s);
@@ -559,6 +588,7 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
+
 	if (!timer[0]) {
 		timer[0]++;
 		real_t angle = 0.0f;
@@ -574,9 +604,7 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 			location.position, angle
 		);
 		sprite.amend = true;
-		sprite.scale = glm::vec2(
-			glm::distance(location.position, end_point), 1.0f
-		);
+		sprite.scale = { glm::distance(location.position, end_point), 1.0f };
 		sprite.angle = glm::atan(
 			end_point.y - location.position.y,
 			end_point.x - location.position.x
@@ -598,7 +626,8 @@ void ai::austere::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& location = kontext.get<location_t>(s);
 	location.position -= 8.0f;
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 8.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 8.0f };
+
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	if (location.direction & direction_t::Down) {
 		location.direction = direction_t::Left;
@@ -607,18 +636,23 @@ void ai::austere::ctor(entt::entity s, kontext_t& kontext) {
 		location.direction = direction_t::Right;
 		kinematics.velocity.y = kTopSpeed;
 	} else if (location.direction & direction_t::Left) {
-		kinematics.velocity = glm::vec2(-kTopSpeed, kLowSpeed);
+		kinematics.velocity = { -kTopSpeed, kLowSpeed };
 	} else {
-		kinematics.velocity = glm::vec2(kTopSpeed, kLowSpeed);
+		kinematics.velocity = { kTopSpeed, kLowSpeed };
 	}
+
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::WolfVulcan);
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 3;
+
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 60;
+
 	kontext.assign_if<routine_t>(s, tick);
+
 	auto& header = kontext.get<actor_header_t>(s);
 	header.attach = weapons::find_closest(s, kontext);
 }
@@ -630,6 +664,7 @@ void ai::austere::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
+
 	if (header.attach != entt::null and rtp.kontext.valid(header.attach)) {
 		glm::vec2 actor_center = location.center();
 		glm::vec2 attach_center = rtp.kontext.get<location_t>(header.attach).center();
@@ -639,6 +674,7 @@ void ai::austere::tick(entt::entity s, routine_tuple_t& rtp) {
 		);
 		kinematics.accel_angle(angle, -kSpeed);
 	}
+
 	if (kinematics.any_side() or
 		weapons::damage_check(s, rtp.kontext) or
 		timer[0]-- <= 0) {

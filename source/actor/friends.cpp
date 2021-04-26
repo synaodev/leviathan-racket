@@ -16,7 +16,7 @@ void ai::friends::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::kyoko::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, -2.0f, 8.0f, 18.0f);
+	location.bounding = { 4.0f, -2.0f, 8.0f, 18.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Kyoko);
 	sprite.table = 0;
@@ -31,7 +31,7 @@ void ai::kyoko::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::nauzika::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(5.0f, 0.0f, 8.0f, 16.0f);
+	location.bounding = { 5.0f, 0.0f, 8.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Nauzika);
 	sprite.table = 0;
@@ -46,7 +46,7 @@ void ai::nauzika::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::senma::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, -8.0f, 8.0f, 24.0f);
+	location.bounding = { 4.0f, -8.0f, 8.0f, 24.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Senma);
 	sprite.table = 0;
@@ -61,7 +61,7 @@ void ai::senma::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::fox::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
+	location.bounding = { 4.0f, 0.0f, 8.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Foxie);
 	sprite.table = 0;
@@ -76,7 +76,7 @@ void ai::fox::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::gyo::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 0.0f, 8.0f, 16.0f);
+	location.bounding = { 4.0f, 0.0f, 8.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::GyoShin);
 	sprite.table = 0;

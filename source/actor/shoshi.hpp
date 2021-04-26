@@ -6,14 +6,14 @@
 namespace ai {
 	struct shoshi_state_t {
 	public:
-		shoshi_state_t() : augment(false) {}
+		shoshi_state_t() = default;
 		shoshi_state_t(const shoshi_state_t&) = default;
 		shoshi_state_t& operator=(const shoshi_state_t&) = default;
-		shoshi_state_t(shoshi_state_t&&) = default;
-		shoshi_state_t& operator=(shoshi_state_t&&) = default;
+		shoshi_state_t(shoshi_state_t&&) noexcept = default;
+		shoshi_state_t& operator=(shoshi_state_t&&) noexcept = default;
 		~shoshi_state_t() = default;
 	public:
-		bool_t augment;
+		bool_t augment { false };
 	};
 	namespace shoshi {
 		constexpr entt::hashed_string type = "shoshi";

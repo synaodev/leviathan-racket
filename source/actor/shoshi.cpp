@@ -24,7 +24,7 @@ static bool test_shoshi_sprite_mirroring(mirroring_t mirroring, direction_t dire
 
 void ai::shoshi::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 12.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0;
@@ -41,6 +41,7 @@ void ai::shoshi::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	auto& routine = rtp.kontext.get<routine_t>(s);
+
 	if (!routine.state) {
 		if (kinematics.velocity.x != 0.0f) {
 			location.direction = kinematics.velocity.x > 0.0f ? direction_t::Right : direction_t::Left;
@@ -64,7 +65,7 @@ void ai::shoshi::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 12.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.state = 3;
@@ -99,7 +100,7 @@ void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
 	kontext.assign_if<shoshi_state_t>(s);
 
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 12.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 12.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0;
@@ -125,10 +126,10 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	bool should_jump = false;
 	glm::vec2 naomi_center = naomi_location.center();
 	glm::vec2 shoshi_center = location.center();
-	glm::vec2 box_distance = glm::vec2(
+	glm::vec2 box_distance {
 		glm::abs(naomi_center.x - shoshi_center.x),
 		glm::abs(naomi_center.y - shoshi_center.y)
-	);
+	};
 
 	real_t kMaxHsp = 2.0f;
 	real_t kMaxVsp = 6.0f;

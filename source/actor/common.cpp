@@ -15,9 +15,9 @@ void ai::null::ctor(entt::entity, kontext_t&) {}
 void ai::hv_trigger::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
 	if (location.direction & direction_t::Up or location.direction & direction_t::Down) {
-		location.bounding = rect_t(0.0f, -48.0f, 16.0f, 112.0f);
+		location.bounding = { 0.0f, -48.0f, 16.0f, 112.0f };
 	} else {
-		location.bounding = rect_t(-48.0f, 0.0f, 112.0f, 16.0f);
+		location.bounding = { -48.0f, 0.0f, 112.0f, 16.0f };
 	}
 }
 
@@ -48,16 +48,16 @@ void ai::door::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::spikes::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 4.0f, 8.0f, 8.0f);
+	location.bounding = { 4.0f, 4.0f, 8.0f, 8.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Death);
 	sprite.position = location.position;
-	sprite.pivot = glm::vec2(8.0f);
+	sprite.pivot = { 8.0f, 8.0f };
 }
 
 void ai::death_spikes::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(4.0f, 4.0f, 24.0f, 12.0f);
+	location.bounding = { 4.0f, 4.0f, 24.0f, 12.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Death);
 	sprite.position = location.position;
@@ -68,7 +68,7 @@ void ai::death_spikes::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::bed::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.bounding = rect_t(8.0f, 0.0f, 16.0f, 16.0f);
+	location.bounding = { 8.0f, 0.0f, 16.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Helpful);
 	sprite.state = 0;
@@ -83,8 +83,8 @@ void ai::ammo_station::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::computer::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position -= glm::vec2(2.0f, 0.0f);
-	location.bounding = rect_t(5.0f, 0.0f, 16.0f, 16.0f);
+	location.position.x -= 2.0f;
+	location.bounding = { 5.0f, 0.0f, 16.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Computer);
 	sprite.position = location.position;
