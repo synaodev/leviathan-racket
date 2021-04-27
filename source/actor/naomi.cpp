@@ -322,13 +322,18 @@ void naomi_state_t::solids(entt::entity other, kontext_t& kontext, const tilemap
 	if (n_top < o_bottom - kPushyMargin and n_bottom > o_top + kPushyMargin) {
 		auto& naomi_kinematics = kontext.get<kinematics_t>(actor);
 		const auto& other_kinematics = kontext.get<kinematics_t>(other);
+
 		if (n_right > o_left and n_right < o_center_x) {
 			naomi_location.position.x = other_hitbox.side(side_t::Left) - naomi_location.bounding.side(side_t::Right);
-			naomi_kinematics.velocity.x = other_kinematics.velocity.x < 0.0f ? other_kinematics.velocity.x : 0.0f;
+			naomi_kinematics.velocity.x = other_kinematics.velocity.x < 0.0f ?
+				other_kinematics.velocity.x :
+				0.0f;
 		}
 		if (n_left < o_right and n_left > o_center_x) {
 			naomi_location.position.x = other_hitbox.side(side_t::Right) - naomi_location.bounding.side(side_t::Left);
-			naomi_kinematics.velocity.x = other_kinematics.velocity.x > 0.0f ? other_kinematics.velocity.x : 0.0f;
+			naomi_kinematics.velocity.x = other_kinematics.velocity.x > 0.0f ?
+				other_kinematics.velocity.x :
+				0.0f;
 		}
 	}
 	if (n_left > o_right - kStandMargin or n_right < o_left + kStandMargin) {
@@ -336,11 +341,13 @@ void naomi_state_t::solids(entt::entity other, kontext_t& kontext, const tilemap
 	} else {
 		auto& naomi_kinematics = kontext.get<kinematics_t>(actor);
 		const auto& other_kinematics = kontext.get<kinematics_t>(other);
+
 		if (n_bottom >= o_top and n_bottom <= o_center_y) {
 			naomi_location.position.y = other_hitbox.side(side_t::Top) - naomi_location.bounding.side(side_t::Bottom);
 			naomi_kinematics.velocity.y = 0.0f;
 			kinematics_t::handle(naomi_location, naomi_kinematics, tilemap, other_kinematics.velocity);
 			naomi_kinematics.flags[phy_t::Bottom] = true;
+
 			if (other_kinematics.velocity.x != 0.0f and riding.x == 0.0f) {
 				naomi_location.position.x -= other_kinematics.velocity.x;
 				naomi_kinematics.velocity.x = 0.0f;
@@ -349,10 +356,13 @@ void naomi_state_t::solids(entt::entity other, kontext_t& kontext, const tilemap
 				naomi_location.position.y -= other_kinematics.velocity.y;
 				naomi_kinematics.velocity.y = 0.0f;
 			}
+
 			riding = other_kinematics.velocity;
 		} else if (n_top < o_bottom and n_top > o_center_y) {
 			naomi_location.position.y = other_hitbox.side(side_t::Bottom) - naomi_location.bounding.side(side_t::Top);
-			naomi_kinematics.velocity.y = other_kinematics.velocity.y > 0.0f ? other_kinematics.velocity.y : 0.0f;
+			naomi_kinematics.velocity.y = other_kinematics.velocity.y > 0.0f ?
+				other_kinematics.velocity.y :
+				0.0f;
 		}
 	}
 }
@@ -407,7 +417,8 @@ void naomi_state_t::set_teleport_location(real_t x, real_t y) {
 	entt::entity actor = this->get_actor();
 
 	auto& location = backend->get<location_t>(actor);
-	location.position = { x * 16.0f, y * 16.0f };
+	location.position = { x, y };
+	location.position *= 16.0f;
 }
 
 void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
@@ -821,6 +832,7 @@ void naomi_state_t::do_jump(const input_t& input, audio_t& audio, kinematics_t& 
 	if (!kinematics.flags[phy_t::Bottom]) {
 		kinematics.velocity.x += riding.x;
 		riding = glm::zero<glm::vec2>();
+
 		if (!locked) {
 			if (!flags[naomi_flags_t::WallPrepare] and !flags[naomi_flags_t::TetheredTile]) {
 				if (input.holding[btn_t::Jump]) {

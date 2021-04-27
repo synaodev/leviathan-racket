@@ -55,8 +55,9 @@ void ai::smoke::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::shrapnel::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position.x += rng::next(-3.0f, 3.0f) - 8.0f;
-	location.position.y += rng::next(-3.0f, 3.0f) - 8.0f;
+	location.position -= 8.0f;
+	location.position.x += rng::next(-3.0f, 3.0f);
+	location.position.y += rng::next(-3.0f, 3.0f);
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
@@ -96,30 +97,26 @@ void ai::dust::ctor(entt::entity s, kontext_t& kontext) {
 	real_t speed = rng::next(3.0f, 4.0f);
 
 	if (location.direction & direction_t::Down) {
-		location.position += glm::vec2(
-			rng::next(-6.0f, 6.0f), 8.0f
-		);
+		location.position.x += rng::next(-6.0f, 6.0f);
+		location.position.y += 8.0f;
 		kinematics.accel_angle(
 			glm::half_pi<real_t>() + variation, speed
 		);
 	} else if (location.direction & direction_t::Up) {
-		location.position += glm::vec2(
-			rng::next(-6.0f, 6.0f), -8.0f
-		);
+		location.position.x += rng::next(-6.0f, 6.0f);
+		location.position.y -= 8.0f;
 		kinematics.accel_angle(
 			1.5f * glm::pi<real_t>() + variation, speed
 		);
 	} else if (location.direction & direction_t::Left) {
-		location.position += glm::vec2(
-			-8.0f, rng::next(-6.0f, 6.0f)
-		);
+		location.position.x -= 8.0f;
+		location.position.y += rng::next(-6.0f, 6.0f);
 		kinematics.accel_angle(
 			glm::pi<real_t>() + variation, speed
 		);
 	} else {
-		location.position += glm::vec2(
-			8.0f, rng::next(-6.0f, 6.0f)
-		);
+		location.position.x += 8.0f;
+		location.position.y += rng::next(-6.0f, 6.0f);
 		kinematics.accel_angle(
 			variation, speed
 		);
@@ -246,12 +243,13 @@ void ai::barrier::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	auto& timer = rtp.kontext.get<actor_timer_t>(s);
+
 	if (timer[0]-- <= 0) {
 		rtp.kontext.dispose(s);
 	} else {
-		glm::vec2 scale = sprite.scale / 2.0f;
-		glm::vec2 dimensions = glm::vec2(32.0f, 22.0f) * scale;
-		location.position = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center() - dimensions;
+		const glm::vec2 scale = sprite.scale / 2.0f;
+		const glm::vec2 dimensions { 32.0f, 22.0f };
+		location.position = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center() - (dimensions * scale);
 	}
 }
 

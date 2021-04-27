@@ -22,28 +22,32 @@
 // Functions
 
 entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& kontext) {
-	std::vector<std::pair<entt::entity, real_t> > closelist;
 	const glm::vec2 center = kontext.get<location_t>(s).center();
-	kontext.slice<actor_header_t, location_t, health_t>().each([&closelist, &center](entt::entity actor, const actor_header_t&, const location_t& location, const health_t& health) {
+
+	std::vector<std::pair<entt::entity, real_t> > list;
+
+	kontext.slice<actor_header_t, location_t, health_t>().each([&list, &center](entt::entity actor, const actor_header_t&, const location_t& location, const health_t& health) {
 		if (health.flags[health_flags_t::Leviathan]) {
 			auto element = std::make_pair(
 				actor, glm::distance(center, location.center())
 			);
-			closelist.push_back(element);
+			list.push_back(element);
 		}
 	});
-	if (!closelist.empty()) {
-		std::sort(closelist.begin(), closelist.end(), [](const auto& a, const auto& b) {
+	if (!list.empty()) {
+		std::sort(list.begin(), list.end(), [](const auto& a, const auto& b) {
 			return std::get<real_t>(a) < std::get<real_t>(b);
 		});
-		return std::get<entt::entity>(closelist.front());
+		return std::get<entt::entity>(list.front());
 	}
 	return entt::null;
 }
 
 entt::entity ai::weapons::find_hooked(entt::entity s, kontext_t& kontext) {
-	entt::entity result = entt::null;
 	const rect_t zone = kontext.get<location_t>(s).hitbox();
+
+	entt::entity result = entt::null;
+
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (result != entt::null) {
 			if ((health.flags[health_flags_t::Hookable]) and location.overlap(zone)) {
@@ -56,9 +60,11 @@ entt::entity ai::weapons::find_hooked(entt::entity s, kontext_t& kontext) {
 }
 
 bool ai::weapons::damage_check(entt::entity s, kontext_t& kontext) {
-	entt::entity result = entt::null;
 	const rect_t zone = kontext.get<location_t>(s).hitbox();
 	auto& attacker = kontext.get<health_t>(s);
+
+	entt::entity result = entt::null;
+
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &attacker, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
 			if (location.overlap(zone)) {
@@ -72,9 +78,11 @@ bool ai::weapons::damage_check(entt::entity s, kontext_t& kontext) {
 }
 
 bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, const glm::vec2& center, const glm::vec2& dimensions) {
-	entt::entity result = entt::null;
 	const rect_t zone { center - dimensions / 2.0f, dimensions };
 	auto& attacker = kontext.get<health_t>(s);
+
+	entt::entity result = entt::null;
+
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone, &attacker](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
 			if (location.overlap(zone)) {
@@ -88,8 +96,10 @@ bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, const glm::ve
 }
 
 bool ai::weapons::reverse_range(entt::entity s, kontext_t& kontext) {
-	entt::entity result = entt::null;
 	const rect_t zone = kontext.get<location_t>(s).hitbox();
+
+	entt::entity result = entt::null;
+
 	kontext.slice<actor_header_t, location_t, kinematics_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, kinematics_t& kinematics, health_t& health) {
 		if (health.flags[health_flags_t::Deflectable] and location.overlap(zone)) {
 			health.flags[health_flags_t::Leviathan] = false;
@@ -102,10 +112,9 @@ bool ai::weapons::reverse_range(entt::entity s, kontext_t& kontext) {
 
 void ai::frontier::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position += glm::vec2(
-		rng::next(-2.0f, 2.0f) - 8.0f,
-		rng::next(-2.0f, 2.0f) - 8.0f
-	);
+	location.position -= 8.0f;
+	location.position.x += rng::next(-2.0f, 2.0f);
+	location.position.y += rng::next(-2.0f, 2.0f);
 	location.bounding = { 6.0f, 6.0f, 4.0f, 4.0f };
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
@@ -155,14 +164,14 @@ void ai::frontier::tick(entt::entity s, routine_tuple_t& rtp) {
 
 void ai::toxitier::ctor(entt::entity s, kontext_t& kontext) {
 	auto& location = kontext.get<location_t>(s);
-	location.position += glm::vec2(
-		rng::next(-2.0f, 2.0f) - 8.0f,
-		rng::next(-2.0f, 2.0f) - 8.0f
-	);
+	location.position -= 8.0f;
+	location.position.x += rng::next(-2.0f, 2.0f);
+	location.position.y += rng::next(-2.0f, 2.0f);
 	location.bounding = { 6.0f, 6.0f, 4.0f, 4.0f };
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	real_t variation = rng::next(-0.261799f, 0.261799f);
+
 	if (location.direction & direction_t::Down) {
 		kinematics.accel_angle(glm::half_pi<real_t>() + variation, 3.0f);
 	} else if (location.direction & direction_t::Up) {
@@ -424,6 +433,7 @@ void ai::holy_tether::ctor(entt::entity s, kontext_t& kontext) {
 void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
+
 	entt::entity lance = rtp.kontext.search_type(ai::holy_lance::type);
 	if (lance != entt::null) {
 		glm::vec2 naomi_center = rtp.kontext.get<location_t>(rtp.naomi.get_actor()).center();
@@ -482,6 +492,7 @@ void ai::kannon::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Kannon);
 	sprite.layer = 0.6f;
 	sprite.position = location.position;
+
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 9;
 	kontext.assign_if<actor_timer_t>(s);
@@ -493,6 +504,7 @@ void ai::kannon::tick(entt::entity s, routine_tuple_t& rtp) {
 
 	auto& location = rtp.kontext.get<location_t>(s);
 	auto& kinematics = rtp.kontext.get<kinematics_t>(s);
+
 	if (kinematics.velocity.x != 0.0f) {
 		kinematics.accel_x(
 			kinematics.velocity.x > 0.0f ?

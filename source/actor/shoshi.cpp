@@ -44,7 +44,9 @@ void ai::shoshi::tick(entt::entity s, routine_tuple_t& rtp) {
 
 	if (!routine.state) {
 		if (kinematics.velocity.x != 0.0f) {
-			location.direction = kinematics.velocity.x > 0.0f ? direction_t::Right : direction_t::Left;
+			location.direction = kinematics.velocity.x > 0.0f ?
+				direction_t::Right :
+				direction_t::Left;
 			if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
 				sprite.amend = true;
 				if (location.direction & direction_t::Left) {
@@ -81,6 +83,7 @@ void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
 void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& naomi_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
 	auto& location = rtp.kontext.get<location_t>(s);
+
 	location.position = naomi_location.position;
 	location.hori(
 		naomi_location.direction & direction_t::Left ?
