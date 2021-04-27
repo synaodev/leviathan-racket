@@ -89,10 +89,10 @@ public:
 	arch_t length { 0 };
 public:
 	vertex_spec_t() = default;
-	vertex_spec_t(const vertex_spec_t& that) = default;
-	vertex_spec_t(vertex_spec_t&& that) noexcept = default;
-	vertex_spec_t& operator=(const vertex_spec_t& that) = default;
-	vertex_spec_t& operator=(vertex_spec_t&& that) noexcept = default;
+	vertex_spec_t(const vertex_spec_t&) = default;
+	vertex_spec_t(vertex_spec_t&&) noexcept = default;
+	vertex_spec_t& operator=(const vertex_spec_t&) = default;
+	vertex_spec_t& operator=(vertex_spec_t&&) noexcept = default;
 	~vertex_spec_t() = default;
 public:
 	static bool compare(const uint_t* lhv, const uint_t* rhv);

@@ -7,44 +7,14 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtc/constants.hpp>
 
-display_list_t::display_list_t(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline, const quad_allocator_t* allocator) :
-	layer(layer),
-	blend_mode(blend_mode),
-	pipeline(pipeline)
-{
-	vertex_spec_t specify;
-	if (pipeline) {
-		specify = pipeline->get_specify();
-	}
-	quad_pool.setup(specify);
-	quad_buffer.setup(allocator, buffer_usage_t::Dynamic, specify);
-}
-
-display_list_t::display_list_t(display_list_t&& that) noexcept : display_list_t() {
-	if (this != &that) {
-		std::swap(layer, that.layer);
-		std::swap(blend_mode, that.blend_mode);
-		std::swap(pipeline, that.pipeline);
-		std::swap(visible, that.visible);
-		std::swap(amend, that.amend);
-		std::swap(current, that.current);
-		std::swap(account, that.account);
-		std::swap(quad_pool, that.quad_pool);
-		std::swap(quad_buffer, that.quad_buffer);
-	}
-}
-
-display_list_t& display_list_t::operator=(display_list_t&& that) noexcept {
-	if (this != &that) {
-		std::swap(layer, that.layer);
-		std::swap(blend_mode, that.blend_mode);
-		std::swap(pipeline, that.pipeline);
-		std::swap(visible, that.visible);
-		std::swap(amend, that.amend);
-		std::swap(current, that.current);
-		std::swap(account, that.account);
-		std::swap(quad_pool, that.quad_pool);
-		std::swap(quad_buffer, that.quad_buffer);
+display_list_t& display_list_t::setup(const quad_allocator_t* allocator) {
+	if (!quad_buffer.valid()) {
+		vertex_spec_t specify;
+		if (pipeline) {
+			specify = pipeline->get_specify();
+		}
+		quad_pool.setup(specify);
+		quad_buffer.setup(allocator, buffer_usage_t::Dynamic, specify);
 	}
 	return *this;
 }

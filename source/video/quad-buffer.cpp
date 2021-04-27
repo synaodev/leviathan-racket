@@ -75,7 +75,9 @@ arch_t quad_allocator_t::convert(arch_t length) {
 }
 
 std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
-	std::vector<uint16_t> result(quad_allocator_t::convert(length));
+	std::vector<uint16_t> result;
+	result.resize(quad_allocator_t::convert(length));
+
 	arch_t it = 0;
 	uint16_t ut = static_cast<uint16_t>(offset);
 	while (it < result.size()) {
@@ -99,7 +101,7 @@ std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, p
 }
 
 void quad_buffer_t::setup(const quad_allocator_t* allocator, buffer_usage_t usage, vertex_spec_t specify) {
-	if (allocator and allocator->valid()) {
+	if (allocator->valid()) {
 		this->destroy();
 		this->allocator = allocator;
 		this->usage = usage;
@@ -138,6 +140,8 @@ void quad_buffer_t::create(arch_t length) {
 
 void quad_buffer_t::destroy() {
 	allocator = nullptr;
+	usage = buffer_usage_t::Static;
+	specify = vertex_spec_t {};
 	if (arrays != 0) {
 		glCheck(glBindVertexArray(0));
 		glCheck(glDeleteVertexArrays(1, &arrays));
@@ -201,4 +205,8 @@ buffer_usage_t quad_buffer_t::get_usage() const {
 
 arch_t quad_buffer_t::get_length() const {
 	return length;
+}
+
+bool quad_buffer_t::valid() const {
+	return allocator and arrays != 0;
 }

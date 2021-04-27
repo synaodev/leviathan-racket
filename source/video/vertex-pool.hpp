@@ -9,8 +9,8 @@
 struct vertex_pool_t : public not_copyable_t {
 public:
 	vertex_pool_t() = default;
-	vertex_pool_t(vertex_pool_t&& that) noexcept = default;
-	vertex_pool_t& operator=(vertex_pool_t&& that) noexcept = default;
+	vertex_pool_t(vertex_pool_t&&) noexcept = default;
+	vertex_pool_t& operator=(vertex_pool_t&&) noexcept = default;
 	~vertex_pool_t() = default;
 public:
 	void setup(vertex_spec_t specify);

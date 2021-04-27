@@ -11,8 +11,8 @@ struct quad_buffer_t;
 struct quad_allocator_t : public not_copyable_t {
 public:
 	quad_allocator_t() = default;
-	quad_allocator_t(quad_allocator_t&& that) noexcept = default;
-	quad_allocator_t& operator=(quad_allocator_t&& that) noexcept = default;
+	quad_allocator_t(quad_allocator_t&&) noexcept = default;
+	quad_allocator_t& operator=(quad_allocator_t&&) noexcept = default;
 	~quad_allocator_t() {
 		this->destroy();
 	}
@@ -35,8 +35,8 @@ private:
 struct quad_buffer_t : public not_copyable_t {
 public:
 	quad_buffer_t() = default;
-	quad_buffer_t(quad_buffer_t&& that) noexcept = default;
-	quad_buffer_t& operator=(quad_buffer_t&& that) noexcept = default;
+	quad_buffer_t(quad_buffer_t&&) noexcept = default;
+	quad_buffer_t& operator=(quad_buffer_t&&) noexcept = default;
 	~quad_buffer_t() {
 		this->destroy();
 	}
@@ -51,6 +51,7 @@ public:
 	void draw() const;
 	buffer_usage_t get_usage() const;
 	arch_t get_length() const;
+	bool valid() const;
 private:
 	friend struct gfx_t;
 	const quad_allocator_t* allocator { nullptr };

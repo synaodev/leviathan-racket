@@ -172,9 +172,12 @@ display_list_t& renderer_t::display_list(layer_t layer, blend_mode_t blend_mode,
 	}
 	display_lists.emplace_back(
 		layer, blend_mode,
-		&pipelines[program],
-		&quad_allocator
+		&pipelines[program]
 	);
 	std::sort(display_lists.begin(), display_lists.end());
-	return this->display_list(layer, blend_mode, program);
+	return this->display_list(
+		layer,
+		blend_mode,
+		program
+	).setup(&quad_allocator);
 }

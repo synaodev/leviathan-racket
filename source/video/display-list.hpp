@@ -14,12 +14,42 @@ struct rect_t;
 
 struct display_list_t : public not_copyable_t {
 public:
-	display_list_t(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline, const quad_allocator_t* allocator);
+	display_list_t(layer_t layer, blend_mode_t blend_mode, const pipeline_t* pipeline) :
+		layer(layer),
+		blend_mode(blend_mode),
+		pipeline(pipeline) {}
 	display_list_t() = default;
-	display_list_t(display_list_t&& that) noexcept;
-	display_list_t& operator=(display_list_t&& that) noexcept;
+	// The default move constructors don't play nice with std::sort
+	display_list_t(display_list_t&& that) noexcept : display_list_t() {
+		if (this != &that) {
+			std::swap(layer, that.layer);
+			std::swap(blend_mode, that.blend_mode);
+			std::swap(pipeline, that.pipeline);
+			std::swap(visible, that.visible);
+			std::swap(amend, that.amend);
+			std::swap(current, that.current);
+			std::swap(account, that.account);
+			std::swap(quad_pool, that.quad_pool);
+			std::swap(quad_buffer, that.quad_buffer);
+		}
+	}
+	display_list_t& operator=(display_list_t&& that) noexcept {
+		if (this != &that) {
+			std::swap(layer, that.layer);
+			std::swap(blend_mode, that.blend_mode);
+			std::swap(pipeline, that.pipeline);
+			std::swap(visible, that.visible);
+			std::swap(amend, that.amend);
+			std::swap(current, that.current);
+			std::swap(account, that.account);
+			std::swap(quad_pool, that.quad_pool);
+			std::swap(quad_buffer, that.quad_buffer);
+		}
+		return *this;
+	}
 	~display_list_t() = default;
 public:
+	display_list_t& setup(const quad_allocator_t* allocator);
 	display_list_t& begin(arch_t count);
 	display_list_t& vtx_pool_write(const vertex_pool_t& that_pool);
 	display_list_t& vtx_blank_write(const rect_t& raster_rect, const glm::vec4& vtx_color);
