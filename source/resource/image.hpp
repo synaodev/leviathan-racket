@@ -9,8 +9,8 @@
 struct image_t : public not_copyable_t {
 public:
 	image_t() = default;
-	image_t(image_t&& that) noexcept = default;
-	image_t& operator=(image_t&& that) noexcept = default;
+	image_t(image_t&&) noexcept = default;
+	image_t& operator=(image_t&&) noexcept = default;
 	~image_t() = default;
 public:
 	void clear();
@@ -21,6 +21,7 @@ public:
 	bool empty() const;
 public:
 	static image_t generate(const std::string& full_path);
+	static image_t generate(const std::string& full_path, sint_t width);
 	static std::vector<image_t> generate(const std::vector<std::string>& full_paths);
 private:
 	glm::ivec2 dimensions {};

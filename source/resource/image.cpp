@@ -9,7 +9,6 @@
 
 image_t image_t::generate(const std::string& full_path) {
 	image_t image;
-
 	sint_t width = 0;
 	sint_t height = 0;
 	sint_t channels = 0;
@@ -21,7 +20,7 @@ image_t image_t::generate(const std::string& full_path) {
 		STBI_rgb_alpha
 	);
 	if (data) {
-		image.dimensions = glm::ivec2(width, height);
+		image.dimensions = { width, height };
 		image.pixels.resize(
 			static_cast<arch_t>(width) *
 			static_cast<arch_t>(height) *
@@ -32,7 +31,25 @@ image_t image_t::generate(const std::string& full_path) {
 	} else {
 		synao_log("Failed to load image from {}!\n", full_path);
 	}
+	return image;
+}
 
+image_t image_t::generate(const std::string& full_path, sint_t width) {
+	image_t image = image_t::generate(full_path);
+	if (image.dimensions.x != width) {
+		synao_log(
+			"Warning! Image \"{}\" should have a width of {} instead of {}! This will be changed!\n",
+			full_path,
+			width,
+			image.dimensions.x
+		);
+		image.dimensions.x = width;
+		image.pixels.resize(
+			static_cast<arch_t>(image.dimensions.x) *
+			static_cast<arch_t>(image.dimensions.y) *
+			sizeof(uint_t)
+		);
+	}
 	return image;
 }
 

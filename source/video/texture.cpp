@@ -190,7 +190,7 @@ void palette_t::load(const std::string& full_path, sampler_allocator_t* allocato
 	assert(!ready);
 	this->allocator = allocator;
 	this->future = thread_pool.push([](const std::string& full_path) -> image_t {
-		return image_t::generate(full_path);
+		return image_t::generate(full_path, 32);
 	}, full_path);
 }
 
