@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_RNG_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_RNG_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -9,5 +8,3 @@ namespace rng {
 	sint_t next(sint_t low, sint_t high);
 	real_t next(real_t low, real_t high);
 }
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_RNG_HPP

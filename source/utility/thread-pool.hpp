@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP
+#pragma once
 
 #include <functional>
 #include <future>
@@ -107,5 +106,3 @@ private:
 	std::mutex conditional_mutex {};
 	std::condition_variable conditional_lock {};
 };
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_THREAD_POOL_HPP

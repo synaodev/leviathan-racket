@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -46,8 +45,6 @@ public:
 	static bool has_uniform_azdo();
 private:
 	friend struct gfx_t;
-	uint_t handle {};
+	uint_t handle { 0 };
 	vertex_spec_t specify {};
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_PIPELINE_HPP

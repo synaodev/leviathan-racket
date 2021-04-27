@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -47,5 +46,3 @@ private: // For playing
 	uint_t source;
 	std::array<uint_t, 3> buffers;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_MUSIC_HPP

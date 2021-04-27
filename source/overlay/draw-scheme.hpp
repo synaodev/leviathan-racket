@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP
+#pragma once
 
 #include <glm/vec2.hpp>
 
@@ -48,5 +47,3 @@ private:
 	sint_t table { 0 };
 	glm::vec2 position {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_SCHEME_HPP

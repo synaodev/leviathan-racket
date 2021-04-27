@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_META_GUI_HPP
-#define LEVIATHAN_INCLUDED_MENU_META_GUI_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -15,9 +14,9 @@ struct renderer_t;
 
 struct meta_state_t : public not_copyable_t {
 public:
-	meta_state_t();
-	meta_state_t(meta_state_t&&) = default;
-	meta_state_t& operator=(meta_state_t&&) = default;
+	meta_state_t() = default;
+	meta_state_t(meta_state_t&&) noexcept = default;
+	meta_state_t& operator=(meta_state_t&&) noexcept = default;
 	~meta_state_t();
 public:
 	bool init(const video_t& video);
@@ -30,12 +29,13 @@ public:
 	static bool_t Hitboxes, Framerate;
 private:
 	static bool_t Ready;
-	mutable bool_t active, amend;
-	SDL_Window* window;
-	SDL_GLContext context;
+	mutable bool_t active { false };
+	mutable bool_t amend { false };
+	SDL_Window* window { nullptr };
+	SDL_GLContext context { nullptr };
 };
 
-#else
+#else // LEVIATHAN_USES_META
 
 struct meta_state_t : public not_copyable_t {
 public:
@@ -48,6 +48,4 @@ public:
 	static event_callback_t get_event_callback() { return nullptr; }
 };
 
-#endif
-
-#endif // LEVIATHAN_INCLUDED_MENU_META_GUI_HPP
+#endif // LEVIATHAN_USES_META

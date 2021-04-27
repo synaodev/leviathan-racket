@@ -5,7 +5,7 @@
 #include <glm/gtc/constants.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include <stb_image.h>
 
 image_t image_t::generate(const std::string& full_path) {
 	image_t image;

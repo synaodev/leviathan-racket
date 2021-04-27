@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_RESOURCE_PROGRAM_HPP
-#define LEVIATHAN_INCLUDED_RESOURCE_PROGRAM_HPP
+#pragma once
 
 #include <string>
 
@@ -28,5 +27,3 @@ namespace program {
 	std::string indexed_frag();
 	std::string channels_frag();
 }
-
-#endif // LEVIATHAN_INCLUDED_RESOURCE_PROGRAM_HPP

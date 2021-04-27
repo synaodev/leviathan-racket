@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_LAYER_HPP
-#define LEVIATHAN_INCLUDED_FIELD_TILEMAP_LAYER_HPP
+#pragma once
 
 #include <memory>
 #include <tmxlite/Layer.hpp>
@@ -29,5 +28,3 @@ private:
 	std::vector<glm::ivec2> tiles {};
 	vertex_pool_t quads {};
 };
-
-#endif // LEVIATHAN_INCLUDED_FIELD_TILELAYER_HPP

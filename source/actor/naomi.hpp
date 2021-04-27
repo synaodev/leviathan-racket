@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP
-#define LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP
+#pragma once
 
 #include <vector>
 #include <bitset>
@@ -225,5 +224,3 @@ private:
 	real_t grav_speed { 0.0f };
 	real_t dash_speed { 0.0f };
 };
-
-#endif // LEVIATHAN_INCLUDED_ACTOR_NAOMI_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_TEXT_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_TEXT_HPP
+#pragma once
 
 #include <string>
 
@@ -52,5 +51,3 @@ private:
 	std::u32string buffer {};
 	vertex_pool_t quads {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_TEXT_HPP

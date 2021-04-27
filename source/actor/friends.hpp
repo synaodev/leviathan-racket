@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP
-#define LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP
+#pragma once
 
 #include "../component/routine.hpp"
 
@@ -28,5 +27,3 @@ namespace ai {
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 }
-
-#endif // LEVIATHAN_INCLUDED_ACTOR_FRIENDS_HPP

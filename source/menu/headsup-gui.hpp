@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP
-#define LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP
+#pragma once
 
 #include <functional>
 
@@ -18,30 +17,27 @@ struct receiver_t;
 
 struct headsup_params_t {
 public:
-	sint_t current_barrier, maximum_barrier, current_leviathan, main_state;
-	direction_t main_direction;
-	sint_t current_oxygen, maximum_oxygen;
+	sint_t current_barrier { 0 };
+	sint_t maximum_barrier { 0 };
+	sint_t current_leviathan { 0 };
+	sint_t main_state { 0 };
+	direction_t main_direction { direction_t::Right };
+	sint_t current_oxygen { 0 };
+	sint_t maximum_oxygen { 0 };
 public:
-	headsup_params_t() :
-		current_barrier(0),
-		maximum_barrier(0),
-		current_leviathan(0),
-		main_state(0),
-		main_direction(direction_t::Right),
-		current_oxygen(0),
-		maximum_oxygen(0) {}
+	headsup_params_t() = default;
 	headsup_params_t(const headsup_params_t&) = default;
-	headsup_params_t(headsup_params_t&&) = default;
 	headsup_params_t& operator=(const headsup_params_t&) = default;
-	headsup_params_t& operator=(headsup_params_t&&) = default;
+	headsup_params_t(headsup_params_t&&) noexcept = default;
+	headsup_params_t& operator=(headsup_params_t&&) noexcept = default;
 	~headsup_params_t() = default;
 };
 
 struct headsup_gui_t : public not_copyable_t {
 public:
-	headsup_gui_t();
-	headsup_gui_t(headsup_gui_t&&) = default;
-	headsup_gui_t& operator=(headsup_gui_t&&) = default;
+	headsup_gui_t() = default;
+	headsup_gui_t(headsup_gui_t&&) noexcept = default;
+	headsup_gui_t& operator=(headsup_gui_t&&) noexcept = default;
 	~headsup_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);
@@ -65,15 +61,13 @@ public:
 	bool is_fade_moving() const;
 	sint_t get_main_state() const;
 private:
-	std::function<void(void)> suspender;
-	draw_title_view_t title_view;
-	draw_scheme_t main_scheme;
-	draw_count_t leviathan_count;
-	draw_units_t barrier_units;
-	draw_count_t oxygen_count;
-	draw_item_view_t item_view;
-	draw_meter_t fight_meter;
-	draw_fade_t fade;
+	std::function<void(void)> suspender {};
+	draw_title_view_t title_view {};
+	draw_scheme_t main_scheme {};
+	draw_count_t leviathan_count {};
+	draw_units_t barrier_units {};
+	draw_count_t oxygen_count {};
+	draw_item_view_t item_view {};
+	draw_meter_t fight_meter {};
+	draw_fade_t fade {};
 };
-
-#endif // LEVIATHAN_INCLUDED_MENU_HEADSUP_GUI_HPP

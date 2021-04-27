@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_KINEMATICS_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_KINEMATICS_HPP
+#pragma once
 
 #include "./common.hpp"
 
@@ -43,5 +42,3 @@ public:
 	glm::vec2 anchor {};
 	real_t tether { 0.0f };
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_KINEMATICS_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP
-#define LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -32,5 +31,3 @@ private:
 	uint_t handle { 0 };
 	const noise_t* current { nullptr };
 };
-
-#endif // LEVIATHAN_INCLUDED_AUDIO_CHANNEL_HPP

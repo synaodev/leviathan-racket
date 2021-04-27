@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_GL_CHECK_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_GL_CHECK_HPP
+#pragma once
 
 #include <glad/glad.h>
 #include <glm/vec2.hpp>
@@ -16,5 +15,3 @@ extern glm::ivec2 opengl_version;
 #else
 	#define glCheck(expr) (expr)
 #endif
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_GL_CHECK_HPP

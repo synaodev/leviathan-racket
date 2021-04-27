@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
-#define LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP
+#pragma once
 
 #include "./tilemap-parallax.hpp"
 #include "./tilemap-layer.hpp"
@@ -37,5 +36,3 @@ private:
 	std::vector<tilemap_parallax_t> tilemap_parallaxes {};
 	std::vector<tilemap_layer_t> tilemap_layers {};
 };
-
-#endif // LEVIATHAN_INCLUDED_FIELD_TILEMAP_HPP

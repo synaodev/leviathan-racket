@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -110,5 +109,3 @@ private:
 	std::vector<glm::ivec4> items;
 	std::vector<uint64_t> flags;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_KERNEL_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_VIDEO_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_VIDEO_HPP
+#pragma once
 
 #include <tuple>
 
@@ -59,5 +58,3 @@ private:
 	screen_params_t params;
 	bool_t meta;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_VIDEO_HPP

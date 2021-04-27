@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP
+#pragma once
 
 #include <array>
 #include <bitset>
@@ -142,5 +141,3 @@ private:
 		0, 0, 0, 0
 	};
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_COMMON_HPP

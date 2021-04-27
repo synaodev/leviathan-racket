@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_GFX_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_GFX_HPP
+#pragma once
 
 #include <array>
 
@@ -76,5 +75,3 @@ private:
 		nullptr, nullptr, nullptr, nullptr
 	};
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_GFX_HPP

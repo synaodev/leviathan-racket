@@ -10,20 +10,6 @@
 
 static constexpr arch_t kHeadFontIndex = 2;
 
-headsup_gui_t::headsup_gui_t() :
-	suspender(),
-	title_view(),
-	main_scheme(),
-	leviathan_count(),
-	barrier_units(),
-	oxygen_count(),
-	item_view(),
-	fight_meter(),
-	fade()
-{
-
-}
-
 bool headsup_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
 		receiver.suspend();

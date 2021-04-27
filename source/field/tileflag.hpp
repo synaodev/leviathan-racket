@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_TILEFLAG_HPP
-#define LEVIATHAN_INCLUDED_FIELD_TILEFLAG_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -30,5 +29,3 @@ namespace __enum_tileflag {
 }
 
 using tileflag_t = __enum_tileflag::type;
-
-#endif // LEVIATHAN_INCLUDED_FIELD_TILEFLAG_HPP

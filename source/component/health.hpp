@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP
+#pragma once
 
 #include <bitset>
 
@@ -49,5 +48,3 @@ public:
 	sint_t leviathan { 0 };
 	sint_t damage { 0 };
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_HEALTH_HPP

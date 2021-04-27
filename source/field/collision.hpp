@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP
-#define LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP
+#pragma once
 
 #include <bitset>
 #include <optional>
@@ -36,5 +35,3 @@ namespace collision {
 	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, glm::vec2 direction);
 	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle);
 }
-
-#endif // LEVIATHAN_INCLUDED_FIELD_COLLISION_HPP

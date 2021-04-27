@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_VFS_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_VFS_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -104,5 +103,3 @@ public:
 	std::unordered_map<entt::id_type, animation_t> animations {};
 	std::unordered_map<std::string, font_t> fonts {};
 };
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_VFS_HPP

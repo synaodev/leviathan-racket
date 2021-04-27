@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
-#define LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP
+#pragma once
 
 #include "../component/routine.hpp"
 
@@ -50,5 +49,3 @@ namespace ai {
 		void ctor(entt::entity s, kontext_t& kontext);
 	}
 }
-
-#endif // LEVIATHAN_INCLUDED_ACTOR_COMMON_HPP

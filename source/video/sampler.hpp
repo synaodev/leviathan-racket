@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_SAMPLER_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_SAMPLER_HPP
+#pragma once
 
 #include "./gfx.hpp"
 
@@ -56,5 +55,3 @@ private:
 	sampler_data_t palettes {};
 	sampler_data_t atlases {};
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_SAMPLER_HPP

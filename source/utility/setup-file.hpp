@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP
+#pragma once
 
 #include <array>
 #include <vector>
@@ -320,5 +319,3 @@ template<>
 inline std::string setup_file_t::convert_to<std::string>(const std::string& input) {
 	return input;
 }
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_SETUP_FILE_HPP

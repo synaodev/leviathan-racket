@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_CONST_BUFFER_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_CONST_BUFFER_HPP
+#pragma once
 
 #include "./gfx.hpp"
 
@@ -31,5 +30,3 @@ private:
 	uint_t handle { 0 };
 	arch_t length { 0 };
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_CONST_BUFFER_HPP

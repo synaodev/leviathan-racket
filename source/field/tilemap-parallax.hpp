@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_TILEMAP_PARALLAX_HPP
-#define LEVIATHAN_INCLUDED_FIELD_TILEMAP_PARALLAX_HPP
+#pragma once
 
 #include <memory>
 #include <glm/vec2.hpp>
@@ -27,5 +26,3 @@ private:
 	glm::vec2 dimensions { 1.0f };
 	rect_t bounding {};
 };
-
-#endif // LEVIATHAN_INCLUDED_FIELD_TILEMAP_PARALLAX_HPP

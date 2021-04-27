@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -33,5 +32,3 @@ private:
 	std::vector<channel_t> channels;
 	void_t device, context;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_AUDIO_HPP

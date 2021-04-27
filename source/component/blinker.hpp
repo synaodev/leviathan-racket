@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_BLINKER_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_BLINKER_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -24,5 +23,3 @@ public:
 	arch_t first_state { 0 };
 	arch_t blink_state { 0 };
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_BLINKER_HPP

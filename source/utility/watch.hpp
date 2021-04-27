@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP
+#pragma once
 
 #include <chrono>
 
@@ -32,5 +31,3 @@ public:
 private:
 	std::chrono::time_point<std::chrono::high_resolution_clock> point {};
 };
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_WATCH_HPP

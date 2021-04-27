@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_WIDGET_LANGUAGE_HPP
-#define LEVIATHAN_INCLUDED_MENU_WIDGET_LANGUAGE_HPP
+#pragma once
 
 #include "./widget.hpp"
 
@@ -30,5 +29,3 @@ private:
 	draw_text_t text {};
 	draw_scheme_t arrow {};
 };
-
-#endif // LEVIATHAN_INCLUDED_MENU_WIDGET_LANGUAGE_HPP

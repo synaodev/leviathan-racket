@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_MAIN_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_MAIN_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -64,5 +63,3 @@ namespace version_information {
 #endif
 	;
 }
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_MAIN_HPP

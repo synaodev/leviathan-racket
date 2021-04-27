@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP
-#define LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP
+#pragma once
 
 #include <vector>
 #include <memory>
@@ -27,5 +26,3 @@ private:
 	bool_t release { false };
 	std::vector<std::unique_ptr<widget_i> > widgets {};
 };
-
-#endif // LEVIATHAN_INCLUDED_MENU_STACK_GUI_HPP

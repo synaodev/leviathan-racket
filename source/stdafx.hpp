@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_STDAFX_HPP
-#define LEVIATHAN_INCLUDED_STDAFX_HPP
+#pragma once
 
 // Standard libraries
 #include <functional>
@@ -35,5 +34,3 @@
 #include "./utility/rng.hpp"
 #include "./utility/setup-file.hpp"
 #include "./utility/watch.hpp"
-
-#endif // LEVIATHAN_INCLUDED_STDAFX_HPP

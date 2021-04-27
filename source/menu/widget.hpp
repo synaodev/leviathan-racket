@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_WIDGET_HPP
-#define LEVIATHAN_INCLUDED_MENU_WIDGET_HPP
+#pragma once
 
 #include <bitset>
 
@@ -57,5 +56,3 @@ protected:
 	bool_t active { true };
 	std::bitset<8> bitmask { 0 };
 };
-
-#endif // LEVIATHAN_INCLUDED_MENU_WIDGET_HPP

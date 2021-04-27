@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_RESOURCE_FONT_HPP
-#define LEVIATHAN_INCLUDED_RESOURCE_FONT_HPP
+#pragma once
 
 #include <string>
 #include <map>
@@ -60,5 +59,3 @@ private:
 	glm::vec2 dimensions {};
 	const atlas_t* atlas { nullptr };
 };
-
-#endif // LEVIATHAN_INCLUDED_RESOURCE_FONT_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP
+#pragma once
 
 #include "../utility/rect.hpp"
 
@@ -38,5 +37,3 @@ private:
 	fade_state_t state { fade_state_t::DoneOut };
 	rect_t bounding {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_FADE_HPP

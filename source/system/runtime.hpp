@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP
+#pragma once
 
 #include "./kernel.hpp"
 #include "./receiver.hpp"
@@ -53,5 +52,3 @@ private:
 	tilemap_t tilemap;
 	meta_state_t meta_state;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_RUNTIME_HPP

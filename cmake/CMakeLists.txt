@@ -24,8 +24,7 @@ endif ()
 
 if (VCPKG_TOOLCHAIN)
 	find_package (fmt CONFIG REQUIRED)
-	set (FMT_LIBRARY fmt::fmt-header-only)
-	set (FMT_INCLUDE_DIR "")
+	set (FMT_LIBRARY fmt::fmt)
 	find_package (OpenAL CONFIG REQUIRED)
 	set (OPENAL_LIBRARY OpenAL::OpenAL)
 	find_package (SDL2 CONFIG REQUIRED)
@@ -41,7 +40,6 @@ else ()
 	if (NOT FMT_FOUND)
 		message (FATAL_ERROR "Could not find fmt!")
 	endif ()
-	set (FMT_LIBRARY "")
 	include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindOpenAL.cmake")
 	if (NOT OPENAL_FOUND)
 		message (FATAL_ERROR "Could not find OpenAL!")
@@ -69,5 +67,3 @@ target_include_directories (lvrk PRIVATE
 	${OPENAL_INCLUDE_DIR}
 	${SDL2_INCLUDE_DIR}
 )
-
-target_compile_definitions (lvrk PRIVATE "-DFMT_HEADER_ONLY")

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP
-#define LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP
+#pragma once
 
 #include <functional>
 #include <bitset>
@@ -29,9 +28,9 @@ using dialogue_flag_t = __enum_dialogue_flag::type;
 
 struct dialogue_gui_t : public not_copyable_t {
 public:
-	dialogue_gui_t();
-	dialogue_gui_t(dialogue_gui_t&&) = default;
-	dialogue_gui_t& operator=(dialogue_gui_t&&) = default;
+	dialogue_gui_t() = default;
+	dialogue_gui_t(dialogue_gui_t&&) noexcept = default;
+	dialogue_gui_t& operator=(dialogue_gui_t&&) noexcept = default;
 	~dialogue_gui_t() = default;
 public:
 	bool init(receiver_t& receiver);
@@ -53,14 +52,15 @@ public:
 	bool get_flag(dialogue_flag_t flag) const;
 	arch_t get_answer() const;
 private:
-	mutable bool_t amend;
-	std::bitset<dialogue_flag_t::Total> flags;
-	arch_t cursor_index, cursor_total;
-	real_t timer, delay;
-	rect_t rect;
-	draw_text_t text;
-	draw_scheme_t faces, arrow;
-	std::function<void(void)> suspender;
+	mutable bool_t amend { true };
+	std::bitset<dialogue_flag_t::Total> flags { 0 };
+	arch_t cursor_index { 0 };
+	arch_t cursor_total { 0 };
+	real_t timer { 0.0f };
+	real_t delay { 0.0f };
+	rect_t rect {};
+	draw_text_t text {};
+	draw_scheme_t faces {};
+	draw_scheme_t arrow {};
+	std::function<void()> suspender {};
 };
-
-#endif // LEVIATHAN_INCLUDED_MENU_DIALOGUE_GUI_HPP

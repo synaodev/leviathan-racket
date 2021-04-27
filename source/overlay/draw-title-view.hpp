@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_TITLE_VIEW_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_TITLE_VIEW_HPP
+#pragma once
 
 #include "./draw-text.hpp"
 
@@ -33,5 +32,3 @@ private:
 	draw_text_t lite {};
 	std::vector<draw_text_t> cards {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_TITLE_VIEW_HPP

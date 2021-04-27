@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP
+#pragma once
 
 #include "../utility/enums.hpp"
 #include "../utility/rect.hpp"
@@ -40,5 +39,3 @@ private:
 	const palette_t* palette { nullptr };
 	vertex_pool_t quads {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_UNITS_HPP

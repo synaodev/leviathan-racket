@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP
+#pragma once
 
 #include <memory>
 #include <bitset>
@@ -109,5 +108,3 @@ private:
 	arch_t index;
 	std::vector<std::bitset<btn_t::Total> > buttons;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_INPUT_HPP

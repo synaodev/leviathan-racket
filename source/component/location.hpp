@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP
+#pragma once
 
 #include "../utility/rect.hpp"
 #include "../utility/enums.hpp"
@@ -36,5 +35,3 @@ public:
 		0.0f, 0.0f, 16.0f, 16.0f
 	};
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_LOCATION_HPP

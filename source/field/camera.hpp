@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP
+#pragma once
 
 #include <glm/mat4x4.hpp>
 
@@ -38,5 +37,3 @@ private:
 	real_t quake_power { 0.0f };
 	real_t view_angle { 0.0f };
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_CAMERA_HPP

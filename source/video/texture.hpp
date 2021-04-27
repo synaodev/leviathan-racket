@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP
+#pragma once
 
 #include <future>
 #include <atomic>
@@ -88,5 +87,3 @@ private:
 	sint_t name { 0 };
 	glm::ivec2 dimensions {};
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_TEXTURE_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_TYPES_HPP
-#define LEVIATHAN_INCLUDED_TYPES_HPP
+#pragma once
 
 #if defined(_WIN32) || defined(__MINGW32__)
 	#define LEVIATHAN_PLATFORM_WINDOWS
@@ -125,5 +124,3 @@ public:
 	not_moveable_t(not_moveable_t&&) = delete;
 	not_moveable_t& operator=(not_moveable_t&&) = delete;
 };
-
-#endif // LEVIATHAN_INCLUDED_TYPES_HPP

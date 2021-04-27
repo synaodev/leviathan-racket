@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
-#define LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP
+#pragma once
 
 #include "../component/routine.hpp"
 
@@ -10,5 +9,3 @@ namespace ai {
 		void tick(entt::entity s, routine_tuple_t& rtp);
 	}
 }
-
-#endif // LEVIATHAN_INCLUDED_ACTOR_GHOST_HPP

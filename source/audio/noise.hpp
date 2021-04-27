@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP
-#define LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP
+#pragma once
 
 #include <string>
 #include <atomic>
@@ -31,5 +30,3 @@ private:
 	uint_t handle { 0 };
 	mutable std::set<channel_t*> binder {};
 };
-
-#endif // LEVIATHAN_INCLUDED_AUDIO_NOISE_HPP

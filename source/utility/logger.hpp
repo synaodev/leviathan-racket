@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_LOGGER_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_LOGGER_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -9,5 +8,3 @@
 #else
 	#define synao_log(...)
 #endif
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_LOGGER_HPP

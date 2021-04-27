@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_RECEIVER_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_RECEIVER_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -90,5 +89,3 @@ private:
 	asIScriptFunction* boot;
 	std::unordered_map<sint_t, asIScriptFunction*> events;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_RECEIVER_HPP

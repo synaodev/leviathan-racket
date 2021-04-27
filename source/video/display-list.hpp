@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP
+#pragma once
 
 #include "../utility/enums.hpp"
 
@@ -82,5 +81,3 @@ private:
 };
 
 bool operator<(const display_list_t& lhv, const display_list_t& rhv);
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_DISPLAY_LIST_HPP

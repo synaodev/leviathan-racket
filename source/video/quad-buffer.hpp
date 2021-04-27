@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_QUAD_BUFFER_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_QUAD_BUFFER_HPP
+#pragma once
 
 #include <vector>
 
@@ -61,5 +60,3 @@ private:
 	uint_t buffer { 0 };
 	arch_t length { 0 };
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_QUAD_BUFFER_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_ROUTINE_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_ROUTINE_HPP
+#pragma once
 
 #include <string>
 #include <vector>
@@ -78,5 +77,3 @@ public:
 	static void SYM##___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table)	\
 
 #define LEVIATHAN_TABLE_PUSH(ACTOR, DATA) table[ACTOR] = DATA
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_ROUTINE_HPP

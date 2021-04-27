@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
-#define LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP
+#pragma once
 
 #include "../resource/program.hpp"
 #include "../utility/enums.hpp"
@@ -34,5 +33,3 @@ private:
 	const_buffer_t viewports;
 	gfx_t internal_state;
 };
-
-#endif // LEVIATHAN_INCLUDED_SYSTEM_RENDERER_HPP

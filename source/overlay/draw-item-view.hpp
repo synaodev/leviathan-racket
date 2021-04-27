@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP
+#pragma once
 
 #include "./draw-scheme.hpp"
 #include "./draw-count.hpp"
@@ -22,5 +21,3 @@ private:
 	draw_scheme_t scheme {};
 	draw_count_t ammo {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_ITEM_VIEW_HPP

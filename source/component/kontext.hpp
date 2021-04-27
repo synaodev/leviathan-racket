@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP
+#pragma once
 
 #include <vector>
 #include <unordered_map>
@@ -178,5 +177,3 @@ template<typename Component, typename Compare, typename... Args>
 inline void kontext_t::sort(Compare compare, Args&& ...args) {
 	registry.sort<Component>(compare, entt::std_sort{}, std::forward<Args>(args)...);
 }
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_KONTEXT_HPP

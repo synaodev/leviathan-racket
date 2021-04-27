@@ -24,22 +24,6 @@ static constexpr real_t kKeyHeldDelay = constants::MinInterval<real_t>();
 static constexpr real_t kDefaultDelay = constants::MinInterval<real_t>() * 2.8778f;
 static constexpr real_t kHighestDelay = constants::MinInterval<real_t>() * 6.0f;
 
-dialogue_gui_t::dialogue_gui_t() :
-	amend(true),
-	flags(0),
-	cursor_index(0),
-	cursor_total(0),
-	timer(0.0f),
-	delay(kDefaultDelay),
-	rect(glm::zero<glm::vec2>(), kDefaultRect),
-	text(),
-	faces(),
-	arrow(),
-	suspender()
-{
-
-}
-
 bool dialogue_gui_t::init(receiver_t& receiver) {
 	const animation_t* faces_animation = vfs::animation(res::anim::Faces);
 	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
@@ -167,7 +151,7 @@ void dialogue_gui_t::open_textbox_high() {
 	flags[dialogue_flag_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t(glm::vec2(32.0f, 8.0f), kDefaultRect);
+	rect = rect_t { glm::vec2(32.0f, 8.0f), kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(
@@ -182,7 +166,7 @@ void dialogue_gui_t::open_textbox_low() {
 	flags[dialogue_flag_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t(glm::vec2(32.0f, 114.0f), kDefaultRect);
+	rect = rect_t { glm::vec2(32.0f, 114.0f), kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(

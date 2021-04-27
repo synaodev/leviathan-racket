@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_CONSTANTS_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_CONSTANTS_HPP
+#pragma once
 
 #include <type_traits>
 
@@ -40,5 +39,3 @@ namespace constants {
 		return static_cast<F>(1.0) / static_cast<F>(62.0);
 	}
 }
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_CONSTANTS_HPP

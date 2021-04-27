@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_OVERLAY_DRAW_METER_HPP
-#define LEVIATHAN_INCLUDED_OVERLAY_DRAW_METER_HPP
+#pragma once
 
 #include "./draw-scheme.hpp"
 
@@ -24,5 +23,3 @@ private:
 	rect_t varying {};
 	draw_scheme_t graphed {};
 };
-
-#endif // LEVIATHAN_INCLUDED_OVERLAY_DRAW_METER_HPP

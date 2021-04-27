@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
-#define LEVIATHAN_INCLUDED_RESOURCE_ID_HPP
+#pragma once
 
 #include <entt/core/hashed_string.hpp>
 
@@ -88,5 +87,3 @@ namespace res {
 		LEVIATHAN_RES_ENTRY_DEF(NpcDeath0,		"npc_dth_0");
 	}
 }
-
-#endif // LEVIATHAN_INCLUDED_RESOURCE_ID_HPP

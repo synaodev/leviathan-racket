@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -88,5 +87,3 @@ private:
 	const texture_t* texture { nullptr };
 	const palette_t* palette { nullptr };
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_ANIMATION_HPP

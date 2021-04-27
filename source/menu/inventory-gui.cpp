@@ -17,19 +17,11 @@ static constexpr arch_t kTotalItem = 30;
 static constexpr sint_t kMaxInvenX = 5;
 static constexpr sint_t kMaxInvenY = 4;
 
-inventory_gui_element_t::inventory_gui_element_t() :
-	visible(false),
-	scheme(),
-	count()
-{
-
-}
-
 void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
-	glm::vec2 position = glm::vec2(
+	glm::vec2 position {
 		2.0f + static_cast<real_t>((index % 6) * 49),
 		2.0f + static_cast<real_t>((index / 6) * 21)
-	);
+	};
 	scheme.set_file(animation);
 	scheme.set_position(position);
 	count.set_texture(texture);
@@ -71,15 +63,6 @@ void inventory_gui_element_t::render(renderer_t& renderer) const {
 	}
 }
 
-inventory_gui_t::inventory_gui_t() :
-	amend(true),
-	current(kWrongItem),
-	ready(false),
-	elements(kTotalItem)
-{
-
-}
-
 bool inventory_gui_t::init() {
 	const texture_t* texture = vfs::texture(res::img::Heads);
 	const palette_t* palette = vfs::palette(res::pal::Heads);
@@ -88,6 +71,8 @@ bool inventory_gui_t::init() {
 		synao_log("Inventory GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
+	current = kWrongItem;
+	elements.resize(kTotalItem);
 	arch_t index = 0;
 	for (auto&& element : elements) {
 		element.init(texture, palette, animation, index);

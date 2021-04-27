@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP
-#define LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -176,5 +175,3 @@ inline mirroring_t& operator&=(mirroring_t& lhv, const mirroring_t& rhv) {
 	);
 	return lhv;
 }
-
-#endif // LEVIATHAN_INCLUDED_UTILITY_ENUMS_HPP

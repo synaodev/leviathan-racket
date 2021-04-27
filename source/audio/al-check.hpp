@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_AUDIO_AL_CHECK_HPP
-#define LEVIATHAN_INCLUDED_AUDIO_AL_CHECK_HPP
+#pragma once
 
 #include "../types.hpp"
 
@@ -19,5 +18,3 @@
 #else
 	#define alCheck(expr) (expr)
 #endif
-
-#endif // LEVIATHAN_INCLUDED_AUDIO_AL_CHECK_HPP

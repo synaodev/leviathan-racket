@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP
-#define LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP
+#pragma once
 
 #include <vector>
 #include <string>
@@ -22,5 +21,3 @@ namespace ftcv {
 	std::string path_to_name(const std::string& path);
 	rect_t rect_to_rect(const tmx::FloatRect& rect);
 }
-
-#endif // LEVIATHAN_INCLUDED_FIELD_PROPERTIES_HPP

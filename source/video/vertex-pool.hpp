@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP
+#pragma once
 
 #include <type_traits>
 #include <vector>
@@ -46,5 +45,3 @@ inline const V* vertex_pool_t::at(arch_t index) const {
 	static_assert(std::is_base_of<vertex_t, V>::value);
 	return reinterpret_cast<const V*>(&memory[index * specify.length]);
 }
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_VERTEX_POOL_HPP

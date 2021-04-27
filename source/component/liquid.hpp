@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP
+#pragma once
 
 #include <entt/core/hashed_string.hpp>
 #include <entt/entity/fwd.hpp>
@@ -49,5 +48,3 @@ namespace liquid {
 	void handle(audio_t& audio, kontext_t& kontext);
 	void render(const kontext_t& context, renderer_t& renderer, rect_t viewport);
 }
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_LIQUID_HPP

@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
-#define LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP
+#pragma once
 
 #include <glm/vec2.hpp>
 #include <glm/vec4.hpp>
@@ -108,5 +107,3 @@ public:
 		return !(*this == that);
 	}
 };
-
-#endif // LEVIATHAN_INCLUDED_VIDEO_VERTEX_HPP

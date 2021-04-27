@@ -1,5 +1,4 @@
-#ifndef LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
-#define LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP
+#pragma once
 
 #include <entt/core/hashed_string.hpp>
 
@@ -55,5 +54,3 @@ public:
 	real_t angle { 0.0f };
 	real_t shake { 0.0f };
 };
-
-#endif // LEVIATHAN_INCLUDED_COMPONENT_SPRITE_HPP

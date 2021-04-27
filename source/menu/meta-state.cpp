@@ -21,15 +21,6 @@ bool_t meta_state_t::Hitboxes = false;
 bool_t meta_state_t::Framerate = false;
 bool_t meta_state_t::Ready = false;
 
-meta_state_t::meta_state_t() :
-	active(false),
-	amend(false),
-	window(nullptr),
-	context(nullptr)
-{
-
-}
-
 meta_state_t::~meta_state_t() {
 	if (context) {
 		ImGui_ImplOpenGL3_Shutdown();
