@@ -181,7 +181,7 @@ void kontext_t::setup_layer(const std::unique_ptr<tmx::Layer>& layer, const kern
 				direction, symbol,
 				flags, identity, deterrent
 			);
-			if (kernel.get_flag(deterrent) == (flags & (1 << trigger_flags_t::Deterred))) {
+			if (kernel.get_flag(deterrent) == (flags & (1 << actor_trigger_t::Deterred))) {
 				glm::vec2 position = ftcv::vec_to_vec(object.getPosition());
 				if (this->create(name, position, direction, identity, flags)) {
 					if (identity != 0) {
@@ -276,13 +276,13 @@ void kontext_t::set_fight(sint_t identity, asIScriptFunction* function) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
 		auto& trigger = this->get<actor_trigger_t>(actor);
-		trigger.bitmask[trigger_flags_t::Hostile] = true;
-		trigger.bitmask[trigger_flags_t::InteractionEvent] = false;
-		trigger.bitmask[trigger_flags_t::DeathEvent] = true;
+		trigger.bitmask[actor_trigger_t::Hostile] = true;
+		trigger.bitmask[actor_trigger_t::InteractionEvent] = false;
+		trigger.bitmask[actor_trigger_t::DeathEvent] = true;
 
 		auto& health = this->assign_if<health_t>(actor);
 		health.reset();
-		health.flags[health_flags_t::MajorFight] = true;
+		health.flags[health_t::MajorFight] = true;
 
 		std::invoke(push_event, identity, function);
 	} else if (function) {

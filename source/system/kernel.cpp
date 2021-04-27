@@ -35,9 +35,9 @@ bool kernel_t::init(const receiver_t& receiver) {
 
 void kernel_t::reset() {
 	bitmask.reset();
-	bitmask[kernel_state_t::Zero] = true;
-	bitmask[kernel_state_t::Lock] = true;
-	bitmask[kernel_state_t::Freeze] = true;
+	bitmask[states_t::Zero] = true;
+	bitmask[states_t::Lock] = true;
+	bitmask[states_t::Freeze] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
 	item_ptr = nullptr;
@@ -50,7 +50,7 @@ void kernel_t::reset() {
 
 void kernel_t::reset(const std::string& field) {
 	bitmask.reset();
-	bitmask[kernel_state_t::Field] = true;
+	bitmask[states_t::Field] = true;
 	timer = 0.0;
 	cursor = glm::zero<glm::ivec2>();
 	item_ptr = nullptr;
@@ -83,7 +83,7 @@ void kernel_t::read_data(const setup_file_t& file) {
 }
 
 bool kernel_t::read_stream(const std::string& path) {
-	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
+	const byte_t* name = bitmask[states_t::Check] ? kFlagCheckName : kFlagProgsName;
 	std::ifstream ifs { path + std::to_string(file_index) + name, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.read(
@@ -110,7 +110,7 @@ void kernel_t::write_data(setup_file_t& file) const {
 }
 
 bool kernel_t::write_stream(const std::string& path) const {
-	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
+	const byte_t* name = bitmask[states_t::Check] ? kFlagCheckName : kFlagProgsName;
 	std::ofstream ofs { path + std::to_string(file_index) + name, std::ios::binary };
 	if (ofs.is_open()) {
 		ofs.write(
@@ -123,71 +123,71 @@ bool kernel_t::write_stream(const std::string& path) const {
 }
 
 void kernel_t::boot() {
-	bitmask[kernel_state_t::Boot] = true;
+	bitmask[states_t::Boot] = true;
 }
 
 void kernel_t::quit() {
-	bitmask[kernel_state_t::Quit] = true;
+	bitmask[states_t::Quit] = true;
 }
 
 void kernel_t::lock() {
-	bitmask[kernel_state_t::Lock] = true;
-	bitmask[kernel_state_t::Freeze] = false;
+	bitmask[states_t::Lock] = true;
+	bitmask[states_t::Freeze] = false;
 }
 
 void kernel_t::freeze() {
-	bitmask[kernel_state_t::Lock] = true;
-	bitmask[kernel_state_t::Freeze] = true;
+	bitmask[states_t::Lock] = true;
+	bitmask[states_t::Freeze] = true;
 }
 
 void kernel_t::unlock() {
-	if (!bitmask[kernel_state_t::Field] and !bitmask[kernel_state_t::Boot] and !bitmask[kernel_state_t::Load]) {
-		bitmask[kernel_state_t::Lock] = false;
-		bitmask[kernel_state_t::Freeze] = false;
+	if (!bitmask[states_t::Field] and !bitmask[states_t::Boot] and !bitmask[states_t::Load]) {
+		bitmask[states_t::Lock] = false;
+		bitmask[states_t::Freeze] = false;
 	}
 }
 
 void kernel_t::load_progress() {
-	bitmask[kernel_state_t::Load] = true;
-	bitmask[kernel_state_t::Check] = false;
+	bitmask[states_t::Load] = true;
+	bitmask[states_t::Check] = false;
 }
 
 void kernel_t::save_progress() {
-	bitmask[kernel_state_t::Save] = true;
-	bitmask[kernel_state_t::Check] = false;
+	bitmask[states_t::Save] = true;
+	bitmask[states_t::Check] = false;
 }
 
 void kernel_t::load_checkpoint() {
-	bitmask[kernel_state_t::Load] = true;
-	bitmask[kernel_state_t::Check] = true;
+	bitmask[states_t::Load] = true;
+	bitmask[states_t::Check] = true;
 }
 
 void kernel_t::save_checkpoint() {
-	bitmask[kernel_state_t::Save] = true;
-	bitmask[kernel_state_t::Check] = true;
+	bitmask[states_t::Save] = true;
+	bitmask[states_t::Check] = true;
 }
 
 void kernel_t::finish_file_operation() {
-	bitmask[kernel_state_t::Boot] = false;
-	bitmask[kernel_state_t::Zero] = false;
-	bitmask[kernel_state_t::Load] = false;
-	bitmask[kernel_state_t::Save] = false;
-	bitmask[kernel_state_t::Check] = false;
+	bitmask[states_t::Boot] = false;
+	bitmask[states_t::Zero] = false;
+	bitmask[states_t::Load] = false;
+	bitmask[states_t::Save] = false;
+	bitmask[states_t::Check] = false;
 }
 
 void kernel_t::buffer_language(const std::string& language) {
 	this->language = language;
-	bitmask[kernel_state_t::Language] = true;
+	bitmask[states_t::Language] = true;
 }
 
 void kernel_t::finish_language() {
 	language.clear();
-	bitmask[kernel_state_t::Boot] = true;
-	bitmask[kernel_state_t::Language] = false;
+	bitmask[states_t::Boot] = true;
+	bitmask[states_t::Language] = false;
 }
 
 void kernel_t::buffer_field(const std::string& field, sint_t identity) {
-	bitmask[kernel_state_t::Field] = true;
+	bitmask[states_t::Field] = true;
 	this->field = field;
 	this->identity = identity;
 }
@@ -196,8 +196,8 @@ void kernel_t::buffer_field(asIScriptFunction* handle, sint_t identity) {
 	if (handle) {
 		const std::string location = std::invoke(verify, handle);
 		if (!location.empty()) {
-			bitmask[kernel_state_t::Field] = true;
-			bitmask[kernel_state_t::Zero] = false;
+			bitmask[states_t::Field] = true;
+			bitmask[states_t::Zero] = false;
 			this->identity = identity;
 			this->field = location;
 			this->function = handle->GetDeclaration();
@@ -211,13 +211,13 @@ void kernel_t::buffer_field(asIScriptFunction* handle, sint_t identity) {
 }
 
 void kernel_t::finish_field() {
-	bitmask[kernel_state_t::Boot] = false;
-	bitmask[kernel_state_t::Zero] = false;
-	bitmask[kernel_state_t::Field] = false;
+	bitmask[states_t::Boot] = false;
+	bitmask[states_t::Zero] = false;
+	bitmask[states_t::Field] = false;
 	function.clear();
 }
 
-bool kernel_t::has(kernel_state_t state) const {
+bool kernel_t::has(states_t state) const {
 	return bitmask[state];
 }
 

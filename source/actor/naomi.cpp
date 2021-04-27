@@ -191,7 +191,7 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 	this->do_begin(audio, kinematics);
 	if (flags[naomi_flags_t::Killed]) {
 		this->do_killed(location, kinematics);
-	} else if (!kernel.has(kernel_state_t::Lock)) {
+	} else if (!kernel.has(kernel_t::Lock)) {
 		flags[naomi_flags_t::Scripted] = false;
 		if (flags[naomi_flags_t::Damaged]) {
 			this->do_recovery(kinematics);
@@ -867,7 +867,7 @@ void naomi_state_t::do_interact(const input_t& input, receiver_t& receiver, kont
 				flags[naomi_flags_t::Interacting] = true;
 				rect_t hitbox = location.hitbox();
 				kontext.slice<actor_trigger_t, location_t>().each([&hitbox, &receiver](entt::entity, const actor_trigger_t& trigger, const location_t& location) {
-					if (trigger.bitmask[trigger_flags_t::InteractionEvent]) {
+					if (trigger.bitmask[actor_trigger_t::InteractionEvent]) {
 						if (location.overlap(hitbox)) {
 							receiver.run_event(trigger.identity);
 						}

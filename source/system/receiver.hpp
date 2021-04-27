@@ -15,17 +15,6 @@ class asIScriptGeneric;
 
 struct asSMessageInfo;
 
-namespace __enum_receiver_bits {
-	enum type : arch_t {
-		Running,
-		Waiting,
-		Stalled,
-		Total
-	};
-}
-
-using rec_bits_t = __enum_receiver_bits::type;
-
 struct input_t;
 struct audio_t;
 struct music_t;
@@ -78,7 +67,13 @@ private:
 	void generate_properties();
 	void generate_functions(input_t& input, audio_t& audio, music_t& music, kernel_t& kernel, stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, headsup_gui_t& headsup_gui, camera_t& camera, naomi_state_t& naomi_state, kontext_t& kontext);
 private:
-	std::bitset<rec_bits_t::Total> bitmask { 0 };
+	enum flags_t : arch_t {
+		Running,
+		Waiting,
+		Stalled,
+		TotalFlags
+	};
+	std::bitset<flags_t::TotalFlags> bitmask { 0 };
 	real_t timer { 0.0f };
 	uint_t calls { 0 };
 	asIScriptEngine* engine { nullptr };

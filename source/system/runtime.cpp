@@ -55,27 +55,27 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		accum = glm::max(accum - constants::MinInterval(), 0.0);
 		input.advance();
 		if (headsup_gui.is_fade_done()) {
-			if (kernel.has(kernel_state_t::Language)) {
+			if (kernel.has(kernel_t::Language)) {
 				if (!this->setup_language(config, renderer)) {
 					return false;
 				}
 			}
-			if (kernel.has(kernel_state_t::Boot)) {
+			if (kernel.has(kernel_t::Boot)) {
 				this->setup_boot(video, renderer);
 			}
-			if (kernel.has(kernel_state_t::Load)) {
+			if (kernel.has(kernel_t::Load)) {
 				this->setup_load(video, renderer);
 			}
-			if (kernel.has(kernel_state_t::Field)) {
+			if (kernel.has(kernel_t::Field)) {
 				if (!this->setup_field(audio, renderer)) {
 					return false;
 				}
 			}
 		}
-		if (kernel.has(kernel_state_t::Save)) {
+		if (kernel.has(kernel_t::Save)) {
 			this->setup_save();
 		}
-		if (kernel.has(kernel_state_t::Quit)) {
+		if (kernel.has(kernel_t::Quit)) {
 			return false;
 		}
 		receiver.handle(input, kernel, stack_gui, dialogue_gui, inventory_gui, headsup_gui);
@@ -83,7 +83,7 @@ bool runtime_t::handle(setup_file_t& config, input_t& input, video_t& video, aud
 		dialogue_gui.handle(input, audio);
 		inventory_gui.handle(input, audio, kernel, receiver, stack_gui, dialogue_gui, headsup_gui);
 		headsup_gui.handle(kernel, dialogue_gui);
-		if (!kernel.has(kernel_state_t::Freeze)) {
+		if (!kernel.has(kernel_t::Freeze)) {
 			camera.handle(kontext, naomi);
 			naomi.handle(input, audio, kernel, receiver, headsup_gui, kontext, tilemap);
 			kontext.handle(input, audio, kernel, receiver, headsup_gui, camera, naomi, tilemap);
@@ -106,7 +106,7 @@ void runtime_t::update(real64_t delta) {
 	dialogue_gui.update(delta);
 	inventory_gui.update(delta);
 	headsup_gui.update(delta);
-	if (!kernel.has(kernel_state_t::Freeze)) {
+	if (!kernel.has(kernel_t::Freeze)) {
 		camera.update(delta);
 		kontext.update(delta);
 	}
@@ -213,7 +213,7 @@ void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
 	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
-		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
+		const std::string path_type = kernel.has(kernel_t::Check) ? kStatCpntPath : kStatProgPath;
 		if (file.load(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
 			arch_t maximum = 2;
 			arch_t current = 2;
@@ -266,7 +266,7 @@ void runtime_t::setup_save() {
 	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
 	if (vfs::create_directory(save_path)) {
 		setup_file_t file;
-		const std::string path_type = kernel.has(kernel_state_t::Check) ? kStatCpntPath : kStatProgPath;
+		const std::string path_type = kernel.has(kernel_t::Check) ? kStatCpntPath : kStatProgPath;
 		auto& location = kontext.get<location_t>(naomi.get_actor());
 		auto& health = kontext.get<health_t>(naomi.get_actor());
 		file.set("Status", "MaxHp", health.maximum);

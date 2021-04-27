@@ -23,7 +23,7 @@ void ai::hv_trigger::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::hv_trigger::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& trigger = rtp.kontext.get<actor_trigger_t>(s);
-	if (trigger.bitmask[trigger_flags_t::InteractionEvent]) {
+	if (trigger.bitmask[actor_trigger_t::InteractionEvent]) {
 		auto& this_location = rtp.kontext.get<location_t>(s);
 		auto& that_location = rtp.kontext.get<location_t>(rtp.naomi.get_actor());
 		if (this_location.overlap(that_location)) {
@@ -63,7 +63,7 @@ void ai::death_spikes::ctor(entt::entity s, kontext_t& kontext) {
 	sprite.position = location.position;
 
 	auto& health = kontext.assign_if<health_t>(s);
-	health.flags[health_flags_t::Instant] = true;
+	health.flags[health_t::Instant] = true;
 }
 
 void ai::bed::ctor(entt::entity s, kontext_t& kontext) {

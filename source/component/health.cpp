@@ -18,9 +18,9 @@ void health_t::reset() {
 }
 
 void health_t::attack(health_t& victim) const {
-	if (flags[health_flags_t::Instant]) {
+	if (flags[flags_t::Instant]) {
 		victim.maximum = 0;
-	} else if (!victim.flags[health_flags_t::OnceMore] and victim.maximum < damage) {
+	} else if (!victim.flags[flags_t::OnceMore] and victim.maximum < damage) {
 		victim.maximum = 0;
 	}
 	victim.current -= damage;
@@ -33,22 +33,22 @@ void health_t::handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi
 		if (health.current <= 0) {
 			if (kontext.has<actor_trigger_t>(actor)) {
 				auto& trigger = kontext.get<actor_trigger_t>(actor);
-				if (trigger.bitmask[trigger_flags_t::DeathEvent]) {
-					trigger.bitmask[trigger_flags_t::DeathEvent] = false;
+				if (trigger.bitmask[actor_trigger_t::DeathEvent]) {
+					trigger.bitmask[actor_trigger_t::DeathEvent] = false;
 					receiver.run_event(trigger.identity);
 				}
 			}
-			if (health.flags[health_flags_t::MajorFight]) {
+			if (health.flags[flags_t::MajorFight]) {
 				health.reset();
 				kontext.meter(0, 0);
 			} else {
 				kontext.dispose(actor);
 			}
-		} else if (health.flags[health_flags_t::Attack]) {
+		} else if (health.flags[flags_t::Attack]) {
 			if (health.damage > 0 and location.overlap(naomi_location)) {
 				naomi.damage(actor, audio, kontext);
 			}
-		} else if (health.flags[health_flags_t::MajorFight]) {
+		} else if (health.flags[flags_t::MajorFight]) {
 			kontext.meter(health.current, health.maximum);
 		}
 	});

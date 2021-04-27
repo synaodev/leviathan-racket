@@ -91,7 +91,7 @@ void headsup_gui_t::update(real64_t delta) {
 
 void headsup_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const {
 	title_view.render(renderer);
-	if (!kernel.has(kernel_state_t::Lock)) {
+	if (!kernel.has(kernel_t::Lock)) {
 		main_scheme.render(renderer);
 		leviathan_count.render(renderer);
 		barrier_units.render(renderer);

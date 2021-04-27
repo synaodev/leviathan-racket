@@ -4,24 +4,6 @@
 
 #include "../types.hpp"
 
-namespace __enum_health_flags {
-	enum type : arch_t {
-		Hurt,
-		Attack,
-		Leviathan,
-		Invincible,
-		Deflectable,
-		Hookable,
-		Grappled,
-		Instant,
-		OnceMore,
-		MajorFight,
-		Total
-	};
-}
-
-using health_flags_t = __enum_health_flags::type;
-
 struct audio_t;
 struct receiver_t;
 struct naomi_state_t;
@@ -42,7 +24,21 @@ public:
 public:
 	static void handle(audio_t& audio, receiver_t& receiver, naomi_state_t& naomi, kontext_t& kontext);
 public:
-	std::bitset<health_flags_t::Total> flags { 0 };
+	enum flags_t : arch_t {
+		Hurt,
+		Attack,
+		Leviathan,
+		Invincible,
+		Deflectable,
+		Hookable,
+		Grappled,
+		Instant,
+		OnceMore,
+		MajorFight,
+		TotalFlags
+	};
+public:
+	std::bitset<flags_t::TotalFlags> flags { 0 };
 	sint_t current { 2 };
 	sint_t maximum { 2 };
 	sint_t leviathan { 0 };

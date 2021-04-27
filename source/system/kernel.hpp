@@ -10,8 +10,16 @@
 
 class asIScriptFunction;
 
-namespace __enum_kernel_state {
-	enum type : arch_t {
+struct setup_file_t;
+struct input_t;
+struct audio_t;
+struct music_t;
+struct renderer_t;
+struct receiver_t;
+
+struct kernel_t : public not_copyable_t, public not_moveable_t {
+public:
+	enum states_t : arch_t {
 		Boot,
 		Zero,
 		Quit,
@@ -23,20 +31,8 @@ namespace __enum_kernel_state {
 		Check,
 		Lock,
 		Freeze,
-		Total
+		TotalStates
 	};
-}
-
-using kernel_state_t = __enum_kernel_state::type;
-
-struct setup_file_t;
-struct input_t;
-struct audio_t;
-struct music_t;
-struct renderer_t;
-struct receiver_t;
-
-struct kernel_t : public not_copyable_t, public not_moveable_t {
 public:
 	kernel_t() = default;
 	~kernel_t() = default;
@@ -64,7 +60,7 @@ public:
 	void buffer_field(const std::string& field, sint_t identity);
 	void buffer_field(asIScriptFunction* handle, sint_t identity);
 	void finish_field();
-	bool has(kernel_state_t state) const;
+	bool has(states_t state) const;
 	void set_file_index(arch_t file_index);
 	void set_cursor(glm::ivec2 cursor);
 	void set_item(sint_t type, sint_t count, sint_t limit, sint_t option);
@@ -96,7 +92,7 @@ public:
 	bool get_flag_range(arch_t from, arch_t to) const;
 private:
 	std::function<std::string(asIScriptFunction*)> verify {};
-	std::bitset<kernel_state_t::Total> bitmask { 0 };
+	std::bitset<states_t::TotalStates> bitmask { 0 };
 	arch_t file_index { 0 };
 	real64_t timer { 0.0 };
 	std::string language {};

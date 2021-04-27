@@ -25,7 +25,7 @@ void ai::ghost::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& health = kontext.assign_if<health_t>(s);
 	health.reset(8, 8, 0, 1);
-	health.flags[health_flags_t::Leviathan] = true;
+	health.flags[health_t::Leviathan] = true;
 
 	kontext.assign_if<routine_t>(s, ghost::tick);
 }
@@ -43,8 +43,8 @@ void ai::ghost::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.kontext.smoke(location.center(), 3);
 		rtp.kontext.shrapnel(location.center(), 1);
 		rtp.audio.play(res::sfx::NpcDeath0, 6);
-	} else if (health.flags[health_flags_t::Hurt]) {
-		health.flags[health_flags_t::Hurt] = false;
+	} else if (health.flags[health_t::Hurt]) {
+		health.flags[health_t::Hurt] = false;
 
 		auto& location = rtp.kontext.get<location_t>(s);
 		rtp.kontext.shrapnel(location.center(), 2);

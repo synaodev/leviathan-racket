@@ -96,30 +96,30 @@ bool receiver_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& 
 }
 
 void receiver_t::reset() {
-	if (bitmask[rec_bits_t::Running]) {
+	if (bitmask[flags_t::Running]) {
 		state->Abort();
 		state->Unprepare();
 	}
-	bitmask[rec_bits_t::Running] = false;
-	bitmask[rec_bits_t::Waiting] = false;
-	bitmask[rec_bits_t::Stalled] = false;
+	bitmask[flags_t::Running] = false;
+	bitmask[flags_t::Waiting] = false;
+	bitmask[flags_t::Stalled] = false;
 	timer = 0.0f;
 	calls = 0;
 	this->discard_all_events();
 }
 
 void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_t& stack_gui, dialogue_gui_t& dialogue_gui, const inventory_gui_t& inventory_gui, headsup_gui_t& headsup_gui) {
-	if (bitmask[rec_bits_t::Running]) {
-		if (!headsup_gui.is_fade_moving() and !dialogue_gui.get_flag(dialogue_flag_t::Question)) {
-			if (bitmask[rec_bits_t::Stalled]) {
-				if (!dialogue_gui.get_flag(dialogue_flag_t::Writing) and input.pressed[btn_t::Yes]) {
-					bitmask[rec_bits_t::Running] = true;
-					bitmask[rec_bits_t::Waiting] = false;
-					bitmask[rec_bits_t::Stalled] = false;
+	if (bitmask[flags_t::Running]) {
+		if (!headsup_gui.is_fade_moving() and !dialogue_gui.get_flag(dialogue_gui_t::Question)) {
+			if (bitmask[flags_t::Stalled]) {
+				if (!dialogue_gui.get_flag(dialogue_gui_t::Writing) and input.pressed[btn_t::Yes]) {
+					bitmask[flags_t::Running] = true;
+					bitmask[flags_t::Waiting] = false;
+					bitmask[flags_t::Stalled] = false;
 					timer = 0.0f;
 					calls = 0;
 				}
-			} else if (!bitmask[rec_bits_t::Waiting]) {
+			} else if (!bitmask[flags_t::Waiting]) {
 				sint_t r = state->Execute();
 				switch (r) {
 				case asEXECUTION_SUSPENDED: {
@@ -159,12 +159,12 @@ void receiver_t::handle(const input_t& input, kernel_t& kernel, const stack_gui_
 }
 
 void receiver_t::update(real64_t delta) {
-	if (bitmask[rec_bits_t::Waiting]) {
+	if (bitmask[flags_t::Waiting]) {
 		timer -= static_cast<real_t>(delta);
 		if (timer <= 0.0f) {
-			bitmask[rec_bits_t::Running] = true;
-			bitmask[rec_bits_t::Waiting] = false;
-			bitmask[rec_bits_t::Stalled] = false;
+			bitmask[flags_t::Running] = true;
+			bitmask[flags_t::Waiting] = false;
+			bitmask[flags_t::Stalled] = false;
 			timer = 0.0f;
 			calls = 0;
 		}
@@ -172,7 +172,7 @@ void receiver_t::update(real64_t delta) {
 }
 
 bool receiver_t::running() const {
-	return bitmask[rec_bits_t::Running];
+	return bitmask[flags_t::Running];
 }
 
 bool receiver_t::load(const kernel_t& kernel) {
@@ -214,8 +214,8 @@ bool receiver_t::load(const std::string& name, event_loading_t flags) {
 }
 
 void receiver_t::run_function(kernel_t& kernel) {
-	if (!bitmask[rec_bits_t::Running]) {
-		if (kernel.has(kernel_state_t::Zero)) {
+	if (!bitmask[flags_t::Running]) {
+		if (kernel.has(kernel_t::Zero)) {
 			this->execute_function(boot);
 		} else if (kernel.can_transfer()) {
 			const std::string& declaration = kernel.get_function();
@@ -231,7 +231,7 @@ void receiver_t::run_function(kernel_t& kernel) {
 }
 
 void receiver_t::run_event(sint_t id) {
-	if (!bitmask[rec_bits_t::Running] and id != 0) {
+	if (!bitmask[flags_t::Running] and id != 0) {
 		auto it = events.find(id);
 		if (it != events.end()) {
 			this->execute_function(it->second);
@@ -240,7 +240,7 @@ void receiver_t::run_event(sint_t id) {
 }
 
 void receiver_t::run_inventory(arch_t type, arch_t index) {
-	if (!bitmask[rec_bits_t::Running]) {
+	if (!bitmask[flags_t::Running]) {
 		const std::vector<arch_t> args = { type, index };
 		asIScriptFunction* function = this->find_from_declaration(kInvenDecl);
 		this->execute_function(function, args);
@@ -248,7 +248,7 @@ void receiver_t::run_inventory(arch_t type, arch_t index) {
 }
 
 void receiver_t::run_death(arch_t type) {
-	if (!bitmask[rec_bits_t::Running]) {
+	if (!bitmask[flags_t::Running]) {
 		const std::vector<arch_t> args = { type };
 		asIScriptFunction* function = this->find_from_declaration(kDeathDecl);
 		this->execute_function(function, args);
@@ -284,10 +284,10 @@ void receiver_t::push_from_function(sint_t id, asIScriptFunction* function) {
 }
 
 void receiver_t::suspend() {
-	if (bitmask[rec_bits_t::Running]) {
-		bitmask[rec_bits_t::Running] = true;
-		bitmask[rec_bits_t::Waiting] = false;
-		bitmask[rec_bits_t::Stalled] = false;
+	if (bitmask[flags_t::Running]) {
+		bitmask[flags_t::Running] = true;
+		bitmask[flags_t::Waiting] = false;
+		bitmask[flags_t::Stalled] = false;
 		timer = 0.0f;
 		calls = 0;
 		sint_t r = state->Suspend();
@@ -409,9 +409,9 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 	if (function) {
 		sint_t r = state->Prepare(function);
 		if (r >= 0) {
-			bitmask[rec_bits_t::Running] = true;
-			bitmask[rec_bits_t::Waiting] = false;
-			bitmask[rec_bits_t::Stalled] = false;
+			bitmask[flags_t::Running] = true;
+			bitmask[flags_t::Waiting] = false;
+			bitmask[flags_t::Stalled] = false;
 			timer = 0.0f;
 			calls = 0;
 		} else if (r == asCONTEXT_ACTIVE) {
@@ -430,9 +430,9 @@ void receiver_t::execute_function(asIScriptFunction* function) {
 
 void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_t> args) {
 	if (function and state->Prepare(function) >= 0) {
-		bitmask[rec_bits_t::Running] = true;
-		bitmask[rec_bits_t::Waiting] = false;
-		bitmask[rec_bits_t::Stalled] = false;
+		bitmask[flags_t::Running] = true;
+		bitmask[flags_t::Waiting] = false;
+		bitmask[flags_t::Stalled] = false;
 		timer = 0.0f;
 		calls = 0;
 		for (arch_t it = 0; it < args.size(); ++it) {
@@ -528,18 +528,18 @@ void receiver_t::link_imported_functions(asIScriptModule* module) {
 }
 
 void receiver_t::set_stalled_period() {
-	bitmask[rec_bits_t::Running] = true;
-	bitmask[rec_bits_t::Waiting] = false;
-	bitmask[rec_bits_t::Stalled] = true;
+	bitmask[flags_t::Running] = true;
+	bitmask[flags_t::Waiting] = false;
+	bitmask[flags_t::Stalled] = true;
 	timer = 0.0f;
 	calls = 0;
 	state->Suspend();
 }
 
 void receiver_t::set_waiting_period(real_t seconds) {
-	bitmask[rec_bits_t::Running] = true;
-	bitmask[rec_bits_t::Waiting] = true;
-	bitmask[rec_bits_t::Stalled] = false;
+	bitmask[flags_t::Running] = true;
+	bitmask[flags_t::Waiting] = true;
+	bitmask[flags_t::Stalled] = false;
 	timer = seconds;
 	state->Suspend();
 }

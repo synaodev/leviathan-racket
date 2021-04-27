@@ -102,7 +102,7 @@ void inventory_gui_t::handle(const input_t& input, audio_t& audio, kernel_t& ker
 				audio.play(res::sfx::Inven, 0);
 				kernel.unlock();
 			}
-		} else if (!dialogue_gui.get_flag(dialogue_flag_t::Textbox)) {
+		} else if (!dialogue_gui.get_flag(dialogue_gui_t::Textbox)) {
 			glm::ivec2 cursor = kernel.get_cursor();
 			if (input.pressed[btn_t::Jump] or input.pressed[btn_t::Hammer]) {
 				if (!receiver.running()) {

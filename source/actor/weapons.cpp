@@ -27,7 +27,7 @@ entt::entity ai::weapons::find_closest(entt::entity s, kontext_t& kontext) {
 	std::vector<std::pair<entt::entity, real_t> > list;
 
 	kontext.slice<actor_header_t, location_t, health_t>().each([&list, &center](entt::entity actor, const actor_header_t&, const location_t& location, const health_t& health) {
-		if (health.flags[health_flags_t::Leviathan]) {
+		if (health.flags[health_t::Leviathan]) {
 			auto element = std::make_pair(
 				actor, glm::distance(center, location.center())
 			);
@@ -50,8 +50,8 @@ entt::entity ai::weapons::find_hooked(entt::entity s, kontext_t& kontext) {
 
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
 		if (result != entt::null) {
-			if ((health.flags[health_flags_t::Hookable]) and location.overlap(zone)) {
-				health.flags[health_flags_t::Grappled] = true;
+			if ((health.flags[health_t::Hookable]) and location.overlap(zone)) {
+				health.flags[health_t::Grappled] = true;
 				result = actor;
 			}
 		}
@@ -66,9 +66,9 @@ bool ai::weapons::damage_check(entt::entity s, kontext_t& kontext) {
 	entt::entity result = entt::null;
 
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &attacker, &zone](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
-		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
+		if (health.flags[health_t::Leviathan] and !health.flags[health_t::Invincible]) {
 			if (location.overlap(zone)) {
-				health.flags[health_flags_t::Hurt] = true;
+				health.flags[health_t::Hurt] = true;
 				attacker.attack(health);
 				result = actor;
 			}
@@ -84,9 +84,9 @@ bool ai::weapons::damage_range(entt::entity s, kontext_t& kontext, const glm::ve
 	entt::entity result = entt::null;
 
 	kontext.slice<actor_header_t, location_t, health_t>().each([&result, &zone, &attacker](entt::entity actor, const actor_header_t&, const location_t& location, health_t& health) {
-		if (health.flags[health_flags_t::Leviathan] and !health.flags[health_flags_t::Invincible]) {
+		if (health.flags[health_t::Leviathan] and !health.flags[health_t::Invincible]) {
 			if (location.overlap(zone)) {
-				health.flags[health_flags_t::Hurt] = true;
+				health.flags[health_t::Hurt] = true;
 				attacker.attack(health);
 				result = actor;
 			}
@@ -101,8 +101,8 @@ bool ai::weapons::reverse_range(entt::entity s, kontext_t& kontext) {
 	entt::entity result = entt::null;
 
 	kontext.slice<actor_header_t, location_t, kinematics_t, health_t>().each([&result, &zone](entt::entity actor, const actor_header_t&, const location_t& location, kinematics_t& kinematics, health_t& health) {
-		if (health.flags[health_flags_t::Deflectable] and location.overlap(zone)) {
-			health.flags[health_flags_t::Leviathan] = false;
+		if (health.flags[health_t::Deflectable] and location.overlap(zone)) {
+			health.flags[health_t::Leviathan] = false;
 			kinematics.velocity = -kinematics.velocity;
 			result = actor;
 		}
@@ -376,7 +376,7 @@ void ai::holy_lance::tick(entt::entity s, routine_tuple_t& rtp) {
 		if (rtp.kontext.valid(header.attach)) {
 			auto& attach_location = rtp.kontext.get<location_t>(header.attach);
 			auto& attach_health = rtp.kontext.get<health_t>(header.attach);
-			if (attach_health.flags[health_flags_t::Grappled] and attach_health.flags[health_flags_t::Hookable]) {
+			if (attach_health.flags[health_t::Grappled] and attach_health.flags[health_t::Hookable]) {
 				location.position = attach_location.center() + location.bounding.center();
 				naomi_kinematics.anchor = location.center();
 				return;

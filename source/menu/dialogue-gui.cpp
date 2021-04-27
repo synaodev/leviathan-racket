@@ -59,17 +59,17 @@ bool dialogue_gui_t::refresh() {
 }
 
 void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
-	if (flags[dialogue_flag_t::Textbox]) {
+	if (flags[flags_t::Textbox]) {
 		if (!text.finished()) {
-			if (flags[dialogue_flag_t::Sound]) {
-				flags[dialogue_flag_t::Sound] = false;
+			if (flags[flags_t::Sound]) {
+				flags[flags_t::Sound] = false;
 				text.increment();
 				audio.play(res::sfx::Text, 7);
 			}
-			if (!flags[dialogue_flag_t::Delay]) {
+			if (!flags[flags_t::Delay]) {
 				delay = input.holding[btn_t::Yes] ? kKeyHeldDelay : kDefaultDelay;
 			}
-		} else if (flags[dialogue_flag_t::Question]) {
+		} else if (flags[flags_t::Question]) {
 			if (input.pressed[btn_t::Up]) {
 				if (cursor_index > 0) {
 					--cursor_index;
@@ -84,46 +84,46 @@ void dialogue_gui_t::handle(const input_t& input, audio_t& audio) {
 				}
 			} else if (input.pressed[btn_t::Jump]) {
 				cursor_total = 0;
-				flags[dialogue_flag_t::Question] = false;
+				flags[flags_t::Question] = false;
 				audio.play(res::sfx::TitleBeg, 0);
 			}
 		} else {
-			flags[dialogue_flag_t::Writing] = false;
+			flags[flags_t::Writing] = false;
 		}
 	}
 }
 
 void dialogue_gui_t::update(real64_t delta) {
-	if (flags[dialogue_flag_t::Textbox]) {
+	if (flags[flags_t::Textbox]) {
 		timer += static_cast<real_t>(delta);
 		if (timer >= delay) {
 			timer = glm::mod(timer, delay);
 			if (!text.finished()) {
-				flags[dialogue_flag_t::Writing] = true;
-				flags[dialogue_flag_t::Sound] = true;
+				flags[flags_t::Writing] = true;
+				flags[flags_t::Sound] = true;
 			}
 		}
-		if (flags[dialogue_flag_t::Facebox]) {
+		if (flags[flags_t::Facebox]) {
 			if (!text.finished()) {
 				faces.update(delta);
 			} else {
 				faces.set_frame(0);
 			}
 		}
-		if (flags[dialogue_flag_t::Question]) {
+		if (flags[flags_t::Question]) {
 			arrow.update(delta);
 		}
 	}
 }
 
 void dialogue_gui_t::render(renderer_t& renderer) const {
-	if (flags[dialogue_flag_t::Textbox]) {
-		if (flags[dialogue_flag_t::Facebox]) {
+	if (flags[flags_t::Textbox]) {
+		if (flags[flags_t::Facebox]) {
 			faces.render(renderer);
 		} else {
 			faces.invalidate();
 		}
-		if (flags[dialogue_flag_t::Question]) {
+		if (flags[flags_t::Question]) {
 			arrow.render(renderer);
 		} else {
 			arrow.invalidate();
@@ -148,14 +148,14 @@ void dialogue_gui_t::render(renderer_t& renderer) const {
 
 void dialogue_gui_t::open_textbox_high() {
 	amend = true;
-	flags[dialogue_flag_t::Textbox] = true;
+	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
 	rect = rect_t { glm::vec2(32.0f, 8.0f), kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(
-		flags[dialogue_flag_t::Facebox] ?
+		flags[flags_t::Facebox] ?
 		rect.left_top() + kTextOffsetB :
 		rect.left_top() + kTextOffsetA
 	);
@@ -163,14 +163,14 @@ void dialogue_gui_t::open_textbox_high() {
 
 void dialogue_gui_t::open_textbox_low() {
 	amend = true;
-	flags[dialogue_flag_t::Textbox] = true;
+	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
 	rect = rect_t { glm::vec2(32.0f, 114.0f), kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(
-		flags[dialogue_flag_t::Facebox] ?
+		flags[flags_t::Facebox] ?
 		rect.left_top() + kTextOffsetB :
 		rect.left_top() + kTextOffsetA
 	);
@@ -199,7 +199,7 @@ void dialogue_gui_t::close_textbox() {
 }
 
 void dialogue_gui_t::set_face(arch_t state, direction_t direction) {
-	flags[dialogue_flag_t::Facebox] = true;
+	flags[flags_t::Facebox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
 	text.set_position(rect.left_top() + kTextOffsetB);
@@ -210,7 +210,7 @@ void dialogue_gui_t::set_face(arch_t state, direction_t direction) {
 }
 
 void dialogue_gui_t::set_face() {
-	flags[dialogue_flag_t::Facebox] = false;
+	flags[flags_t::Facebox] = false;
 	cursor_index = 0;
 	cursor_total = 0;
 	text.set_position(rect.left_top() + kTextOffsetA);
@@ -221,19 +221,19 @@ void dialogue_gui_t::set_face() {
 }
 
 void dialogue_gui_t::set_delay(real_t delay) {
-	flags[dialogue_flag_t::Delay] = true;
+	flags[flags_t::Delay] = true;
 	this->delay = glm::clamp(delay, kDefaultDelay, kHighestDelay);
 }
 
 void dialogue_gui_t::set_delay() {
-	flags[dialogue_flag_t::Delay] = false;
+	flags[flags_t::Delay] = false;
 	this->delay = kDefaultDelay;
 }
 
 void dialogue_gui_t::ask_question(const CScriptArray* array) {
 	if (array and array->GetSize() > 0) {
-		flags[dialogue_flag_t::Question] = true;
-		flags[dialogue_flag_t::Writing] = false;
+		flags[flags_t::Question] = true;
+		flags[flags_t::Writing] = false;
 		text.set_string("  ");
 		for (uint_t it = 0; it < array->GetSize(); ++it) {
 			auto question = reinterpret_cast<const std::string*>(array->At(it));
@@ -245,7 +245,7 @@ void dialogue_gui_t::ask_question(const CScriptArray* array) {
 	}
 }
 
-bool dialogue_gui_t::get_flag(dialogue_flag_t flag) const {
+bool dialogue_gui_t::get_flag(flags_t flag) const {
 	return flags[flag];
 }
 

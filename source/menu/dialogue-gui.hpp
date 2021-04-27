@@ -12,21 +12,17 @@ struct input_t;
 struct audio_t;
 struct receiver_t;
 
-namespace __enum_dialogue_flag {
-	enum type : arch_t {
+struct dialogue_gui_t : public not_copyable_t {
+public:
+	enum flags_t : arch_t {
 		Textbox,
 		Facebox,
 		Question,
 		Writing,
 		Delay,
 		Sound,
-		Total
+		TotalFlags
 	};
-}
-
-using dialogue_flag_t = __enum_dialogue_flag::type;
-
-struct dialogue_gui_t : public not_copyable_t {
 public:
 	dialogue_gui_t() = default;
 	dialogue_gui_t(dialogue_gui_t&&) noexcept = default;
@@ -49,11 +45,11 @@ public:
 	void set_delay(real_t delay);
 	void set_delay();
 	void ask_question(const CScriptArray* array);
-	bool get_flag(dialogue_flag_t flag) const;
+	bool get_flag(flags_t flag) const;
 	arch_t get_answer() const;
 private:
 	mutable bool_t amend { true };
-	std::bitset<dialogue_flag_t::Total> flags { 0 };
+	std::bitset<flags_t::TotalFlags> flags { 0 };
 	arch_t cursor_index { 0 };
 	arch_t cursor_total { 0 };
 	real_t timer { 0.0f };

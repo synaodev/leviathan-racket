@@ -12,15 +12,11 @@
 struct setup_file_t;
 struct macro_player_t;
 
-namespace __enum_policy {
-	enum type : arch_t {
-		Run,
-		Stop,
-		Quit
-	};
-}
-
-using policy_t = __enum_policy::type;
+enum class policy_t {
+	Run,
+	Stop,
+	Quit
+};
 
 namespace __enum_btn {
 	enum type : arch_t {

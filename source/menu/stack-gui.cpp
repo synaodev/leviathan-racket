@@ -42,7 +42,7 @@ void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 				widgets.back()->invalidate();
 			}
 		}
-	} else if (!kernel.has(kernel_state_t::Lock)) {
+	} else if (!kernel.has(kernel_t::Lock)) {
 		if (input.pressed[btn_t::Options]) {
 			widgets.emplace_back(std::make_unique<wgt_option_t>(0));
 		}
