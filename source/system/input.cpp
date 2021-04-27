@@ -11,7 +11,6 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_joystick.h>
 
-static constexpr arch_t kNotReady = (arch_t)-1;
 static constexpr sint_t kScancodeNothing  = -1;
 static constexpr sint_t kScancodeKeyboard = -2;
 static constexpr sint_t kScancodeJoystick = -3;
@@ -20,19 +19,6 @@ static constexpr sint_t kScancodeJoystick = -3;
 	static std::map<sint_t, bool_t> meta_pressed;
 	static std::map<sint_t, bool_t> meta_holding;
 #endif
-
-input_t::input_t() :
-	pressed(0),
-	holding(0),
-	position(0.0f),
-	keyboard(),
-	joystick(),
-	player(nullptr),
-	scanner(kScancodeNothing),
-	device(nullptr)
-{
-
-}
 
 input_t::~input_t() {
 #ifdef LEVIATHAN_USES_META
@@ -49,6 +35,7 @@ bool input_t::init(const setup_file_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
 	this->all_macrofile_settings(config);
+	scanner = kScancodeNothing;
 	if (device) {
 		synao_log("Error! Joystick already exists!\n");
 		return false;
@@ -269,7 +256,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		}
 		}
 	}
-	glm::ivec2 integral = glm::zero<glm::ivec2>();
+	glm::ivec2 integral {};
 	SDL_GetMouseState(&integral.x, &integral.y);
 	position = glm::vec2(integral);
 	return policy;
@@ -314,7 +301,7 @@ std::string input_t::get_scancode_name(arch_t index) const {
 			return SDL_GetScancodeName(code);
 		}
 	}
-	return std::string();
+	return {};
 }
 
 std::string input_t::get_joystick_button(arch_t index) const {
@@ -323,7 +310,7 @@ std::string input_t::get_joystick_button(arch_t index) const {
 			return std::to_string(pair.first);
 		}
 	}
-	return std::string();
+	return {};
 }
 
 std::string input_t::get_config_name(arch_t index, bool_t joy) const {
@@ -519,22 +506,6 @@ void input_t::all_macrofile_settings(const setup_file_t& config) {
 			player.reset();
 		}
 	}
-}
-
-macro_player_t::macro_player_t() :
-	record(false),
-	index(kNotReady),
-	buttons()
-{
-
-}
-
-macro_player_t::macro_player_t(bool_t record) :
-	record(record),
-	index(kNotReady),
-	buttons()
-{
-
 }
 
 bool macro_player_t::load(const std::string& name) {

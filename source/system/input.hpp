@@ -47,11 +47,9 @@ using btn_t = __enum_btn::type;
 typedef union SDL_Event SDL_Event;
 typedef struct _SDL_Joystick SDL_Joystick;
 
-struct input_t : public not_copyable_t {
+struct input_t : public not_copyable_t, public not_moveable_t {
 public:
-	input_t();
-	input_t(input_t&&) = default;
-	input_t& operator=(input_t&&) = default;
+	input_t() = default;
 	~input_t();
 public:
 	bool init(const setup_file_t& config);
@@ -80,21 +78,24 @@ private:
 	void all_joystick_bindings(const setup_file_t& config);
 	void all_macrofile_settings(const setup_file_t& config);
 public:
-	std::bitset<btn_t::Total> pressed, holding;
-	glm::vec2 position;
+	std::bitset<btn_t::Total> pressed { 0 };
+	std::bitset<btn_t::Total> holding { 0 };
+	glm::vec2 position {};
 private:
-	std::map<sint_t, btn_t> keyboard, joystick;
-	std::unique_ptr<macro_player_t> player;
-	sint_t scanner;
-	SDL_Joystick* device;
+	std::map<sint_t, btn_t> keyboard {};
+	std::map<sint_t, btn_t> joystick {};
+	std::unique_ptr<macro_player_t> player { nullptr };
+	sint_t scanner { 0 };
+	SDL_Joystick* device { nullptr };
 };
 
 struct macro_player_t : public not_copyable_t {
 public:
-	macro_player_t();
-	macro_player_t(bool_t record);
-	macro_player_t(macro_player_t&&) = default;
-	macro_player_t& operator=(macro_player_t&&) = default;
+	macro_player_t() = default;
+	macro_player_t(bool_t record) :
+		record(record) {}
+	macro_player_t(macro_player_t&&) noexcept = default;
+	macro_player_t& operator=(macro_player_t&&) noexcept = default;
 	~macro_player_t() = default;
 public:
 	bool load(const std::string& name);
@@ -103,8 +104,10 @@ public:
 	void store(const std::bitset<btn_t::Total>& pressed, const std::bitset<btn_t::Total>& holding);
 	bool recording() const;
 	bool playing() const;
+public:
+	static constexpr arch_t kNotReady = (arch_t)-1;
 private:
-	bool_t record;
-	arch_t index;
-	std::vector<std::bitset<btn_t::Total> > buttons;
+	bool_t record { false };
+	arch_t index { kNotReady };
+	std::vector<std::bitset<btn_t::Total> > buttons {};
 };

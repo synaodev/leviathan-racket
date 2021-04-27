@@ -10,7 +10,6 @@
 #endif
 
 #include <glm/common.hpp>
-#include <pxtone/pxtnService.h>
 #include <pxtone/pxtnError.h>
 #include <SDL2/SDL.h>
 
@@ -20,24 +19,6 @@ static constexpr sint_t kTotalChannel = 2;
 static constexpr sint_t kSamplingRate = 44100;
 static constexpr real_t kBufferedTime = 0.1f;
 static constexpr real_t kWaitConstant = 750.0f;
-
-music_t::music_t() :
-	service(nullptr),
-	title(),
-	playing(false),
-	looping(false),
-	thread(),
-	channels(kTotalChannel),
-	sampling_rate(kSamplingRate),
-	buffered_time(kBufferedTime),
-	volume(1.0f),
-	source(0),
-	buffers{}
-{
-	for (auto&& buffer : buffers) {
-		buffer = 0;
-	}
-}
 
 music_t::~music_t() {
 	this->clear();
@@ -54,14 +35,22 @@ music_t::~music_t() {
 }
 
 bool music_t::init(const setup_file_t& config) {
+	channels = kTotalChannel;
 	config.get("Music", "Channels",	channels);
-	channels = glm::clamp(channels, 1, 2);
+	channels = glm::clamp(channels, 1, kTotalChannel);
+
+	sampling_rate = kSamplingRate;
 	config.get("Music", "SamplingRate",	sampling_rate);
-	sampling_rate = glm::clamp(sampling_rate, 11025, 44100);
+	sampling_rate = glm::clamp(sampling_rate, 11025, kSamplingRate);
+
+	buffered_time = kBufferedTime;
 	config.get("Music", "BufferedTime", buffered_time);
-	buffered_time = glm::clamp(buffered_time, 0.1f, 0.75f);
+	buffered_time = glm::clamp(buffered_time, kBufferedTime, 0.75f);
+
+	volume = 1.0f;
 	config.get("Music", "Volume", volume);
 	volume = glm::clamp(volume, 0.0f, 1.0f);
+
 	if (playing or !title.empty()) {
 		synao_log("Music device is already running!\n");
 		return false;

@@ -36,11 +36,9 @@ struct music_t;
 struct renderer_t;
 struct receiver_t;
 
-struct kernel_t : public not_copyable_t {
+struct kernel_t : public not_copyable_t, public not_moveable_t {
 public:
-	kernel_t();
-	kernel_t(kernel_t&&) = default;
-	kernel_t& operator=(kernel_t&&) = default;
+	kernel_t() = default;
 	~kernel_t() = default;
 public:
 	bool init(const receiver_t& receiver);
@@ -97,15 +95,16 @@ public:
 	bool get_flag(arch_t index) const;
 	bool get_flag_range(arch_t from, arch_t to) const;
 private:
-	std::function<std::string(asIScriptFunction*)> verify;
-	std::bitset<kernel_state_t::Total> bitmask;
-	arch_t file_index;
-	real64_t timer;
-	std::string language, field;
-	sint_t identity;
-	std::string function;
-	glm::ivec2 cursor;
-	glm::ivec4* item_ptr;
-	std::vector<glm::ivec4> items;
-	std::vector<uint64_t> flags;
+	std::function<std::string(asIScriptFunction*)> verify {};
+	std::bitset<kernel_state_t::Total> bitmask { 0 };
+	arch_t file_index { 0 };
+	real64_t timer { 0.0 };
+	std::string language {};
+	std::string field {};
+	sint_t identity { 0 };
+	std::string function {};
+	glm::ivec2 cursor {};
+	glm::ivec4* item_ptr { nullptr };
+	std::vector<glm::ivec4> items {};
+	std::vector<uint64_t> flags {};
 };

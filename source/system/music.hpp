@@ -7,17 +7,15 @@
 #include <atomic>
 #include <array>
 
+#include <pxtone/pxtnService.h>
+
 #include "../types.hpp"
 
 struct setup_file_t;
 
-class pxtnService;
-
-struct music_t : public not_copyable_t {
+struct music_t : public not_copyable_t, public not_moveable_t {
 public:
-	music_t();
-	music_t(music_t&&) = delete;
-	music_t& operator=(music_t&&) = delete;
+	music_t() = default;
 	~music_t();
 public:
 	bool init(const setup_file_t& config);
@@ -36,13 +34,18 @@ public:
 private:
 	static void process(music_t* music);
 private:
-	std::unique_ptr<pxtnService> service;
-	std::string title;
-	std::atomic<bool> playing, looping;
-	std::thread thread;
-	sint_t channels, sampling_rate;
-	real_t buffered_time, volume;
+	std::unique_ptr<pxtnService> service { nullptr };
+	std::string title {};
+	std::atomic<bool> playing { false };
+	std::atomic<bool> looping { false };
+	std::thread thread {};
+	sint_t channels { 0 };
+	sint_t sampling_rate { 0 };
+	real_t buffered_time { 0.0f };
+	real_t volume { 1.0f };
 private: // For playing
-	uint_t source;
-	std::array<uint_t, 3> buffers;
+	uint_t source { 0 };
+	std::array<uint_t, 3> buffers {
+		0, 0, 0
+	};
 };

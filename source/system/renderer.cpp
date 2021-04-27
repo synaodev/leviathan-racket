@@ -9,17 +9,6 @@
 #include <limits>
 #include <glm/gtc/matrix_transform.hpp>
 
-renderer_t::renderer_t() :
-	quad_allocator(),
-	sampler_allocator(),
-	display_lists(),
-	pipelines(program_t::Total),
-	viewports(),
-	internal_state()
-{
-
-}
-
 bool renderer_t::init(vfs_t& fs) {
 	if (!quad_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
 		synao_log("Couldn't setup quad_buffer_allocator_t!\n");
@@ -33,6 +22,7 @@ bool renderer_t::init(vfs_t& fs) {
 		synao_log("Couldn't set the virtual filesystem's sampler allocator!\n");
 		return false;
 	}
+	pipelines.resize(program_t::Total);
 	if (viewports.valid()) {
 		synao_log("Constant buffers already exist!\n");
 		return false;

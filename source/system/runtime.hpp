@@ -20,11 +20,9 @@ struct audio_t;
 struct music_t;
 struct renderer_t;
 
-struct runtime_t : public not_copyable_t {
+struct runtime_t : public not_copyable_t, public not_moveable_t {
 public:
-	runtime_t();
-	runtime_t(runtime_t&&) = default;
-	runtime_t& operator=(runtime_t&&) = default;
+	runtime_t() = default;
 	~runtime_t() = default;
 public:
 	bool init(input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer);
@@ -39,16 +37,16 @@ private:
 	void setup_load(const video_t& video, renderer_t& renderer);
 	void setup_save();
 private:
-	real64_t accum;
-	kernel_t kernel;
-	receiver_t receiver;
-	stack_gui_t stack_gui;
-	dialogue_gui_t dialogue_gui;
-	inventory_gui_t inventory_gui;
-	headsup_gui_t headsup_gui;
-	camera_t camera;
-	naomi_state_t naomi;
-	kontext_t kontext;
-	tilemap_t tilemap;
-	meta_state_t meta_state;
+	real64_t accum { 0.0 };
+	kernel_t kernel {};
+	receiver_t receiver {};
+	stack_gui_t stack_gui {};
+	dialogue_gui_t dialogue_gui {};
+	inventory_gui_t inventory_gui {};
+	headsup_gui_t headsup_gui {};
+	camera_t camera {};
+	naomi_state_t naomi {};
+	kontext_t kontext {};
+	tilemap_t tilemap {};
+	meta_state_t meta_state {};
 };

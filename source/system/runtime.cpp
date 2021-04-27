@@ -18,23 +18,6 @@
 static const byte_t kStatProgPath[] = "_prog.cfg";
 static const byte_t kStatCpntPath[] = "_check.cfg";
 
-runtime_t::runtime_t() :
-	accum(0.0),
-	kernel(),
-	receiver(),
-	stack_gui(),
-	dialogue_gui(),
-	inventory_gui(),
-	headsup_gui(),
-	camera(),
-	naomi(),
-	kontext(),
-	tilemap(),
-	meta_state()
-{
-
-}
-
 bool runtime_t::init(input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	if (!kernel.init(receiver)) {
 		return false;

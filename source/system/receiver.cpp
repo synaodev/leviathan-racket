@@ -27,19 +27,6 @@ static const byte_t kInvenDecl[] = "void inventory(arch_t type, arch_t cursor)";
 
 static constexpr uint_t kMaxCalls = 128;
 
-receiver_t::receiver_t() :
-	bitmask(0),
-	timer(0.0f),
-	calls(0),
-	engine(nullptr),
-	state(nullptr),
-	current(nullptr),
-	boot(nullptr),
-	events()
-{
-
-}
-
 receiver_t::~receiver_t() {
 	// If boot isn't null it's been fully initialized.
 	if (boot) {
@@ -320,7 +307,7 @@ std::string receiver_t::verify(asIScriptFunction* imported) const {
 			}
 		}
 	}
-	return std::string();
+	return {};
 }
 
 void receiver_t::print_message(const std::string& message) {

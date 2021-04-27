@@ -12,15 +12,6 @@
 #include <glm/common.hpp>
 #include <SDL2/SDL.h>
 
-video_t::video_t() :
-	window(nullptr),
-	context(nullptr),
-	params(),
-	meta(false)
-{
-
-}
-
 video_t::~video_t() {
 	if (context) {
 		SDL_GL_DeleteContext(context);

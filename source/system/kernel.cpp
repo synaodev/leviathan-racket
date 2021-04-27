@@ -19,23 +19,6 @@ static constexpr arch_t kMaxItemList = 30;
 static constexpr arch_t kMaxFlagList = 128;
 static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
 
-kernel_t::kernel_t() :
-	verify(nullptr),
-	bitmask(0),
-	file_index(0),
-	timer(0.0),
-	language(),
-	field(),
-	identity(0),
-	function(),
-	cursor(0),
-	item_ptr(nullptr),
-	items(kMaxItemList, glm::zero<glm::ivec4>()),
-	flags(kMaxFlagList, 0)
-{
-
-}
-
 bool kernel_t::init(const receiver_t& receiver) {
 	if (verify) {
 		synao_log("Error! Kernel is already initialized!\n");
@@ -44,6 +27,8 @@ bool kernel_t::init(const receiver_t& receiver) {
 	verify = [&receiver](asIScriptFunction* function) {
 		return receiver.verify(function);
 	};
+	items = std::vector<glm::ivec4>(kMaxItemList, glm::zero<glm::ivec4>());
+	flags = std::vector<uint64_t>(kMaxFlagList, 0);
 	synao_log("Kernel is ready.\n");
 	return true;
 }
@@ -99,7 +84,7 @@ void kernel_t::read_data(const setup_file_t& file) {
 
 bool kernel_t::read_stream(const std::string& path) {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ifstream ifs(path + std::to_string(file_index) + name, std::ios::binary);
+	std::ifstream ifs { path + std::to_string(file_index) + name, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.read(
 			reinterpret_cast<byte_t*>(flags.data()),
@@ -126,7 +111,7 @@ void kernel_t::write_data(setup_file_t& file) const {
 
 bool kernel_t::write_stream(const std::string& path) const {
 	const byte_t* name = bitmask[kernel_state_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ofstream ofs(path + std::to_string(file_index) + name, std::ios::binary);
+	std::ofstream ofs { path + std::to_string(file_index) + name, std::ios::binary };
 	if (ofs.is_open()) {
 		ofs.write(
 			reinterpret_cast<const byte_t*>(flags.data()),
@@ -327,7 +312,7 @@ void kernel_t::shift_item(arch_t deleted) {
 		if (index < items.size() - 1) {
 			items[index] = items[index + 1];
 		} else if(index >= items.size() - 1) {
-			items[index] = glm::ivec4(0);
+			items[index] = glm::zero<glm::ivec4>();
 		}
 		++times;
 	}

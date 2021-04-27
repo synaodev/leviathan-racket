@@ -7,15 +7,6 @@
 
 static constexpr arch_t kSoundChannels = 12;
 
-audio_t::audio_t() :
-	tasks(),
-	channels(kSoundChannels),
-	device(nullptr),
-	context(nullptr)
-{
-
-}
-
 audio_t::~audio_t() {
 	tasks.clear();
 	channels.clear();
@@ -58,6 +49,8 @@ bool audio_t::init(const setup_file_t& config) {
 
 	real_t volume = 1.0f;
 	config.get("Audio", "Volume", volume);
+
+	channels.resize(kSoundChannels);
 	for (auto&& channel : channels) {
 		channel.create(volume);
 	}
