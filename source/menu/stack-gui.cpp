@@ -8,6 +8,7 @@
 #include "./wgt-audio.hpp"
 #include "./wgt-language.hpp"
 
+#include "../utility/logger.hpp"
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
@@ -104,6 +105,7 @@ void stack_gui_t::push(menu_t type, arch_t flags) {
 		widgets.emplace_back(std::make_unique<wgt_language_t>(flags));
 		break;
 	default:
+		synao_log("Widget type invalid! This code block should't run!\n");
 		break;
 	}
 }

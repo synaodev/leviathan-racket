@@ -16,24 +16,12 @@
 struct setup_file_t;
 struct vfs_t;
 
-namespace __enum_vfs_resource_path {
-	enum type : arch_t {
-		Event,
-		Field,
-		Font,
-		I18N,
-		Image,
-		Init,
-		Noise,
-		Palette,
-		Save,
-		Sprite,
-		TileKey,
-		Tune
-	};
-}
-
-using vfs_resource_path_t = __enum_vfs_resource_path::type;
+enum class vfs_resource_path_t : arch_t {
+	Event, Field, Font,
+	I18N, Image, Init,
+	Noise, Palette, Save,
+	Sprite, TileKey, Tune
+};
 
 namespace vfs {
 	static vfs_t* device = nullptr;

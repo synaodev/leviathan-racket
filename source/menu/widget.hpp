@@ -4,18 +4,14 @@
 
 #include "../types.hpp"
 
-namespace __enum_menu {
-	enum type : arch_t {
-		Option,
-		File,
-		Input,
-		Video,
-		Audio,
-		Language
-	};
-}
-
-using menu_t = __enum_menu::type;
+enum class menu_t : arch_t {
+	Option,
+	File,
+	Input,
+	Video,
+	Audio,
+	Language
+};
 
 struct setup_file_t;
 

@@ -4,16 +4,12 @@
 
 struct renderer_t;
 
-namespace __enum_fade_state {
-	enum type : arch_t {
-		DoneIn,
-		DoneOut,
-		FadingIn,
-		FadingOut
-	};
-}
-
-using fade_state_t = __enum_fade_state::type;
+enum class fade_state_t : arch_t {
+	DoneIn,
+	DoneOut,
+	FadingIn,
+	FadingOut
+};
 
 struct draw_fade_t : public not_copyable_t {
 public:

@@ -53,25 +53,25 @@ void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio,
 	} else if (input.pressed[btn_t::Yes]) {
 		active = false;
 		file_op = bitmask.any() ?
-			wgt_file_op_t::Saving :
-			wgt_file_op_t::Loading;
+			file_op_t::Saving :
+			file_op_t::Loading;
 		audio.play(res::sfx::TitleBeg, 0);
 		kernel.set_file_index(cursor);
 	} else if (input.pressed[btn_t::No] or input.pressed[btn_t::Options]) {
 		active = false;
-		file_op = wgt_file_op_t::Unknown;
+		file_op = file_op_t::Unknown;
 	}
 	if (!active) {
 		input.flush();
 		switch (file_op) {
-		case wgt_file_op_t::Unknown:
+		case file_op_t::Unknown:
 			kernel.unlock();
 			break;
-		case wgt_file_op_t::Loading:
+		case file_op_t::Loading:
 			headsup_gui.fade_out();
 			kernel.load_progress();
 			break;
-		case wgt_file_op_t::Saving:
+		case file_op_t::Saving:
 			kernel.save_progress();
 			kernel.unlock();
 			break;

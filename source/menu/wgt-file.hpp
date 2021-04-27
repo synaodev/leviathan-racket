@@ -5,16 +5,6 @@
 #include "../overlay/draw-text.hpp"
 #include "../overlay/draw-scheme.hpp"
 
-namespace __enum_wgt_file_op {
-	enum type : arch_t {
-		Unknown,
-		Loading,
-		Saving
-	};
-}
-
-using wgt_file_op_t = __enum_wgt_file_op::type;
-
 struct wgt_file_t : public widget_i {
 public:
 	wgt_file_t() = default;
@@ -30,7 +20,12 @@ public:
 	void render(renderer_t& renderer) const override;
 	void invalidate() const override;
 private:
-	wgt_file_op_t file_op { wgt_file_op_t::Unknown };
+	enum class file_op_t : arch_t {
+		Unknown,
+		Loading,
+		Saving
+	};
+	file_op_t file_op { file_op_t::Unknown };
 	arch_t cursor { 0 };
 	draw_text_t text {};
 	draw_scheme_t arrow {};

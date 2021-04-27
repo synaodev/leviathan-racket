@@ -5,16 +5,12 @@
 
 #include "../types.hpp"
 
-namespace __enum_side {
-	enum type : arch_t {
-		Right,
-		Left,
-		Top,
-		Bottom
-	};
-}
-
-using side_t = __enum_side::type;
+enum class side_t : arch_t {
+	Right,
+	Left,
+	Top,
+	Bottom
+};
 
 namespace side_fn {
 	inline side_t opposing(side_t s) {
