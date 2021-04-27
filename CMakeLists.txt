@@ -3,10 +3,14 @@ cmake_minimum_required (VERSION 3.13)
 # Check for ccache on Linux
 
 if (UNIX)
-	find_program (CCACHE_PROGRAM "ccache")
-	if (CCACHE_PROGRAM)
-		set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+	if (NOT DEFINED CCACHE_BUILD OR CCACHE_BUILD)
+		find_program (CCACHE_PROGRAM "ccache")
+		if (CCACHE_PROGRAM)
+			set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ${CCACHE_PROGRAM})
+		endif ()
 	endif ()
+elseif (DEFINED CCACHE_BUILD)
+	message ("Only able to use ccache on Linux. Sorry!")
 endif ()
 
 # Project definition

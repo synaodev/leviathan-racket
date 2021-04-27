@@ -109,7 +109,7 @@ void kontext_t::destroy_id(sint_t identity) {
 void kontext_t::kill_id(sint_t identity) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		if (registry.has<health_t>(actor)) {
+		if (registry.all_of<health_t>(actor)) {
 			auto& health = registry.get<health_t>(actor);
 			health.current = 0;
 		}
@@ -226,7 +226,7 @@ void kontext_t::shrapnel(real_t x, real_t y, arch_t count) {
 void kontext_t::bump(sint_t identity, real_t velocity_x, real_t velocity_y) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		if (registry.has<kinematics_t>(actor)) {
+		if (registry.all_of<kinematics_t>(actor)) {
 			auto& kinematics = registry.get<kinematics_t>(actor);
 			kinematics.velocity = glm::vec2(velocity_x, velocity_y);
 		}
@@ -236,7 +236,7 @@ void kontext_t::bump(sint_t identity, real_t velocity_x, real_t velocity_y) {
 void kontext_t::animate(sint_t identity, arch_t state, arch_t variation) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		if (registry.has<sprite_t>(actor)) {
+		if (registry.all_of<sprite_t>(actor)) {
 			auto& sprite = registry.get<sprite_t>(actor);
 			sprite.amend = true;
 			sprite.variation = variation;
@@ -248,7 +248,7 @@ void kontext_t::animate(sint_t identity, arch_t state, arch_t variation) {
 void kontext_t::set_state(sint_t identity, arch_t state) {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		if (registry.has<routine_t>(actor)) {
+		if (registry.all_of<routine_t>(actor)) {
 			auto& routine = registry.get<routine_t>(actor);
 			routine.state = state;
 		}
@@ -293,7 +293,7 @@ void kontext_t::set_fight(sint_t identity, asIScriptFunction* function) {
 bool kontext_t::still(sint_t identity) const {
 	entt::entity actor = this->search_id(identity);
 	if (actor != entt::null) {
-		if (registry.has<kinematics_t>(actor)) {
+		if (registry.all_of<kinematics_t>(actor)) {
 			auto& kinematics = registry.get<kinematics_t>(actor);
 			if (kinematics.velocity == glm::zero<glm::vec2>()) {
 				return true;

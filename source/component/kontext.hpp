@@ -113,7 +113,7 @@ inline bool kontext_t::spawn(const actor_spawn_t& spawn) {
 
 inline void kontext_t::dispose(entt::entity actor) {
 	if (!panic_draw) {
-		panic_draw = registry.has<sprite_t>(actor);
+		panic_draw = registry.all_of<sprite_t>(actor);
 	}
 	registry.destroy(actor);
 }
@@ -150,7 +150,7 @@ inline entt::basic_view<entt::entity, entt::exclude_t<>, Component...> kontext_t
 
 template<typename... Component>
 inline bool kontext_t::has(entt::entity actor) const {
-	return registry.has<Component...>(actor);
+	return registry.all_of<Component...>(actor);
 }
 
 template<typename... Component>
