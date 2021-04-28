@@ -15,10 +15,10 @@ static const glm::vec2 kAudioDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 void wgt_audio_t::init(const input_t&, const video_t&, audio_t& audio, const music_t& music, kernel_t&) {
 	ready = true;
-	text.set_font(vfs::font(0));
+	text.set_font(vfs_t::font(0));
 	text.set_position(kAudioDefaultPosition);
 	this->setup_text(audio, music);
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
@@ -102,18 +102,10 @@ void wgt_audio_t::invalidate() const {
 void wgt_audio_t::setup_text(const audio_t& audio, const music_t& music) {
 	fmt::memory_buffer data;
 	fmt::format_to(data, "{}{}\n{}{}\n",
-		vfs::i18n_find("Audio", 0, 1),
+		vfs_t::i18n_find("Audio", 0, 1),
 		audio.get_volume(),
-		vfs::i18n_find("Audio", 2),
+		vfs_t::i18n_find("Audio", 2),
 		music.get_volume()
 	);
 	text.set_string(fmt::to_string(data));
-	// std::string data;
-	// data += vfs::i18n_find("Audio", 0, 1);
-	// data += std::to_string(audio.get_volume());
-	// data += '\n';
-	// data += vfs::i18n_find("Audio", 2);
-	// data += std::to_string(music.get_volume());
-	// data += '\n';
-	// text.set_string(data);
 }

@@ -83,7 +83,7 @@ void audio_t::flush() {
 
 void audio_t::play(const entt::hashed_string& entry, arch_t index) {
 	if (index < channels.size()) {
-		tasks.emplace_back(index, vfs::noise(entry));
+		tasks.emplace_back(index, vfs_t::noise(entry));
 	}
 }
 
@@ -92,7 +92,7 @@ void audio_t::play(const entt::hashed_string& entry) {
 		if (!channel.playing()) {
 			tasks.emplace_back(
 				std::distance(&channels[0], &channel),
-				vfs::noise(entry)
+				vfs_t::noise(entry)
 			);
 			break;
 		}

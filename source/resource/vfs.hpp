@@ -23,48 +23,45 @@ enum class vfs_resource_path_t : arch_t {
 	Sprite, TileKey, Tune
 };
 
-namespace vfs {
-	static vfs_t* device = nullptr;
-	bool mount(const std::string& directory, bool_t print = true);
-	bool directory_exists(const std::string& name, bool_t print = true);
-	bool file_exists(const std::string& name, bool_t print = true);
-	bool create_directory(const std::string& name);
-	bool create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed);
-	std::string working_directory();
-	std::string executable_directory();
-	std::string personal_directory();
-	std::string resource_path(vfs_resource_path_t path);
-	std::vector<std::string> file_list(const std::string& directory);
-	std::string string_buffer(const std::string& path);
-	std::vector<byte_t> byte_buffer(const std::string& path);
-	std::vector<uint_t> uint32_buffer(const std::string& path);
-	bool record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed);
-	std::string i18n_find(const std::string& segment, arch_t index);
-	std::string i18n_find(const std::string& segment, arch_t first, arch_t last);
-	arch_t i18n_size(const std::string& segment);
-	bool try_language(const std::string& language);
-	const texture_t* texture(const std::string& name);
-	const palette_t* palette(const std::string& name);
-	const atlas_t* atlas(const std::string& name);
-	const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
-	std::string event_path(const std::string& name, event_loading_t flags);
-	const noise_t* noise(const std::string& name);
-	const noise_t* noise(const entt::hashed_string& entry);
-	const animation_t* animation(const std::string& name);
-	const animation_t* animation(const entt::hashed_string& entry);
-	const font_t* font(const std::string& name);
-	const font_t* font(arch_t index);
-	const font_t* debug_font();
-}
-
-struct vfs_t : public not_copyable_t {
+struct vfs_t : public not_copyable_t, public not_moveable_t {
 public:
-	vfs_t();
-	vfs_t(vfs_t&&) = delete;
-	vfs_t& operator=(vfs_t&&) = delete;
+	vfs_t() = default;
 	~vfs_t();
+public:
 	bool init(const setup_file_t& config);
 	bool set_sampler_allocator(sampler_allocator_t* sampler_allocator);
+public:
+	static bool mount(const std::string& directory, bool_t print = true);
+	static bool directory_exists(const std::string& name, bool_t print = true);
+	static bool file_exists(const std::string& name, bool_t print = true);
+	static bool create_directory(const std::string& name);
+	static bool create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed);
+	static std::string working_directory();
+	static std::string executable_directory();
+	static std::string personal_directory();
+	static std::string resource_path(vfs_resource_path_t path);
+	static std::vector<std::string> file_list(const std::string& directory);
+	static std::string string_buffer(const std::string& path);
+	static std::vector<byte_t> byte_buffer(const std::string& path);
+	static std::vector<uint_t> uint32_buffer(const std::string& path);
+	static bool record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed);
+	static std::string i18n_find(const std::string& segment, arch_t index);
+	static std::string i18n_find(const std::string& segment, arch_t first, arch_t last);
+	static arch_t i18n_size(const std::string& segment);
+	static bool try_language(const std::string& language);
+	static const texture_t* texture(const std::string& name);
+	static const palette_t* palette(const std::string& name);
+	static const atlas_t* atlas(const std::string& name);
+	static const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
+	static std::string event_path(const std::string& name, event_loading_t flags);
+	static const noise_t* noise(const std::string& name);
+	static const noise_t* noise(const entt::hashed_string& entry);
+	static const animation_t* animation(const std::string& name);
+	static const animation_t* animation(const entt::hashed_string& entry);
+	static const font_t* font(const std::string& name);
+	static const font_t* font(arch_t index);
+	static const font_t* debug_font();
+private:
 	template<typename K, typename T>
 	T& emplace_safely(const K& key, std::unordered_map<K, T>& map) {
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
@@ -76,7 +73,8 @@ public:
 		std::lock_guard<std::mutex> lock{this->storage_mutex};
 		return map.find(key);
 	}
-public:
+private:
+	static vfs_t* device;
 	thread_pool_t thread_pool {};
 	std::mutex storage_mutex {};
 	std::string personal {};

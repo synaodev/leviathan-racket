@@ -82,9 +82,9 @@ void tilemap_t::push_properties(const tmx::Map& tmxmap) {
 	auto& tilesets = tmxmap.getTilesets();
 	if (!tilesets.empty()) {
 		const std::string name = ftcv::path_to_name(tilesets[0].getImagePath());
-		layer_texture = vfs::texture(name);
-		const std::string tilekey_path = vfs::resource_path(vfs_resource_path_t::TileKey);
-		attribute_key = vfs::uint32_buffer(tilekey_path + name + ".attr");
+		layer_texture = vfs_t::texture(name);
+		const std::string tilekey_path = vfs_t::resource_path(vfs_resource_path_t::TileKey);
+		attribute_key = vfs_t::uint32_buffer(tilekey_path + name + ".attr");
 	}
 }
 
@@ -110,7 +110,7 @@ void tilemap_t::push_parallax(const std::unique_ptr<tmx::Layer>& layer) {
 	assert(layer);
 	amend = true;
 	auto& path = static_cast<tmx::ImageLayer*>(layer.get())->getImagePath();
-	parallax_texture = vfs::texture(ftcv::path_to_name(path));
+	parallax_texture = vfs_t::texture(ftcv::path_to_name(path));
 
 	const glm::vec2 parallax_dimensions = parallax_texture ?
 		parallax_texture->get_dimensions() :

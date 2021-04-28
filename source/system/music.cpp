@@ -93,8 +93,8 @@ bool music_t::load(const std::string& title) {
 		return false;
 	}
 	this->clear();
-	const std::string tune_path = vfs::resource_path(vfs_resource_path_t::Tune);
-	std::vector<byte_t> buffer = vfs::byte_buffer(tune_path + title + ".ptcop");
+	const std::string tune_path = vfs_t::resource_path(vfs_resource_path_t::Tune);
+	std::vector<byte_t> buffer = vfs_t::byte_buffer(tune_path + title + ".ptcop");
 	arch_t length = buffer.size();
 	if (!length) {
 		synao_log("Pxtone file loading failed!\n");

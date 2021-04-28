@@ -168,7 +168,7 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 	// Load window icon image.
-	const image_t image = image_t::generate(vfs::resource_path(vfs_resource_path_t::Image) + "icon.png");
+	const image_t image = image_t::generate(vfs_t::resource_path(vfs_resource_path_t::Image) + "icon.png");
 	if (image.empty()) {
 		synao_log("Loading icon data failed!\n");
 		return false;

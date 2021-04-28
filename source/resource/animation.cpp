@@ -233,10 +233,10 @@ void animation_t::load(const std::string& full_path) {
 		}
 
 		if (!matfile.empty()) {
-			texture = vfs::texture(matfile);
+			texture = vfs_t::texture(matfile);
 		}
 		if (!palfile.empty()) {
-			palette = vfs::palette(palfile);
+			palette = vfs_t::palette(palfile);
 		}
 
 		glm::vec4 points = glm::zero<glm::vec4>();

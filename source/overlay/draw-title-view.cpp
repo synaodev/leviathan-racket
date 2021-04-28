@@ -39,7 +39,7 @@ void draw_title_view_t::invalidate() const {
 
 void draw_title_view_t::push(const std::string& string, arch_t font_index) {
 	auto& recent = cards.emplace_back();
-	recent.set_font(vfs::font(font_index));
+	recent.set_font(vfs_t::font(font_index));
 	recent.set_string(string);
 }
 

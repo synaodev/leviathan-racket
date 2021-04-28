@@ -9,7 +9,7 @@
 #include <glm/gtc/constants.hpp>
 
 sprite_t::sprite_t(const entt::hashed_string& entry) {
-	file = vfs::animation(entry);
+	file = vfs_t::animation(entry);
 }
 
 void sprite_t::reset() {

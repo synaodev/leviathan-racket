@@ -17,15 +17,15 @@ static const glm::vec2 kInputRightsPositions = glm::vec2(175.0f, 16.0f);
 
 void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
-	header.set_font(vfs::font(0));
+	header.set_font(vfs_t::font(0));
 	header.set_position(kInputDefaultPosition);
-	header.set_string(vfs::i18n_find("Input", 0));
-	left_text.set_font(vfs::font(4));
+	header.set_string(vfs_t::i18n_find("Input", 0));
+	left_text.set_font(vfs_t::font(4));
 	left_text.set_position(kInputDefaultPosition + kInputAddingPositions);
-	right_text.set_font(vfs::font(4));
+	right_text.set_font(vfs_t::font(4));
 	right_text.set_position(kInputDefaultPosition + kInputRightsPositions);
 	this->setup_text(input);
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		left_text.get_font_size().x,
@@ -158,7 +158,7 @@ void wgt_input_t::setup_text(const input_t& input) {
 	fmt::memory_buffer data;
 	for (arch_t it = 0; it < 12; ++it) {
 		fmt::format_to(data, "{}{}",
-			vfs::i18n_find("Input", it + 1),
+			vfs_t::i18n_find("Input", it + 1),
 			input.get_scancode_name(it)
 		);
 	}
@@ -166,21 +166,9 @@ void wgt_input_t::setup_text(const input_t& input) {
 	data.clear();
 	for (arch_t it = 0; it < 8; ++it) {
 		fmt::format_to(data, "{}{}",
-			vfs::i18n_find("Input", it + 1),
+			vfs_t::i18n_find("Input", it + 1),
 			input.get_joystick_button(it)
 		);
 	}
 	right_text.set_string(fmt::to_string(data));
-	// std::string data;
-	// for (arch_t it = 0; it < 12; ++it) {
-	// 	data += vfs::i18n_find("Input", it + 1);
-	// 	data += input.get_scancode_name(it);
-	// }
-	// left_text.set_string(data);
-	// data.clear();
-	// for (arch_t it = 0; it < 8; ++it) {
-	// 	data += vfs::i18n_find("Input", it + 1);
-	// 	data += input.get_joystick_button(it);
-	// }
-	// right_text.set_string(data);
 }

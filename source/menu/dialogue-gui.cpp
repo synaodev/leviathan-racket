@@ -25,8 +25,8 @@ static constexpr real_t kDefaultDelay = constants::MinInterval<real_t>() * 2.877
 static constexpr real_t kHighestDelay = constants::MinInterval<real_t>() * 6.0f;
 
 bool dialogue_gui_t::init(receiver_t& receiver) {
-	const animation_t* faces_animation = vfs::animation(res::anim::Faces);
-	const animation_t* heads_animation = vfs::animation(res::anim::Heads);
+	const animation_t* faces_animation = vfs_t::animation(res::anim::Faces);
+	const animation_t* heads_animation = vfs_t::animation(res::anim::Heads);
 	if (!faces_animation or !heads_animation) {
 		synao_log("Dialogue GUI is missing resources and cannot be rendered!\n");
 		return false;
@@ -49,7 +49,7 @@ void dialogue_gui_t::reset() {
 }
 
 bool dialogue_gui_t::refresh() {
-	const font_t* font = vfs::font(0);
+	const font_t* font = vfs_t::font(0);
 	if (!font) {
 		synao_log("Dialogue GUI is missing font and cannot be rendered!\n");
 		return false;

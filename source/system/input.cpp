@@ -511,7 +511,7 @@ void input_t::all_macrofile_settings(const setup_file_t& config) {
 bool macro_player_t::load(const std::string& name) {
 	std::vector<uint16_t> buffer;
 	sint64_t seed = 0;
-	if (!vfs::record_buffer(vfs::resource_path(vfs_resource_path_t::Init) + name + ".macro", buffer, seed)) {
+	if (!vfs_t::record_buffer(vfs_t::resource_path(vfs_resource_path_t::Init) + name + ".macro", buffer, seed)) {
 		synao_log("Error! Failed to load macro file!\n");
 		return false;
 	}
@@ -528,14 +528,14 @@ bool macro_player_t::write(const std::string& name) {
 	if (!record) {
 		return true;
 	}
-	const std::string path = vfs::resource_path(vfs_resource_path_t::Init) + name + ".macro";
+	const std::string path = vfs_t::resource_path(vfs_resource_path_t::Init) + name + ".macro";
 	std::vector<uint16_t> buffer;
 	buffer.resize(buttons.size());
 	for (arch_t it = 0; it < buttons.size(); ++it) {
 		buffer[it] = static_cast<uint16_t>(buttons[it].to_ulong());
 	}
 	sint64_t seed = rng::seed();
-	if (!vfs::create_recording(path, buffer, seed)) {
+	if (!vfs_t::create_recording(path, buffer, seed)) {
 		synao_log("Error! Failed to save macro file!\n");
 		return false;
 	}

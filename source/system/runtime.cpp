@@ -139,7 +139,7 @@ bool runtime_t::viable() const {
 bool runtime_t::setup_language(setup_file_t& config, renderer_t& renderer) {
 	renderer.clear();
 	const std::string& language = kernel.get_language();
-	if (vfs::try_language(language)) {
+	if (vfs_t::try_language(language)) {
 		if (!dialogue_gui.refresh() or !headsup_gui.refresh()) {
 			synao_log("Error! Font loading errors have made switching language to \"{}\" unsuccessful!\n");
 			return false;
@@ -164,7 +164,7 @@ bool runtime_t::setup_field(audio_t& audio, renderer_t& renderer) {
 		return false;
 	}
 	receiver.run_function(kernel);
-	const std::string full_path = vfs::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
+	const std::string full_path = vfs_t::resource_path(vfs_resource_path_t::Field) + kernel.get_field() + ".tmx";
 	tmx::Map tmxmap;
 	if (!tmxmap.load(full_path)) {
 		synao_log("Map file loading failed! Map Path: {}\n", full_path);
@@ -210,8 +210,8 @@ void runtime_t::setup_boot(const video_t&, renderer_t& renderer) {
 // If loading fails, run setup_boot() to make sure the game doesn't get stuck.
 void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 	bool failure = false;
-	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
-	if (vfs::create_directory(save_path)) {
+	const std::string save_path = vfs_t::resource_path(vfs_resource_path_t::Save);
+	if (vfs_t::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_t::Check) ? kStatCpntPath : kStatProgPath;
 		if (file.load(save_path + std::to_string(kernel.get_file_index()) + path_type)) {
@@ -263,8 +263,8 @@ void runtime_t::setup_load(const video_t& video, renderer_t& renderer) {
 }
 
 void runtime_t::setup_save() {
-	const std::string save_path = vfs::resource_path(vfs_resource_path_t::Save);
-	if (vfs::create_directory(save_path)) {
+	const std::string save_path = vfs_t::resource_path(vfs_resource_path_t::Save);
+	if (vfs_t::create_directory(save_path)) {
 		setup_file_t file;
 		const std::string path_type = kernel.has(kernel_t::Check) ? kStatCpntPath : kStatProgPath;
 		auto& location = kontext.get<location_t>(naomi.get_actor());

@@ -18,11 +18,11 @@ static const glm::vec2 kLangBottomPosition = glm::vec2(120.0f, 2.0f);
 void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
 	last = kTotalVisible;
-	const std::string i18n_path = vfs::resource_path(vfs_resource_path_t::I18N);
-	languages = vfs::file_list(i18n_path);
-	text.set_font(vfs::font(0));
+	const std::string i18n_path = vfs_t::resource_path(vfs_resource_path_t::I18N);
+	languages = vfs_t::file_list(i18n_path);
+	text.set_font(vfs_t::font(0));
 	text.set_position(kLangDefaultPosition);
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
@@ -104,13 +104,9 @@ void wgt_language_t::invalidate() const {
 
 void wgt_language_t::setup_text() {
 	fmt::memory_buffer data;
-	data.append(vfs::i18n_find("Language", 0));
+	data.append(vfs_t::i18n_find("Language", 0));
 	for (arch_t it = first; it < languages.size() and it != last; ++it) {
 		fmt::format_to(data, "\t {}\n", languages[it]);
 	}
 	text.set_string(fmt::to_string(data));
-	// text.set_string(vfs::i18n_find("Language", 0));
-	// for (arch_t it = first; it < languages.size() and it != last; ++it) {
-	// 	text.append_string("\t " + languages[it] + '\n');
-	// }
 }

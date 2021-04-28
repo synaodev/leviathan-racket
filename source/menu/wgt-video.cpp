@@ -15,10 +15,10 @@ static const glm::vec2 kVideoDefaultPosition = glm::vec2(4.0f, 2.0f);
 
 void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const music_t&, kernel_t&) {
 	ready = true;
-	text.set_font(vfs::font(0));
+	text.set_font(vfs_t::font(0));
 	text.set_position(kVideoDefaultPosition);
 	this->setup_text(video.get_parameters());
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,
@@ -110,12 +110,12 @@ void wgt_video_t::invalidate() const {
 void wgt_video_t::setup_text(const screen_params_t& params) {
 	fmt::memory_buffer data;
 	fmt::format_to(data, "{}{}\n{}{}\n{}{}",
-	 	vfs::i18n_find("Video", 0, 1),
-	 	params.full ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2),
-	 	vfs::i18n_find("Video", 2),
+	 	vfs_t::i18n_find("Video", 0, 1),
+	 	params.full ? vfs_t::i18n_find("Main", 1) : vfs_t::i18n_find("Main", 2),
+	 	vfs_t::i18n_find("Video", 2),
 	 	params.scaling,
-	 	vfs::i18n_find("Video", 3),
-	 	params.vsync ? vfs::i18n_find("Main", 1) : vfs::i18n_find("Main", 2)
+	 	vfs_t::i18n_find("Video", 3),
+	 	params.vsync ? vfs_t::i18n_find("Main", 1) : vfs_t::i18n_find("Main", 2)
 	);
 	text.set_string(fmt::to_string(data));
 }

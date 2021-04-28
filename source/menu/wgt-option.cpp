@@ -15,10 +15,10 @@ void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const mu
 	ready = true;
 	audio.play(res::sfx::Inven);
 	kernel.freeze();
-	text.set_font(vfs::font(0));
+	text.set_font(vfs_t::font(0));
 	text.set_position(kOptionDefaultPosition);
-	text.set_string(vfs::i18n_find("Options", 0, 7));
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	text.set_string(vfs_t::i18n_find("Options", 0, 7));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,

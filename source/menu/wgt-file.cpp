@@ -16,15 +16,15 @@ void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, 
 	ready = true;
 	cursor = kernel.get_file_index();
 	kernel.freeze();
-	text.set_font(vfs::font(0));
+	text.set_font(vfs_t::font(0));
 	text.set_position(kFileDefaultPosition);
 	if (bitmask[0]) {
-		text.set_string(vfs::i18n_find("FileSys", 0));
-		text.append_string(vfs::i18n_find("FileSys", 2, 4));
+		text.set_string(vfs_t::i18n_find("FileSys", 0));
+		text.append_string(vfs_t::i18n_find("FileSys", 2, 4));
 	} else {
-		text.set_string(vfs::i18n_find("FileSys", 1, 4));
+		text.set_string(vfs_t::i18n_find("FileSys", 1, 4));
 	}
-	arrow.set_file(vfs::animation(res::anim::Heads));
+	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
 		text.get_font_size().x,

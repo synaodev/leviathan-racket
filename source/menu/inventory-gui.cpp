@@ -64,9 +64,9 @@ void inventory_gui_element_t::render(renderer_t& renderer) const {
 }
 
 bool inventory_gui_t::init() {
-	const texture_t* texture = vfs::texture(res::img::Heads);
-	const palette_t* palette = vfs::palette(res::pal::Heads);
-	const animation_t* animation = vfs::animation(res::anim::Items);
+	const texture_t* texture = vfs_t::texture(res::img::Heads);
+	const palette_t* palette = vfs_t::palette(res::pal::Heads);
+	const animation_t* animation = vfs_t::animation(res::anim::Items);
 	if (!texture or !palette or !animation) {
 		synao_log("Inventory GUI is missing resources and cannot be rendered!\n");
 		return false;

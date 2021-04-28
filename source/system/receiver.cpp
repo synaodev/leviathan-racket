@@ -193,7 +193,7 @@ bool receiver_t::load(const std::string& name, event_loading_t flags) {
 			synao_log("Couldn't allocate script module \"{}\" during loading process!\n", name);
 			return false;
 		}
-		const std::string buffer = vfs::string_buffer(vfs::event_path(name, flags));
+		const std::string buffer = vfs_t::string_buffer(vfs_t::event_path(name, flags));
 		arch_t length = buffer.length();
 		if (module->AddScriptSection(name.c_str(), buffer.c_str(), length) != 0) {
 			current = nullptr;
@@ -738,13 +738,13 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	r = engine->RegisterGlobalFunction("bool get_key_held(arch_t action)", WRAP_MFN(std::bitset<btn_t::Total>, test), asCALL_THISCALL_ASGLOBAL, &input.holding);
 	assert(r >= 0);
 	// Get Locale String
-	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t), std::string), asCALL_CDECL);
+	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t index)", WRAP_FN_PR(vfs_t::i18n_find, (const std::string&, arch_t), std::string), asCALL_CDECL);
 	assert(r >= 0);
 	// Get Locale String
-	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t first, arch_t last)", WRAP_FN_PR(vfs::i18n_find, (const std::string&, arch_t, arch_t), std::string), asCALL_CDECL);
+	r = engine->RegisterGlobalFunction("std::string locale(const std::string &in key, arch_t first, arch_t last)", WRAP_FN_PR(vfs_t::i18n_find, (const std::string&, arch_t, arch_t), std::string), asCALL_CDECL);
 	assert(r >= 0);
 	// Get Locale Size
-	r = engine->RegisterGlobalFunction("arch_t locale(const std::string &in key)", WRAP_FN_PR(vfs::i18n_size, (const std::string&), arch_t), asCALL_CDECL);
+	r = engine->RegisterGlobalFunction("arch_t locale(const std::string &in key)", WRAP_FN_PR(vfs_t::i18n_size, (const std::string&), arch_t), asCALL_CDECL);
 	assert(r >= 0);
 	// Push Menu
 	r = engine->RegisterGlobalFunction("void push_widget(arch_t type, arch_t flags)", WRAP_MFN(stack_gui_t, push), asCALL_THISCALL_ASGLOBAL, &stack_gui);

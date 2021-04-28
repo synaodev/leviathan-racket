@@ -84,7 +84,7 @@ bool shader_t::from(const std::string& source, shader_stage_t stage) {
 
 bool shader_t::load(const std::string& full_path, shader_stage_t stage) {
 	if (!handle) {
-		const std::string source = vfs::string_buffer(full_path);
+		const std::string source = vfs_t::string_buffer(full_path);
 		return this->from(source, stage);
 	}
 	return true;

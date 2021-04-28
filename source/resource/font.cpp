@@ -36,7 +36,7 @@ void font_t::load(const std::string& directory, const std::string& name) {
 		dimensions.x = std::stof(block["common"]["-base"].get<std::string>());
 		dimensions.y = std::stof(block["common"]["-lineHeight"].get<std::string>());
 
-		atlas = vfs::atlas(block["pages"]["page"]["-file"].get<std::string>());
+		atlas = vfs_t::atlas(block["pages"]["page"]["-file"].get<std::string>());
 		for (auto ot : block["chars"]["char"]) {
 			char32_t id = std::stoi(ot["-id"].get<std::string>());
 			const font_glyph_t glyph {

@@ -9,12 +9,12 @@
 #include <sstream>
 #include <streambuf>
 
-#ifndef LEVIATHAN_TOOLCHAIN_APPLECLANG
-	#include <filesystem>
-	#define using_namespace(NSP) namespace NSP = std::filesystem
-#else
+#if defined(LEVIATHAN_TOOLCHAIN_APPLECLANG)
 	#include <ghc/filesystem.hpp>
-	#define using_namespace(NSP) namespace NSP = ghc::filesystem
+	namespace fs = ghc::filesystem;
+#else
+	#include <filesystem>
+	namespace fs = std::filesystem;
 #endif
 
 #include <fmt/core.h>
@@ -87,25 +87,12 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 	The "init" and "save" directories should be in the directory returned by SDL_PrefPath().
 */
 
-vfs_t::vfs_t() :
-	thread_pool(),
-	storage_mutex(),
-	personal(),
-	language(kLanguage),
-	sampler_allocator(nullptr),
-	i18n(),
-	textures(),
-	palettes(),
-	atlases(),
-	shaders(),
-	noises(),
-	fonts(),
-	animations() {}
+vfs_t* vfs_t::device { nullptr };
 
 vfs_t::~vfs_t() {
-	if (vfs::device) {
-		if (vfs::device == this) {
-			vfs::device = nullptr;
+	if (vfs_t::device) {
+		if (vfs_t::device == this) {
+			vfs_t::device = nullptr;
 		} else {
 			synao_log("Error! There should not be more than one virtual filesystem!\n");
 		}
@@ -113,32 +100,32 @@ vfs_t::~vfs_t() {
 }
 
 bool vfs_t::init(const setup_file_t& config) {
-	if (vfs::device == this) {
+	if (vfs_t::device == this) {
 		synao_log("Error! This virtual file system already exists!\n");
 		return false;
-	} else if (vfs::device) {
+	} else if (vfs_t::device) {
 		synao_log("Error! Another virtual filesystem already exists!\n");
 		return false;
 	}
-	vfs::device = this;
+	vfs_t::device = this;
 
 	// Setup Language
 	std::string language = kLanguage;
 	config.get("Setup", "Language", language);
-	if (!vfs::try_language(language)) {
+	if (!vfs_t::try_language(language)) {
 		synao_log("Error! Couldn't load first language: {}\n", language);
 		return false;
 	}
 
 	// Setup Thread Pool
-	if (!vfs::device->thread_pool.init(kTotalThreads)) {
+	if (!vfs_t::device->thread_pool.init(kTotalThreads)) {
 		synao_log("Error! Couldn't create thread pool!\n");
 		return false;
 	}
 
 	// Setup Filesystem
-	vfs::device->personal = vfs::personal_directory();
-	if (vfs::device->personal.empty()) {
+	vfs_t::device->personal = vfs_t::personal_directory();
+	if (vfs_t::device->personal.empty()) {
 		synao_log("Error! Couldn't find directory to store persistent data!\n");
 		return false;
 	}
@@ -147,7 +134,7 @@ bool vfs_t::init(const setup_file_t& config) {
 }
 
 bool vfs_t::set_sampler_allocator(sampler_allocator_t* sampler_allocator) {
-	if (vfs::device != this) {
+	if (vfs_t::device != this) {
 		synao_log("Error! This virtual filesystem isn't ready to setup the sampler allocator!\n");
 		return false;
 	}
@@ -159,7 +146,7 @@ bool vfs_t::set_sampler_allocator(sampler_allocator_t* sampler_allocator) {
 	return true;
 }
 
-bool vfs::mount(const std::string& directory, bool_t print) {
+bool vfs_t::mount(const std::string& directory, bool_t print) {
 	static const byte_t* kDirList[] = {
 		kEventPath, kFieldPath,
 		kFontPath, kI18NPath,
@@ -167,28 +154,26 @@ bool vfs::mount(const std::string& directory, bool_t print) {
 		kPalettePath, kSpritePath,
 		kTileKeyPath, kTunePath
 	};
-	if (!vfs::directory_exists(directory, print)) {
+	if (!vfs_t::directory_exists(directory, print)) {
 		return false;
 	}
 	std::error_code code;
-	using_namespace(std__filesystem);
-	std__filesystem::current_path(directory, code);
+	fs::current_path(directory, code);
 	if (code) {
 		synao_log("Failed to set working directory to \"{}\"!\n", directory);
 		return false;
 	}
 	bool success = true;
 	for (arch_t it = 0; it < (sizeof(kDirList) / sizeof(kDirList[0])); ++it) {
-		if (!vfs::directory_exists(kDirList[it], print)) {
+		if (!vfs_t::directory_exists(kDirList[it], print)) {
 			success = false;
 		}
 	}
 	return success;
 }
 
-bool vfs::directory_exists(const std::string& name, bool_t print) {
-	using_namespace(std__filesystem);
-	if (!std__filesystem::exists(name) or !std__filesystem::is_directory(name)) {
+bool vfs_t::directory_exists(const std::string& name, bool_t print) {
+	if (!fs::exists(name) or !fs::is_directory(name)) {
 		if (print) {
 			synao_log("\"{}\" isn't a valid directory!\n", name);
 		}
@@ -197,9 +182,8 @@ bool vfs::directory_exists(const std::string& name, bool_t print) {
 	return true;
 }
 
-bool vfs::file_exists(const std::string& name, bool_t print) {
-	using_namespace(std__filesystem);
-	if (!std__filesystem::exists(name) or !std__filesystem::is_regular_file(name)) {
+bool vfs_t::file_exists(const std::string& name, bool_t print) {
+	if (!fs::exists(name) or !fs::is_regular_file(name)) {
 		if (print) {
 			synao_log("\"{}\" isn't a valid file!\n", name);
 		}
@@ -208,20 +192,19 @@ bool vfs::file_exists(const std::string& name, bool_t print) {
 	return true;
 }
 
-bool vfs::create_directory(const std::string& name) {
-	using_namespace(std__filesystem);
-	if (vfs::directory_exists(name)) {
+bool vfs_t::create_directory(const std::string& name) {
+	if (vfs_t::directory_exists(name)) {
 		return true;
 	}
-	if (!std__filesystem::create_directory(name)) {
+	if (!fs::create_directory(name)) {
 		synao_log("Failed to create file at: \"{}\"\n", name);
 		return false;
 	}
 	return true;
 }
 
-bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed) {
-	std::ofstream ofs(path, std::ios::binary);
+bool vfs_t::create_recording(const std::string& path, const std::vector<uint16_t>& buffer, sint64_t seed) {
+	std::ofstream ofs { path, std::ios::binary };
 	if (ofs.is_open()) {
 		arch_t length = buffer.size() * sizeof(uint16_t);
 		ofs.write(reinterpret_cast<const byte_t*>(&seed), sizeof(sint64_t));
@@ -232,38 +215,37 @@ bool vfs::create_recording(const std::string& path, const std::vector<uint16_t>&
 	return false;
 }
 
-std::string vfs::working_directory() {
-	using_namespace(std__filesystem);
+std::string vfs_t::working_directory() {
 	std::error_code code;
-	auto path = std__filesystem::current_path(code);
+	auto path = fs::current_path(code);
 	if (code) {
 		synao_log("Failed get working directory!\n");
-		return std::string();
+		return {};
 	}
 	return path.string();
 }
 
-std::string vfs::executable_directory() {
+std::string vfs_t::executable_directory() {
 	byte_t* path = SDL_GetBasePath();
 	if (!path) {
-		return std::string();
+		return {};
 	}
 	std::string result = path;
 	SDL_free(path);
 	return result;
 }
 
-std::string vfs::personal_directory() {
+std::string vfs_t::personal_directory() {
 	byte_t* path = SDL_GetPrefPath(kOrganization, kApplication);
 	if (!path) {
-		return std::string();
+		return {};
 	}
 	std::string result = path;
 	SDL_free(path);
 	return result;
 }
 
-std::string vfs::resource_path(vfs_resource_path_t path) {
+std::string vfs_t::resource_path(vfs_resource_path_t path) {
 	switch (path) {
 	case vfs_resource_path_t::Event:
 		return kEventPath;
@@ -276,19 +258,19 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	case vfs_resource_path_t::Image:
 		return kImagePath;
 	case vfs_resource_path_t::Init:
-		if (vfs::device) {
-			return vfs::device->personal + kInitRoute;
+		if (vfs_t::device) {
+			return vfs_t::device->personal + kInitRoute;
 		}
-		return vfs::personal_directory() + kInitRoute;
+		return vfs_t::personal_directory() + kInitRoute;
 	case vfs_resource_path_t::Noise:
 		return kNoisePath;
 	case vfs_resource_path_t::Palette:
 		return kPalettePath;
 	case vfs_resource_path_t::Save:
-		if (vfs::device) {
-			return vfs::device->personal + kSaveRoute;
+		if (vfs_t::device) {
+			return vfs_t::device->personal + kSaveRoute;
 		}
-		return vfs::personal_directory() + kSaveRoute;
+		return vfs_t::personal_directory() + kSaveRoute;
 	case vfs_resource_path_t::Sprite:
 		return kSpritePath;
 	case vfs_resource_path_t::TileKey:
@@ -301,21 +283,20 @@ std::string vfs::resource_path(vfs_resource_path_t path) {
 	return std::string();
 }
 
-std::vector<std::string> vfs::file_list(const std::string& path) {
-	using_namespace(std__filesystem);
+std::vector<std::string> vfs_t::file_list(const std::string& path) {
 	std::vector<std::string> result;
-	for (auto&& file : std__filesystem::directory_iterator(path)) {
+	for (auto&& file : fs::directory_iterator(path)) {
 		if (!file.is_directory()) {
-			const std::string fname = file.path().filename().string();
-			const std::string fstrn = fname.substr(0, fname.find_last_of("."));
-			result.push_back(fstrn);
+			const std::string full_name = file.path().filename().string();
+			const std::string short_name = full_name.substr(0, full_name.find_last_of("."));
+			result.push_back(short_name);
 		}
 	}
 	return result;
 }
 
-std::string vfs::string_buffer(const std::string& path) {
-	std::ifstream ifs(path, std::ios::binary);
+std::string vfs_t::string_buffer(const std::string& path) {
+	std::ifstream ifs { path, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios_base::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
@@ -328,11 +309,11 @@ std::string vfs::string_buffer(const std::string& path) {
 		}
 	}
 	synao_log("Failed to open file: {}!\n", path);
-	return std::string();
+	return {};
 }
 
-std::vector<byte_t> vfs::byte_buffer(const std::string& path) {
-	std::ifstream ifs(path, std::ios::binary);
+std::vector<byte_t> vfs_t::byte_buffer(const std::string& path) {
+	std::ifstream ifs { path, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios_base::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
@@ -345,11 +326,11 @@ std::vector<byte_t> vfs::byte_buffer(const std::string& path) {
 		}
 	}
 	synao_log("Failed to open file: {}!\n", path);
-	return std::vector<byte_t>();
+	return {};
 }
 
-std::vector<uint_t> vfs::uint32_buffer(const std::string& path) {
-	std::ifstream ifs(path, std::ios::binary);
+std::vector<uint_t> vfs_t::uint32_buffer(const std::string& path) {
+	std::ifstream ifs { path, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios_base::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
@@ -362,11 +343,11 @@ std::vector<uint_t> vfs::uint32_buffer(const std::string& path) {
 		}
 	}
 	synao_log("Failed to open file: {}!\n", path);
-	return std::vector<uint_t>();
+	return {};
 }
 
-bool vfs::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed) {
-	std::ifstream ifs(path, std::ios::binary);
+bool vfs_t::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, sint64_t& seed) {
+	std::ifstream ifs { path, std::ios::binary };
 	if (ifs.is_open()) {
 		ifs.seekg(0, std::ios::end);
 		arch_t length = static_cast<arch_t>(ifs.tellg());
@@ -385,12 +366,12 @@ bool vfs::record_buffer(const std::string& path, std::vector<uint16_t>& buffer, 
 	return false;
 }
 
-std::string vfs::i18n_find(const std::string& segment, arch_t index) {
-	if (!vfs::device) {
+std::string vfs_t::i18n_find(const std::string& segment, arch_t index) {
+	if (!vfs_t::device) {
 		return {};
 	}
-	auto it = vfs::device->i18n.find(segment);
-	if (it == vfs::device->i18n.end()) {
+	auto it = vfs_t::device->i18n.find(segment);
+	if (it == vfs_t::device->i18n.end()) {
 		return {};
 	}
 	fmt::memory_buffer result;
@@ -398,19 +379,14 @@ std::string vfs::i18n_find(const std::string& segment, arch_t index) {
 		result.append(it->second[index]);
 	}
 	return fmt::to_string(result);
-	// std::string result;
-	// if (index < it->second.size()) {
-	// 	result = it->second[index];
-	// }
-	// return result;
 }
 
-std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last) {
-	if (!vfs::device) {
+std::string vfs_t::i18n_find(const std::string& segment, arch_t first, arch_t last) {
+	if (!vfs_t::device) {
 		return {};
 	}
-	auto it = vfs::device->i18n.find(segment);
-	if (it == vfs::device->i18n.end()) {
+	auto it = vfs_t::device->i18n.find(segment);
+	if (it == vfs_t::device->i18n.end()) {
 		return {};
 	}
 	fmt::memory_buffer result;
@@ -420,28 +396,21 @@ std::string vfs::i18n_find(const std::string& segment, arch_t first, arch_t last
 		}
 	}
 	return fmt::to_string(result);
-	// std::string result;
-	// if (first < it->second.size() and last < it->second.size()) {
-	// 	for (arch_t index = first; index <= last; ++index) {
-	// 		result += it->second[index];
-	// 	}
-	// }
-	// return result;
 }
 
-arch_t vfs::i18n_size(const std::string& segment) {
-	if (!vfs::device) {
+arch_t vfs_t::i18n_size(const std::string& segment) {
+	if (!vfs_t::device) {
 		return 0;
 	}
-	auto it = vfs::device->i18n.find(segment);
-	if (it == vfs::device->i18n.end()) {
+	auto it = vfs_t::device->i18n.find(segment);
+	if (it == vfs_t::device->i18n.end()) {
 		return 0;
 	}
 	return it->second.size();
 }
 
-bool vfs::try_language(const std::string& language) {
-	if (!vfs::device) {
+bool vfs_t::try_language(const std::string& language) {
+	if (!vfs_t::device) {
 		return false;
 	}
 	const std::string full_path = kI18NPath + language + ".json";
@@ -455,83 +424,83 @@ bool vfs::try_language(const std::string& language) {
 				vec.push_back(s.get<std::string>());
 			}
 		}
-		vfs::device->language = language;
-		vfs::device->i18n = std::move(i18n);
-		vfs::device->fonts.clear();
-		vfs::device->atlases.clear();
+		vfs_t::device->language = language;
+		vfs_t::device->i18n = std::move(i18n);
+		vfs_t::device->fonts.clear();
+		vfs_t::device->atlases.clear();
 		return true;
 	}
 	synao_log("Error! Couldn't load language file: {}\n", full_path);
 	return false;
 }
 
-const texture_t* vfs::texture(const std::string& name) {
-	if (!vfs::device) {
+const texture_t* vfs_t::texture(const std::string& name) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	if (!vfs::device->sampler_allocator) {
+	if (!vfs_t::device->sampler_allocator) {
 		return nullptr;
 	}
-	auto it = vfs::device->search_safely(name, vfs::device->textures);
-	if (it == vfs::device->textures.end()) {
-		texture_t& ref = vfs::device->emplace_safely(name, vfs::device->textures);
+	auto it = vfs_t::device->search_safely(name, vfs_t::device->textures);
+	if (it == vfs_t::device->textures.end()) {
+		texture_t& ref = vfs_t::device->emplace_safely(name, vfs_t::device->textures);
 		ref.load(
 			kImagePath + name + ".png",
-			vfs::device->sampler_allocator,
-			vfs::device->thread_pool
+			vfs_t::device->sampler_allocator,
+			vfs_t::device->thread_pool
 		);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const palette_t* vfs::palette(const std::string& name) {
-	if (!vfs::device) {
+const palette_t* vfs_t::palette(const std::string& name) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	if (!vfs::device->sampler_allocator) {
+	if (!vfs_t::device->sampler_allocator) {
 		return nullptr;
 	}
-	auto it = vfs::device->search_safely(name, vfs::device->palettes);
-	if (it == vfs::device->palettes.end()) {
-		palette_t& ref = vfs::device->emplace_safely(name, vfs::device->palettes);
+	auto it = vfs_t::device->search_safely(name, vfs_t::device->palettes);
+	if (it == vfs_t::device->palettes.end()) {
+		palette_t& ref = vfs_t::device->emplace_safely(name, vfs_t::device->palettes);
 		ref.load(
 			kPalettePath + name + ".png",
-			vfs::device->sampler_allocator,
-			vfs::device->thread_pool
+			vfs_t::device->sampler_allocator,
+			vfs_t::device->thread_pool
 		);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const atlas_t* vfs::atlas(const std::string& name) {
-	if (!vfs::device) {
+const atlas_t* vfs_t::atlas(const std::string& name) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	if (!vfs::device->sampler_allocator) {
+	if (!vfs_t::device->sampler_allocator) {
 		return nullptr;
 	}
-	auto it = vfs::device->search_safely(name, vfs::device->atlases);
-	if (it == vfs::device->atlases.end()) {
-		atlas_t& ref = vfs::device->emplace_safely(name, vfs::device->atlases);
+	auto it = vfs_t::device->search_safely(name, vfs_t::device->atlases);
+	if (it == vfs_t::device->atlases.end()) {
+		atlas_t& ref = vfs_t::device->emplace_safely(name, vfs_t::device->atlases);
 		ref.load(
 			kFontPath + name + ".png",
-			vfs::device->sampler_allocator,
-			vfs::device->thread_pool
+			vfs_t::device->sampler_allocator,
+			vfs_t::device->thread_pool
 		);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const shader_t* vfs::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
-	if (!vfs::device) {
+const shader_t* vfs_t::shader(const std::string& name, const std::string& source, shader_stage_t stage) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto it = vfs::device->shaders.find(name);
-	if (it == vfs::device->shaders.end()) {
-		shader_t& ref = vfs::device->shaders[name];
+	auto it = vfs_t::device->shaders.find(name);
+	if (it == vfs_t::device->shaders.end()) {
+		shader_t& ref = vfs_t::device->shaders[name];
 		if (!ref.from(source, stage)) {
 			synao_log("Failed to create shader from {}!\n", name);
 		}
@@ -544,77 +513,77 @@ const shader_t* vfs::shader(const std::string& name, const std::string& source, 
 	return &it->second;
 }
 
-std::string vfs::event_path(const std::string& name, event_loading_t flags) {
-	if (!vfs::device) {
+std::string vfs_t::event_path(const std::string& name, event_loading_t flags) {
+	if (!vfs_t::device) {
 		synao_log("Couldn't find path for event: {}!\n", name);
 		return std::string();
 	}
 	if (flags & event_loading_t::Global) {
 		return kEventPath + name + ".as";
 	}
-	return kEventPath + vfs::i18n_find(kEventEntry, 0) + '/' + name + ".as";
+	return kEventPath + vfs_t::i18n_find(kEventEntry, 0) + '/' + name + ".as";
 }
 
-const noise_t* vfs::noise(const std::string& name) {
+const noise_t* vfs_t::noise(const std::string& name) {
 	const entt::hashed_string entry{name.c_str()};
-	return vfs::noise(entry);
+	return vfs_t::noise(entry);
 }
 
-const noise_t* vfs::noise(const entt::hashed_string& entry) {
-	if (!vfs::device) {
+const noise_t* vfs_t::noise(const entt::hashed_string& entry) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto it = vfs::device->search_safely(entry.value(), vfs::device->noises);
-	if (it == vfs::device->noises.end()) {
-		noise_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->noises);
-		ref.load(kNoisePath + std::string(entry.data()) + ".wav", vfs::device->thread_pool);
+	auto it = vfs_t::device->search_safely(entry.value(), vfs_t::device->noises);
+	if (it == vfs_t::device->noises.end()) {
+		noise_t& ref = vfs_t::device->emplace_safely(entry.value(), vfs_t::device->noises);
+		ref.load(kNoisePath + std::string(entry.data()) + ".wav", vfs_t::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const animation_t* vfs::animation(const entt::hashed_string& entry) {
-	if (!vfs::device) {
+const animation_t* vfs_t::animation(const entt::hashed_string& entry) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto it = vfs::device->search_safely(entry.value(), vfs::device->animations);
-	if (it == vfs::device->animations.end()) {
-		animation_t& ref = vfs::device->emplace_safely(entry.value(), vfs::device->animations);
-		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", vfs::device->thread_pool);
+	auto it = vfs_t::device->search_safely(entry.value(), vfs_t::device->animations);
+	if (it == vfs_t::device->animations.end()) {
+		animation_t& ref = vfs_t::device->emplace_safely(entry.value(), vfs_t::device->animations);
+		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", vfs_t::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
 }
 
-const animation_t* vfs::animation(const std::string& name) {
-	const entt::hashed_string entry{name.c_str()};
-	return vfs::animation(entry);
+const animation_t* vfs_t::animation(const std::string& name) {
+	const entt::hashed_string entry{ name.c_str() };
+	return vfs_t::animation(entry);
 }
 
-const font_t* vfs::font(const std::string& name) {
-	if (!vfs::device) {
+const font_t* vfs_t::font(const std::string& name) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto it = vfs::device->fonts.find(name);
-	if (it == vfs::device->fonts.end()) {
-		font_t& ref = vfs::device->fonts[name];
+	auto it = vfs_t::device->fonts.find(name);
+	if (it == vfs_t::device->fonts.end()) {
+		font_t& ref = vfs_t::device->fonts[name];
 		ref.load(kFontPath, name + ".fnt");
 		return &ref;
 	}
 	return &it->second;
 }
 
-const font_t* vfs::font(arch_t index) {
-	if (!vfs::device) {
+const font_t* vfs_t::font(arch_t index) {
+	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto& i18n_fonts = vfs::device->i18n["Fonts"];
+	auto& i18n_fonts = vfs_t::device->i18n["Fonts"];
 	if (index < i18n_fonts.size()) {
-		return vfs::font(i18n_fonts[index]);
+		return vfs_t::font(i18n_fonts[index]);
 	}
 	return nullptr;
 }
 
-const font_t* vfs::debug_font() {
-	return vfs::font(kDebugFontIndex);
+const font_t* vfs_t::debug_font() {
+	return vfs_t::font(kDebugFontIndex);
 }

@@ -40,37 +40,37 @@ bool renderer_t::init(vfs_t& fs) {
 	viewports.update(matrices);
 	internal_state.set_buffer(&viewports, 0);
 
-	const shader_t* blank = vfs::shader(
+	const shader_t* blank = vfs_t::shader(
 		"blank",
 		program::blank_vert(),
 		shader_stage_t::Vertex
 	);
-	const shader_t* major = vfs::shader(
+	const shader_t* major = vfs_t::shader(
 		"major",
 		program::major_vert(),
 		shader_stage_t::Vertex
 	);
-	const shader_t* fonts = vfs::shader(
+	const shader_t* fonts = vfs_t::shader(
 		"fonts",
 		program::fonts_vert(),
 		shader_stage_t::Vertex
 	);
-	const shader_t* colors = vfs::shader(
+	const shader_t* colors = vfs_t::shader(
 		"colors",
 		program::colors_frag(),
 		shader_stage_t::Fragment
 	);
-	const shader_t* sprites = vfs::shader(
+	const shader_t* sprites = vfs_t::shader(
 		"sprites",
 		program::sprites_frag(),
 		shader_stage_t::Fragment
 	);
-	const shader_t* indexed = vfs::shader(
+	const shader_t* indexed = vfs_t::shader(
 		"indexed",
 		program::indexed_frag(),
 		shader_stage_t::Fragment
 	);
-	const shader_t* channels = vfs::shader(
+	const shader_t* channels = vfs_t::shader(
 		"channels",
 		program::channels_frag(),
 		shader_stage_t::Fragment

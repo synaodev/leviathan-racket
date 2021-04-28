@@ -111,7 +111,7 @@ static int process(setup_file_t& config) {
 }
 
 static std::string get_boot_path() {
-	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
+	const std::string init_path = vfs_t::resource_path(vfs_resource_path_t::Init);
 	return init_path + "boot.cfg";
 }
 
@@ -149,8 +149,8 @@ static void write_config(setup_file_t& config, const std::string& boot_path) {
 	config.set("Input", "JoyStrafe", 5);
 	config.set("Input", "JoyInventory",	6);
 	config.set("Input", "JoyOptions", 7);
-	const std::string init_path = vfs::resource_path(vfs_resource_path_t::Init);
-	if (!vfs::create_directory(init_path)) {
+	const std::string init_path = vfs_t::resource_path(vfs_resource_path_t::Init);
+	if (!vfs_t::create_directory(init_path)) {
 		synao_log("Warning! Will not be able to save newly generated config file!\n");
 	}
 }
@@ -167,21 +167,21 @@ static setup_file_t load_config() {
 
 static bool mount(const byte_t* provided_directory) {
 	// Save initial working directory before attempting to change it
-	const std::string working_directory = vfs::working_directory();
+	const std::string working_directory = vfs_t::working_directory();
 	if (provided_directory) {
-		if (vfs::mount(provided_directory, false)) {
+		if (vfs_t::mount(provided_directory, false)) {
 			return true;
 		} else {
 			synao_log("Warning! Couldn\'t mount filesystem at directory: \"{}\"!\n", provided_directory);
 		}
 	}
 	// Try to mount (initial) working directory
-	if (vfs::mount(working_directory, false)) {
+	if (vfs_t::mount(working_directory, false)) {
 		return true;
 	}
 	// If that doesn't work, look inside executable directory
-	const std::string executable_directory = vfs::executable_directory();
-	if (vfs::mount(executable_directory)) {
+	const std::string executable_directory = vfs_t::executable_directory();
+	if (vfs_t::mount(executable_directory)) {
 		return true;
 	}
 	// If mounting is impossible, notify user of the initial working directory
