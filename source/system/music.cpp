@@ -29,7 +29,7 @@ music_t::~music_t() {
 			alCheck(alSourceStop(source));
 		}
 		alCheck(alSourcei(source, AL_BUFFER, 0));
-		alCheck(alDeleteBuffers(buffers.size(), &buffers[0]));
+		alCheck(alDeleteBuffers(static_cast<sint_t>(buffers.size()), &buffers[0]));
 		alCheck(alDeleteSources(1, &source));
 	}
 }
@@ -76,7 +76,7 @@ bool music_t::init(const setup_file_t& config) {
 	// Setup OpenAL stuff
 	if (source == 0) {
 		alCheck(alGenSources(1, &source));
-		alCheck(alGenBuffers(buffers.size(), &buffers[0]));
+		alCheck(alGenBuffers(static_cast<sint_t>(buffers.size()), &buffers[0]));
 	} else {
 		synao_log("Music OpenAL resources already exist!\n");
 		return false;

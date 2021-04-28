@@ -157,7 +157,7 @@ sint_t draw_count_t::quick_power_of_10(sint_t exponent) {
 	if (exponent >= 0 and exponent < 10) {
 		return powers[exponent];
 	}
-	return glm::pow(10, exponent);
+	return static_cast<sint_t>(glm::pow(10, exponent));
 }
 
 void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {

@@ -14,7 +14,6 @@ set (WIN32_CLANG_DEFS
 )
 
 set (WIN32_MSVC_DEFS
-	"/MP"	  # Multi-processor compilation
 	"/wd4201" # nonstandard extension used : nameless struct/union
 	"/wd4127" # conditional expression is constant
 	"/wd4100" # 'identifier' : unreferenced formal parameter
@@ -40,6 +39,7 @@ elseif (MSVC)
 		string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
 	endforeach ()
 	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS} ${WIN32_CLANG_DEFS} ${WIN32_MSVC_DEFS})
+	target_compile_options (lvrk PRIVATE "/MP")
 elseif (MINGW)
 	find_package (Threads REQUIRED)
 	target_link_libraries (lvrk PRIVATE Threads::Threads)

@@ -441,7 +441,7 @@ void receiver_t::execute_function(asIScriptFunction* function, std::vector<arch_
 					synao_log("Couldn't set argument {}!\n", it);
 				}
 			} else {
-				if (state->SetArgDWord(static_cast<uint_t>(it), args[it]) < 0) {
+				if (state->SetArgDWord(static_cast<uint_t>(it), static_cast<uint_t>(args[it])) < 0) {
 					synao_log("Couldn't set argument {}!\n", it);
 				}
 			}
