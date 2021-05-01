@@ -2,7 +2,7 @@
 
 #include "../types.hpp"
 
-#include <pybind11/pybind11.h>
+#include <pybind11/embed.h>
 
 struct input_t;
 struct audio_t;
