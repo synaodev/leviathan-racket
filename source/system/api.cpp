@@ -38,11 +38,13 @@ bool api_t::init(input_t& input, audio_t& audio, music_t& music, kernel_t& kerne
 	return true;
 }
 
-#include <pybind11/embed.h>
 #include <pybind11/functional.h>
+#include <pybind11/stl_bind.h>
+
 namespace py = pybind11;
 
 PYBIND11_EMBEDDED_MODULE(lvrk, m) {
+	py::bind_vector<std::vector<std::string>>(m, "string_vector");
 	m.def("get_flag", [&](int index) {
 		return kernel_ptr->get_flag((arch_t)index);
 	});
