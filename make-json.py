@@ -99,17 +99,28 @@ def write_file(chunks: List[Chunk], file_name: str) -> bool:
         animation['frames'] = extract_frames(chunks[i].data)
         output['Animations'].append(animation)
     with open(file_name, 'w') as file:
-        json.dump(output, file, indent=4)
+        json.dump(output, file, indent='\t')
         return True
     return False
 
 def main() -> int:
-    chunks: List[Chunk] = load_file('./data/sprite/naomi.cfg')
-    # for chunk in chunks:
-    #     print(f'[{chunk.title}]')
-    #     for k in chunk.data.keys():
-    #         print(f'{k} = {chunk.data[k]}')
-    write_file(chunks, './naomi.json')
+    if len(sys.argv) > 1:
+        for i in range(1, len(sys.argv)):
+            input_name: str = sys.argv[i]
+            chunks = load_file(input_name)
+            if len(chunks) > 0:
+                output_name = os.path.splitext(input_name)[0] + '.json'
+                if write_file(chunks, output_name):
+                    print(f'Successfully converted {input_name}!')
+                else:
+                    print(f'Conversion failed for {input_name}!')
+                    return -1
+            else:
+                print(f'There is no file named {input_name}!')
+                return -1
+    else:
+        print(f'No arguments were passed!')
+        return -1
     return 0
 
 if __name__ == '__main__':
