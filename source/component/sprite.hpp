@@ -9,16 +9,51 @@ struct animation_t;
 struct renderer_t;
 struct kontext_t;
 
-struct sprite_t {
+struct sprite_t : public not_copyable_t {
 public:
 	sprite_t(const entt::hashed_string& entry);
 	sprite_t(const animation_t* file) :
 		file(file) {}
 	sprite_t() = default;
-	sprite_t(const sprite_t&) = default;
-	sprite_t& operator=(const sprite_t&) = default;
-	sprite_t(sprite_t&&) noexcept = default;
-	sprite_t& operator=(sprite_t&&) noexcept = default;
+	sprite_t(sprite_t&& that) noexcept : sprite_t() {
+		if (this != &that) {
+			std::swap(file, that.file);
+			std::swap(amend, that.amend);
+			std::swap(timer, that.timer);
+			std::swap(alpha, that.alpha);
+			std::swap(table, that.table);
+			std::swap(state, that.state);
+			std::swap(variation, that.variation);
+			std::swap(mirroring, that.mirroring);
+			std::swap(frame, that.frame);
+			std::swap(layer, that.layer);
+			std::swap(scale, that.scale);
+			std::swap(position, that.position);
+			std::swap(pivot, that.pivot);
+			std::swap(angle, that.angle);
+			std::swap(shake, that.shake);
+		}
+	}
+	sprite_t& operator=(sprite_t&& that) noexcept {
+		if (this != &that) {
+			std::swap(file, that.file);
+			std::swap(amend, that.amend);
+			std::swap(timer, that.timer);
+			std::swap(alpha, that.alpha);
+			std::swap(table, that.table);
+			std::swap(state, that.state);
+			std::swap(variation, that.variation);
+			std::swap(mirroring, that.mirroring);
+			std::swap(frame, that.frame);
+			std::swap(layer, that.layer);
+			std::swap(scale, that.scale);
+			std::swap(position, that.position);
+			std::swap(pivot, that.pivot);
+			std::swap(angle, that.angle);
+			std::swap(shake, that.shake);
+		}
+		return *this;
+	}
 	~sprite_t() = default;
 public:
 	void reset();

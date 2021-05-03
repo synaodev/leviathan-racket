@@ -4,6 +4,7 @@
 #include <cstring>
 #include <csignal>
 #include <atomic>
+#include <iostream>
 #include <SDL2/SDL.h>
 
 #include "./input.hpp"
@@ -190,6 +191,12 @@ static bool mount(const byte_t* provided_directory) {
 }
 
 int main(int argc, char** argv) {
+	// If writing to stdout (debug build), speed up I/O
+#ifdef LEVIATHAN_BUILD_DEBUG
+	std::ios_base::sync_with_stdio(false);
+	std::cin.tie(nullptr);
+	std::cout.tie(nullptr);
+#endif
 	// Print version information
 	synao_log(
 		"====== Leviathan Racket ======\n"
