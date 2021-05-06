@@ -38,7 +38,7 @@ bool kontext_t::init(receiver_t& receiver, headsup_gui_t& headsup_gui) {
 }
 
 void kontext_t::reset() {
-	panic_draw = true;
+	// panic_draw = true;
 	auto view = registry.view<actor_header_t>();
 	for (auto&& actor : view) {
 		registry.destroy(actor);
@@ -65,14 +65,14 @@ void kontext_t::update(real64_t delta) {
 }
 
 void kontext_t::render(renderer_t& renderer, const rect_t& viewport) const {
-	sprite_t::render(*this, renderer, viewport, panic_draw);
+	sprite_t::render(*this, renderer, viewport /*, panic_draw*/);
 	liquid::render(*this, renderer, viewport);
 #ifdef LEVIATHAN_USES_META
 	if (meta_state_t::Hitboxes) {
 		location_t::render(*this, renderer, viewport);
 	}
 #endif
-	panic_draw = false;
+	// panic_draw = false;
 }
 
 entt::entity kontext_t::search_type(const entt::hashed_string& type) const {
@@ -238,7 +238,7 @@ void kontext_t::animate(sint_t identity, arch_t state, arch_t variation) {
 	if (actor != entt::null) {
 		if (registry.all_of<sprite_t>(actor)) {
 			auto& sprite = registry.get<sprite_t>(actor);
-			sprite.amend = true;
+			// sprite.amend = true;
 			sprite.variation = variation;
 			sprite.new_state(state);
 		}

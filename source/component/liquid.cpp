@@ -50,7 +50,7 @@ void liquid::handle(audio_t& audio, kontext_t& kontext) {
 	});
 }
 
-void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewport) {
+void liquid::render(const kontext_t& kontext, renderer_t& renderer, const rect_t& viewport) {
 	const glm::vec4 water_color { 0.0f, 0.25f, 0.5f, 0.5f };
 	const auto view = kontext.slice<liquid_body_t>();
 	if (!view.empty()) {
@@ -60,16 +60,22 @@ void liquid::render(const kontext_t& kontext, renderer_t& renderer, rect_t viewp
 			program_t::Colors
 		);
 		view.each([&list, &viewport, &water_color](entt::entity, const liquid_body_t& instance) {
-			if (!instance.hitbox.overlaps(viewport)) {
-				instance.amend = true;
-			} else if (instance.amend) {
-				instance.amend = false;
+			// if (!instance.hitbox.overlaps(viewport)) {
+			// 	instance.amend = true;
+			// } else if (instance.amend) {
+			// 	instance.amend = false;
+			// 	list.begin(display_list_t::SingleQuad)
+			// 		.vtx_blank_write(instance.hitbox, water_color)
+			// 		.vtx_transform_write(instance.hitbox.left_top())
+			// 	.end();
+			// } else {
+			// 	list.skip(display_list_t::SingleQuad);
+			// }
+			if (instance.hitbox.overlaps(viewport)) {
 				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(instance.hitbox, water_color)
 					.vtx_transform_write(instance.hitbox.left_top())
 				.end();
-			} else {
-				list.skip(display_list_t::SingleQuad);
 			}
 		});
 	}

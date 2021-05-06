@@ -46,6 +46,7 @@ public:
 public:
 	void append(const glm::vec2& action_point);
 	void append(const glm::vec2& invert, const glm::vec2& start, const glm::vec4& points);
+	void update(real64_t delta, real64_t& timer, arch_t& frame) const;
 	void update(real64_t delta, bool_t& amend, real64_t& timer, arch_t& frame) const;
 	const sequence_frame_t& get_frame(arch_t frame, arch_t variation) const;
 	rect_t get_quad(const glm::vec2& invert, arch_t frame, arch_t variation) const;
@@ -69,13 +70,14 @@ public:
 	~animation_t();
 public:
 	void update(real64_t delta, bool_t& amend, arch_t state, real64_t& timer, arch_t& frame) const;
-	void render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const;
-	void render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale) const;
+	void update(real64_t delta, arch_t state, real64_t& timer, arch_t& frame) const;
+	void render(renderer_t& renderer, const rect_t& viewport, /* bool_t panic, bool_t& amend,*/ arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const;
+	void render(renderer_t& renderer, const rect_t& viewport, /* bool_t panic, bool_t& amend,*/ arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale) const;
 	void render(renderer_t& renderer, bool_t& amend, arch_t state, arch_t frame, arch_t variation, sint_t table, glm::vec2 position) const;
 	void load(const std::string& full_path);
 	void load(const std::string& full_path, thread_pool_t& thread_pool);
 	void assure() const;
-	bool visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const;
+	// bool visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const;
 	bool is_finished(arch_t state, arch_t frame, real64_t timer) const;
 	glm::vec2 get_origin(arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring) const;
 	glm::vec2 get_action_point(arch_t state, arch_t variation, mirroring_t mirroring) const;

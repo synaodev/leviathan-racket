@@ -22,7 +22,7 @@ public:
 	liquid_body_t& operator=(liquid_body_t&&) noexcept = default;
 	~liquid_body_t() = default;
 public:
-	mutable bool_t amend { true };
+	// mutable bool_t amend { true };
 	rect_t hitbox {};
 };
 
@@ -46,5 +46,5 @@ public:
 namespace liquid {
 	void handle(audio_t& audio, kontext_t& kontext, const location_t& location, liquid_listener_t& listener);
 	void handle(audio_t& audio, kontext_t& kontext);
-	void render(const kontext_t& context, renderer_t& renderer, rect_t viewport);
+	void render(const kontext_t& context, renderer_t& renderer, const rect_t& viewport);
 }

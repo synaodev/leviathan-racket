@@ -21,7 +21,7 @@ void ai::kyoko::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Kyoko);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 2);
@@ -36,7 +36,7 @@ void ai::nauzika::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Nauzika);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 2);
@@ -51,7 +51,7 @@ void ai::senma::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Senma);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 2);
@@ -66,7 +66,7 @@ void ai::fox::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Foxie);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 2);
@@ -81,7 +81,7 @@ void ai::gyo::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::GyoShin);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 2);

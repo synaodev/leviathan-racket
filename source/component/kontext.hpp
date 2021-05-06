@@ -83,7 +83,7 @@ public:
 	template<typename Component, typename Compare, typename... Args>
 	void sort(Compare compare, Args&& ...args);
 private:
-	mutable bool_t panic_draw { false };
+	// mutable bool_t panic_draw { false };
 	entt::registry registry {};
 	std::vector<actor_spawn_t> spawn_commands {};
 	std::unordered_map<entt::id_type, routine_ctor_fn> ctor_table {};
@@ -112,9 +112,9 @@ inline bool kontext_t::spawn(const actor_spawn_t& spawn) {
 }
 
 inline void kontext_t::dispose(entt::entity actor) {
-	if (!panic_draw) {
-		panic_draw = registry.all_of<sprite_t>(actor);
-	}
+	// if (!panic_draw) {
+	// 	panic_draw = registry.all_of<sprite_t>(actor);
+	// }
 	registry.destroy(actor);
 }
 

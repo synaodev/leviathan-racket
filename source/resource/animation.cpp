@@ -86,6 +86,32 @@ glm::vec2 animation_sequence_t::get_action_point(arch_t variation, mirroring_t m
 	return {};
 }
 
+void animation_sequence_t::update(real64_t delta, real64_t& timer, arch_t& frame) const {
+	if (total > 1) {
+		if (repeat) {
+			timer += delta;
+			if (timer >= delay) {
+				timer = glm::mod(timer, delay);
+				frame++;
+				frame %= total;
+			}
+		} else {
+			if (frame != (total - 1)) {
+				timer += delta;
+				if (timer >= delay) {
+					timer = glm::mod(timer, delay);
+					frame++;
+				}
+			} else if (timer <= delay) {
+				timer += delta;
+			}
+		}
+	} else {
+		timer = 0.0f;
+		frame = 0;
+	}
+}
+
 void animation_sequence_t::update(real64_t delta, bool_t& amend, real64_t& timer, arch_t& frame) const {
 	if (total > 1) {
 		if (repeat) {
@@ -97,7 +123,7 @@ void animation_sequence_t::update(real64_t delta, bool_t& amend, real64_t& timer
 				frame %= total;
 			}
 		} else {
-			if (frame != total - 1) {
+			if (frame != (total - 1)) {
 				timer += delta;
 				if (timer >= delay) {
 					amend = true;
@@ -127,6 +153,13 @@ animation_t::~animation_t() {
 	}
 }
 
+void animation_t::update(real64_t delta, arch_t state, real64_t& timer, arch_t& frame) const {
+	this->assure();
+	if (state < sequences.size()) {
+		sequences[state].update(delta, timer, frame);
+	}
+}
+
 void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& timer, arch_t& frame) const {
 	this->assure();
 	if (state < sequences.size()) {
@@ -134,7 +167,7 @@ void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& 
 	}
 }
 
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
+/*void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
 	if (state < sequences.size()) {
 		glm::vec2 sequsize = sequences[state].get_dimensions();
@@ -184,6 +217,50 @@ void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t pa
 			} else {
 				list.skip(display_list_t::SingleQuad);
 			}
+		}
+	}
+}*/
+
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
+	this->assure();
+	if (state < sequences.size()) {
+		const glm::vec2 dimensions = sequences[state].get_dimensions();
+		const glm::vec2 origin = sequences[state].get_origin(frame, variation, mirroring);
+		if (viewport.overlaps(position - origin, dimensions * scale)) {
+			const rect_t quad = sequences[state].get_quad(inverts, frame, variation);
+			auto& list = renderer.display_list(
+				layer,
+				blend_mode_t::Alpha,
+				palette ? program_t::Indexed : program_t::Sprites
+			);
+			const sint_t texture_name = texture ? texture->get_name() : 0;
+			const sint_t palette_name = palette ? palette->get_name() + table : 0;
+			list.begin(display_list_t::SingleQuad)
+				.vtx_major_write(quad, dimensions, mirroring, alpha, texture_name, palette_name)
+				.vtx_transform_write(position - origin, scale, pivot, angle)
+			.end();
+		}
+	}
+}
+
+void animation_t::render(renderer_t& renderer, const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale) const {
+	this->assure();
+	if (state < sequences.size()) {
+		const glm::vec2 dimensions = sequences[state].get_dimensions();
+		const glm::vec2 origin = sequences[state].get_origin(frame, variation, mirroring);
+		if (viewport.overlaps(position - origin, dimensions * scale)) {
+			const rect_t quad = sequences[state].get_quad(inverts, frame, variation);
+			auto& list = renderer.display_list(
+				layer,
+				blend_mode_t::Alpha,
+				palette ? program_t::Indexed : program_t::Sprites
+			);
+			sint_t texture_name = texture ? texture->get_name() : 0;
+			sint_t palette_name = palette ? palette->get_name() + table : 0;
+			list.begin(display_list_t::SingleQuad)
+				.vtx_major_write(quad, dimensions, mirroring, alpha, texture_name, palette_name)
+				.vtx_transform_write(position - origin, scale)
+			.end();
 		}
 	}
 }
@@ -293,18 +370,18 @@ void animation_t::assure() const {
 	}
 }
 
-bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const {
-	if (layer == layer_value::Invisible) {
-		return false;
-	}
-	this->assure();
-	if (state < sequences.size()) {
-		glm::vec2 sequsize = sequences[state].get_dimensions();
-		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
-		return viewport.overlaps(position - sequorig, sequsize * scale);
-	}
-	return false;
-}
+// bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const {
+// 	if (layer == layer_value::Invisible) {
+// 		return false;
+// 	}
+// 	this->assure();
+// 	if (state < sequences.size()) {
+// 		glm::vec2 sequsize = sequences[state].get_dimensions();
+// 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
+// 		return viewport.overlaps(position - sequorig, sequsize * scale);
+// 	}
+// 	return false;
+// }
 
 bool animation_t::is_finished(arch_t state, arch_t frame, real64_t timer) const {
 	this->assure();

@@ -29,7 +29,7 @@ void ai::shoshi::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<blinker_t>(s, 0, 4);
 	kontext.assign_if<routine_t>(s, tick);
@@ -48,7 +48,7 @@ void ai::shoshi::tick(entt::entity s, routine_tuple_t& rtp) {
 				direction_t::Right :
 				direction_t::Left;
 			if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
-				sprite.amend = true;
+				// sprite.amend = true;
 				if (location.direction & direction_t::Left) {
 					sprite.mirroring = mirroring_t::Horizontal;
 				} else {
@@ -73,7 +73,7 @@ void ai::shoshi_carry::ctor(entt::entity s, kontext_t& kontext) {
 	sprite.state = 3;
 	sprite.table = 0;
 	sprite.layer = 0.22f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<blinker_t>(s, 3, 5);
 	kontext.assign_if<routine_t>(s, tick);
@@ -93,7 +93,7 @@ void ai::shoshi_carry::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& naomi_sprite = rtp.kontext.get<sprite_t>(rtp.naomi.get_actor());
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
 	if (sprite.mirroring != naomi_sprite.mirroring) {
-		sprite.amend = true;
+		// sprite.amend = true;
 		sprite.mirroring = naomi_sprite.mirroring;
 	}
 }
@@ -108,7 +108,7 @@ void ai::shoshi_follow::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shoshi);
 	sprite.table = 0;
 	sprite.layer = 0.2f;
-	sprite.position = location.position;
+	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<blinker_t>(s, 0, 4);
@@ -201,7 +201,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 	}
 	kinematics.accel_y(kGravSp, kMaxVsp);
 	if (test_shoshi_sprite_mirroring(sprite.mirroring, location.direction)) {
-		sprite.amend = true;
+		// sprite.amend = true;
 		if (location.direction & direction_t::Left) {
 			sprite.mirroring = mirroring_t::Horizontal;
 		} else {
