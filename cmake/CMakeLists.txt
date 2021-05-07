@@ -16,6 +16,7 @@ set (GENERAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 
 find_package (Angelscript CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
+find_package (nlohmann_json CONFIG REQUIRED)
 find_package (fmt CONFIG REQUIRED)
 
 include ("${PROJECT_SOURCE_DIR}/cmake/modules/FindGLM.cmake")
@@ -52,6 +53,7 @@ endif ()
 target_link_libraries (lvrk PRIVATE
 	Angelscript::angelscript
 	EnTT::EnTT
+	nlohmann_json::nlohmann_json
 	fmt::fmt
 	${OPENAL_LIBRARY}
 	${SDL2_LIBRARIES}

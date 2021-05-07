@@ -7,11 +7,11 @@ This is the current official repository for Leviathan Racket. I work on this gam
 - [glm](https://github.com/g-truc/glm)
 - [entt](https://github.com/skypjack/entt)
 - [sdl2](https://www.libsdl.org/download-2.0.php)
+- [nlohmann-json](https://github.com/nlohmann/json)
 ## Included Dependencies
 - [ghc](https://github.com/gulrak/filesystem)
 - [glad](https://glad.dav1d.de)
 - [imgui](https://github.com/ocornut/imgui)
-- [json](https://github.com/nlohmann/json)
 - [stb](https://github.com/nothings/stb)
 - [pxtone](https://pxtone.org/developer)
 - [tmxlite](https://github.com/fallahn/tmxlite)
@@ -23,14 +23,14 @@ This is the current official repository for Leviathan Racket. I work on this gam
   - OpenGL driver must support at least a 3.3 core profile.
   - Compiler must support at least C++17 and C11.
   - To manage dependencies outside of Linux, I recommend [vcpkg](https://github.com/microsoft/vcpkg).
-  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 fmt`.
+  - Install dependencies on vcpkg like this: `<vcpkg-cli> install openal-soft angelscript glm entt sdl2 fmt nlohmann-json`.
   - Then, when running cmake, pass the toolchain file: `cmake <build-root> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake`.
 - Linux:
   - Depending on your GPU, you may need to install non-free firmware.
-  - For OpenGL, OpenAL, GLM, SDL2, and fmt, you should use your package manager:
-    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev`
-    - Pacman: `pacman -S mesa openal glm sdl2 fmt`
-    - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel fmt-devel`
+  - For OpenGL, OpenAL, glm, SDL2, fmt, and nlohmann-json, you should use your package manager:
+    - Apt: `apt-get install libgl1-mesa-dev mesa-utils libopenal-dev libglm-dev libsdl2-dev libfmt-dev nlohmann-json3-dev`
+    - Pacman: `pacman -S mesa openal glm sdl2 fmt nlohmann-json`
+    - Yum: `yum install mesa-libGL-devel openal-soft-devel glm-devel SDL2-devel fmt-devel json-devel`
   - For Angelscript and EnTT build and install from source using cmake.
 - MacOS:
   - Vcpkg is absolutely required.
