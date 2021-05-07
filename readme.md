@@ -15,7 +15,6 @@ This is the current official repository for Leviathan Racket. I work on this gam
 - [stb](https://github.com/nothings/stb)
 - [pxtone](https://pxtone.org/developer)
 - [tmxlite](https://github.com/fallahn/tmxlite)
-- [toml++](https://github.com/marzer/tomlplusplus)
 - [pugixml](https://github.com/zeux/pugixml)
 - [miniz](https://github.com/richgel999/miniz)
 ## Building From Source

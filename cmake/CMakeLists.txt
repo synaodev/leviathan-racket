@@ -14,7 +14,6 @@ endif ()
 
 set (GENERAL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/include")
 
-find_package (pybind11 CONFIG REQUIRED)
 find_package (Angelscript CONFIG REQUIRED)
 find_package (EnTT CONFIG REQUIRED)
 find_package (fmt CONFIG REQUIRED)
@@ -51,7 +50,6 @@ endif ()
 # Link/Include
 
 target_link_libraries (lvrk PRIVATE
-	pybind11::embed
 	Angelscript::angelscript
 	EnTT::EnTT
 	fmt::fmt
