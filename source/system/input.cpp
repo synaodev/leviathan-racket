@@ -72,6 +72,7 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 		switch (evt.type) {
 		case SDL_QUIT: {
 			policy = policy_t::Quit;
+			break;
 		}
 		case SDL_WINDOWEVENT: {
 			if (evt.window.type == SDL_WINDOWEVENT_FOCUS_GAINED) {
@@ -121,24 +122,18 @@ policy_t input_t::poll(policy_t policy, bool(*callback)(const SDL_Event*)) {
 			break;
 		}
 		case SDL_MOUSEBUTTONDOWN: {
-			btn_t btn = evt.button.button == 0 ?
-				btn_t::Primary :
-				btn_t::Secondary;
-			pressed[btn] = !holding[btn];
-			holding[btn] = true;
+			pressed[btn_t::Click] = !holding[btn_t::Click];
+			holding[btn_t::Click] = true;
 #ifdef LEVIATHAN_USES_META
-			meta_pressed[btn] = !meta_holding[btn];
-			meta_holding[btn] = true;
+			meta_pressed[btn_t::Click] = !meta_holding[btn_t::Click];
+			meta_holding[btn_t::Click] = true;
 #endif
 			break;
 		}
 		case SDL_MOUSEBUTTONUP: {
-			btn_t btn = evt.button.button == 0 ?
-				btn_t::Primary :
-				btn_t::Secondary;
-			holding[btn] = false;
+			holding[btn_t::Click] = false;
 #ifdef LEVIATHAN_USES_META
-			meta_holding[btn] = false;
+			meta_holding[btn_t::Click] = false;
 #endif
 			break;
 		}

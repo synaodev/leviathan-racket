@@ -32,8 +32,7 @@ namespace __enum_btn {
 		Down,
 		Left,
 		Right,
-		Primary,
-		Secondary,
+		Click,
 		Total = 16
 	};
 }

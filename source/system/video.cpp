@@ -23,9 +23,10 @@ video_t::~video_t() {
 	}
 }
 
-bool video_t::init(const setup_file_t& config) {
-	// Raw setup parameters retrieved.
-	config.get("Setup", "MetaMenu", meta);
+bool video_t::init(const setup_file_t& config, bool_t tileset_editor) {
+	this->tileset_editor = tileset_editor;
+	// Raw setup parameters retrieved
+	config.get("Setup", "MetaMenu", meta_menu);
 	sint_t major = 4;
 	sint_t minor = 6;
 	{
@@ -36,21 +37,27 @@ bool video_t::init(const setup_file_t& config) {
 			minor = 3;
 		}
 	}
-	// Raw screen parameters retrieved.
-	config.get("Video", "VerticalSync", params.vsync);
-	config.get("Video", "Fullscreen", 	params.full);
-	config.get("Video", "ScaleFactor", params.scaling);
-	config.get("Video", "FrameLimiter", params.framerate);
-	// Setup parameters.
-	params.scaling = glm::clamp(
-		params.scaling,
+	// Raw screen parameters retrieved
+	config.get("Video", "VerticalSync", parameters.vsync);
+	config.get("Video", "Fullscreen", 	parameters.full);
+	config.get("Video", "ScaleFactor", parameters.scaling);
+	config.get("Video", "FrameLimiter", parameters.framerate);
+	// Setup parameters
+	parameters.scaling = glm::clamp(
+		parameters.scaling,
 		screen_params_t::kDefaultScaling,
 		screen_params_t::kHighestScaling
 	);
-	params.framerate = glm::max(
-		params.framerate,
+	parameters.framerate = glm::max(
+		parameters.framerate,
 		screen_params_t::kDefaultFramerate
 	);
+	if (tileset_editor) {
+		parameters.full = false;
+		parameters.vsync = false;
+		parameters.framerate = 60;
+		parameters.scaling = 1;
+	}
 	if (window) {
 		synao_log("Window already created!\n");
 		return false;
@@ -60,7 +67,7 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 #if defined(LEVIATHAN_PLATFORM_MACOS)
-	// MacOS build needs to set Forward Compatible Flags.
+	// MacOS build needs to set Forward Compatible Flags
 	if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG) < 0) {
 		synao_log("Setting context flags failed! SDL Error: {}\n", SDL_GetError());
 		return false;
@@ -82,25 +89,37 @@ bool video_t::init(const setup_file_t& config) {
 		synao_log("Setting double-buffering failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Create window.
-	window = SDL_CreateWindow(
-		constants::NormalName,
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
-		constants::NormalWidth<sint_t>() * params.scaling,
-		constants::NormalHeight<sint_t>() * params.scaling,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
-	);
+	// Create window
+	if (tileset_editor) {
+		window = SDL_CreateWindow(
+			constants::EditorName,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			constants::EditorWidth<sint_t>(),
+			constants::EditorHeight<sint_t>(),
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+		);
+	} else {
+		window = SDL_CreateWindow(
+			constants::NormalName,
+			SDL_WINDOWPOS_CENTERED,
+			SDL_WINDOWPOS_CENTERED,
+			constants::NormalWidth<sint_t>() * parameters.scaling,
+			constants::NormalHeight<sint_t>() * parameters.scaling,
+			SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL
+		);
+	}
+
 	if (!window) {
 		synao_log("Window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Try to set fullscreen.
-	if (params.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
+	// Try to set fullscreen
+	if (parameters.full and SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0) {
 		synao_log("Fullscreen after window creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Try every OpenGL version from 4.6 to 3.3 and break when no errors.
+	// Try every OpenGL version from 4.6 to 3.3 and break when no errors
 	while (1) {
 		if (SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, major) < 0) {
 			synao_log("Setting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
@@ -123,7 +142,7 @@ bool video_t::init(const setup_file_t& config) {
 			break;
 		}
 	}
-	// If OpenGL 3.3 isn't available, it's worth telling the user.
+	// If OpenGL 3.3 isn't available, it's worth telling the user
 	if (!context) {
 		SDL_ShowSimpleMessageBox(
 			SDL_MESSAGEBOX_ERROR,
@@ -134,7 +153,7 @@ bool video_t::init(const setup_file_t& config) {
 		synao_log("OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Confirm OpenGL version.
+	// Confirm OpenGL version
 	if (SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &major) < 0) {
 		synao_log("Getting OpenGL major version failed! SDL Error: {}\n", SDL_GetError());
 		return false;
@@ -144,7 +163,7 @@ bool video_t::init(const setup_file_t& config) {
 		return false;
 	}
 	synao_log("OpenGL Version is {}.{}!\n", major, minor);
-	// Set global version object so everything works properly.
+	// Set global version object so everything works properly
 	opengl_version[0] = major;
 	opengl_version[1] = minor;
 	// Load OpenGL extensions with GLAD
@@ -152,29 +171,36 @@ bool video_t::init(const setup_file_t& config) {
 		synao_log("OpenGL Extension loading failed!\n");
 		return false;
 	}
-	// Print vendor information for debugging purposes.
+	// Print vendor information for debugging purposes
 	const byte_t* vendor = nullptr;
 	glCheck(vendor = (const byte_t*)glGetString(GL_VENDOR));
 	synao_log("Video card vendor is {}!\n", vendor);
-	// Clear and swap so the screen isn't left blank.
-	frame_buffer::clear(
-		constants::NormalDimensions<sint_t>() * params.scaling,
-		glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
-	);
+	// Clear and swap so the screen isn't left blank
+	if (tileset_editor) {
+		frame_buffer::clear(
+			constants::EditorDimensions<sint_t>(),
+			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
+		);
+	} else {
+		frame_buffer::clear(
+			constants::NormalDimensions<sint_t>() * parameters.scaling,
+			glm::vec4(0.0f, 0.0f, 0.125f, 1.0f)
+		);
+	}
 	SDL_GL_SwapWindow(window);
-	// Try to set v-sync state.
-	if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
+	// Try to set v-sync state
+	if (SDL_GL_SetSwapInterval(parameters.vsync) < 0) {
 		synao_log("Vertical sync after OpenGL context creation failed! SDL Error: {}\n", SDL_GetError());
 		return false;
 	}
-	// Load window icon image.
+	// Load window icon image
 	const image_t image = image_t::generate(vfs_t::resource_path(vfs_resource_path_t::Image) + "icon.png");
 	if (image.empty()) {
 		synao_log("Loading icon data failed!\n");
 		return false;
 	}
 	const glm::ivec2 image_dimensions = image.get_dimensions();
-	// Generate surface from loaded image.
+	// Generate surface from loaded image
 	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormatFrom(
 		(void_t)&image[0],
 		image_dimensions.x,
@@ -200,16 +226,16 @@ void video_t::flush() const {
 	}
 }
 
-void video_t::set_parameters(screen_params_t params) {
-	if (this->params.vsync != params.vsync) {
-		this->params.vsync = params.vsync;
-		if (SDL_GL_SetSwapInterval(params.vsync) < 0) {
+void video_t::set_parameters(screen_params_t parameters) {
+	if (this->parameters.vsync != parameters.vsync) {
+		this->parameters.vsync = parameters.vsync;
+		if (SDL_GL_SetSwapInterval(parameters.vsync) < 0) {
 			synao_log("Vertical sync change failed! SDL Error: {}\n", SDL_GetError());
 		}
 	}
-	if (this->params.full != params.full) {
-		this->params.full = params.full;
-		if (SDL_SetWindowFullscreen(window, params.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
+	if (this->parameters.full != parameters.full) {
+		this->parameters.full = parameters.full;
+		if (SDL_SetWindowFullscreen(window, parameters.full ? SDL_WINDOW_FULLSCREEN : 0) < 0) {
 			synao_log("Window mode change failed! SDL Error: {}\n", SDL_GetError());
 		} else {
 			SDL_SetWindowPosition(
@@ -219,17 +245,17 @@ void video_t::set_parameters(screen_params_t params) {
 			);
 		}
 	}
-	if (this->params.scaling != params.scaling) {
-		this->params.scaling = params.scaling;
-		this->params.scaling = glm::clamp(
-			this->params.scaling,
+	if (this->parameters.scaling != parameters.scaling) {
+		this->parameters.scaling = parameters.scaling;
+		this->parameters.scaling = glm::clamp(
+			this->parameters.scaling,
 			screen_params_t::kDefaultScaling,
 			screen_params_t::kHighestScaling
 		);
 		SDL_SetWindowSize(
 			window,
-			constants::NormalWidth<sint_t>() * params.scaling,
-			constants::NormalHeight<sint_t>() * params.scaling
+			constants::NormalWidth<sint_t>() * parameters.scaling,
+			constants::NormalHeight<sint_t>() * parameters.scaling
 		);
 		SDL_SetWindowPosition(
 			window,
@@ -237,16 +263,16 @@ void video_t::set_parameters(screen_params_t params) {
 			SDL_WINDOWPOS_CENTERED
 		);
 	}
-	if (this->params.framerate != params.framerate) {
-		this->params.framerate = glm::max(
-			params.framerate,
+	if (this->parameters.framerate != parameters.framerate) {
+		this->parameters.framerate = glm::max(
+			parameters.framerate,
 			screen_params_t::kDefaultFramerate
 		);
 	}
 }
 
 const screen_params_t& video_t::get_parameters() const {
-	return params;
+	return parameters;
 }
 
 glm::vec2 video_t::get_dimensions() const {
@@ -254,9 +280,16 @@ glm::vec2 video_t::get_dimensions() const {
 }
 
 glm::ivec2 video_t::get_integral_dimensions() const {
-	return constants::NormalDimensions<sint_t>() * params.scaling;
+	if (tileset_editor) {
+		return constants::EditorDimensions<sint_t>();
+	}
+	return constants::NormalDimensions<sint_t>() * parameters.scaling;
 }
 
-bool video_t::get_meta_option() const {
-	return meta;
+bool video_t::get_meta_menu() const {
+	return meta_menu;
+}
+
+bool video_t::get_tileset_editor() const {
+	return tileset_editor;
 }

@@ -39,7 +39,7 @@ bool meta_state_t::init(const video_t& video) {
 		synao_log("Error! Meta menu is already initialized!\n");
 		return false;
 	}
-	if (video.get_meta_option()) {
+	if (video.get_meta_menu()) {
 		auto device = video.get_device();
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();

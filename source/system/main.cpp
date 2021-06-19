@@ -14,6 +14,7 @@
 #include "./renderer.hpp"
 #include "./runtime.hpp"
 
+#include "../editor/editor.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
@@ -27,15 +28,92 @@ static void sigint_handler(int) {
 static constexpr uint_t kStopDelay = 40;
 static constexpr uint_t kNormDelay = 10;
 
-static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
+#ifdef LEVIATHAN_USES_META
+
+static bool editor_loop(setup_file_t& config, input_t& input, video_t& video, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
-	runtime_t runtime;
+	editor_t editor {};
+	if (!editor.init(video, renderer)) {
+		synao_log("Editor initialization failed!\n");
+		return false;
+	}
+	// Start watches
+	watch_t sync_watch {};
+	watch_t head_watch {};
+
+	synao_log("Entering editor loop...\n");
+	while (policy != policy_t::Quit) {
+		if (interrupt) {
+			synao_log("[SIGINT]\n");
+			break;
+		}
+		policy = input.poll(policy, editor.get_event_callback());
+		if (policy != policy_t::Stop) {
+			editor.update(head_watch.restart());
+			if (editor.viable()) {
+				if (editor.handle(input, renderer)) {
+					editor.render(video, renderer);
+					auto& params = video.get_parameters();
+					real64_t waiting = (1.0 / params.framerate) - sync_watch.elapsed();
+					if (waiting > 0.0) {
+						uint_t ticks = static_cast<uint_t>(waiting * 1000.0);
+						SDL_Delay(ticks);
+					}
+					sync_watch.restart();
+				} else {
+					policy = policy_t::Quit;
+				}
+			}
+		} else {
+			SDL_Delay(kStopDelay);
+		}
+	}
+	return config.save();
+}
+
+static int editor_process(setup_file_t& config) {
+	// Global input/video devices are generated here...
+	input_t input {};
+	if (!input.init(config)) {
+		return EXIT_FAILURE;
+	}
+	video_t video {};
+	if (!video.init(config, true)) {
+		return EXIT_FAILURE;
+	}
+	// Global virtual filesystem device generated here.
+	// Accessible from anywhere in order to reduce headaches.
+	// Must destroy this before destroying video and audio devices.
+	vfs_t vfs {};
+	if (!vfs.init(config)) {
+		return EXIT_FAILURE;
+	}
+	// Global renderer device is dependent on existance of virtual filesystem and audio devices.
+	// Must destroy this before destroying virtual filesystem and audio devices.
+	renderer_t renderer {};
+	if (!renderer.init(vfs)) {
+		return EXIT_FAILURE;
+	}
+	if (!editor_loop(config, input, video, renderer)) {
+		return EXIT_FAILURE;
+	}
+	return EXIT_SUCCESS;
+}
+
+#endif
+
+static bool normal_loop(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
+	policy_t policy = policy_t::Run;
+	runtime_t runtime {};
 	if (!runtime.init(input, video, audio, music, renderer)) {
 		synao_log("Runtime initialization failed!\n");
 		return false;
 	}
+	// Start watches
+	watch_t sync_watch {};
+	watch_t head_watch {};
+
 	synao_log("Entering main loop...\n");
-	watch_t sync_watch, head_watch;
 	while (policy != policy_t::Quit) {
 		if (interrupt) {
 			synao_log("[SIGINT]\n");
@@ -72,40 +150,40 @@ static bool main_loop(setup_file_t& config, input_t& input, video_t& video, audi
 	return config.save();
 }
 
-static int process(setup_file_t& config) {
+static int normal_process(setup_file_t& config) {
 	// Global input/video/audio devices are generated here...
-	input_t input;
+	input_t input {};
 	if (!input.init(config)) {
 		return EXIT_FAILURE;
 	}
-	video_t video;
+	video_t video {};
 	if (!video.init(config)) {
 		return EXIT_FAILURE;
 	}
-	audio_t audio;
+	audio_t audio {};
 	if (!audio.init(config)) {
 		return EXIT_FAILURE;
 	}
 	// Global virtual filesystem device generated here.
 	// Accessible from anywhere in order to reduce headaches.
 	// Must destroy this before destroying video and audio devices.
-	vfs_t fs;
-	if (!fs.init(config)) {
+	vfs_t vfs {};
+	if (!vfs.init(config)) {
 		return EXIT_FAILURE;
 	}
 	// Global music device is dependent on existance of audio device.
 	// Must destroy this before destroying audio device.
-	music_t music;
+	music_t music {};
 	if (!music.init(config)) {
 		return EXIT_FAILURE;
 	}
 	// Global renderer device is dependent on existance of virtual filesystem and audio devices.
 	// Must destroy this before destroying virtual filesystem and audio devices.
-	renderer_t renderer;
-	if (!renderer.init(fs)) {
+	renderer_t renderer {};
+	if (!renderer.init(vfs)) {
 		return EXIT_FAILURE;
 	}
-	if (!main_loop(config, input, video, audio, music, renderer)) {
+	if (!normal_loop(config, input, video, audio, music, renderer)) {
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
@@ -157,7 +235,7 @@ static void write_config(setup_file_t& config, const std::string& boot_path) {
 }
 
 static setup_file_t load_config() {
-	setup_file_t result;
+	setup_file_t result {};
 	const std::string boot_path = get_boot_path();
 	if (!result.load(boot_path)) {
 		synao_log("Couldn't find main configuration file at \"{}\"! Generating new config file.\n", boot_path);
@@ -190,6 +268,8 @@ static bool mount(const byte_t* provided_directory) {
 	return false;
 }
 
+static constexpr byte_t kArgTileset[] = "--tileset-editor";
+
 int main(int argc, char** argv) {
 	// If writing to stdout (debug build), speed up I/O
 #ifdef LEVIATHAN_BUILD_DEBUG
@@ -218,11 +298,19 @@ int main(int argc, char** argv) {
 		version_information::build_type
 	);
 	// Handle arguments
+	bool tileset_editor = false;
 	{
 		const byte_t* directory = nullptr;
 		for (sint_t it = 1; it < argc; ++it) {
 			const byte_t* option = argv[it];
-			if (!directory) {
+			if (!option) {
+				synao_log("Fatal error! Option #{} should not be null!\n", it);
+			} else if (!tileset_editor and std::strcmp(option, kArgTileset) == 0) {
+				tileset_editor = true;
+#ifndef LEVIATHAN_USES_META
+				synao_log("Error! Tileset editor is not available!\n");
+#endif
+			} else if (!directory) {
 				directory = option;
 			} else {
 				break;
@@ -247,6 +335,12 @@ int main(int argc, char** argv) {
 	}
 	// Load config
 	setup_file_t config = load_config();
-	// Run process
-	return process(config);
+	// Run desired process
+#ifdef LEVIATHAN_USES_META
+	return tileset_editor ?
+		editor_process(config) :
+		normal_process(config);
+#else
+	return normal_process(config);
+#endif
 }

@@ -31,26 +31,28 @@ public:
 };
 
 typedef struct SDL_Window SDL_Window;
-typedef void* SDL_GLContext;
+typedef void_t SDL_GLContext;
 
 struct video_t : public not_copyable_t, public not_moveable_t {
 public:
 	video_t() = default;
 	~video_t();
 public:
-	bool init(const setup_file_t& config);
+	bool init(const setup_file_t& config, bool_t tileset_editor = false);
 	void flush() const;
-	void set_parameters(screen_params_t params);
+	void set_parameters(screen_params_t parameters);
 	const screen_params_t& get_parameters() const;
 	glm::vec2 get_dimensions() const;
 	glm::ivec2 get_integral_dimensions() const;
-	bool get_meta_option() const;
+	bool get_meta_menu() const;
+	bool get_tileset_editor() const;
 	auto get_device() const {
 		return std::make_tuple(window, context);
 	}
 private:
 	SDL_Window* window { nullptr };
 	SDL_GLContext context { nullptr };
-	screen_params_t params {};
-	bool_t meta { false };
+	screen_params_t parameters {};
+	bool_t meta_menu { false };
+	bool_t tileset_editor { false };
 };
