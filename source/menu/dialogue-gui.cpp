@@ -230,6 +230,19 @@ void dialogue_gui_t::set_delay() {
 	this->delay = kDefaultDelay;
 }
 
+void dialogue_gui_t::set_color(sint_t red, sint_t green, sint_t blue) {
+	red = glm::clamp(red, 0, 255);
+	green = glm::clamp(green, 0, 255);
+	blue = glm::clamp(blue, 0, 255);
+	const glm::vec4 color {
+		static_cast<real_t>(red) / 255.0f,
+		static_cast<real_t>(green) / 255.0f,
+		static_cast<real_t>(blue) / 255.0f,
+		1.0f
+	};
+	text.set_color(color);
+}
+
 void dialogue_gui_t::ask_question(const CScriptArray* array) {
 	if (array and array->GetSize() > 0) {
 		flags[flags_t::Question] = true;

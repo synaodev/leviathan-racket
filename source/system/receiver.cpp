@@ -804,6 +804,9 @@ void receiver_t::generate_functions(input_t& input, audio_t& audio, music_t& mus
 	// Close Textbox
 	r = engine->RegisterGlobalFunction("void close()", WRAP_MFN(dialogue_gui_t, close_textbox), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);
+	// Color Text
+	r = engine->RegisterGlobalFunction("void color(sint32_t red, sint32_t green, sint32_t blue)", WRAP_MFN_PR(dialogue_gui_t, set_color, (sint_t, sint_t, sint_t), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
+	assert(r >= 0);
 	// Ask Question
 	r = engine->RegisterGlobalFunction("void ask(const std::array<std::string> &in question)", WRAP_MFN_PR(dialogue_gui_t, ask_question, (const CScriptArray*), void), asCALL_THISCALL_ASGLOBAL, &dialogue_gui);
 	assert(r >= 0);

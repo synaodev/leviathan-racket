@@ -44,6 +44,7 @@ public:
 	void set_face();
 	void set_delay(real_t delay);
 	void set_delay();
+	void set_color(sint_t red, sint_t green, sint_t blue);
 	void ask_question(const CScriptArray* array);
 	bool get_flag(flags_t flag) const;
 	arch_t get_answer() const;
