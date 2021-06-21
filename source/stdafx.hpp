@@ -16,7 +16,6 @@
 #include <glm/gtc/constants.hpp>
 
 #include <nlohmann/json.hpp>
-#include <toml/toml.hpp>
 #include <entt/core/hashed_string.hpp>
 #include <entt/entity/registry.hpp>
 #include <tmxlite/Map.hpp>

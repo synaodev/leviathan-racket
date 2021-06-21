@@ -119,7 +119,7 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 		real_t height = use_slope_height(info);
 		result.coordinate = side_fn::vert(opposite) ?
 			multiplier * (perpendicular_position - hitbox.x) + height + hitbox.y :
-			(perpendicular_position - hitbox.y - height) / height + hitbox.x;
+			(perpendicular_position - hitbox.y - height) / multiplier + hitbox.x;
 		result.valid = side_fn::is_max(opposite) ?
 			leading_position <= result.coordinate :
 			leading_position >= result.coordinate;
@@ -127,7 +127,7 @@ static collision_result_t test_collision(const rect_t& delta, const collision::i
 	return result;
 }
 
-std::optional<collision::info_t> collision::attempt(rect_t delta, std::bitset<phy_t::Total>& flags, const tilemap_t& tilemap, side_t side) {
+std::optional<collision::info_t> collision::attempt(const rect_t& delta, const std::bitset<phy_t::Total>& flags, const tilemap_t& tilemap, side_t side) {
 	sint_t first_primary = tilemap_t::round(delta.side(side_fn::opposing(side)));
 	sint_t final_primary = tilemap_t::round(delta.side(side));
 	sint_t incrm_primary = side_fn::is_max(side) ? 1 : -1;

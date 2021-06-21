@@ -93,30 +93,30 @@ rect_t kinematics_t::predict(const location_t& location, side_t side, real_t ine
 	case side_t::Left:
 		return rect_t(
 			location.position.x + location.bounding.x + inertia,
-			location.position.y + location.bounding.y + location.bounding.h / kShortFactor,
-			location.bounding.w / kLongFactor - inertia,
-			location.bounding.h / kShortFactor
+			location.position.y + location.bounding.y + location.bounding.h / 3.0f,
+			location.bounding.w / 2.0f - inertia,
+			location.bounding.h / 3.0f
 		);
 	case side_t::Right:
 		return rect_t(
-			location.position.x + location.bounding.x + location.bounding.w / kLongFactor,
-			location.position.y + location.bounding.y + location.bounding.h / kShortFactor,
-			location.bounding.w / kLongFactor + inertia,
-			location.bounding.h / kShortFactor
+			location.position.x + location.bounding.x + location.bounding.w / 2.0f,
+			location.position.y + location.bounding.y + location.bounding.h / 3.0f,
+			location.bounding.w / 2.0f + inertia,
+			location.bounding.h / 3.0f
 		);
 	case side_t::Top:
 		return rect_t(
 			location.position.x + location.bounding.x,
 			location.position.y + location.bounding.y + inertia,
 			location.bounding.w,
-			location.bounding.h / kLongFactor - inertia
+			location.bounding.h / 2.0f - inertia
 		);
 	default:
 		return rect_t(
 			location.position.x + location.bounding.x,
-			location.position.y + location.bounding.y + location.bounding.h / kLongFactor,
+			location.position.y + location.bounding.y + location.bounding.h / 2.0f,
 			location.bounding.w,
-			location.bounding.h / kLongFactor + inertia
+			location.bounding.h / 2.0f + inertia
 		);
 	}
 }
@@ -146,23 +146,40 @@ void kinematics_t::do_angle(location_t& location, kinematics_t& kinematics, glm:
 
 void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap) {
 	if (!kinematics.flags[phy_t::Noclip]) {
+		// Check side determined by inertia
 		side_t side = inertia > 0.0f ? side_t::Right : side_t::Left;
-		auto info = collision::attempt(
-			kinematics_t::predict(location, side, inertia),
-			kinematics.flags,
-			tilemap,
-			side
-		);
-		if (info.has_value()) {
-			location.position.x = info->coordinate - location.bounding.side(side);
-			kinematics.velocity.x = 0.0f;
-			kinematics.flags[phy_t::Right] = side == side_t::Right;
-			kinematics.flags[phy_t::Left] = side == side_t::Left;
-			kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
-		} else {
-			location.position.x += inertia;
-			kinematics.flags[phy_t::Right] = false;
-			kinematics.flags[phy_t::Left] = false;
+		{
+			auto info = collision::attempt(
+				kinematics_t::predict(location, side, inertia),
+				kinematics.flags,
+				tilemap,
+				side
+			);
+			if (info.has_value()) {
+				location.position.x = info->coordinate - location.bounding.side(side);
+				kinematics.velocity.x = 0.0f;
+				kinematics.flags[phy_t::Right] = side == side_t::Right;
+				kinematics.flags[phy_t::Left] = side == side_t::Left;
+				kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
+			} else {
+				location.position.x += inertia;
+				kinematics.flags[phy_t::Right] = false;
+				kinematics.flags[phy_t::Left] = false;
+			}
+		}
+		// Check side opposite of intertia
+		side_t opposing = side_fn::opposing(side);
+		{
+			auto info = collision::attempt(
+				kinematics_t::predict(location, opposing, 0.0f),
+				kinematics.flags,
+				tilemap,
+				opposing
+			);
+			if (info.has_value()) {
+				location.position.x = info->coordinate - location.bounding.side(opposing);
+				kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
+			}
 		}
 	} else {
 		location.position.x += inertia;
@@ -173,46 +190,64 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 
 void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap) {
 	if (!kinematics.flags[phy_t::Noclip]) {
+		// Check side determined by inertia
 		side_t side = inertia > 0.0f ? side_t::Bottom : side_t::Top;
-		auto info = collision::attempt(
-			kinematics_t::predict(location, side, inertia),
-			kinematics.flags,
-			tilemap,
-			side
-		);
-		if (info.has_value()) {
-			if (!(info->attribute & tileflag_t::OutBounds)) {
-				if (info->attribute & tileflag_t::FallThrough and (side != side_t::Bottom or kinematics.flags[phy_t::WillDrop])) {
-					location.position.y += inertia;
-					kinematics.flags[phy_t::Top] = false;
-					kinematics.flags[phy_t::Bottom] = false;
-					kinematics.flags[phy_t::Sloped] = false;
-				} else {
-					location.position.y = info->coordinate - location.bounding.side(side);
-					kinematics.velocity.y = 0.0f;
-					kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
-					kinematics.flags[phy_t::Sloped] = info->attribute & tileflag_t::Slope;
-					if (side == side_t::Top) {
-						kinematics.flags[phy_t::Top] = true;
-						kinematics.flags[phy_t::Bottom] = false;
-						kinematics.flags[phy_t::FallThrough] = false;
-					} else {
+		{
+			auto info = collision::attempt(
+				kinematics_t::predict(location, side, inertia),
+				kinematics.flags,
+				tilemap,
+				side
+			);
+			if (info.has_value()) {
+				if (!(info->attribute & tileflag_t::OutBounds)) {
+					if (info->attribute & tileflag_t::FallThrough and (side != side_t::Bottom or kinematics.flags[phy_t::WillDrop])) {
+						location.position.y += inertia;
 						kinematics.flags[phy_t::Top] = false;
-						kinematics.flags[phy_t::Bottom] = true;
-						kinematics.flags[phy_t::FallThrough] = info->attribute & tileflag_t::FallThrough;
+						kinematics.flags[phy_t::Bottom] = false;
+						kinematics.flags[phy_t::Sloped] = false;
+					} else {
+						location.position.y = info->coordinate - location.bounding.side(side);
+						kinematics.velocity.y = 0.0f;
+						kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
+						kinematics.flags[phy_t::Sloped] = info->attribute & tileflag_t::Slope;
+						if (side == side_t::Top) {
+							kinematics.flags[phy_t::Top] = true;
+							kinematics.flags[phy_t::Bottom] = false;
+							kinematics.flags[phy_t::FallThrough] = false;
+						} else {
+							kinematics.flags[phy_t::Top] = false;
+							kinematics.flags[phy_t::Bottom] = true;
+							kinematics.flags[phy_t::FallThrough] = info->attribute & tileflag_t::FallThrough;
+						}
 					}
+				} else {
+					location.position.y += inertia;
+					kinematics.flags[phy_t::Outbounds] = true;
+					kinematics.flags[phy_t::Noclip] = true;
 				}
 			} else {
 				location.position.y += inertia;
-				kinematics.flags[phy_t::Outbounds] = true;
-				kinematics.flags[phy_t::Noclip] = true;
+				kinematics.flags[phy_t::Top] = false;
+				kinematics.flags[phy_t::Bottom] = false;
+				kinematics.flags[phy_t::Sloped] = false;
+				kinematics.flags[phy_t::WillDrop] = false;
 			}
-		} else {
-			location.position.y += inertia;
-			kinematics.flags[phy_t::Top] = false;
-			kinematics.flags[phy_t::Bottom] = false;
-			kinematics.flags[phy_t::Sloped] = false;
-			kinematics.flags[phy_t::WillDrop] = false;
+		}
+		// Check side opposite of inertia
+		side_t opposing = side_fn::opposing(side);
+		{
+			auto info = collision::attempt(
+				kinematics_t::predict(location, opposing, 0.0f),
+				kinematics.flags,
+				tilemap,
+				opposing
+			);
+			if (info.has_value()) {
+				location.position.y = info->coordinate - location.bounding.side(opposing);
+				kinematics.flags[phy_t::Hooked] = info->attribute & tileflag_t::Hooked;
+				kinematics.flags[phy_t::Sloped] = info->attribute & tileflag_t::Slope;
+			}
 		}
 	} else {
 		location.position.y += inertia;
