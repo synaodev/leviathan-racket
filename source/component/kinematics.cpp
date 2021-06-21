@@ -9,9 +9,6 @@
 
 #include "../field/collision.hpp"
 
-static constexpr real_t kLongFactor  = 2.0f;
-static constexpr real_t kShortFactor = 3.0f;
-
 void kinematics_t::reset() {
 	flags.reset();
 	velocity = glm::zero<glm::vec2>();
@@ -88,36 +85,56 @@ void kinematics_t::handle(location_t& location, kinematics_t& kinematics, const 
 	}
 }
 
-rect_t kinematics_t::predict(const location_t& location, side_t side, real_t inertia) {
+rect_t kinematics_t::predict(const location_t& location, side_t side, real_t inertia, std::optional<rect_t> discrete) {
 	switch (side) {
-	case side_t::Left:
-		return rect_t(
+	case side_t::Left: {
+		if (discrete.has_value()) {
+			return {
+				location.position.x + discrete->x + inertia,
+				location.position.y + discrete->y,
+				discrete->w / 2.0f - inertia,
+				discrete->h
+			};
+		}
+		return {
 			location.position.x + location.bounding.x + inertia,
-			location.position.y + location.bounding.y + location.bounding.h / 3.0f,
+			location.position.y + location.bounding.y,
 			location.bounding.w / 2.0f - inertia,
-			location.bounding.h / 3.0f
-		);
-	case side_t::Right:
-		return rect_t(
+			location.bounding.h
+		};
+	}
+	case side_t::Right: {
+		if (discrete.has_value()) {
+			return {
+				location.position.x + discrete->x + discrete->w / 2.0f,
+				location.position.y + discrete->y,
+				discrete->w / 2.0f + inertia,
+				discrete->h
+			};
+		}
+		return {
 			location.position.x + location.bounding.x + location.bounding.w / 2.0f,
-			location.position.y + location.bounding.y + location.bounding.h / 3.0f,
+			location.position.y + location.bounding.y,
 			location.bounding.w / 2.0f + inertia,
-			location.bounding.h / 3.0f
-		);
-	case side_t::Top:
-		return rect_t(
+			location.bounding.h
+		};
+	}
+	case side_t::Top: {
+		return {
 			location.position.x + location.bounding.x,
 			location.position.y + location.bounding.y + inertia,
 			location.bounding.w,
 			location.bounding.h / 2.0f - inertia
-		);
-	default:
-		return rect_t(
+		};
+	}
+	default: {
+		return {
 			location.position.x + location.bounding.x,
 			location.position.y + location.bounding.y + location.bounding.h / 2.0f,
 			location.bounding.w,
 			location.bounding.h / 2.0f + inertia
-		);
+		};
+	}
 	}
 }
 
@@ -150,7 +167,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 		side_t side = inertia > 0.0f ? side_t::Right : side_t::Left;
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, side, inertia),
+				kinematics_t::predict(location, side, inertia, *kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				side
@@ -171,7 +188,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 		side_t opposing = side_fn::opposing(side);
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, opposing, 0.0f),
+				kinematics_t::predict(location, opposing, 0.0f, *kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				opposing
@@ -194,7 +211,7 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 		side_t side = inertia > 0.0f ? side_t::Bottom : side_t::Top;
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, side, inertia),
+				kinematics_t::predict(location, side, inertia, *kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				side
@@ -238,7 +255,7 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 		side_t opposing = side_fn::opposing(side);
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, opposing, 0.0f),
+				kinematics_t::predict(location, opposing, 0.0f, *kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				opposing

@@ -42,7 +42,14 @@ bool naomi_state_t::init(kontext_t& kontext) {
 		return false;
 	}
 	auto& location = backend->emplace<location_t>(actor);
-	backend->emplace<kinematics_t>(actor);
+
+	auto& kinematics = backend->emplace<kinematics_t>(actor);
+	kinematics.discrete = {
+		4.0f,
+		16.0f / 3.0f,
+		8.0f,
+		16.0f / 3.0f
+	};
 
 	auto& sprite = backend->emplace<sprite_t>(actor, res::anim::Naomi);
 	backend->emplace<health_t>(actor);
@@ -50,7 +57,12 @@ bool naomi_state_t::init(kontext_t& kontext) {
 	auto& blinker = backend->emplace<blinker_t>(actor);
 	backend->emplace<liquid_listener_t>(actor, ai::splash::type, res::sfx::Splash);
 
-	location.bounding = { 4.0f, 0.0f, 8.0f, 16.0f };
+	location.bounding = {
+		4.0f,
+		0.0f,
+		8.0f,
+		16.0f
+	};
 	sprite.layer = 0.35f;
 
 	blinker.blink_state = naomi_anim_t::Blinking;
