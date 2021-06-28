@@ -1,0 +1,109 @@
+{
+	"Material": "bullets",
+	"Palette": "bullets",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Small",
+			"starts": [
+				224,
+				0
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.016,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						0,
+						1
+					],
+					[
+						1,
+						1
+					]
+				]
+			]
+		},
+		{
+			"name": "Medium",
+			"starts": [
+				0,
+				96
+			],
+			"vksize": [
+				32,
+				32
+			],
+			"tdelay": 0.064,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "Large",
+			"starts": [
+				0,
+				128
+			],
+			"vksize": [
+				48,
+				48
+			],
+			"tdelay": 0.024,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						2,
+						0
+					],
+					[
+						0,
+						1
+					],
+					[
+						1,
+						1
+					],
+					[
+						2,
+						1
+					]
+				]
+			]
+		}
+	]
+}

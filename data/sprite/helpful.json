@@ -1,0 +1,49 @@
+{
+	"Material": "common",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Bed",
+			"starts": [
+				0,
+				16
+			],
+			"vksize": [
+				32,
+				16
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "Machine",
+			"starts": [
+				96,
+				0
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		}
+	]
+}

@@ -1,0 +1,39 @@
+{
+	"Material": "bullets",
+	"Palette": "bullets",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Idle",
+			"starts": [
+				64,
+				96
+			],
+			"vksize": [
+				32,
+				32
+			],
+			"tdelay": 0.032,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						2,
+						0
+					]
+				]
+			]
+		}
+	]
+}

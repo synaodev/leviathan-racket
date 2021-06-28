@@ -1,0 +1,59 @@
+{
+	"Material": "common",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Off",
+			"starts": [
+				0,
+				46
+			],
+			"vksize": [
+				26,
+				18
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0,
+						0,
+						2
+					]
+				]
+			]
+		},
+		{
+			"name": "On",
+			"starts": [
+				0,
+				46
+			],
+			"vksize": [
+				26,
+				18
+			],
+			"tdelay": 0.032,
+			"frames": [
+				[
+					[
+						1,
+						0,
+						0,
+						2
+					],
+					[
+						2,
+						0,
+						0,
+						2
+					]
+				]
+			]
+		}
+	]
+}

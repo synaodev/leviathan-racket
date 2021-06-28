@@ -74,7 +74,8 @@ def extract_frames(data: Dict[str, str]):
 def write_file(chunks: List[Chunk], file_name: str) -> bool:
     output = {}
     output['Material'] = chunks[0].data['Material']
-    output['Palette'] = chunks[0].data['Palettes']
+    if 'Palettes' in chunks[0].data:
+        output['Palette'] = chunks[0].data['Palettes']
     output['Dimensions'] = extract_values(chunks[0].data['Inverter'])
     output['Animations'] = []
     for i in range(1, len(chunks)):

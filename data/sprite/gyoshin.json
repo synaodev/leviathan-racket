@@ -1,0 +1,101 @@
+{
+	"Material": "friends",
+	"Palette": "friends",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Idle",
+			"starts": [
+				0,
+				72
+			],
+			"vksize": [
+				16,
+				28
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0,
+						0,
+						12
+					]
+				]
+			]
+		},
+		{
+			"name": "Walking",
+			"starts": [
+				0,
+				72
+			],
+			"vksize": [
+				16,
+				28
+			],
+			"tdelay": 0.09,
+			"frames": [
+				[
+					[
+						1,
+						0,
+						0,
+						13
+					],
+					[
+						2,
+						0,
+						0,
+						12
+					],
+					[
+						3,
+						0,
+						0,
+						13
+					],
+					[
+						2,
+						0,
+						0,
+						12
+					]
+				]
+			]
+		},
+		{
+			"name": "Blinking",
+			"starts": [
+				0,
+				72
+			],
+			"vksize": [
+				16,
+				28
+			],
+			"tdelay": 0.07,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						4,
+						0,
+						0,
+						12
+					],
+					[
+						4,
+						0,
+						0,
+						12
+					]
+				]
+			]
+		}
+	]
+}

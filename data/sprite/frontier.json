@@ -1,0 +1,79 @@
+{
+	"Material": "bullets",
+	"Palette": "bullets",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Fire",
+			"starts": [
+				0,
+				0
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.08,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						2,
+						0
+					],
+					[
+						3,
+						0
+					],
+					[
+						4,
+						0
+					],
+					[
+						0,
+						1
+					],
+					[
+						1,
+						1
+					]
+				]
+			]
+		},
+		{
+			"name": "Underwater",
+			"starts": [
+				192,
+				32
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.096,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						0,
+						1
+					]
+				]
+			]
+		}
+	]
+}

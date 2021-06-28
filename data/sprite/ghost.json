@@ -1,0 +1,60 @@
+{
+	"Material": "common",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Idle",
+			"starts": [
+				110,
+				32
+			],
+			"vksize": [
+				16,
+				32
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0,
+						0,
+						16
+					]
+				]
+			]
+		},
+		{
+			"name": "Hurt",
+			"starts": [
+				110,
+				32
+			],
+			"vksize": [
+				16,
+				32
+			],
+			"tdelay": 0.016,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						1,
+						0,
+						0,
+						16
+					],
+					[
+						1,
+						0,
+						0,
+						16
+					]
+				]
+			]
+		}
+	]
+}

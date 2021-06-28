@@ -1,0 +1,96 @@
+{
+	"Material": "heads",
+	"Palette": "heads",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Box-0",
+			"starts": [
+				0,
+				0
+			],
+			"vksize": [
+				44,
+				16
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				],
+				[
+					[
+						0,
+						1
+					]
+				]
+			]
+		},
+		{
+			"name": "Arrow-1",
+			"starts": [
+				45,
+				8
+			],
+			"vksize": [
+				8,
+				8
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "Container-2",
+			"starts": [
+				156,
+				0
+			],
+			"vksize": [
+				38,
+				22
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "BossBar-3",
+			"starts": [
+				224,
+				0
+			],
+			"vksize": [
+				16,
+				96
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		}
+	]
+}

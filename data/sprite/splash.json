@@ -1,0 +1,42 @@
+{
+	"Material": "common",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Idle",
+			"starts": [
+				224,
+				0
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.03,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						0,
+						1
+					],
+					[
+						1,
+						1
+					]
+				]
+			]
+		}
+	]
+}

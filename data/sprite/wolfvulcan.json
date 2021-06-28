@@ -1,0 +1,34 @@
+{
+	"Material": "bullets",
+	"Palette": "bullets",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Fire",
+			"starts": [
+				224,
+				0
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.008,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					]
+				]
+			]
+		}
+	]
+}

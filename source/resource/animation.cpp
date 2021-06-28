@@ -6,9 +6,12 @@
 #include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 
+#include <fstream>
+
 #include <glm/common.hpp>
 #include <glm/gtc/vec1.hpp>
 #include <glm/gtc/constants.hpp>
+#include <nlohmann/json.hpp>
 
 void animation_sequence_t::append(const glm::vec2& action_point) {
 	action_points.push_back(action_point);
@@ -167,60 +170,6 @@ void animation_t::update(real64_t delta, bool_t& amend, arch_t state, real64_t& 
 	}
 }
 
-/*void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
-	this->assure();
-	if (state < sequences.size()) {
-		glm::vec2 sequsize = sequences[state].get_dimensions();
-		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
-		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			auto& list = renderer.display_list(
-				layer,
-				blend_mode_t::Alpha,
-				palette ? program_t::Indexed : program_t::Sprites
-			);
-			if (amend or panic) {
-				amend = false;
-				sint_t texture_name = texture ? texture->get_name() : 0;
-				sint_t palette_name = palette ? palette->get_name() + table : 0;
-				list.begin(display_list_t::SingleQuad)
-					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
-					.vtx_transform_write(position - sequorig, scale, pivot, angle)
-				.end();
-			} else {
-				list.skip(display_list_t::SingleQuad);
-			}
-		}
-	}
-}
-
-void animation_t::render(renderer_t& renderer, const rect_t& viewport, bool_t panic, bool_t& amend, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale) const {
-	this->assure();
-	if (state < sequences.size()) {
-		glm::vec2 sequsize = sequences[state].get_dimensions();
-		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring);
-		if (viewport.overlaps(position - sequorig, sequsize * scale)) {
-			rect_t seququad = sequences[state].get_quad(inverts, frame, variation);
-			auto& list = renderer.display_list(
-				layer,
-				blend_mode_t::Alpha,
-				palette ? program_t::Indexed : program_t::Sprites
-			);
-			if (amend or panic) {
-				amend = false;
-				sint_t texture_name = texture ? texture->get_name() : 0;
-				sint_t palette_name = palette ? palette->get_name() + table : 0;
-				list.begin(display_list_t::SingleQuad)
-					.vtx_major_write(seququad, sequsize, mirroring, alpha, texture_name, palette_name)
-					.vtx_transform_write(position - sequorig, scale)
-				.end();
-			} else {
-				list.skip(display_list_t::SingleQuad);
-			}
-		}
-	}
-}*/
-
 void animation_t::render(renderer_t& renderer, const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, mirroring_t mirroring, layer_t layer, real_t alpha, sint_t table, glm::vec2 position, glm::vec2 scale, real_t angle, glm::vec2 pivot) const {
 	this->assure();
 	if (state < sequences.size()) {
@@ -295,66 +244,146 @@ void animation_t::load(const std::string& full_path) {
 		synao_log("Warning! Tried to overwrite animation!\n");
 		return;
 	}
-	setup_file_t setup;
-	if (setup.load(full_path)) {
-		std::string matfile;
-		std::string palfile;
-		setup.get("Main", "Material", matfile);
-		setup.get("Main", "Palettes", palfile);
-		setup.get("Main", "Inverter", inverts);
+
+	std::ifstream ifs { full_path, std::ios::binary };
+	if (!ifs.is_open()) {
+		synao_log("Failed to load animation from {}!\n", full_path);
+		return;
+	}
+
+	nlohmann::json file = nlohmann::json::parse(ifs);
+	if (file.contains("Material")) {
+		texture = vfs_t::texture(file["Material"].get<std::string>());
+	}
+	if (file.contains("Palette")) {
+		palette = vfs_t::palette(file["Palette"].get<std::string>());
+	}
+	if (file.contains("Dimensions")) {
+		file["Dimensions"][0].get_to(inverts.x);
+		file["Dimensions"][1].get_to(inverts.y);
 
 		if (inverts.x == 0.0f or inverts.y == 0.0f) {
 			inverts = glm::one<glm::vec2>();
 		} else {
 			inverts = 1.0f / inverts;
 		}
+	}
 
-		if (!matfile.empty()) {
-			texture = vfs_t::texture(matfile);
+	for (auto anim : file["Animations"]) {
+		glm::vec2 starts {};
+		anim["starts"][0].get_to(starts.x);
+		anim["starts"][1].get_to(starts.y);
+
+		glm::vec2 vksize {};
+		anim["vksize"][0].get_to(vksize.x);
+		anim["vksize"][1].get_to(vksize.y);
+
+		real64_t tdelay = 0.0;
+		anim["tdelay"].get_to(tdelay);
+
+		bool repeat = true;
+		if (anim.contains("repeat")) {
+			anim["repeat"].get_to(repeat);
 		}
-		if (!palfile.empty()) {
-			palette = vfs_t::palette(palfile);
+
+		bool reflect = false;
+		if (anim.contains("reflect")) {
+			anim["reflect"].get_to(reflect);
 		}
 
-		glm::vec4 points = glm::zero<glm::vec4>();
-		glm::vec2 axnpnt = glm::zero<glm::vec2>();
+		auto& sequence = sequences.emplace_back(
+			vksize,
+			tdelay,
+			anim["frames"][0].size(),
+			(bool_t)repeat,
+			(bool_t)reflect
+		);
 
-		for (arch_t chunk = 1; chunk < setup.size(); ++chunk) {
-			glm::vec2 starts = glm::zero<glm::vec2>();
-			glm::vec2 vksize = glm::zero<glm::vec2>();
-			real64_t tdelay  = 0.0;
-			arch_t hvtype 	 = 0;
-			arch_t frames 	 = 0;
-			bool_t repeat 	 = true;
-			bool_t reflect 	 = false;
-			setup.get(chunk, "starts", starts);
-			setup.get(chunk, "vksize", vksize);
-			setup.get(chunk, "tdelay", tdelay);
-			setup.get(chunk, "hvtype", hvtype);
-			setup.get(chunk, "frames", frames);
-			setup.get(chunk, "repeat", repeat);
-			setup.get(chunk, "reflect", reflect);
-
-			auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, reflect);
-			for (arch_t d = 0; d < hvtype; ++d) {
-				axnpnt = glm::zero<glm::vec2>();
-				setup.get(chunk, std::to_string(d) + "-X", axnpnt);
-				sequence.append(axnpnt);
-				for (arch_t f = 0; f < frames; ++f) {
-					points = glm::zero<glm::vec4>();
-					setup.get(
-						chunk,
-						std::to_string(d) + '-' + std::to_string(f),
-						points
-					);
-					sequence.append(inverts, starts, points);
-				}
+		if (anim.contains("action")) {
+			for (auto action : anim["action"]) {
+				glm::vec2 point {};
+				action[0].get_to(point.x);
+				action[1].get_to(point.y);
+				sequence.append(point);
 			}
 		}
-		ready = true;
-	} else {
-		synao_log("Failed to load animation from {}!\n", full_path);
+
+		for (auto framerule : anim["frames"]) {
+			for (auto frame : framerule) {
+				glm::vec4 points {};
+				for (
+					glm::length_t it = 0;
+					it < glm::min(points.length(), (glm::length_t)frame.size());
+					++it
+				) {
+					frame[it].get_to(points[it]);
+				}
+				sequence.append(inverts, starts, points);
+			}
+		}
 	}
+	ready = true;
+
+	// setup_file_t setup;
+	// if (setup.load(full_path)) {
+	// 	std::string matfile;
+	// 	std::string palfile;
+	// 	setup.get("Main", "Material", matfile);
+	// 	setup.get("Main", "Palettes", palfile);
+	// 	setup.get("Main", "Inverter", inverts);
+
+	// 	if (inverts.x == 0.0f or inverts.y == 0.0f) {
+	// 		inverts = glm::one<glm::vec2>();
+	// 	} else {
+	// 		inverts = 1.0f / inverts;
+	// 	}
+
+	// 	if (!matfile.empty()) {
+	// 		texture = vfs_t::texture(matfile);
+	// 	}
+	// 	if (!palfile.empty()) {
+	// 		palette = vfs_t::palette(palfile);
+	// 	}
+
+	// 	glm::vec4 points = glm::zero<glm::vec4>();
+	// 	glm::vec2 axnpnt = glm::zero<glm::vec2>();
+
+	// 	for (arch_t chunk = 1; chunk < setup.size(); ++chunk) {
+	// 		glm::vec2 starts = glm::zero<glm::vec2>();
+	// 		glm::vec2 vksize = glm::zero<glm::vec2>();
+	// 		real64_t tdelay  = 0.0;
+	// 		arch_t hvtype 	 = 0;
+	// 		arch_t frames 	 = 0;
+	// 		bool_t repeat 	 = true;
+	// 		bool_t reflect 	 = false;
+	// 		setup.get(chunk, "starts", starts);
+	// 		setup.get(chunk, "vksize", vksize);
+	// 		setup.get(chunk, "tdelay", tdelay);
+	// 		setup.get(chunk, "hvtype", hvtype);
+	// 		setup.get(chunk, "frames", frames);
+	// 		setup.get(chunk, "repeat", repeat);
+	// 		setup.get(chunk, "reflect", reflect);
+
+	// 		auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, reflect);
+	// 		for (arch_t d = 0; d < hvtype; ++d) {
+	// 			axnpnt = glm::zero<glm::vec2>();
+	// 			setup.get(chunk, std::to_string(d) + "-X", axnpnt);
+	// 			sequence.append(axnpnt);
+	// 			for (arch_t f = 0; f < frames; ++f) {
+	// 				points = glm::zero<glm::vec4>();
+	// 				setup.get(
+	// 					chunk,
+	// 					std::to_string(d) + '-' + std::to_string(f),
+	// 					points
+	// 				);
+	// 				sequence.append(inverts, starts, points);
+	// 			}
+	// 		}
+	// 	}
+	// 	ready = true;
+	// } else {
+	// 	synao_log("Failed to load animation from {}!\n", full_path);
+	// }
 }
 
 void animation_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
@@ -369,19 +398,6 @@ void animation_t::assure() const {
 		future.wait();
 	}
 }
-
-// bool animation_t::visible(const rect_t& viewport, arch_t state, arch_t frame, arch_t variation, layer_t layer, glm::vec2 position, glm::vec2 scale) const {
-// 	if (layer == layer_value::Invisible) {
-// 		return false;
-// 	}
-// 	this->assure();
-// 	if (state < sequences.size()) {
-// 		glm::vec2 sequsize = sequences[state].get_dimensions();
-// 		glm::vec2 sequorig = sequences[state].get_origin(frame, variation, mirroring_t::None);
-// 		return viewport.overlaps(position - sequorig, sequsize * scale);
-// 	}
-// 	return false;
-// }
 
 bool animation_t::is_finished(arch_t state, arch_t frame, real64_t timer) const {
 	this->assure();

@@ -1,0 +1,62 @@
+{
+	"Material": "common",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Idle",
+			"starts": [
+				96,
+				16
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "Boing",
+			"starts": [
+				96,
+				16
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.02,
+			"repeat": false,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						2,
+						0
+					],
+					[
+						1,
+						0
+					]
+				]
+			]
+		}
+	]
+}

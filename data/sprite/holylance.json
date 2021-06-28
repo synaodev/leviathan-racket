@@ -1,0 +1,62 @@
+{
+	"Material": "bullets",
+	"Palette": "bullets",
+	"Dimensions": [
+		256,
+		256
+	],
+	"Animations": [
+		{
+			"name": "Lance",
+			"starts": [
+				144,
+				64
+			],
+			"vksize": [
+				16,
+				16
+			],
+			"tdelay": 0.016,
+			"frames": [
+				[
+					[
+						0,
+						0
+					],
+					[
+						1,
+						0
+					],
+					[
+						2,
+						0
+					],
+					[
+						3,
+						0
+					]
+				]
+			]
+		},
+		{
+			"name": "Tether",
+			"starts": [
+				84,
+				8
+			],
+			"vksize": [
+				1,
+				1
+			],
+			"tdelay": 0.0,
+			"frames": [
+				[
+					[
+						0,
+						0
+					]
+				]
+			]
+		}
+	]
+}

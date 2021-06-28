@@ -549,7 +549,7 @@ const animation_t* vfs_t::animation(const entt::hashed_string& entry) {
 	auto it = vfs_t::device->search_safely(entry.value(), vfs_t::device->animations);
 	if (it == vfs_t::device->animations.end()) {
 		animation_t& ref = vfs_t::device->emplace_safely(entry.value(), vfs_t::device->animations);
-		ref.load(kSpritePath + std::string(entry.data()) + ".cfg", vfs_t::device->thread_pool);
+		ref.load(kSpritePath + std::string(entry.data()) + ".json", vfs_t::device->thread_pool);
 		return &ref;
 	}
 	return &it->second;
