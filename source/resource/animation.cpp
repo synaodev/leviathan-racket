@@ -240,7 +240,7 @@ void animation_t::render(renderer_t& renderer, bool_t& amend, arch_t state, arch
 }
 
 void animation_t::load(const std::string& full_path) {
-	if (sequences.size() > 0) {
+	if (!sequences.empty()) {
 		synao_log("Warning! Tried to overwrite animation!\n");
 		return;
 	}
@@ -252,16 +252,25 @@ void animation_t::load(const std::string& full_path) {
 	}
 
 	nlohmann::json file = nlohmann::json::parse(ifs);
-	if (file.contains("Material")) {
+	if (file.contains("Material") and file["Material"].is_string()) {
 		texture = vfs_t::texture(file["Material"].get<std::string>());
 	}
-	if (file.contains("Palette")) {
+	if (file.contains("Palette") and file["Palette"].is_string()) {
 		palette = vfs_t::palette(file["Palette"].get<std::string>());
 	}
-	if (file.contains("Dimensions")) {
-		file["Dimensions"][0].get_to(inverts.x);
-		file["Dimensions"][1].get_to(inverts.y);
 
+	if (file.contains("Dimensions") and file["Dimensions"].is_array()) {
+		auto dimensions = file["Dimensions"];
+		if (
+			dimensions.size() >= 2 and
+			dimensions[0].is_number() and
+			dimensions[1].is_number()
+		) {
+			inverts = {
+				dimensions[0].get<real_t>(),
+				dimensions[1].get<real_t>()
+			};
+		}
 		if (inverts.x == 0.0f or inverts.y == 0.0f) {
 			inverts = glm::one<glm::vec2>();
 		} else {
@@ -271,39 +280,98 @@ void animation_t::load(const std::string& full_path) {
 
 	for (auto anim : file["Animations"]) {
 		glm::vec2 starts {};
-		anim["starts"][0].get_to(starts.x);
-		anim["starts"][1].get_to(starts.y);
+		if (
+			anim.contains("starts") and
+			anim["starts"].is_array() and
+			anim["starts"].size() >= 2 and
+			anim["starts"][0].is_number() and
+			anim["starts"][1].is_number()
+		) {
+			starts = {
+				anim["starts"][0].get<real_t>(),
+				anim["starts"][1].get<real_t>()
+			};
+		}
 
 		glm::vec2 vksize {};
-		anim["vksize"][0].get_to(vksize.x);
-		anim["vksize"][1].get_to(vksize.y);
+		if (
+			anim.contains("vksize") and
+			anim["vksize"].is_array() and
+			anim["vksize"].size() >= 2 and
+			anim["vksize"][0].is_number() and
+			anim["vksize"][1].is_number()
+		) {
+			vksize = {
+				anim["vksize"][0].get<real_t>(),
+				anim["vksize"][1].get<real_t>()
+			};
+		}
 
 		real64_t tdelay = 0.0;
-		anim["tdelay"].get_to(tdelay);
+		if (
+			anim.contains("tdelay") and
+			anim["tdelay"].is_number_float()
+		) {
+			tdelay = anim["tdelay"].get<real_t>();
+		}
 
 		bool repeat = true;
-		if (anim.contains("repeat")) {
-			anim["repeat"].get_to(repeat);
+		if (
+			anim.contains("repeat") and
+			anim["repeat"].is_boolean()
+		) {
+			repeat = anim["repeat"].get<bool>();
 		}
 
 		bool reflect = false;
-		if (anim.contains("reflect")) {
-			anim["reflect"].get_to(reflect);
+		if (
+			anim.contains("reflect") and
+			anim["reflect"].is_boolean()
+		) {
+			reflect = anim["reflect"].get<bool>();
+		}
+
+		arch_t predict = 0;
+		if (
+			anim.contains("frames") and
+			anim["frames"].is_array() and
+			anim["frames"].size() > 0 and
+			anim["frames"][0].is_array()
+		) {
+			predict = anim["frames"][0].size();
+		}
+
+		if (predict == 0) {
+			synao_log("Failed to load animation frames from {}!\n", full_path);
+			return;
 		}
 
 		auto& sequence = sequences.emplace_back(
 			vksize,
 			tdelay,
-			anim["frames"][0].size(),
+			predict,
 			(bool_t)repeat,
 			(bool_t)reflect
 		);
 
-		if (anim.contains("action")) {
+		if (
+			anim.contains("action") and
+			anim["action"].is_array() and
+			anim["action"].size() > 0
+		) {
 			for (auto action : anim["action"]) {
 				glm::vec2 point {};
-				action[0].get_to(point.x);
-				action[1].get_to(point.y);
+				if (
+					action.is_array() and
+					action.size() >= 2 and
+					action[0].is_number() and
+					action[1].is_number()
+				) {
+					point = {
+						action[0].get<real_t>(),
+						action[1].get<real_t>()
+					};
+				}
 				sequence.append(point);
 			}
 		}
@@ -311,12 +379,16 @@ void animation_t::load(const std::string& full_path) {
 		for (auto framerule : anim["frames"]) {
 			for (auto frame : framerule) {
 				glm::vec4 points {};
-				for (
-					glm::length_t it = 0;
-					it < glm::min(points.length(), (glm::length_t)frame.size());
-					++it
-				) {
-					frame[it].get_to(points[it]);
+				if (frame.is_array()) {
+					glm::length_t total = glm::min(
+						points.length(),
+						(glm::length_t)frame.size()
+					);
+					for (glm::length_t it = 0; it < total; ++it) {
+						if (frame[it].is_number()) {
+							points[it] = frame[it].get<real_t>();
+						}
+					}
 				}
 				sequence.append(inverts, starts, points);
 			}
