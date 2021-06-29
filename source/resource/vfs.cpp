@@ -68,7 +68,7 @@ static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
 		palette/
 			*.png
 		sprite/
-			*.cfg
+			*.json
 		tilekey/
 			*.atr
 		tune/

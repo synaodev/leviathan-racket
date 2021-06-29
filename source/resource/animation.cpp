@@ -395,67 +395,6 @@ void animation_t::load(const std::string& full_path) {
 		}
 	}
 	ready = true;
-
-	// setup_file_t setup;
-	// if (setup.load(full_path)) {
-	// 	std::string matfile;
-	// 	std::string palfile;
-	// 	setup.get("Main", "Material", matfile);
-	// 	setup.get("Main", "Palettes", palfile);
-	// 	setup.get("Main", "Inverter", inverts);
-
-	// 	if (inverts.x == 0.0f or inverts.y == 0.0f) {
-	// 		inverts = glm::one<glm::vec2>();
-	// 	} else {
-	// 		inverts = 1.0f / inverts;
-	// 	}
-
-	// 	if (!matfile.empty()) {
-	// 		texture = vfs_t::texture(matfile);
-	// 	}
-	// 	if (!palfile.empty()) {
-	// 		palette = vfs_t::palette(palfile);
-	// 	}
-
-	// 	glm::vec4 points = glm::zero<glm::vec4>();
-	// 	glm::vec2 axnpnt = glm::zero<glm::vec2>();
-
-	// 	for (arch_t chunk = 1; chunk < setup.size(); ++chunk) {
-	// 		glm::vec2 starts = glm::zero<glm::vec2>();
-	// 		glm::vec2 vksize = glm::zero<glm::vec2>();
-	// 		real64_t tdelay  = 0.0;
-	// 		arch_t hvtype 	 = 0;
-	// 		arch_t frames 	 = 0;
-	// 		bool_t repeat 	 = true;
-	// 		bool_t reflect 	 = false;
-	// 		setup.get(chunk, "starts", starts);
-	// 		setup.get(chunk, "vksize", vksize);
-	// 		setup.get(chunk, "tdelay", tdelay);
-	// 		setup.get(chunk, "hvtype", hvtype);
-	// 		setup.get(chunk, "frames", frames);
-	// 		setup.get(chunk, "repeat", repeat);
-	// 		setup.get(chunk, "reflect", reflect);
-
-	// 		auto& sequence = sequences.emplace_back(vksize, tdelay, frames, repeat, reflect);
-	// 		for (arch_t d = 0; d < hvtype; ++d) {
-	// 			axnpnt = glm::zero<glm::vec2>();
-	// 			setup.get(chunk, std::to_string(d) + "-X", axnpnt);
-	// 			sequence.append(axnpnt);
-	// 			for (arch_t f = 0; f < frames; ++f) {
-	// 				points = glm::zero<glm::vec4>();
-	// 				setup.get(
-	// 					chunk,
-	// 					std::to_string(d) + '-' + std::to_string(f),
-	// 					points
-	// 				);
-	// 				sequence.append(inverts, starts, points);
-	// 			}
-	// 		}
-	// 	}
-	// 	ready = true;
-	// } else {
-	// 	synao_log("Failed to load animation from {}!\n", full_path);
-	// }
 }
 
 void animation_t::load(const std::string& full_path, thread_pool_t& thread_pool) {
