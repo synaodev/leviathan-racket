@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.1" orientation="orthogonal" renderorder="right-down" width="41" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="26">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="41" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="26">
  <tileset firstgid="1" name="prtcave" tilewidth="16" tileheight="16" tilecount="256" columns="16">
   <image source="../image/prtcave.png" width="256" height="256"/>
  </tileset>
- <imagelayer id="4" name="Back">
+ <imagelayer id="4" name="Back" visible="0">
   <image source="../image/bkgrough.png" width="256" height="256"/>
   <properties>
    <property name="rect.h" type="float" value="128"/>
@@ -14,16 +14,16 @@
    <property name="scroll.y" type="float" value="0.5"/>
   </properties>
  </imagelayer>
- <layer id="2" name="Main" width="41" height="12">
+ <layer id="2" name="Main" width="41" height="17">
   <properties>
    <property name="collide" type="bool" value="true"/>
   </properties>
   <data encoding="base64" compression="zlib">
-   eJzjYGBg4ARijkFKg7AEw+AGkgwQ9w5mMBqO1AGj4UgdMBqO1AFDKRwHQ31CqJ6RHMQ0CAMAyHcH4Q==
+   eJyTYGBg4ARijkFKS0DZgxmA3Ccx0I4gAEbDkTpgNBypA0bDkTpgNBypA0bDkTpgNBypA2DhOBjaYPhokDslBzkNAC2ICIU=
   </data>
  </layer>
  <objectgroup draworder="index" id="3" name="Actor">
-  <object id="13" name="door" type="actor" x="32" y="144" width="16" height="16">
+  <object id="13" name="door" type="actor" x="32" y="224" width="16" height="16">
    <properties>
     <property name="dir" type="int" value="0"/>
     <property name="eve" value="door_to_common"/>
@@ -32,7 +32,7 @@
     <property name="spawn" type="int" value="0"/>
    </properties>
   </object>
-  <object id="24" name="ghost" type="actor" x="352" y="144" width="16" height="16">
+  <object id="24" name="ghost" type="actor" x="352" y="224" width="16" height="16">
    <properties>
     <property name="dir" type="int" value="1"/>
     <property name="eve" value="none"/>
@@ -41,7 +41,7 @@
     <property name="spawn" type="int" value="0"/>
    </properties>
   </object>
-  <object id="25" name="door" type="actor" x="160" y="144" width="16" height="16">
+  <object id="25" name="door" type="actor" x="160" y="224" width="16" height="16">
    <properties>
     <property name="dir" type="int" value="0"/>
     <property name="eve" value="door_to_silver"/>

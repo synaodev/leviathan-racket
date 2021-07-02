@@ -5,14 +5,14 @@
 void draw_item_view_t::init(const texture_t* texture, const palette_t* palette, const animation_t* heads_animation, const animation_t* items_animation) {
 	view.set_file(heads_animation);
 	view.set_state(2);
-	view.set_position(280.0f, 2.0f);
+	view.set_position(440.0f, 2.0f); // 280.0f, 2.0f
 	scheme.set_file(items_animation);
 	scheme.set_state(0);
-	scheme.set_position(283.0f, 5.0f);
+	scheme.set_position(443.0f, 5.0f); // 283.0f, 5.0f
 	ammo.set_texture(texture);
 	ammo.set_palette(palette);
 	ammo.set_bounding(56.0f, 18.0f, 8.0f, 10.0f);
-	ammo.set_position(310.0f, 25.0f);
+	ammo.set_position(470.0f, 25.0f);
 	ammo.set_visible(true);
 	ammo.set_backwards(true);
 }

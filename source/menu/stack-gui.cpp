@@ -9,6 +9,7 @@
 #include "./wgt-language.hpp"
 
 #include "../utility/logger.hpp"
+#include "../utility/constants.hpp"
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
@@ -69,7 +70,11 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 			amend = false;
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
-					rect_t(0.0f, 0.0f, 320.0f, 180.0f),
+					rect_t(
+						0.0f, 0.0f,
+						constants::NormalWidth<real_t>(),
+						constants::NormalHeight<real_t>()
+					),
 					glm::vec4(0.0f, 0.0f, 0.0f, 0.5f)
 				)
 			.end();

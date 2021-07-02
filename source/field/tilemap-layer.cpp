@@ -8,7 +8,9 @@
 #include <glm/gtc/constants.hpp>
 #include <tmxlite/TileLayer.hpp>
 
-static constexpr arch_t kMinimumVerts = 21 * 13 * display_list_t::SingleQuad;
+static constexpr arch_t kScreenWidth  = (constants::NormalWidth<arch_t>() / constants::TileSize<arch_t>()) + 1;
+static constexpr arch_t kScreenHeight = (constants::NormalHeight<arch_t>() / constants::TileSize<arch_t>()) + 1;
+static constexpr arch_t kMinimumVerts = kScreenWidth * kScreenHeight * display_list_t::SingleQuad;
 static constexpr sint_t kInvalidTiles = -1;
 static constexpr byte_t kCollideLayer[] = "collide";
 static constexpr byte_t kPriorityType[] = "priority";

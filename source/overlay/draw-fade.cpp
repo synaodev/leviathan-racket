@@ -1,5 +1,6 @@
 #include "./draw-fade.hpp"
 #include "../system/renderer.hpp"
+#include "../utility/constants.hpp"
 
 static constexpr real_t kChange = 8.0f;
 
@@ -10,7 +11,11 @@ void draw_fade_t::init() {
 void draw_fade_t::reset() {
 	amend = true;
 	state = fade_state_t::DoneOut;
-	bounding = { 0.0f, 0.0f, 320.0f, 180.0f };
+	bounding = {
+		0.0f, 0.0f,
+		constants::NormalWidth<real_t>(),
+		constants::NormalHeight<real_t>()
+	};
 }
 
 void draw_fade_t::handle() {
@@ -31,9 +36,9 @@ void draw_fade_t::handle() {
 		case fade_state_t::FadingOut: {
 			amend = true;
 			bounding.h += kChange;
-			if (bounding.h > 180.0f) {
+			if (bounding.h > constants::NormalHeight<real_t>()) {
 				state = fade_state_t::DoneOut;
-				bounding.h = 180.0f;
+				bounding.h = constants::NormalHeight<real_t>();
 			}
 			break;
 		}
@@ -63,7 +68,7 @@ void draw_fade_t::invalidate() const {
 
 void draw_fade_t::fade_in() {
 	state = fade_state_t::FadingIn;
-	bounding.h = 180.0f;
+	bounding.h = constants::NormalHeight<real_t>();
 }
 
 void draw_fade_t::fade_out() {

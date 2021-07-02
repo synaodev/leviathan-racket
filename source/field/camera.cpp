@@ -10,7 +10,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 static const glm::vec2 kDefaultSpeed { 16.0f, 8.0f };
-static const glm::vec2 kDefaultLowest { 8.0f, 6.0f };
+static const glm::vec2 kDefaultLowest { 8.0f, 11.0f };
 static const glm::vec2 kDefaultCenter { (constants::NormalDimensions<real_t>() / 2.0f) + kDefaultLowest };
 
 void camera_t::reset() {

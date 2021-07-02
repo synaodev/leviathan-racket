@@ -7,9 +7,9 @@
 namespace constants {
 	constexpr byte_t NormalName[] = "Leviathan Racket";
 	template<typename T>
-	constexpr T NormalWidth() { return static_cast<T>(320); }
+	constexpr T NormalWidth() { return static_cast<T>(480); }
 	template<typename T>
-	constexpr T NormalHeight() { return static_cast<T>(180); }
+	constexpr T NormalHeight() { return static_cast<T>(270); }
 	template<typename T>
 	glm::vec<2, T, glm::packed_highp> NormalDimensions() {
 		return glm::vec<2, T, glm::packed_highp>(
