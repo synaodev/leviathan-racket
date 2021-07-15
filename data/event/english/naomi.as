@@ -38,7 +38,7 @@ void shoshi_bed() {
 void transfer_naomi_introduction() {
 	pxt::exit();
 	msg::push_card("Leviathan Racket", font_t::Three);
-	msg::set_card_position(0, 240.0f, 64.0f);
+	msg::set_card_position(0, 240.0f, 72.0f);
 	msg::set_card_centered(0, true, false);
 	sys::wait(1.5f);
 	msg::clear_cards();

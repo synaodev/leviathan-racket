@@ -14,11 +14,11 @@
 #include <glm/gtc/vec1.hpp>
 #include <glm/gtc/constants.hpp>
 
-static const glm::vec2 kDefaultRect = glm::vec2(256.0f, 56.0f);
-static const glm::vec2 kFacesOffset = glm::vec2(10.0f, 4.0f);
-static const glm::vec2 kArrowOffset = glm::vec2(5.0f, 10.0f);
-static const glm::vec2 kTextOffsetA = glm::vec2(10.0f, 6.0f);
-static const glm::vec2 kTextOffsetB = glm::vec2(68.0f, 6.0f);
+static const glm::vec2 kDefaultRect { 256.0f, 56.0f }; // 256
+static const glm::vec2 kFacesOffset { 10.0f, 4.0f };
+static const glm::vec2 kArrowOffset { 5.0f, 10.0f };
+static const glm::vec2 kTextOffsetA { 10.0f, 6.0f };
+static const glm::vec2 kTextOffsetB { 68.0f, 6.0f };
 
 static constexpr real_t kKeyHeldDelay = constants::MinInterval<real_t>();
 static constexpr real_t kDefaultDelay = constants::MinInterval<real_t>() * 2.8778f;
@@ -151,7 +151,7 @@ void dialogue_gui_t::open_textbox_high() {
 	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t { glm::vec2(32.0f, 8.0f), kDefaultRect };
+	rect = rect_t { glm::vec2(112.0f, 8.0f), kDefaultRect }; // 32, 8
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(
@@ -166,7 +166,7 @@ void dialogue_gui_t::open_textbox_low() {
 	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t { glm::vec2(32.0f, 114.0f), kDefaultRect };
+	rect = rect_t { glm::vec2(112.0f, 206.0f), kDefaultRect }; // 32, 114
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(

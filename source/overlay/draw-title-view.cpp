@@ -90,9 +90,10 @@ void draw_title_view_t::set_centered(arch_t index, bool x, bool y) {
 void draw_title_view_t::set_head(const std::string& string) {
 	timer = 2.0;
 	head.set_string(string);
-	head.set_origin(head.bounds().w / 2.0f, 0.0f);
+	const rect_t bounds = head.bounds();
+	head.set_origin(bounds.w / 2.0f, 0.0f);
 	lite.set_string(string);
-	lite.set_origin(lite.bounds().w / 2.0f - 1.0f, -1.0f);
+	lite.set_origin(bounds.w / 2.0f - 1.0f, -1.0f);
 }
 
 void draw_title_view_t::set_head() {

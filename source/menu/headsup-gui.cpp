@@ -65,7 +65,7 @@ bool headsup_gui_t::refresh() {
 	}
 	title_view.set_font(font);
 	title_view.set_persistent(
-		glm::vec2(160.0f, 24.0f),
+		glm::vec2(240.0f, 36.0f),
 		glm::vec4(0.25f, 0.25f, 1.0f, 1.0f)
 	);
 	return true;

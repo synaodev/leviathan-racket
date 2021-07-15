@@ -21,7 +21,7 @@ public:
 	~screen_params_t() = default;
 public:
 	static constexpr sint_t 	kDefaultScaling 	= 1;
-	static constexpr sint_t 	kHighestScaling		= 12; // 4K
+	static constexpr sint_t 	kHighestScaling		= 8; // 4K
 	static constexpr real64_t 	kDefaultFramerate 	= 60.0;
 public:
 	bool_t vsync { false };

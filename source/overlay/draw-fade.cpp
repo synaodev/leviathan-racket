@@ -2,7 +2,7 @@
 #include "../system/renderer.hpp"
 #include "../utility/constants.hpp"
 
-static constexpr real_t kChange = 8.0f;
+static constexpr real_t kChange = 12.0f;
 
 void draw_fade_t::init() {
 	this->reset();

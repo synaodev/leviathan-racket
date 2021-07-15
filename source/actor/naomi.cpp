@@ -1106,10 +1106,10 @@ void naomi_state_t::do_cam_move(const location_t& location) {
 		view_point.x - 1.0f :
 		view_point.x + 1.0f;
 	real_t y_move = location.direction & direction_t::Up ?
-		-32.0f :
+		-48.0f :
 		0.0f;
 	view_point = {
-		glm::clamp(x_move, -32.0f, 32.0f),
+		glm::clamp(x_move, -48.0f, 48.0f),
 		y_move
 	};
 }
