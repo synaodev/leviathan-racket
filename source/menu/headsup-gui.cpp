@@ -8,7 +8,18 @@
 
 #include <angelscript/scriptarray.h>
 
-static constexpr arch_t kHeadFontIndex = 2;
+namespace {
+	constexpr arch_t kHeadFontIndex 		= 2;
+	const glm::vec2 kMainSchemePosition 	{ 2.0f, 2.0f };
+	const glm::vec2 kLeviathanCountPosition { 10.0f, 5.0f };
+	const rect_t kLeviathanCountBounding 	{ 56.0f, 0.0f, 8.0f, 9.0f };
+	const glm::vec2 kBarrierUnitsPosition 	{ 47.0f, 2.0f };
+	const rect_t kBarrierUnitsBounding 		{ 45.0f, 0.0f, 6.0f, 8.0f };
+	const glm::vec2 kOxygenCountPosition 	{ 2.0f, 18.0f };
+	const rect_t kOxygenCountBounding 		{ 56.0f, 9.0f, 8.0f, 9.0f };
+	const glm::vec2 kTitleViewPosition 		{ 240.0f, 36.0f };
+	const glm::vec4 kTitleViewColor			{ 0.25f, 0.25f, 1.0f, 1.0f };
+}
 
 bool headsup_gui_t::init(receiver_t& receiver) {
 	suspender = [&receiver] {
@@ -28,25 +39,25 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 
 	main_scheme.set_file(heads_animation);
 	main_scheme.set_table(0);
-	main_scheme.set_position(2.0f, 2.0f);
+	main_scheme.set_position(kMainSchemePosition);
 
 	leviathan_count.set_texture(texture);
 	leviathan_count.set_palette(palette);
-	leviathan_count.set_bounding(56.0f, 0.0f, 8.0f, 9.0f);
-	leviathan_count.set_position(10.0f, 5.0f);
+	leviathan_count.set_bounding(kLeviathanCountBounding);
+	leviathan_count.set_position(kLeviathanCountPosition);
 	leviathan_count.set_minimum_zeroes(3);
 	leviathan_count.set_visible(true);
 	leviathan_count.set_backwards(false);
 
 	barrier_units.set_texture(texture);
 	barrier_units.set_palette(palette);
-	barrier_units.set_bounding(45.0f, 0.0f, 6.0f, 8.0f);
-	barrier_units.set_position(47.0f, 2.0f);
+	barrier_units.set_bounding(kBarrierUnitsBounding);
+	barrier_units.set_position(kBarrierUnitsPosition);
 
 	oxygen_count.set_texture(texture);
 	oxygen_count.set_palette(palette);
-	oxygen_count.set_bounding(56.0f, 9.0f, 8.0f, 9.0f);
-	oxygen_count.set_position(2.0f, 18.0f);
+	oxygen_count.set_bounding(kOxygenCountBounding);
+	oxygen_count.set_position(kOxygenCountPosition);
 	oxygen_count.set_visible(false);
 	oxygen_count.set_backwards(false);
 
@@ -64,10 +75,7 @@ bool headsup_gui_t::refresh() {
 		return false;
 	}
 	title_view.set_font(font);
-	title_view.set_persistent(
-		glm::vec2(240.0f, 36.0f),
-		glm::vec4(0.25f, 0.25f, 1.0f, 1.0f)
-	);
+	title_view.set_persistent(kTitleViewPosition, kTitleViewColor);
 	return true;
 }
 

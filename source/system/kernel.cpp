@@ -12,12 +12,13 @@
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
 
-static const byte_t kFlagProgsName[] = "_prog.bin";
-static const byte_t kFlagCheckName[] = "_check.bin";
-
-static constexpr arch_t kMaxItemList = 30;
-static constexpr arch_t kMaxFlagList = 128;
-static constexpr arch_t kMaxFlagBits = sizeof(uint64_t) * 8;
+namespace {
+	constexpr byte_t kFlagProgsName[] 	= "_prog.bin";
+	constexpr byte_t kFlagCheckName[] 	= "_check.bin";
+	constexpr arch_t kMaxItemList 		= 30;
+	constexpr arch_t kMaxFlagList 		= 128;
+	constexpr arch_t kMaxFlagBits 		= sizeof(uint64_t) * 8;
+}
 
 bool kernel_t::init(const receiver_t& receiver) {
 	if (verify) {

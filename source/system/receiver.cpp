@@ -21,11 +21,12 @@
 #include <angelscript/scriptstdstring.h>
 #include <angelscript/scriptarray.h>
 
-static const byte_t kBootFile[]	 = "boot";
-static const byte_t kDeathDecl[] = "void death(arch_t type)";
-static const byte_t kInvenDecl[] = "void inventory(arch_t type, arch_t cursor)";
-
-static constexpr uint_t kMaxCalls = 128;
+namespace {
+	constexpr byte_t kBootFile[] 	= "boot";
+	constexpr byte_t kDeathDecl[] 	= "void death(arch_t type)";
+	constexpr byte_t kInvenDecl[] 	= "void inventory(arch_t type, arch_t cursor)";
+	constexpr uint_t kMaxCalls 		= 128;
+}
 
 receiver_t::~receiver_t() {
 	// If boot isn't null it's been fully initialized.

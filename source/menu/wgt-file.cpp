@@ -9,8 +9,10 @@
 #include "../system/kernel.hpp"
 #include "../utility/setup-file.hpp"
 
-static constexpr arch_t kFileTotalOptions = 2;
-static const glm::vec2 kFileDefaultPosition = glm::vec2(4.0f, 2.0f);
+namespace {
+	constexpr arch_t kFileTotalOptions 		= 2;
+	const glm::vec2 kFileDefaultPosition 	{ 4.0f, 2.0f };
+}
 
 void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t& kernel) {
 	ready = true;

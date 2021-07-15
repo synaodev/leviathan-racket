@@ -8,8 +8,10 @@
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
 
-static constexpr arch_t kOptionTotalOptions = 6;
-static const glm::vec2 kOptionDefaultPosition = glm::vec2(4.0f, 2.0f);
+namespace {
+	constexpr arch_t kOptionTotalOptions 	= 6;
+	const glm::vec2 kOptionDefaultPosition 	{ 4.0f, 2.0f };
+}
 
 void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const music_t&, kernel_t& kernel) {
 	ready = true;

@@ -11,9 +11,11 @@
 #include <SDL2/SDL_events.h>
 #include <SDL2/SDL_joystick.h>
 
-static constexpr sint_t kScancodeNothing  = -1;
-static constexpr sint_t kScancodeKeyboard = -2;
-static constexpr sint_t kScancodeJoystick = -3;
+namespace {
+	constexpr sint_t kScancodeNothing  = -1;
+	constexpr sint_t kScancodeKeyboard = -2;
+	constexpr sint_t kScancodeJoystick = -3;
+}
 
 #ifdef LEVIATHAN_USES_META
 	static std::map<sint_t, bool_t> meta_pressed;

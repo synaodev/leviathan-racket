@@ -17,19 +17,26 @@ namespace {
 	constexpr arch_t kTotalItem = 30;
 	constexpr sint_t kMaxInvenX = 5;
 	constexpr sint_t kMaxInvenY = 4;
+	constexpr arch_t kModulator = 6;
+
+	const glm::vec2 kTopLeftElement 	{ 2.0f, 2.0f };
+	const glm::vec2 kElementOffset 		{ 38.0f, 10.0f };
+	const glm::ivec2 kElementSpacing 	{ 49, 21 };
+	const rect_t kElementBounding		{ 0.0f, 0.0f, 32.0f, 16.0f };
+	const rect_t kCountBounding 		{ 56.0f, 18.0f, 8.0f, 10.0f };
 }
 
 void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
 	glm::vec2 position {
-		2.0f + static_cast<real_t>((index % 6) * 49),
-		2.0f + static_cast<real_t>((index / 6) * 21)
+		kTopLeftElement.x + static_cast<real_t>((index % kModulator) * kElementSpacing.x),
+		kTopLeftElement.y + static_cast<real_t>((index / kModulator) * kElementSpacing.y)
 	};
 	scheme.set_file(animation);
 	scheme.set_position(position);
 	count.set_texture(texture);
 	count.set_palette(palette);
-	count.set_position(position + glm::vec2(38.0f, 10.0f));
-	count.set_bounding(56.0f, 18.0f, 8.0f, 10.0f);
+	count.set_position(position + kElementOffset);
+	count.set_bounding(kCountBounding);
 	count.set_backwards(true);
 }
 
@@ -164,13 +171,14 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 		);
 		if (amend) {
 			amend = false;
-			glm::vec2 cursor_position = 2.0f + glm::vec2(
-				glm::ivec2(49, 21) * kernel.get_cursor()
-			);
+			// glm::vec2 cursor_position = 2.0f + glm::vec2(
+			// 	glm::ivec2(49, 21) * kernel.get_cursor()
+			// );
+			glm::vec2 cursor_position = kTopLeftElement + glm::vec2(kElementSpacing * kernel.get_cursor());
 			list.begin(display_list_t::SingleQuad)
 				.vtx_blank_write(
-					rect_t(0.0f, 0.0f, 32.0f, 16.0f),
-					glm::vec4(0.0f, 0.0f, 1.0f, 0.5f)
+					kElementBounding,
+					{ 0.0f, 0.0f, 1.0f, 0.5f } // Blue
 				)
 				.vtx_transform_write(cursor_position)
 			.end();
@@ -181,14 +189,18 @@ void inventory_gui_t::render(renderer_t& renderer, const kernel_t& kernel) const
 		if (item_index < kTotalItem) {
 			if (current != item_index) {
 				current = item_index;
-				glm::vec2 cursor_position = 2.0f + glm::vec2(
-					static_cast<real_t>((item_index % 6) * 49),
-					static_cast<real_t>((item_index / 6) * 21)
-				);
+				// glm::vec2 cursor_position = 2.0f + glm::vec2(
+				// 	static_cast<real_t>((item_index % kModulator) * 49),
+				// 	static_cast<real_t>((item_index / kModulator) * 21)
+				// );
+				glm::vec2 cursor_position {
+					kTopLeftElement.x + static_cast<real_t>((item_index % kModulator) * kElementSpacing.x),
+					kTopLeftElement.y + static_cast<real_t>((item_index / kModulator) * kElementSpacing.y)
+				};
 				list.begin(display_list_t::SingleQuad)
 					.vtx_blank_write(
-						rect_t(0.0f, 0.0f, 32.0f, 16.0f),
-						glm::vec4(1.0f, 0.0f, 0.0f, 0.5f)
+						kElementBounding,
+						{ 1.0f, 0.0f, 0.0f, 0.5f } // Red
 					)
 					.vtx_transform_write(cursor_position)
 				.end();

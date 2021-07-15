@@ -11,9 +11,11 @@
 
 #include <fmt/core.h>
 
-static constexpr arch_t kTotalVisible = 9;
-static const glm::vec2 kLangDefaultPosition = glm::vec2(4.0f, 2.0f);
-static const glm::vec2 kLangBottomPosition = glm::vec2(120.0f, 2.0f);
+namespace {
+	constexpr arch_t kTotalVisible 			= 9;
+	const glm::vec2 kLangDefaultPosition 	{ 4.0f, 2.0f };
+	const glm::vec2 kLangBottomPosition 	{ 120.0f, 2.0f };
+}
 
 void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;

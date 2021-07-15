@@ -15,13 +15,13 @@
 #include <glm/gtc/constants.hpp>
 
 namespace {
-	const glm::vec2 kDefaultRect { 256.0f, 56.0f }; // 256
+	const glm::vec2 kDefaultRect { 256.0f, 56.0f };
 	const glm::vec2 kFacesOffset { 10.0f, 4.0f };
 	const glm::vec2 kArrowOffset { 5.0f, 10.0f };
 	const glm::vec2 kTextOffsetA { 10.0f, 6.0f };
 	const glm::vec2 kTextOffsetB { 68.0f, 6.0f };
-	const glm::vec2 kPositionBLO { 112.0f, 8.0f };
-	const glm::vec2 kPositionBHI { 112.0f, 206.0f };
+	const glm::vec2 kPositionBHI { 112.0f, 8.0f };
+	const glm::vec2 kPositionBLO { 112.0f, 206.0f };
 
 	constexpr real_t kKeyHeldDelay = constants::MinInterval<real_t>();
 	constexpr real_t kDefaultDelay = constants::MinInterval<real_t>() * 2.8778f;
@@ -155,7 +155,7 @@ void dialogue_gui_t::open_textbox_high() {
 	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t { kPositionBHI, kDefaultRect }; // 32, 8
+	rect = rect_t { kPositionBHI, kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(
@@ -170,7 +170,7 @@ void dialogue_gui_t::open_textbox_low() {
 	flags[flags_t::Textbox] = true;
 	cursor_index = 0;
 	cursor_total = 0;
-	rect = rect_t { kPositionBLO, kDefaultRect }; // 32, 114
+	rect = rect_t { kPositionBLO, kDefaultRect };
 	faces.set_position(rect.left_top() + kFacesOffset);
 	arrow.set_position(rect.left_top() + kArrowOffset);
 	text.set_position(

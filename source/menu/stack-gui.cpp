@@ -75,7 +75,7 @@ void stack_gui_t::render(renderer_t& renderer, const inventory_gui_t& inventory_
 						constants::NormalWidth<real_t>(),
 						constants::NormalHeight<real_t>()
 					),
-					glm::vec4(0.0f, 0.0f, 0.0f, 0.5f)
+					{ 0.0f, 0.0f, 0.0f, 0.5f }
 				)
 			.end();
 		} else {

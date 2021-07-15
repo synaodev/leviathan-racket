@@ -8,12 +8,14 @@
 
 #include <fmt/core.h>
 
-static constexpr arch_t kInputTotalOptionsA = 11;
-static constexpr arch_t kInputTotalOptionsB = 7;
-static constexpr real64_t kInputTotalDelays = 0.32;
-static const glm::vec2 kInputDefaultPosition = glm::vec2(4.0f, 2.0f);
-static const glm::vec2 kInputAddingPositions = glm::vec2(3.0f, 16.0f);
-static const glm::vec2 kInputRightsPositions = glm::vec2(175.0f, 16.0f);
+namespace {
+	constexpr arch_t kInputTotalOptionsA 	= 11;
+	constexpr arch_t kInputTotalOptionsB 	= 7;
+	constexpr real64_t kInputTotalDelays 	= 0.32;
+	const glm::vec2 kInputDefaultPosition 	{ 4.0f, 2.0f };
+	const glm::vec2 kInputAddingPositions 	{ 3.0f, 16.0f };
+	const glm::vec2 kInputRightsPositions 	{ 175.0f, 16.0f };
+}
 
 void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const music_t&, kernel_t&) {
 	ready = true;

@@ -15,8 +15,10 @@
 #include "../utility/logger.hpp"
 #include "../utility/setup-file.hpp"
 
-static const byte_t kStatProgPath[] = "_prog.cfg";
-static const byte_t kStatCpntPath[] = "_check.cfg";
+namespace {
+	constexpr byte_t kStatProgPath[] = "_prog.cfg";
+	constexpr byte_t kStatCpntPath[] = "_check.cfg";
+}
 
 bool runtime_t::init(input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	if (!kernel.init(receiver)) {

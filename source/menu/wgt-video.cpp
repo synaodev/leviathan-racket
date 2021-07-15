@@ -10,8 +10,10 @@
 #include <glm/common.hpp>
 #include <fmt/core.h>
 
-static constexpr arch_t kVideoTotalOptions = 2;
-static const glm::vec2 kVideoDefaultPosition = glm::vec2(4.0f, 2.0f);
+namespace {
+	constexpr arch_t kVideoTotalOptions 	= 2;
+	const glm::vec2 kVideoDefaultPosition 	{ 4.0f, 2.0f };
+}
 
 void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const music_t&, kernel_t&) {
 	ready = true;

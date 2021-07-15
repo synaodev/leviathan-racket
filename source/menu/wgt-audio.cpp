@@ -10,8 +10,10 @@
 #include <fmt/core.h>
 #include <glm/common.hpp>
 
-static constexpr arch_t kAudioTotalOptions = 2;
-static const glm::vec2 kAudioDefaultPosition = glm::vec2(4.0f, 2.0f);
+namespace {
+	constexpr arch_t kAudioTotalOptions  	= 2;
+	const glm::vec2 kAudioDefaultPosition 	{ 4.0f, 2.0f };
+}
 
 void wgt_audio_t::init(const input_t&, const video_t&, audio_t& audio, const music_t& music, kernel_t&) {
 	ready = true;

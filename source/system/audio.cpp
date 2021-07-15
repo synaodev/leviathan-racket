@@ -5,7 +5,9 @@
 #include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 
-static constexpr arch_t kSoundChannels = 12;
+namespace {
+	constexpr arch_t kSoundChannels = 12;
+}
 
 audio_t::~audio_t() {
 	tasks.clear();

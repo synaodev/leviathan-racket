@@ -13,12 +13,14 @@
 #include <pxtone/pxtnError.h>
 #include <SDL2/SDL.h>
 
-static constexpr arch_t kHeightLength = 10485760;
-static constexpr sint_t kAudioBitrate = pxtnBITPERSAMPLE / 8;
-static constexpr sint_t kTotalChannel = 2;
-static constexpr sint_t kSamplingRate = 44100;
-static constexpr real_t kBufferedTime = 0.1f;
-static constexpr real_t kWaitConstant = 750.0f;
+namespace {
+	constexpr arch_t kHeightLength = 10485760;
+	constexpr sint_t kAudioBitrate = pxtnBITPERSAMPLE / 8;
+	constexpr sint_t kTotalChannel = 2;
+	constexpr sint_t kSamplingRate = 44100;
+	constexpr real_t kBufferedTime = 0.1f;
+	constexpr real_t kWaitConstant = 750.0f;
+}
 
 music_t::~music_t() {
 	this->clear();
