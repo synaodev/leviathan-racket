@@ -72,32 +72,6 @@ private:
 	std::locale locale {};
 };
 
-arch_t setup_file_t::elements(arch_t index, const std::string& key) const {
-	if (index >= data.size()) {
-		return;
-	}
-	const std::string str = data[index].get(key);
-	if (!str.empty()) {
-		arch_t result = 1;
-		std::string output;
-		std::istringstream parser { str };
-		while (std::getline(parser, output, ',')) {
-			++result;
-		}
-		return result;
-	}
-	return 0;
-}
-
-arch_t setup_file_t::elements(const std::string& title, const std::string& key) const {
-	for (arch_t it = 0; it < data.size(); ++it) {
-		if (data[it].title == title) {
-			return this->elements(it, key);
-		}
-	}
-	return 0;
-}
-
 template<typename T>
 inline void setup_file_t::get(const std::string& title, const std::string& key, T& value) const {
 	for (arch_t it = 0; it < data.size(); ++it) {
