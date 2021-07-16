@@ -8,12 +8,14 @@
 #include <glm/gtc/constants.hpp>
 #include <tmxlite/TileLayer.hpp>
 
-static constexpr arch_t kScreenWidth  = (constants::NormalWidth<arch_t>() / constants::TileSize<arch_t>()) + 1;
-static constexpr arch_t kScreenHeight = (constants::NormalHeight<arch_t>() / constants::TileSize<arch_t>()) + 1;
-static constexpr arch_t kMinimumVerts = kScreenWidth * kScreenHeight * display_list_t::SingleQuad;
-static constexpr sint_t kInvalidTiles = -1;
-static constexpr byte_t kCollideLayer[] = "collide";
-static constexpr byte_t kPriorityType[] = "priority";
+namespace {
+	constexpr arch_t kScreenWidth  = (constants::NormalWidth<arch_t>() / constants::TileSize<arch_t>()) + 1;
+	constexpr arch_t kScreenHeight = (constants::NormalHeight<arch_t>() / constants::TileSize<arch_t>()) + 1;
+	constexpr arch_t kMinimumVerts = kScreenWidth * kScreenHeight * display_list_t::SingleQuad;
+	constexpr sint_t kInvalidTiles = -1;
+	constexpr byte_t kCollideLayer[] = "collide";
+	constexpr byte_t kPriorityType[] = "priority";
+}
 
 tilemap_layer_t::tilemap_layer_t(const glm::ivec2& dimensions) : tilemap_layer_t() {
 	tiles.resize(

@@ -7,12 +7,14 @@
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
 
-static const byte_t kBoundsXProp[] = "rect.x";
-static const byte_t kBoundsYProp[] = "rect.y";
-static const byte_t kBoundsWProp[] = "rect.w";
-static const byte_t kBoundsHProp[] = "rect.h";
-static const byte_t kScrollXProp[] = "scroll.x";
-static const byte_t kScrollYProp[] = "scroll.y";
+namespace {
+	constexpr byte_t kBoundsXProp[] = "rect.x";
+	constexpr byte_t kBoundsYProp[] = "rect.y";
+	constexpr byte_t kBoundsWProp[] = "rect.w";
+	constexpr byte_t kBoundsHProp[] = "rect.h";
+	constexpr byte_t kScrollXProp[] = "scroll.x";
+	constexpr byte_t kScrollYProp[] = "scroll.y";
+}
 
 void tilemap_parallax_t::init(const std::unique_ptr<tmx::Layer>& layer, const glm::vec2& dimensions) {
 	assert(layer);

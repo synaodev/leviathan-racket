@@ -6,9 +6,12 @@
 #include "../video/texture.hpp"
 #include "../system/renderer.hpp"
 
-static constexpr sint_t kRadix = 10;
-static constexpr sint_t kMinus = 10;
-static constexpr sint_t kPoint = 12;
+namespace {
+	constexpr sint_t kRadix = 10;
+	constexpr sint_t kMinus = 10;
+	constexpr sint_t kPoint = 12;
+}
+
 
 draw_count_t::draw_count_t() {
 	auto specify = vertex_spec_t::from(vtx_major_t::name());
@@ -201,7 +204,7 @@ void draw_count_t::generate_all(const std::vector<sint_t>& buffer) {
 	}
 }
 
-void draw_count_t::generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv, sint_t texID, sint_t palID) {
+void draw_count_t::generate_one(vtx_major_t* quad, const glm::vec2& pos, const glm::vec2& uvs, const glm::vec2& inv, sint_t texID, sint_t palID) {
 	quad[0].position = pos;
 	quad[0].matrix = 0;
 	quad[0].uvcoords = uvs * inv;

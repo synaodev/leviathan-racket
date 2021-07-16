@@ -25,7 +25,6 @@ void const_buffer_t::create(arch_t length) {
 void const_buffer_t::create_immutable(arch_t length) {
 	if (const_buffer_t::has_immutable_option()) {
 		if (handle != 0 and !immuts) {
-			// uint_t flags = usage != buffer_usage_t::Static ? GL_DYNAMIC_STORAGE_BIT : 0;
 			glCheck(glBindBuffer(GL_UNIFORM_BUFFER, handle));
 			glCheck(glBufferStorage(GL_UNIFORM_BUFFER, length, nullptr, GL_DYNAMIC_STORAGE_BIT));
 			glCheck(glBindBuffer(GL_UNIFORM_BUFFER, 0));

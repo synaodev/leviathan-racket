@@ -4,7 +4,9 @@
 #include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 
-static constexpr real64_t kFadeTime = 0.048;
+namespace {
+	constexpr real64_t kFadeTime = 0.048;
+}
 
 void draw_title_view_t::handle(const dialogue_gui_t& dialogue_gui) {
 	if (!head.empty()) {

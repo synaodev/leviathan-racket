@@ -39,7 +39,7 @@ public:
 private:
 	static sint_t quick_power_of_10(sint_t exponent);
 	void generate_all(const std::vector<sint_t>& buffer);
-	void generate_one(vtx_major_t* quad, glm::vec2 pos, glm::vec2 uvs, glm::vec2 inv, sint_t texID, sint_t palID);
+	void generate_one(vtx_major_t* quad, const glm::vec2& pos, const glm::vec2& uvs, const glm::vec2& inv, sint_t texID, sint_t palID);
 private:
 	mutable bool_t amend { false };
 	layer_t layer { layer_value::Persistent };

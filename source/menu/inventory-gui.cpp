@@ -12,10 +12,12 @@
 #include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
 
-static constexpr arch_t kWrongItem = (arch_t)-1;
-static constexpr arch_t kTotalItem = 30;
-static constexpr sint_t kMaxInvenX = 5;
-static constexpr sint_t kMaxInvenY = 4;
+namespace {
+	constexpr arch_t kWrongItem = (arch_t)-1;
+	constexpr arch_t kTotalItem = 30;
+	constexpr sint_t kMaxInvenX = 5;
+	constexpr sint_t kMaxInvenY = 4;
+}
 
 void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
 	glm::vec2 position {

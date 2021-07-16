@@ -2,7 +2,9 @@
 #include "../system/renderer.hpp"
 #include "../utility/constants.hpp"
 
-static constexpr real_t kChange = 12.0f;
+namespace {
+	constexpr real_t kChange = 12.0f;
+}
 
 void draw_fade_t::init() {
 	this->reset();
@@ -54,7 +56,7 @@ void draw_fade_t::render(renderer_t& renderer) const {
 	if (amend) {
 		amend = false;
 		list.begin(display_list_t::SingleQuad)
-			.vtx_blank_write(bounding, glm::vec4(0.0f, 0.0f, 0.125f, 1.0f))
+			.vtx_blank_write(bounding, { 0.0f, 0.0f, 0.125f, 1.0f })
 		.end();
 	}
 	else {

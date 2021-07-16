@@ -4,11 +4,12 @@
 
 struct sampler_t {
 public:
-	static bool has_immutable_option();
 	static sint_t get_working_unit();
 	static sint_t get_maximum_textures();
 	static sint_t get_maximum_palettes();
+	static sint_t get_maximum_colors();
 	static sint_t get_maximum_atlases();
+	static bool has_immutable_option();
 };
 
 struct sampler_data_t : public not_copyable_t {

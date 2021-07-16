@@ -21,28 +21,31 @@
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL_filesystem.h>
 
-static constexpr arch_t kTotalThreads 	= 4;
-static constexpr arch_t kDebugFontIndex = 4;
-static constexpr byte_t kOrganization[] = "studio-synao";
-static constexpr byte_t kApplication[] 	= "leviathan";
-static constexpr byte_t kLanguage[] 	= "english";
-static constexpr byte_t kEventEntry[]	= "Events";
+namespace {
+	constexpr arch_t kTotalThreads 		= 4;
+	constexpr arch_t kDebugFontIndex 	= 4;
 
-#define kDATA_ROUTE "data/"
-static constexpr byte_t kDataRoute[] 	= kDATA_ROUTE;
-static constexpr byte_t kInitRoute[] 	= "init/";
-static constexpr byte_t kSaveRoute[]	= "save/";
+	constexpr byte_t kEventEntry[] 		= "Events";
+	constexpr byte_t kFontEntry[] 		= "Fonts";
 
-static constexpr byte_t kEventPath[]	= kDATA_ROUTE "event/";
-static constexpr byte_t kFieldPath[]	= kDATA_ROUTE "field/";
-static constexpr byte_t kFontPath[]		= kDATA_ROUTE "font/";
-static constexpr byte_t kI18NPath[]		= kDATA_ROUTE "i18n/";
-static constexpr byte_t kImagePath[]	= kDATA_ROUTE "image/";
-static constexpr byte_t kNoisePath[]	= kDATA_ROUTE "noise/";
-static constexpr byte_t kPalettePath[]	= kDATA_ROUTE "palette/";
-static constexpr byte_t kSpritePath[]	= kDATA_ROUTE "sprite/";
-static constexpr byte_t kTileKeyPath[]	= kDATA_ROUTE "tilekey/";
-static constexpr byte_t kTunePath[]		= kDATA_ROUTE "tune/";
+	constexpr byte_t kOrganization[] 	= "studio-synao";
+	constexpr byte_t kApplication[] 	= "leviathan";
+	constexpr byte_t kLanguage[] 		= "english";
+
+	constexpr byte_t kDataRoute[] 		= "data/";
+	constexpr byte_t kInitRoute[] 		= "init/";
+	constexpr byte_t kSaveRoute[] 		= "save/";
+	constexpr byte_t kEventPath[] 		= "data/event/";
+	constexpr byte_t kFieldPath[] 		= "data/field/";
+	constexpr byte_t kFontPath[] 		= "data/font/";
+	constexpr byte_t kI18NPath[] 		= "data/i18n/";
+	constexpr byte_t kImagePath[] 		= "data/image/";
+	constexpr byte_t kNoisePath[] 		= "data/noise/";
+	constexpr byte_t kPalettePath[]		= "data/palette/";
+	constexpr byte_t kSpritePath[] 		= "data/sprite/";
+	constexpr byte_t kTilekeyPath[]		= "data/tilekey/";
+	constexpr byte_t kTunePath[] 		= "data/tune/";
+}
 
 /*
 	Not a fully featured virtual filesystem, obviously. Here's the layout:
@@ -152,7 +155,7 @@ bool vfs_t::mount(const std::string& directory, bool_t print) {
 		kFontPath, kI18NPath,
 		kImagePath, kNoisePath,
 		kPalettePath, kSpritePath,
-		kTileKeyPath, kTunePath
+		kTilekeyPath, kTunePath
 	};
 	if (!vfs_t::directory_exists(directory, print)) {
 		return false;
@@ -274,7 +277,7 @@ std::string vfs_t::resource_path(vfs_resource_path_t path) {
 	case vfs_resource_path_t::Sprite:
 		return kSpritePath;
 	case vfs_resource_path_t::TileKey:
-		return kTileKeyPath;
+		return kTilekeyPath;
 	case vfs_resource_path_t::Tune:
 		return kTunePath;
 	default:
@@ -577,7 +580,7 @@ const font_t* vfs_t::font(arch_t index) {
 	if (!vfs_t::device) {
 		return nullptr;
 	}
-	auto& i18n_fonts = vfs_t::device->i18n["Fonts"];
+	auto& i18n_fonts = vfs_t::device->i18n[kFontEntry];
 	if (index < i18n_fonts.size()) {
 		return vfs_t::font(i18n_fonts[index]);
 	}

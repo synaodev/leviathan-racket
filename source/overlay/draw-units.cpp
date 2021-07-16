@@ -5,7 +5,9 @@
 #include "../system/renderer.hpp"
 #include "../video/texture.hpp"
 
-static constexpr arch_t kLoopPoint = 7;
+namespace {
+	constexpr arch_t kLoopPoint = 7;
+}
 
 draw_units_t::draw_units_t() {
 	auto specify = vertex_spec_t::from(vtx_major_t::name());

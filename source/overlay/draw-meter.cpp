@@ -5,9 +5,11 @@
 
 #include "../system/renderer.hpp"
 
-static const glm::vec2 kGraphedPosition		= glm::vec2(302.0f, 142.0f);
-static const glm::vec2 kVaryingPosition 	= kGraphedPosition + glm::vec2(9.0f, 1.0f);
-static const glm::vec2 kVaryingDimensions 	= glm::vec2(6.0f, 94.0f);
+namespace {
+	const glm::vec2 kGraphedPosition { 302.0f, 142.0f };
+	const glm::vec2 kVaryingPosition = kGraphedPosition + glm::vec2(9.0f, 1.0f);
+	const glm::vec2 kVaryingDimensions { 6.0f, 94.0f };
+}
 
 void draw_meter_t::init(const animation_t* animation) {
 	this->reset();

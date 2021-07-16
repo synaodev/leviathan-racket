@@ -12,8 +12,10 @@
 #include <tmxlite/Map.hpp>
 #include <tmxlite/ImageLayer.hpp>
 
-static constexpr sint_t kScreenWidth  = (constants::NormalWidth<sint_t>() / constants::TileSize<sint_t>()) + 1;
-static constexpr sint_t kScreenHeight = (constants::NormalHeight<sint_t>() / constants::TileSize<sint_t>()) + 1;
+namespace {
+	constexpr sint_t kScreenWidth  = (constants::NormalWidth<sint_t>() / constants::TileSize<sint_t>()) + 1;
+	constexpr sint_t kScreenHeight = (constants::NormalHeight<sint_t>() / constants::TileSize<sint_t>()) + 1;
+}
 
 void tilemap_t::reset() {
 	amend = true;

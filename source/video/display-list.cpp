@@ -7,6 +7,16 @@
 #include <glm/trigonometric.hpp>
 #include <glm/gtc/constants.hpp>
 
+bool display_list_t::operator<(const display_list_t& that) {
+	if (layer_value::equal(this->layer, that.layer)) {
+		if (this->blend_mode == that.blend_mode) {
+			return this->pipeline < that.pipeline;
+		}
+		return this->blend_mode < that.blend_mode;
+	}
+	return this->layer < that.layer;
+}
+
 display_list_t& display_list_t::setup(const quad_allocator_t* allocator) {
 	if (!quad_buffer.valid()) {
 		vertex_spec_t specify;
@@ -207,14 +217,4 @@ bool display_list_t::matches(layer_t layer, blend_mode_t blend_mode, const pipel
 
 bool display_list_t::rendered() const {
 	return visible;
-}
-
-bool operator<(const display_list_t& lhv, const display_list_t& rhv) {
-	if (layer_value::equal(lhv.layer, rhv.layer)) {
-		if (lhv.blend_mode == rhv.blend_mode) {
-			return lhv.pipeline < rhv.pipeline;
-		}
-		return lhv.blend_mode < rhv.blend_mode;
-	}
-	return lhv.layer < rhv.layer;
 }

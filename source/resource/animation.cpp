@@ -13,6 +13,21 @@
 #include <glm/gtc/constants.hpp>
 #include <nlohmann/json.hpp>
 
+namespace {
+	constexpr byte_t kMaterialEntry[] 	= "Material";
+	constexpr byte_t kPaletteEntry[] 	= "Palette";
+	constexpr byte_t kDimensionsEntry[] = "Dimensions";
+	constexpr byte_t kAnimationsEntry[] = "Animations";
+
+	constexpr byte_t kStartsEntry[] 	= "starts";
+	constexpr byte_t kVksizeEntry[] 	= "vksize";
+	constexpr byte_t kTdelayEntry[] 	= "tdelay";
+	constexpr byte_t kRepeatEntry[] 	= "repeat";
+	constexpr byte_t kReflectEntry[] 	= "reflect";
+	constexpr byte_t kActionEntry[] 	= "action";
+	constexpr byte_t kFramesEntry[] 	= "frames";
+}
+
 void animation_sequence_t::append(const glm::vec2& action_point) {
 	action_points.push_back(action_point);
 }
@@ -252,15 +267,15 @@ void animation_t::load(const std::string& full_path) {
 	}
 
 	nlohmann::json file = nlohmann::json::parse(ifs);
-	if (file.contains("Material") and file["Material"].is_string()) {
-		texture = vfs_t::texture(file["Material"].get<std::string>());
+	if (file.contains(kMaterialEntry) and file[kMaterialEntry].is_string()) {
+		texture = vfs_t::texture(file[kMaterialEntry].get<std::string>());
 	}
-	if (file.contains("Palette") and file["Palette"].is_string()) {
-		palette = vfs_t::palette(file["Palette"].get<std::string>());
+	if (file.contains(kPaletteEntry) and file[kPaletteEntry].is_string()) {
+		palette = vfs_t::palette(file[kPaletteEntry].get<std::string>());
 	}
 
-	if (file.contains("Dimensions") and file["Dimensions"].is_array()) {
-		auto dimensions = file["Dimensions"];
+	if (file.contains(kDimensionsEntry) and file[kDimensionsEntry].is_array()) {
+		auto dimensions = file[kDimensionsEntry];
 		if (
 			dimensions.size() >= 2 and
 			dimensions[0].is_number() and
@@ -278,67 +293,67 @@ void animation_t::load(const std::string& full_path) {
 		}
 	}
 
-	for (auto anim : file["Animations"]) {
+	for (auto anim : file[kAnimationsEntry]) {
 		glm::vec2 starts {};
 		if (
-			anim.contains("starts") and
-			anim["starts"].is_array() and
-			anim["starts"].size() >= 2 and
-			anim["starts"][0].is_number() and
-			anim["starts"][1].is_number()
+			anim.contains(kStartsEntry) and
+			anim[kStartsEntry].is_array() and
+			anim[kStartsEntry].size() >= 2 and
+			anim[kStartsEntry][0].is_number() and
+			anim[kStartsEntry][1].is_number()
 		) {
 			starts = {
-				anim["starts"][0].get<real_t>(),
-				anim["starts"][1].get<real_t>()
+				anim[kStartsEntry][0].get<real_t>(),
+				anim[kStartsEntry][1].get<real_t>()
 			};
 		}
 
 		glm::vec2 vksize {};
 		if (
-			anim.contains("vksize") and
-			anim["vksize"].is_array() and
-			anim["vksize"].size() >= 2 and
-			anim["vksize"][0].is_number() and
-			anim["vksize"][1].is_number()
+			anim.contains(kVksizeEntry) and
+			anim[kVksizeEntry].is_array() and
+			anim[kVksizeEntry].size() >= 2 and
+			anim[kVksizeEntry][0].is_number() and
+			anim[kVksizeEntry][1].is_number()
 		) {
 			vksize = {
-				anim["vksize"][0].get<real_t>(),
-				anim["vksize"][1].get<real_t>()
+				anim[kVksizeEntry][0].get<real_t>(),
+				anim[kVksizeEntry][1].get<real_t>()
 			};
 		}
 
 		real64_t tdelay = 0.0;
 		if (
-			anim.contains("tdelay") and
-			anim["tdelay"].is_number_float()
+			anim.contains(kTdelayEntry) and
+			anim[kTdelayEntry].is_number_float()
 		) {
-			tdelay = anim["tdelay"].get<real_t>();
+			tdelay = anim[kTdelayEntry].get<real_t>();
 		}
 
 		bool repeat = true;
 		if (
-			anim.contains("repeat") and
-			anim["repeat"].is_boolean()
+			anim.contains(kRepeatEntry) and
+			anim[kRepeatEntry].is_boolean()
 		) {
-			repeat = anim["repeat"].get<bool>();
+			repeat = anim[kRepeatEntry].get<bool>();
 		}
 
 		bool reflect = false;
 		if (
-			anim.contains("reflect") and
-			anim["reflect"].is_boolean()
+			anim.contains(kReflectEntry) and
+			anim[kReflectEntry].is_boolean()
 		) {
-			reflect = anim["reflect"].get<bool>();
+			reflect = anim[kReflectEntry].get<bool>();
 		}
 
 		arch_t predict = 0;
 		if (
-			anim.contains("frames") and
-			anim["frames"].is_array() and
-			anim["frames"].size() > 0 and
-			anim["frames"][0].is_array()
+			anim.contains(kFramesEntry) and
+			anim[kFramesEntry].is_array() and
+			anim[kFramesEntry].size() > 0 and
+			anim[kFramesEntry][0].is_array()
 		) {
-			predict = anim["frames"][0].size();
+			predict = anim[kFramesEntry][0].size();
 		}
 
 		if (predict == 0) {
@@ -355,11 +370,11 @@ void animation_t::load(const std::string& full_path) {
 		);
 
 		if (
-			anim.contains("action") and
-			anim["action"].is_array() and
-			anim["action"].size() > 0
+			anim.contains(kActionEntry) and
+			anim[kActionEntry].is_array() and
+			anim[kActionEntry].size() > 0
 		) {
-			for (auto action : anim["action"]) {
+			for (auto action : anim[kActionEntry]) {
 				glm::vec2 point {};
 				if (
 					action.is_array() and
@@ -376,7 +391,7 @@ void animation_t::load(const std::string& full_path) {
 			}
 		}
 
-		for (auto framerule : anim["frames"]) {
+		for (auto framerule : anim[kFramesEntry]) {
 			for (auto frame : framerule) {
 				glm::vec4 points {};
 				if (frame.is_array()) {

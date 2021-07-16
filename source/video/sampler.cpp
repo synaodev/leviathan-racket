@@ -3,17 +3,15 @@
 
 #include "../utility/logger.hpp"
 
-static constexpr sint_t kWorkingUnit = GL_TEXTURE4;
-static constexpr sint_t kMipMapTexs  = 4;
-static constexpr sint_t kTotalTexs   = 80;
-static constexpr sint_t kMipMapPals  = 1;
-static constexpr sint_t kTotalPals   = 128;
-static constexpr sint_t kDimensions  = 256;
-static constexpr sint_t kColorsMax   = 32;
-static constexpr sint_t kTotalAtlas  = 5;
-
-bool sampler_t::has_immutable_option() {
-	return opengl_version[0] == 4 and opengl_version[1] >= 2;
+namespace {
+	constexpr sint_t kWorkingUnit = GL_TEXTURE4;
+	constexpr sint_t kMipMapTexs  = 4;
+	constexpr sint_t kTotalTexs   = 80;
+	constexpr sint_t kMipMapPals  = 1;
+	constexpr sint_t kTotalPals   = 128;
+	constexpr sint_t kDimensions  = 256;
+	constexpr sint_t kColorsMax   = 32;
+	constexpr sint_t kTotalAtlas  = 5;
 }
 
 sint_t sampler_t::get_working_unit() {
@@ -28,8 +26,16 @@ sint_t sampler_t::get_maximum_palettes() {
 	return kTotalPals;
 }
 
+sint_t sampler_t::get_maximum_colors() {
+	return kColorsMax;
+}
+
 sint_t sampler_t::get_maximum_atlases() {
 	return kTotalAtlas;
+}
+
+bool sampler_t::has_immutable_option() {
+	return opengl_version[0] == 4 and opengl_version[1] >= 2;
 }
 
 void sampler_data_t::destroy() {
