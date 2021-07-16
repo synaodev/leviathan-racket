@@ -11,7 +11,7 @@
 
 namespace  {
 	const glm::vec2 kDefaultSpeed { 16.0f, 8.0f };
-	const glm::vec2 kDefaultLowest { 8.0f, 11.0f };
+	const glm::vec2 kDefaultLowest { 8.0f, 1.0f };
 	const glm::vec2 kDefaultCenter { (constants::NormalDimensions<real_t>() / 2.0f) + kDefaultLowest };
 }
 
@@ -76,7 +76,7 @@ void camera_t::update(real64_t delta) {
 
 void camera_t::set_view_limits(const rect_t& view_limits) {
 	this->view_limits.w = view_limits.w - 16.0f;
-	this->view_limits.h = view_limits.h - 12.0f;
+	this->view_limits.h = view_limits.h - 2.0f;
 	position = kDefaultCenter;
 	dimensions = constants::NormalDimensions<real_t>();
 }
