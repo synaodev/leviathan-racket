@@ -1,6 +1,9 @@
 #pragma once
 
-#if defined(_WIN32) || defined(__MINGW32__)
+#if defined(_WIN32)
+	#if defined(__MINGW32__)
+		#error "MinGW is not supported!"
+	#endif
 	#define LEVIATHAN_PLATFORM_WINDOWS
 #elif defined(__APPLE__) && defined(__MACH__)
 	#include <TargetConditionals.h>
@@ -46,11 +49,7 @@
 	#endif
 #elif defined(__GNUC__)
 	#define LEVIATHAN_COMPILER_GNUC
-	#if defined(__MINGW32__)
-		#define LEVIATHAN_TOOLCHAIN_MINGW
-	#else
-		#define LEVIATHAN_TOOLCHAIN_GNUC
-	#endif
+	#define LEVIATHAN_TOOLCHAIN_GNUC
 #elif defined(_MSC_VER)
 	#define LEVIATHAN_COMPILER_MSVC
 	#define LEVIATHAN_TOOLCHAIN_MSVC

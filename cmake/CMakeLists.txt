@@ -2,12 +2,12 @@ cmake_minimum_required (VERSION 3.13)
 
 # Platform
 
-if (WIN32 OR MINGW)
+if (WIN32 AND NOT MINGW)
 	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/win32.cmake")
 elseif (UNIX)
 	include ("${PROJECT_SOURCE_DIR}/cmake/platforms/unix.cmake")
 else ()
-	message (FATAL_ERROR "Undefined platform!")
+	message (FATAL_ERROR "Unsupported platform!")
 endif ()
 
 # Find Packages/Libraries
@@ -30,8 +30,6 @@ if (VCPKG_TOOLCHAIN)
 	find_package (SDL2 CONFIG REQUIRED)
 	if (APPLE)
 		set (SDL2_LIBRARIES SDL2::SDL2)
-	elseif (MINGW)
-		set (SDL2_LIBRARIES "-lmingw32" SDL2::SDL2main SDL2::SDL2 "-mwindows")
 	else ()
 		set (SDL2_LIBRARIES SDL2::SDL2main SDL2::SDL2)
 	endif ()

@@ -49,8 +49,6 @@ namespace version_information {
 		"Apple's"
 #elif defined(LEVIATHAN_TOOLCHAIN_GNUC)
 		"GNU"
-#elif defined(LEVIATHAN_TOOLCHAIN_MINGW)
-		"MinGW"
 #elif defined(LEVIATHAN_TOOLCHAIN_MSVC)
 		"MSBuild"
 #endif

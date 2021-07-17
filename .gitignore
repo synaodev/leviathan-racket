@@ -18,7 +18,6 @@ __pycache__/
 # Build
 leviathan.7z
 build/
-mingw/
 helper/
 [Dd]ebug/
 [Rr]elease/

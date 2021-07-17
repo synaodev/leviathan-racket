@@ -1,16 +1,13 @@
 cmake_minimum_required (VERSION 3.13)
 
 set (WIN32_GENERAL_DEFS
-	"-DNOMINMAX"
-	"-DUNICODE"
-	"-D_UNICODE"
-	"-DWIN32_LEAN_AND_MEAN"
-)
-
-set (WIN32_CLANG_DEFS
-	"/sdl"	  # Enable security checks
-	"/utf-8"  # UTF-8 source files
-	"/WX"	  # Treat linker warnings as errors
+	"-DNOMINMAX" 			# Don't define min() or max()
+	"-DUNICODE" 			# Unicode
+	"-D_UNICODE" 			# Unicode
+	"-DWIN32_LEAN_AND_MEAN" # Leave out unnecessary headers
+	"/sdl" 					# Enable security checks
+	"/utf-8" 				# UTF-8 source files
+	"/WX" 					# Treat linker warnings as errors
 )
 
 set (WIN32_MSVC_DEFS
@@ -32,21 +29,14 @@ set (WIN32_MSVC_DEFS
 )
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS} ${WIN32_CLANG_DEFS})
+	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS})
 elseif (MSVC)
 	# From http://www.cmake.org/Wiki/CMake_FAQ#Dynamic_Replace.
 	foreach (flag_var CMAKE_CXX_FLAGS CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_RELEASE MAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELWITHDEBINFO)
 		string (REPLACE "/W3" "/W4" ${flag_var} "${${flag_var}}")
 	endforeach ()
-	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS} ${WIN32_CLANG_DEFS} ${WIN32_MSVC_DEFS})
+	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS} ${WIN32_MSVC_DEFS})
 	target_compile_options (lvrk PRIVATE "/MP")
-elseif (MINGW)
-	find_package (Threads REQUIRED)
-	target_link_libraries (lvrk PRIVATE Threads::Threads)
-	target_compile_definitions (lvrk PRIVATE ${WIN32_GENERAL_DEFS})
-	if (NOT CMAKE_HOST_WIN32)
-		target_link_libraries (lvrk PRIVATE stdc++fs)
-	endif ()
 else ()
-	message (FATAL_ERROR "Undefined Windows toolchain!")
+	message (FATAL_ERROR "Unsupported Windows toolchain!")
 endif ()

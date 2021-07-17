@@ -39,23 +39,8 @@ This is the current official repository for Leviathan Racket. I work on this gam
   - When installing dependencies with vcpkg, leave out openal-soft. It usually gets ignored in favor of OpenAL.Framework.
 - Windows:
   - Vcpkg is absolutely required.
-  - Supports MSVC, Clang, and MinGW (Posix threading model only). Cygwin environment is not supported. You can also use MinGW & vcpkg on Linux for cross-compiling.
-  - Additionally, for MinGW, you need to build vcpkg dependencies using a MinGW triplet. The most consistently functional triplet is "x64-mingw-dynamic", so you might want to go with that one.
-  - To do this, open `<vcpkg-root>/scripts/toolchains/mingw.cmake` and add the following lines:
-    - `set(CMAKE_C_COMPILER "<mingw-gcc-posix>")`
-    - `set(CMAKE_CXX_COMPILER "<mingw-g++-posix>")`
-    - `set(CMAKE_FIND_ROOT_PATH "<paths-to-additional-dependencies>")`
-    - `set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)`
-    - `set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)`
-    - `set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)`
-    - `set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)`
-  - The "additional dependencies" variable needs to be set to directories containing these libraries:
-    - `libwinpthread-1.dll`
-    - `libgcc_s_seh-1.dll`
-    - `libstdc++-6.dll`
-  - If vcpkg fails to build SDL2 using MinGW and cites the `-mwindows` flag as a problem for pkgconfig, open SDL2's portfile and comment out the call to `vcpkg_fixup_pkgconfig`.
-  - When running cmake, you then need to specifiy your target triplet and your compiler locations like this: `cmake <build-root> -G "MinGW Makefiles" -DCMAKE_C_COMPILER=<mingw-gcc-posix> -DCMAKE_CXX_COMPILER=<mingw-g++-posix> -DCMAKE_TOOLCHAIN_FILE=<vcpkg-root>/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-mingw-dynamic`
-  - If cross-compiling, leave out the `-G "MinGW Makefiles"` argument.
+  - Supports MSVC and Clang. Neither MinGW nor Cygwin are supported.
+  - Both x86 and AMD64 builds should work, but x86 is tested infrequently.
 ## Python 3 Scripts
 The dependencies required to run the python scripts are in `requirements.txt`.
 - `make-config.py` generates a default configuration file called `boot.cfg`.
