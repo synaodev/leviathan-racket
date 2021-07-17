@@ -1,10 +1,10 @@
-#include "./boot-config.hpp"
+#include "./config.hpp"
 
 #include <fstream>
 
 #include "../utility/logger.hpp"
 
-bool boot_config_t::load(const std::string& path) {
+bool config_t::load(const std::string& path) {
 	valid = false;
 	std::ifstream ifs { path, std::ios::binary };
 	if (!ifs.is_open()) {
@@ -17,7 +17,7 @@ bool boot_config_t::load(const std::string& path) {
 	return true;
 }
 
-bool boot_config_t::save() {
+bool config_t::save() {
 	if (!valid) {
 		return false;
 	}
@@ -34,7 +34,7 @@ bool boot_config_t::save() {
 	return true;
 }
 
-std::string boot_config_t::get_keyboard_name(arch_t index) {
+std::string config_t::get_keyboard_name(arch_t index) {
 	switch (index) {
 		case 0: return "KeyJump";
 		case 1: return "KeyHammer";
@@ -52,7 +52,7 @@ std::string boot_config_t::get_keyboard_name(arch_t index) {
 	}
 }
 
-std::string boot_config_t::get_joystick_name(arch_t index) {
+std::string config_t::get_joystick_name(arch_t index) {
 	switch (index) {
 		case 0: return "JoyJump";
 		case 1: return "JoyHammer";

@@ -5,12 +5,12 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
-struct boot_config_t : public not_copyable_t {
+struct config_t : public not_copyable_t {
 public:
-	boot_config_t() = default;
-	boot_config_t(boot_config_t&&) noexcept = default;
-	boot_config_t& operator=(boot_config_t&&) noexcept = default;
-	~boot_config_t() = default;
+	config_t() = default;
+	config_t(config_t&&) noexcept = default;
+	config_t& operator=(config_t&&) noexcept = default;
+	~config_t() = default;
 public:
 	bool load(const std::string& path);
 	bool save();
