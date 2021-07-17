@@ -12,6 +12,7 @@ public:
 	config_t& operator=(config_t&&) noexcept = default;
 	~config_t() = default;
 public:
+	void generate(const std::string& path);
 	bool load(const std::string& path);
 	bool save();
 public:

@@ -1,8 +1,54 @@
 #include "./config.hpp"
 
 #include <fstream>
+#include <SDL2/SDL_scancode.h>
 
 #include "../utility/logger.hpp"
+
+void config_t::generate(const std::string& path) {
+	this->path = path;
+	valid = true;
+	data.clear();
+
+	this->set_meta_menu(false);
+	this->set_legacy_gl(false);
+	this->set_language("english");
+
+	this->set_vertical_sync(false);
+	this->set_fullscreen(false);
+	this->set_scaling(2);
+	this->set_framerate(60.0);
+
+	this->set_audio_volume(1.0f);
+
+	this->set_music_volume(0.35f);
+	this->set_channels(2);
+	this->set_sampling_rate(44100);
+	this->set_buffered_time(0.1f);
+
+	this->set_keybinding(0, SDL_SCANCODE_Z);
+	this->set_keybinding(1, SDL_SCANCODE_X);
+	this->set_keybinding(2, SDL_SCANCODE_LSHIFT);
+	this->set_keybinding(3, SDL_SCANCODE_A);
+	this->set_keybinding(4, SDL_SCANCODE_SPACE);
+	this->set_keybinding(5, SDL_SCANCODE_LCTRL);
+	this->set_keybinding(6, SDL_SCANCODE_TAB);
+	this->set_keybinding(7, SDL_SCANCODE_ESCAPE);
+	this->set_keybinding(8, SDL_SCANCODE_UP);
+	this->set_keybinding(9, SDL_SCANCODE_DOWN);
+	this->set_keybinding(10, SDL_SCANCODE_LEFT);
+	this->set_keybinding(11, SDL_SCANCODE_RIGHT);
+
+	this->set_joybinding(0, 0);
+	this->set_joybinding(1, 1);
+	this->set_joybinding(2, 2);
+	this->set_joybinding(3, 3);
+	this->set_joybinding(4, 4);
+	this->set_joybinding(5, 5);
+	this->set_joybinding(6, 6);
+	this->set_joybinding(7, 7);
+	return true;
+}
 
 bool config_t::load(const std::string& path) {
 	valid = false;
