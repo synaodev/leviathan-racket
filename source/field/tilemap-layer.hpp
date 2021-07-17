@@ -7,7 +7,6 @@
 #include "../video/vertex-pool.hpp"
 
 struct texture_t;
-struct palette_t;
 struct renderer_t;
 
 struct tilemap_layer_t : public not_copyable_t {

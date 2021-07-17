@@ -26,7 +26,7 @@ namespace {
 	const rect_t kCountBounding 		{ 56.0f, 18.0f, 8.0f, 10.0f };
 }
 
-void inventory_gui_element_t::init(const texture_t* texture, const palette_t* palette, const animation_t* animation, arch_t index) {
+void inventory_gui_element_t::init(const texture_t* texture, const animation_t* animation, arch_t index) {
 	glm::vec2 position {
 		kTopLeftElement.x + static_cast<real_t>((index % kModulator) * kElementSpacing.x),
 		kTopLeftElement.y + static_cast<real_t>((index / kModulator) * kElementSpacing.y)
@@ -34,7 +34,6 @@ void inventory_gui_element_t::init(const texture_t* texture, const palette_t* pa
 	scheme.set_file(animation);
 	scheme.set_position(position);
 	count.set_texture(texture);
-	count.set_palette(palette);
 	count.set_position(position + kElementOffset);
 	count.set_bounding(kCountBounding);
 	count.set_backwards(true);
@@ -74,9 +73,8 @@ void inventory_gui_element_t::render(renderer_t& renderer) const {
 
 bool inventory_gui_t::init() {
 	const texture_t* texture = vfs_t::texture(res::img::Heads);
-	const palette_t* palette = vfs_t::palette(res::pal::Heads);
 	const animation_t* animation = vfs_t::animation(res::anim::Items);
-	if (!texture or !palette or !animation) {
+	if (!texture or !animation) {
 		synao_log("Inventory GUI is missing resources and cannot be rendered!\n");
 		return false;
 	}
@@ -84,7 +82,7 @@ bool inventory_gui_t::init() {
 	elements.resize(kTotalItem);
 	arch_t index = 0;
 	for (auto&& element : elements) {
-		element.init(texture, palette, animation, index);
+		element.init(texture, animation, index);
 		++index;
 	}
 	synao_log("Inventory GUI is ready.\n");

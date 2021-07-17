@@ -60,7 +60,7 @@ display_list_t& display_list_t::vtx_blank_write(const rect_t& raster_rect, const
 	return *this;
 }
 
-display_list_t& display_list_t::vtx_major_write(const rect_t& texture_rect, const glm::vec2& raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name, sint_t palette_name) {
+display_list_t& display_list_t::vtx_major_write(const rect_t& texture_rect, const glm::vec2& raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name) {
 	const sint_t matrix = layer == layer_value::Persistent ? 0 : 1;
 	auto vtx = quad_pool.at<vtx_major_t>(current);
 	vtx[0].position = glm::zero<glm::vec2>();
@@ -68,25 +68,21 @@ display_list_t& display_list_t::vtx_major_write(const rect_t& texture_rect, cons
 	vtx[0].uvcoords = texture_rect.left_top();
 	vtx[0].alpha	= alpha_color;
 	vtx[0].texID 	= texture_name;
-	vtx[0].palID 	= palette_name;
 	vtx[1].position = { 0.0f, raster_dimensions.y };
 	vtx[1].matrix 	= matrix;
 	vtx[1].uvcoords = texture_rect.left_bottom();
 	vtx[1].alpha	= alpha_color;
 	vtx[1].texID 	= texture_name;
-	vtx[1].palID 	= palette_name;
 	vtx[2].position = { raster_dimensions.x, 0.0f };
 	vtx[2].matrix 	= matrix;
 	vtx[2].uvcoords = texture_rect.right_top();
 	vtx[2].alpha	= alpha_color;
 	vtx[2].texID 	= texture_name;
-	vtx[2].palID 	= palette_name;
 	vtx[3].position = raster_dimensions;
 	vtx[3].matrix 	= matrix;
 	vtx[3].uvcoords = texture_rect.right_bottom();
 	vtx[3].alpha	= alpha_color;
 	vtx[3].texID 	= texture_name;
-	vtx[3].palID 	= palette_name;
 	switch (mirroring) {
 	case mirroring_t::None:
 		break;

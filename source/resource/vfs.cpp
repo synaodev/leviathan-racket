@@ -267,8 +267,6 @@ std::string vfs_t::resource_path(vfs_resource_path_t path) {
 		return vfs_t::personal_directory() + kInitRoute;
 	case vfs_resource_path_t::Noise:
 		return kNoisePath;
-	case vfs_resource_path_t::Palette:
-		return kPalettePath;
 	case vfs_resource_path_t::Save:
 		if (vfs_t::device) {
 			return vfs_t::device->personal + kSaveRoute;
@@ -449,26 +447,6 @@ const texture_t* vfs_t::texture(const std::string& name) {
 		texture_t& ref = vfs_t::device->emplace_safely(name, vfs_t::device->textures);
 		ref.load(
 			kImagePath + name + ".png",
-			vfs_t::device->sampler_allocator,
-			vfs_t::device->thread_pool
-		);
-		return &ref;
-	}
-	return &it->second;
-}
-
-const palette_t* vfs_t::palette(const std::string& name) {
-	if (!vfs_t::device) {
-		return nullptr;
-	}
-	if (!vfs_t::device->sampler_allocator) {
-		return nullptr;
-	}
-	auto it = vfs_t::device->search_safely(name, vfs_t::device->palettes);
-	if (it == vfs_t::device->palettes.end()) {
-		palette_t& ref = vfs_t::device->emplace_safely(name, vfs_t::device->palettes);
-		ref.load(
-			kPalettePath + name + ".png",
 			vfs_t::device->sampler_allocator,
 			vfs_t::device->thread_pool
 		);

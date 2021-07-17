@@ -65,11 +65,6 @@ bool renderer_t::init(vfs_t& fs) {
 		program::sprites_frag(),
 		shader_stage_t::Fragment
 	);
-	const shader_t* indexed = vfs_t::shader(
-		"indexed",
-		program::indexed_frag(),
-		shader_stage_t::Fragment
-	);
 	const shader_t* channels = vfs_t::shader(
 		"channels",
 		program::channels_frag(),
@@ -85,11 +80,6 @@ bool renderer_t::init(vfs_t& fs) {
 		synao_log("\"Sprites\" program creation failed!\n");
 		return false;
 	}
-	result = pipelines[program_t::Indexed].create(major, indexed);
-	if (!result) {
-		synao_log("\"Indexed\" program creation failed!\n");
-		return false;
-	}
 	result = pipelines[program_t::Strings].create(fonts, channels);
 	if (!result) {
 		synao_log("\"Strings\" program creation failed!\n");
@@ -98,11 +88,8 @@ bool renderer_t::init(vfs_t& fs) {
 		pipelines[program_t::Colors].set_block("transforms", 0);
 		pipelines[program_t::Sprites].set_block("transforms", 0);
 		pipelines[program_t::Sprites].set_sampler("diffuse", 0);
-		pipelines[program_t::Indexed].set_block("transforms", 0);
-		pipelines[program_t::Indexed].set_sampler("diffuse", 0);
-		pipelines[program_t::Indexed].set_sampler("palette", 1);
 		pipelines[program_t::Strings].set_block("transforms", 0);
-		pipelines[program_t::Strings].set_sampler("channels", 2);
+		pipelines[program_t::Strings].set_sampler("channels", 1);
 	}
 	synao_log("Rendering service is ready.\n");
 	return true;
@@ -114,7 +101,7 @@ void renderer_t::clear() {
 
 void renderer_t::flush(const video_t& video, const glm::mat4& viewport) {
 	// Update Viewports
-	static glm::mat4 current = glm::mat4(1.0f);
+	static glm::mat4 current { 1.0f };
 	if (current != viewport) {
 		current = viewport;
 		viewports.update(&current, sizeof(glm::mat4), sizeof(glm::mat4));
@@ -132,7 +119,7 @@ void renderer_t::flush(const glm::ivec2& dimensions) {
 
 void renderer_t::ortho(const glm::ivec2& dimensions) {
 	if (viewports.valid()) {
-		glm::mat4 matrices[2] = {
+		glm::mat4 matrices[] = {
 			glm::ortho(0.0f, static_cast<real_t>(dimensions.x), static_cast<real_t>(dimensions.y), 0.0f),
 			glm::ortho(0.0f, static_cast<real_t>(dimensions.x), static_cast<real_t>(dimensions.y), 0.0f)
 		};

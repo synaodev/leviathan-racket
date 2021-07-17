@@ -53,7 +53,7 @@ public:
 	display_list_t& begin(arch_t count);
 	display_list_t& vtx_pool_write(const vertex_pool_t& that_pool);
 	display_list_t& vtx_blank_write(const rect_t& raster_rect, const glm::vec4& vtx_color);
-	display_list_t& vtx_major_write(const rect_t& texture_rect, const glm::vec2& raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name, sint_t palette_name);
+	display_list_t& vtx_major_write(const rect_t& texture_rect, const glm::vec2& raster_dimensions, mirroring_t mirroring, real_t alpha_color, sint_t texture_name);
 	display_list_t& vtx_fonts_write(const rect_t& texture_rect, const glm::vec2& raster_dimensions, const glm::vec4& full_color, sint_t atlas_name, sint_t atlas_table);
 	display_list_t& vtx_transform_write(const glm::vec2& position, const glm::vec2& scale, const glm::vec2& axis, real_t rotation);
 	display_list_t& vtx_transform_write(const glm::vec2& position, const glm::vec2& axis, real_t rotation);

@@ -151,7 +151,7 @@ void tileset_viewer_t::render(renderer_t& renderer) const {
 					raster,
 					texture->get_dimensions(),
 					mirroring_t::None,
-					1.0f, texture->get_name(), 0
+					1.0f, texture->get_name()
 				)
 				.vtx_transform_write(kTilesetViewerPosition)
 			.end();

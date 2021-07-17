@@ -23,7 +23,6 @@ void draw_scheme_t::render(renderer_t& renderer) const {
 			state,
 			frame,
 			direction,
-			table,
 			position
 		);
 	}
@@ -66,13 +65,6 @@ void draw_scheme_t::set_frame(arch_t frame) {
 		this->amend = true;
 		this->timer = 0.0;
 		this->frame = frame;
-	}
-}
-
-void draw_scheme_t::set_table(sint_t table) {
-	if (this->table != table) {
-		this->amend = true;
-		this->table = table;
 	}
 }
 
@@ -119,10 +111,6 @@ direction_t draw_scheme_t::get_direction() const {
 
 arch_t draw_scheme_t::get_frame() const {
 	return frame;
-}
-
-sint_t draw_scheme_t::get_table() const {
-	return table;
 }
 
 const glm::vec2& draw_scheme_t::get_position() const {

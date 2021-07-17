@@ -19,8 +19,8 @@ struct vfs_t;
 enum class vfs_resource_path_t : arch_t {
 	Event, Field, Font,
 	I18N, Image, Init,
-	Noise, Palette, Save,
-	Sprite, TileKey, Tune
+	Noise, Save, Sprite,
+	TileKey, Tune
 };
 
 struct vfs_t : public not_copyable_t, public not_moveable_t {
@@ -50,7 +50,6 @@ public:
 	static arch_t i18n_size(const std::string& segment);
 	static bool try_language(const std::string& language);
 	static const texture_t* texture(const std::string& name);
-	static const palette_t* palette(const std::string& name);
 	static const atlas_t* atlas(const std::string& name);
 	static const shader_t* shader(const std::string& name, const std::string& source, shader_stage_t stage);
 	static std::string event_path(const std::string& name, event_loading_t flags);
@@ -82,7 +81,6 @@ private:
 	sampler_allocator_t* sampler_allocator { nullptr };
 	std::unordered_map<std::string, std::vector<std::string> > i18n {};
 	std::unordered_map<std::string, texture_t> textures {};
-	std::unordered_map<std::string, palette_t> palettes {};
 	std::unordered_map<std::string, atlas_t> atlases {};
 	std::unordered_map<std::string, shader_t> shaders {};
 	std::unordered_map<entt::id_type, noise_t> noises {};

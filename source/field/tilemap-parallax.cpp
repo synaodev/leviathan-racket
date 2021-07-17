@@ -66,11 +66,11 @@ void tilemap_parallax_t::render(renderer_t& renderer, const rect_t& viewport, co
 		program_t::Sprites
 	);
 	if (indices == 0) {
-		sint_t texture_name = texture ? texture->get_name() : 0;
+		sint_t texID = texture ? texture->get_name() : 0;
 		for (real_t y = viewport.y + position.y - dimensions.y; y < viewport.bottom(); y += dimensions.y) {
 			for (real_t x = viewport.x + position.x - dimensions.x; x < viewport.right(); x += dimensions.x) {
 				list.begin(display_list_t::SingleQuad)
-					.vtx_major_write(bounding, dimensions, mirroring_t::None, 1.0f, texture_name, 0)
+					.vtx_major_write(bounding, dimensions, mirroring_t::None, 1.0f, texID)
 					.vtx_transform_write(x, y)
 				.end();
 				indices += display_list_t::SingleQuad;

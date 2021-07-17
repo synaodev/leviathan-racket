@@ -28,8 +28,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	const animation_t* heads_animation = vfs_t::animation(res::anim::Heads);
 	const animation_t* items_animation = vfs_t::animation(res::anim::Items);
 	const texture_t* texture = vfs_t::texture(res::img::Heads);
-	const palette_t* palette = vfs_t::palette(res::pal::Heads);
-	if (!heads_animation or !items_animation or !texture or !palette) {
+	if (!heads_animation or !items_animation or !texture) {
 		synao_log("HeadsUp GUI is missing resources and so child overlays cannot be renderered!\n");
 		return false;
 	}
@@ -38,11 +37,9 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	}
 
 	main_scheme.set_file(heads_animation);
-	main_scheme.set_table(0);
 	main_scheme.set_position(kMainSchemePosition);
 
 	leviathan_count.set_texture(texture);
-	leviathan_count.set_palette(palette);
 	leviathan_count.set_bounding(kLeviathanCountBounding);
 	leviathan_count.set_position(kLeviathanCountPosition);
 	leviathan_count.set_minimum_zeroes(3);
@@ -50,18 +47,16 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	leviathan_count.set_backwards(false);
 
 	barrier_units.set_texture(texture);
-	barrier_units.set_palette(palette);
 	barrier_units.set_bounding(kBarrierUnitsBounding);
 	barrier_units.set_position(kBarrierUnitsPosition);
 
 	oxygen_count.set_texture(texture);
-	oxygen_count.set_palette(palette);
 	oxygen_count.set_bounding(kOxygenCountBounding);
 	oxygen_count.set_position(kOxygenCountPosition);
 	oxygen_count.set_visible(false);
 	oxygen_count.set_backwards(false);
 
-	item_view.init(texture, palette, heads_animation, items_animation);
+	item_view.init(texture, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
 	synao_log("HeadsUp GUI is ready.\n");
@@ -125,7 +120,7 @@ void headsup_gui_t::invalidate() const {
 }
 
 void headsup_gui_t::set_parameters(headsup_params_t params) {
-	main_scheme.set_table(params.main_state);
+	// main_scheme.set_table(params.main_state);
 	main_scheme.set_direction(params.main_direction);
 	leviathan_count.set_value(params.current_leviathan);
 	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
@@ -180,5 +175,5 @@ bool headsup_gui_t::is_fade_moving() const {
 }
 
 sint_t headsup_gui_t::get_main_state() const {
-	return main_scheme.get_table();
+	return 0; // main_scheme.get_table();
 }

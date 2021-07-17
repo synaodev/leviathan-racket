@@ -76,12 +76,8 @@ void gfx_t::set_sampler_allocator(const sampler_allocator_t* sampler_allocator) 
 			glCheck(glActiveTexture(GL_TEXTURE0));
 			glCheck(glBindTexture(texture.type, texture.id));
 
-			auto& palette = sampler_allocator->palette();
-			glCheck(glActiveTexture(GL_TEXTURE1));
-			glCheck(glBindTexture(palette.type, palette.id));
-
 			auto& atlas = sampler_allocator->atlas();
-			glCheck(glActiveTexture(GL_TEXTURE2));
+			glCheck(glActiveTexture(GL_TEXTURE1));
 			glCheck(glBindTexture(atlas.type, atlas.id));
 		}
 	}

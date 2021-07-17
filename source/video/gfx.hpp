@@ -45,7 +45,6 @@ struct sampler_t;
 struct sampler_data_t;
 struct sampler_allocator_t;
 struct texture_t;
-struct palette_t;
 struct const_buffer_t;
 
 struct gfx_t : public not_copyable_t {

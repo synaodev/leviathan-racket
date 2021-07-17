@@ -73,12 +73,10 @@ layout(location = 1) in int matrix;
 layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in float alpha;
 layout(location = 4) in int texID;
-layout(location = 5) in int palID;
 out STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) float alpha;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat int palID;
 } vs;
 out gl_PerVertex {
 	vec4 gl_Position;
@@ -90,7 +88,6 @@ void main() {
 	vs.uvcoords = uvcoords;
 	vs.alpha = alpha;
 	vs.texID = texID;
-	vs.palID = palID;
 })";
 
 static constexpr byte_t kMajorVert330[] = R"(
@@ -102,19 +99,16 @@ layout(location = 1) in int matrix;
 layout(location = 2) in vec2 uvcoords;
 layout(location = 3) in float alpha;
 layout(location = 4) in int texID;
-layout(location = 5) in int palID;
 out STAGE {
 	vec2 uvcoords;
 	float alpha;
 	flat int texID;
-	flat int palID;
 } vs;
 void main() {
 	gl_Position = viewports[matrix] * vec4(position, 0.0f, 1.0f);
 	vs.uvcoords = uvcoords;
 	vs.alpha = alpha;
 	vs.texID = texID;
-	vs.palID = palID;
 })";
 
 static constexpr byte_t kFontsVert420[] = R"(
@@ -192,7 +186,6 @@ in STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) float alpha;
 	layout(location = 2) flat int texID;
-	layout(location = 3) flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
@@ -206,7 +199,6 @@ in STAGE {
 	vec2 uvcoords;
 	float alpha;
 	flat int texID;
-	flat int palID;
 } fs;
 layout(location = 0) out vec4 fragment;
 void main() {
@@ -214,40 +206,8 @@ void main() {
 	fragment = vec4(color.rgb, color.a * fs.alpha);
 })";
 
-static constexpr byte_t kIndexedFrag420[] = R"(
-layout(binding = 0) uniform sampler2DArray diffuse;
-layout(binding = 1) uniform sampler1DArray palette;
-in STAGE {
-	layout(location = 0) vec2 uvcoords;
-	layout(location = 1) float alpha;
-	layout(location = 2) flat int texID;
-	layout(location = 3) flat int palID;
-} fs;
-layout(location = 0) out vec4 fragment;
-void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec4 color = texture(palette, vec2(pixel[0], float(fs.palID)));
-	fragment = vec4(color.rgb, color.a * fs.alpha);
-})";
-
-static constexpr byte_t kIndexedFrag330[] = R"(
-uniform sampler2DArray diffuse;
-uniform sampler1DArray palette;
-in STAGE {
-	vec2 uvcoords;
-	float alpha;
-	flat int texID;
-	flat int palID;
-} fs;
-layout(location = 0) out vec4 fragment;
-void main() {
-	vec4 pixel = texture(diffuse, vec3(fs.uvcoords, float(fs.texID)));
-	vec4 color = texture(palette, vec2(pixel[0], float(fs.palID)));
-	fragment = vec4(color.rgb, color.a * fs.alpha);
-})";
-
 static constexpr byte_t kChannelsFrag420[] = R"(
-layout(binding = 2) uniform sampler2DArray channels;
+layout(binding = 1) uniform sampler2DArray channels;
 in STAGE {
 	layout(location = 0) vec2 uvcoords;
 	layout(location = 1) vec4 color;
@@ -335,15 +295,6 @@ namespace program {
 			result += kSpritesFrag420;
 		} else {
 			result += kSpritesFrag330;
-		}
-		return result;
-	}
-	std::string indexed_frag() {
-		std::string result = program::directive();
-		if (opengl_version[0] == 4 and opengl_version[1] >= 2) {
-			result += kIndexedFrag420;
-		} else {
-			result += kIndexedFrag330;
 		}
 		return result;
 	}

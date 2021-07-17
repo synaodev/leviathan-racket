@@ -23,7 +23,7 @@ void draw_units_t::render(renderer_t& renderer) const {
 		auto& list = renderer.display_list(
 			layer_value::Persistent,
 			blend_mode_t::Alpha,
-			program_t::Indexed
+			program_t::Sprites
 		);
 		if (amend) {
 			amend = false;
@@ -90,11 +90,6 @@ void draw_units_t::set_texture(const texture_t* texture) {
 	this->texture = texture;
 }
 
-void draw_units_t::set_palette(const palette_t* palette) {
-	amend = true;
-	this->palette = palette;
-}
-
 const glm::vec2& draw_units_t::get_position() const {
 	return position;
 }
@@ -107,7 +102,6 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 	glm::vec2 pos = position;
 	glm::vec2 inv = texture ? texture->get_inverse_dimensions() : glm::one<glm::vec2>();
 	sint_t texID = texture ? texture->get_name() : 0;
-	sint_t palID = palette ? palette->get_name() + table : 0;
 	for (arch_t it = 0, qindex = 0; it < maximum; ++it, ++qindex) {
 		vtx_major_t* quad = quads.at<vtx_major_t>(qindex * display_list_t::SingleQuad);
 
@@ -121,28 +115,24 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 		quad[0].uvcoords = uvs * inv;
 		quad[0].alpha = 1.0f;
 		quad[0].texID = texID;
-		quad[0].palID = palID;
 
 		quad[1].position = { pos.x, pos.y + bounding.h };
 		quad[1].matrix = 0;
 		quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
 		quad[1].alpha = 1.0f;
 		quad[1].texID = texID;
-		quad[1].palID = palID;
 
 		quad[2].position = { pos.x + bounding.w, pos.y };
 		quad[2].matrix = 0;
 		quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
 		quad[2].alpha = 1.0f;
 		quad[2].texID = texID;
-		quad[2].palID = palID;
 
 		quad[3].position = pos + bounding.dimensions();
 		quad[3].matrix = 0;
 		quad[3].uvcoords = inv * (uvs + bounding.dimensions());
 		quad[3].alpha = 1.0f;
 		quad[3].texID = texID;
-		quad[3].palID = palID;
 
 		if (it != kLoopPoint) {
 			pos.x += bounding.w;

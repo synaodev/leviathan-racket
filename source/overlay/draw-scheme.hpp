@@ -22,7 +22,6 @@ public:
 	void set_state(arch_t state);
 	void set_direction(direction_t direction);
 	void set_frame(arch_t frame);
-	void set_table(sint_t table);
 	void set_position(real_t x, real_t y);
 	void set_position(const glm::vec2& position);
 	void mut_position(real_t x, real_t y);
@@ -32,7 +31,6 @@ public:
 	arch_t get_state() const;
 	direction_t get_direction() const;
 	arch_t get_frame() const;
-	sint_t get_table() const;
 	const glm::vec2& get_position() const;
 public:
 	static constexpr arch_t NonState = (arch_t)-1;
@@ -44,6 +42,5 @@ private:
 	arch_t state { 0 };
 	direction_t direction { direction_t::Right };
 	arch_t frame { 0 };
-	sint_t table { 0 };
 	glm::vec2 position {};
 };

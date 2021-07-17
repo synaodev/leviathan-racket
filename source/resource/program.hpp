@@ -8,8 +8,7 @@ namespace __enum_program {
 	enum type : arch_t {
 		Colors,  // Blank + Colors
 		Sprites, // Major + Sprites
-		Indexed, // Major + Indexed
-		Strings, // Fonts - Channels
+		Strings, // Fonts + Channels
 		Total
 	};
 }
@@ -24,6 +23,5 @@ namespace program {
 	std::string fonts_vert();
 	std::string colors_frag();
 	std::string sprites_frag();
-	std::string indexed_frag();
 	std::string channels_frag();
 }

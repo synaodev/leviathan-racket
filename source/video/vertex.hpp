@@ -63,7 +63,6 @@ public:
 	glm::vec2 uvcoords {};
 	real_t alpha { 0.0f };
 	sint_t texID { 0 };
-	sint_t palID { 0 };
 };
 
 struct vtx_fonts_t : public crtp_vertex_t<vtx_fonts_t> {

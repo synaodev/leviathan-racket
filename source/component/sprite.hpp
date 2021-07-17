@@ -18,17 +18,14 @@ public:
 	sprite_t(sprite_t&& that) noexcept : sprite_t() {
 		if (this != &that) {
 			std::swap(file, that.file);
-			// std::swap(amend, that.amend);
 			std::swap(timer, that.timer);
 			std::swap(alpha, that.alpha);
-			std::swap(table, that.table);
 			std::swap(state, that.state);
 			std::swap(variation, that.variation);
 			std::swap(mirroring, that.mirroring);
 			std::swap(frame, that.frame);
 			std::swap(layer, that.layer);
 			std::swap(scale, that.scale);
-			// std::swap(position, that.position);
 			std::swap(pivot, that.pivot);
 			std::swap(angle, that.angle);
 			std::swap(shake, that.shake);
@@ -37,17 +34,14 @@ public:
 	sprite_t& operator=(sprite_t&& that) noexcept {
 		if (this != &that) {
 			std::swap(file, that.file);
-			// std::swap(amend, that.amend);
 			std::swap(timer, that.timer);
 			std::swap(alpha, that.alpha);
-			std::swap(table, that.table);
 			std::swap(state, that.state);
 			std::swap(variation, that.variation);
 			std::swap(mirroring, that.mirroring);
 			std::swap(frame, that.frame);
 			std::swap(layer, that.layer);
 			std::swap(scale, that.scale);
-			// std::swap(position, that.position);
 			std::swap(pivot, that.pivot);
 			std::swap(angle, that.angle);
 			std::swap(shake, that.shake);
@@ -62,7 +56,7 @@ public:
 	bool finished() const;
 public:
 	static void update(kontext_t& kontext, real64_t delta);
-	static void render(const kontext_t& kontext, renderer_t& renderer, const rect_t& viewport /*, bool_t panic*/);
+	static void render(const kontext_t& kontext, renderer_t& renderer, const rect_t& viewport);
 	static bool compare(const sprite_t& lhv, const sprite_t& rhv) {
 		return lhv.layer < rhv.layer;
 	}
@@ -70,10 +64,8 @@ public:
 	static constexpr arch_t NonState = (arch_t)-1;
 public:
 	const animation_t* file { nullptr };
-	// mutable bool_t amend { false };
 	real64_t timer { 0.0 };
 	real_t alpha { 1.0f };
-	sint_t table { 0 };
 	arch_t state { 0 };
 	union {
 		arch_t variation;
@@ -84,7 +76,6 @@ public:
 	arch_t frame { 0 };
 	layer_t layer { layer_value::Automatic };
 	glm::vec2 scale { 1.0f };
-	// glm::vec2 position {};
 	glm::vec2 pivot {};
 	real_t angle { 0.0f };
 	real_t shake { 0.0f };

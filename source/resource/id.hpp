@@ -18,12 +18,6 @@ namespace res {
 		LEVIATHAN_RES_BYTES_DEF(PrtGhou, 	"prtghou");
 		LEVIATHAN_RES_BYTES_DEF(PrtSilver, 	"prtsilver");
 	}
-	namespace pal {
-		LEVIATHAN_RES_BYTES_DEF(Bullets, 	"bullets");
-		LEVIATHAN_RES_BYTES_DEF(Friends, 	"friends");
-		LEVIATHAN_RES_BYTES_DEF(Heads, 		"heads");
-		LEVIATHAN_RES_BYTES_DEF(Naomi, 		"naomi");
-	}
 	namespace anim {
 		LEVIATHAN_RES_ENTRY_DEF(Heads,		"heads");
 		LEVIATHAN_RES_ENTRY_DEF(Naomi,		"naomi");
