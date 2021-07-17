@@ -43,7 +43,6 @@ void ai::empty_chest::ctor(entt::entity s, kontext_t& kontext) {
 
 void ai::door::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Door);
-	// sprite.position = kontext.get<location_t>(s).position;
 }
 
 void ai::spikes::ctor(entt::entity s, kontext_t& kontext) {
@@ -51,7 +50,6 @@ void ai::spikes::ctor(entt::entity s, kontext_t& kontext) {
 	location.bounding = { 4.0f, 4.0f, 8.0f, 8.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Death);
-	// sprite.position = location.position;
 	sprite.pivot = { 8.0f, 8.0f };
 }
 
@@ -60,7 +58,6 @@ void ai::death_spikes::ctor(entt::entity s, kontext_t& kontext) {
 	location.bounding = { 4.0f, 4.0f, 24.0f, 12.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Death);
-	// sprite.position = location.position;
 
 	auto& health = kontext.assign_if<health_t>(s);
 	health.flags[health_t::Instant] = true;
@@ -72,13 +69,11 @@ void ai::bed::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Helpful);
 	sprite.state = 0;
-	// sprite.position = location.position;
 }
 
 void ai::ammo_station::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Helpful);
 	sprite.state = 1;
-	// sprite.position = kontext.get<location_t>(s).position;
 }
 
 void ai::computer::ctor(entt::entity s, kontext_t& kontext) {
@@ -87,7 +82,6 @@ void ai::computer::ctor(entt::entity s, kontext_t& kontext) {
 	location.bounding = { 5.0f, 0.0f, 16.0f, 16.0f };
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Computer);
-	// sprite.position = location.position;
 }
 
 void ai::fire::ctor(entt::entity s, kontext_t& kontext) {

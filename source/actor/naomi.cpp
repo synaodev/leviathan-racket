@@ -603,10 +603,8 @@ void naomi_state_t::do_invincible(sprite_t& sprite) {
 		if (chroniker[naomi_timer_t::Invincibility]-- <= 0) {
 			chroniker[naomi_timer_t::Invincibility] = 0;
 			flags[naomi_flags_t::Invincible] = false;
-			// sprite.amend = true;
 			sprite.layer = layer_value::Automatic;
 		} else {
-			// sprite.amend = true;
 			sprite.layer = sprite.layer != layer_value::Automatic ?
 				layer_value::Automatic :
 				layer_value::Invisible;
@@ -1183,7 +1181,6 @@ void naomi_state_t::do_animation(location_t& location, sprite_t& sprite, const h
 		sprite.new_state(state);
 		if (location.direction != last_direction and !flags[naomi_flags_t::Dashing]) {
 			last_direction = location.direction;
-			// sprite.amend = true;
 			if (location.direction & direction_t::Left) {
 				sprite.mirroring |= mirroring_t::Horizontal;
 			} else {

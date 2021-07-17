@@ -131,7 +131,6 @@ void ai::frontier::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Frontier);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 	sprite.pivot = { 8.0f, 8.0f };
 	sprite.angle = rng::next(0.0f, glm::two_pi<real_t>());
 
@@ -157,7 +156,6 @@ void ai::frontier::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.kontext.dispose(s);
 	} else {
 		auto& sprite = rtp.kontext.get<sprite_t>(s);
-		// sprite.amend = true;
 		sprite.angle = glm::mod(sprite.angle + 0.035f, glm::two_pi<real_t>());
 	}
 }
@@ -185,7 +183,6 @@ void ai::toxitier::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Frontier);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 3;
@@ -209,7 +206,6 @@ void ai::toxitier::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.kontext.dispose(s);
 	} else {
 		kinematics.accel_y(-0.3f, 0.6f);
-		// sprite.amend = true;
 		sprite.alpha = glm::clamp(sprite.alpha - 0.016f, 0.0f, 1.0f);
 	}
 }
@@ -221,7 +217,6 @@ void ai::weak_hammer::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Hammer);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
@@ -269,7 +264,6 @@ void ai::strong_hammer::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Hammer);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	kinematics.flags[phy_t::Noclip] = true;
@@ -315,7 +309,6 @@ void ai::holy_lance::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	kontext.assign_if<kinematics_t>(s);
 	kontext.assign_if<actor_timer_t>(s);
@@ -424,7 +417,6 @@ void ai::holy_tether::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 	sprite.pivot = { 0.5f, 0.5f };
 
 	kontext.assign_if<routine_t>(s, tick);
@@ -443,7 +435,6 @@ void ai::holy_tether::tick(entt::entity s, routine_tuple_t& rtp) {
 			naomi_center.x - actor_center.x
 		);
 		location.position = naomi_center;
-		// sprite.amend = true;
 		sprite.angle = angle;
 		sprite.scale = { glm::distance(naomi_center, actor_center), 1.0f };
 	} else {
@@ -491,7 +482,6 @@ void ai::kannon::ctor(entt::entity s, kontext_t& kontext) {
 	}
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Kannon);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 9;
@@ -540,7 +530,6 @@ void ai::nail_ray::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::NailRay);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& kinematics = kontext.assign_if<kinematics_t>(s);
 	if (location.direction & direction_t::Down) {
@@ -587,7 +576,6 @@ void ai::wolf_vulcan::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 	sprite.pivot = { 0.5f, 0.5f };
 
 	auto& health = kontext.assign_if<health_t>(s);
@@ -615,7 +603,6 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 			rtp.tilemap, 320.0f,
 			location.position, angle
 		);
-		// sprite.amend = true;
 		sprite.scale = { glm::distance(location.position, end_point), 1.0f };
 		sprite.angle = glm::atan(
 			end_point.y - location.position.y,
@@ -628,7 +615,6 @@ void ai::wolf_vulcan::tick(entt::entity s, routine_tuple_t& rtp) {
 		rtp.kontext.spawn(ai::blast_medium::type, location.center());
 	} if (rtp.kontext.valid(s)) {
 		sprite.alpha = glm::clamp(sprite.alpha - 0.075f, 0.0f, 1.0f);
-		// sprite.amend = true;
 	}
 }
 
@@ -655,7 +641,6 @@ void ai::austere::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::WolfVulcan);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& health = kontext.assign_if<health_t>(s);
 	health.damage = 3;

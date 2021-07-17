@@ -70,4 +70,5 @@ private:
 	draw_item_view_t item_view {};
 	draw_meter_t fight_meter {};
 	draw_fade_t fade {};
+	sint_t main_state { 0 }; // TODO: replace this
 };

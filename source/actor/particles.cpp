@@ -33,7 +33,6 @@ void ai::smoke::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Smoke);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 35;
@@ -68,7 +67,6 @@ void ai::shrapnel::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Shrapnel);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 25;
@@ -124,14 +122,12 @@ void ai::dust::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::HolyLance);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	kontext.assign_if<routine_t>(s, tick);
 }
 
 void ai::dust::tick(entt::entity s, routine_tuple_t& rtp) {
 	auto& sprite = rtp.kontext.get<sprite_t>(s);
-	// sprite.amend = true;
 	sprite.alpha -= 0.02f;
 	if (sprite.alpha <= 0.0f) {
 		rtp.kontext.dispose(s);
@@ -145,7 +141,6 @@ void ai::splash::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Splash);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 7;
@@ -160,7 +155,6 @@ void ai::blast_small::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Blast);
 	sprite.state = 0;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 4;
@@ -175,7 +169,6 @@ void ai::blast_medium::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Blast);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 8;
@@ -190,7 +183,6 @@ void ai::blast_large::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Blast);
 	sprite.state = 2;
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 9;
@@ -202,7 +194,6 @@ void ai::energy_trail::ctor(entt::entity s, kontext_t& kontext) {
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::Kannon);
 	sprite.state = 1;
 	sprite.layer = 0.6f;
-	// sprite.position = kontext.get<location_t>(s).position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 7;
@@ -216,7 +207,6 @@ void ai::dash_flash::ctor(entt::entity s, kontext_t& kontext) {
 
 	auto& sprite = kontext.assign_if<sprite_t>(s, res::anim::DashFlash);
 	sprite.layer = 0.6f;
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 6;
@@ -231,7 +221,6 @@ void ai::barrier::ctor(entt::entity s, kontext_t& kontext) {
 	sprite.variation = location.direction & direction_t::Left;
 	sprite.layer = 0.6f;
 	sprite.scale = { 2.0f, 2.0f };
-	// sprite.position = location.position;
 
 	auto& timer = kontext.assign_if<actor_timer_t>(s);
 	timer[0] = 12;

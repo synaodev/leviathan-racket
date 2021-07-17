@@ -59,6 +59,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	item_view.init(texture, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
+	main_state = 0;
 	synao_log("HeadsUp GUI is ready.\n");
 	return true;
 }
@@ -79,6 +80,7 @@ void headsup_gui_t::reset() {
 	main_scheme.set_direction(direction_t::Right);
 	fight_meter.reset();
 	fade.reset();
+	main_state = 0;
 }
 
 void headsup_gui_t::handle(const kernel_t& kernel, const dialogue_gui_t& dialogue_gui) {
@@ -120,7 +122,7 @@ void headsup_gui_t::invalidate() const {
 }
 
 void headsup_gui_t::set_parameters(headsup_params_t params) {
-	// main_scheme.set_table(params.main_state);
+	main_state = params.main_state;
 	main_scheme.set_direction(params.main_direction);
 	leviathan_count.set_value(params.current_leviathan);
 	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
@@ -175,5 +177,5 @@ bool headsup_gui_t::is_fade_moving() const {
 }
 
 sint_t headsup_gui_t::get_main_state() const {
-	return 0; // main_scheme.get_table();
+	return main_state;
 }
