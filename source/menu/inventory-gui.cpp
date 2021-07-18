@@ -39,7 +39,7 @@ void inventory_gui_element_t::init(const texture_t* texture, const animation_t* 
 	count.set_backwards(true);
 }
 
-void inventory_gui_element_t::reset(glm::ivec4 item) {
+void inventory_gui_element_t::reset(const glm::ivec4& item) {
 	if (item.x != 0) {
 		visible = true;
 		scheme.set_direction(

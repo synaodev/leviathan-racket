@@ -26,28 +26,27 @@ void config_t::generate(const std::string& path) {
 	this->set_sampling_rate(44100);
 	this->set_buffered_time(0.1f);
 
-	this->set_keybinding(0, SDL_SCANCODE_Z);
-	this->set_keybinding(1, SDL_SCANCODE_X);
-	this->set_keybinding(2, SDL_SCANCODE_LSHIFT);
-	this->set_keybinding(3, SDL_SCANCODE_A);
-	this->set_keybinding(4, SDL_SCANCODE_SPACE);
-	this->set_keybinding(5, SDL_SCANCODE_LCTRL);
-	this->set_keybinding(6, SDL_SCANCODE_TAB);
-	this->set_keybinding(7, SDL_SCANCODE_ESCAPE);
-	this->set_keybinding(8, SDL_SCANCODE_UP);
-	this->set_keybinding(9, SDL_SCANCODE_DOWN);
-	this->set_keybinding(10, SDL_SCANCODE_LEFT);
-	this->set_keybinding(11, SDL_SCANCODE_RIGHT);
+	this->set_keyboard_binding(0, SDL_SCANCODE_Z);
+	this->set_keyboard_binding(1, SDL_SCANCODE_X);
+	this->set_keyboard_binding(2, SDL_SCANCODE_LSHIFT);
+	this->set_keyboard_binding(3, SDL_SCANCODE_A);
+	this->set_keyboard_binding(4, SDL_SCANCODE_SPACE);
+	this->set_keyboard_binding(5, SDL_SCANCODE_LCTRL);
+	this->set_keyboard_binding(6, SDL_SCANCODE_TAB);
+	this->set_keyboard_binding(7, SDL_SCANCODE_ESCAPE);
+	this->set_keyboard_binding(8, SDL_SCANCODE_UP);
+	this->set_keyboard_binding(9, SDL_SCANCODE_DOWN);
+	this->set_keyboard_binding(10, SDL_SCANCODE_LEFT);
+	this->set_keyboard_binding(11, SDL_SCANCODE_RIGHT);
 
-	this->set_joybinding(0, 0);
-	this->set_joybinding(1, 1);
-	this->set_joybinding(2, 2);
-	this->set_joybinding(3, 3);
-	this->set_joybinding(4, 4);
-	this->set_joybinding(5, 5);
-	this->set_joybinding(6, 6);
-	this->set_joybinding(7, 7);
-	return true;
+	this->set_joystick_binding(0, 0);
+	this->set_joystick_binding(1, 1);
+	this->set_joystick_binding(2, 2);
+	this->set_joystick_binding(3, 3);
+	this->set_joystick_binding(4, 4);
+	this->set_joystick_binding(5, 5);
+	this->set_joystick_binding(6, 6);
+	this->set_joystick_binding(7, 7);
 }
 
 bool config_t::load(const std::string& path) {
@@ -76,7 +75,7 @@ bool config_t::save() {
 		1, '\t', true,
 		nlohmann::detail::error_handler_t::ignore
 	);
-	ofs.write(output.c_str(), output.size());
+	ofs.write(output.data(), output.size());
 	return true;
 }
 

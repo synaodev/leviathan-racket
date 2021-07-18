@@ -1,14 +1,14 @@
 #include "./wgt-video.hpp"
 
+#include "../resource/config.hpp"
 #include "../resource/id.hpp"
 #include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
-#include "../utility/setup-file.hpp"
 
 #include <glm/common.hpp>
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 namespace {
 	constexpr arch_t kVideoTotalOptions 	= 2;
@@ -29,7 +29,7 @@ void wgt_video_t::init(const input_t&, const video_t& video, audio_t&, const mus
 	);
 }
 
-void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
+void wgt_video_t::handle(config_t& config, input_t& input, video_t& video, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
@@ -47,7 +47,7 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 		switch (cursor) {
 			case 0: {
 				params.full = !params.full;
-				config.set("Video", "Fullscreen", params.full);
+				config.set_fullscreen(params.full);
 				this->setup_text(params);
 				break;
 			}
@@ -65,13 +65,13 @@ void wgt_video_t::handle(setup_file_t& config, input_t& input, video_t& video, a
 						screen_params_t::kHighestScaling
 					);
 				}
-				config.set("Video", "ScaleFactor", params.scaling);
+				config.set_scaling(params.scaling);
 				this->setup_text(params);
 				break;
 			}
 			case 2: {
 				params.vsync = !params.vsync;
-				config.set("Video", "VerticalSync", params.vsync);
+				config.set_vertical_sync(params.vsync);
 				this->setup_text(params);
 				break;
 			}
@@ -110,7 +110,7 @@ void wgt_video_t::invalidate() const {
 }
 
 void wgt_video_t::setup_text(const screen_params_t& params) {
-	fmt::memory_buffer data;
+	fmt::memory_buffer data {};
 	fmt::format_to(data, "{}{}\n{}{}\n{}{}",
 	 	vfs_t::i18n_find("Video", 0, 1),
 	 	params.full ? vfs_t::i18n_find("Main", 1) : vfs_t::i18n_find("Main", 2),

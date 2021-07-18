@@ -208,7 +208,7 @@ public:
 			data["Music"]["BufferedTime"] = value;
 		}
 	}
-	sint_t get_keybinding(arch_t button) {
+	sint_t get_keyboard_binding(arch_t button) const {
 		const std::string name = get_keyboard_name(button);
 		if (
 			!name.empty() and
@@ -221,13 +221,13 @@ public:
 		}
 		return -1;
 	}
-	void set_keybinding(arch_t button, sint_t value) {
+	void set_keyboard_binding(arch_t button, sint_t value) {
 		const std::string name = get_keyboard_name(button);
 		if (!name.empty() and valid) {
 			data["Input"][name] = value;
 		}
 	}
-	sint_t get_joybinding(arch_t button) const {
+	sint_t get_joystick_binding(arch_t button) const {
 		const std::string name = get_joystick_name(button);
 		if (
 			!name.empty() and
@@ -240,7 +240,7 @@ public:
 		}
 		return -1;
 	}
-	void set_joybinding(arch_t button, sint_t value) {
+	void set_joystick_binding(arch_t button, sint_t value) {
 		const std::string name = get_joystick_name(button);
 		if (!name.empty() and valid) {
 			data["Input"][name] = value;

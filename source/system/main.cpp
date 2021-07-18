@@ -15,10 +15,10 @@
 #include "./runtime.hpp"
 
 #include "../editor/editor.hpp"
+#include "../resource/config.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
 
 static std::atomic<bool> interrupt = false;
 static void sigint_handler(int) {
@@ -30,7 +30,7 @@ static constexpr uint_t kNormDelay = 10;
 
 #ifdef LEVIATHAN_USES_META
 
-static bool editor_loop(setup_file_t& config, input_t& input, video_t& video, renderer_t& renderer) {
+static bool editor_loop(config_t& config, input_t& input, video_t& video, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	editor_t editor {};
 	if (!editor.init(video, renderer)) {
@@ -71,7 +71,7 @@ static bool editor_loop(setup_file_t& config, input_t& input, video_t& video, re
 	return config.save();
 }
 
-static int editor_process(setup_file_t& config) {
+static int editor_process(config_t& config) {
 	// Global input/video devices are generated here...
 	input_t input {};
 	if (!input.init(config)) {
@@ -102,7 +102,7 @@ static int editor_process(setup_file_t& config) {
 
 #endif
 
-static bool normal_loop(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
+static bool normal_loop(config_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, renderer_t& renderer) {
 	policy_t policy = policy_t::Run;
 	runtime_t runtime {};
 	if (!runtime.init(input, video, audio, music, renderer)) {
@@ -150,7 +150,7 @@ static bool normal_loop(setup_file_t& config, input_t& input, video_t& video, au
 	return config.save();
 }
 
-static int normal_process(setup_file_t& config) {
+static int normal_process(config_t& config) {
 	// Global input/video/audio devices are generated here...
 	input_t input {};
 	if (!input.init(config)) {
@@ -189,57 +189,17 @@ static int normal_process(setup_file_t& config) {
 	return EXIT_SUCCESS;
 }
 
-static std::string get_boot_path() {
+static config_t load_config() {
+	config_t result {};
 	const std::string init_path = vfs_t::resource_path(vfs_resource_path_t::Init);
-	return init_path + "boot.cfg";
-}
-
-static void write_config(setup_file_t& config, const std::string& boot_path) {
-	config.clear(boot_path);
-	config.set("Setup", "MetaMenu", 0);
-	config.set("Setup", "LegacyGL", 0);
-	config.set("Setup", "Language", std::string("english"));
-	config.set("Video", "VerticalSync", 0);
-	config.set("Video", "Fullscreen", 0);
-	config.set("Video", "ScaleFactor", 3);
-	config.set("Video", "FrameLimiter", 60);
-	config.set("Audio", "Volume", 1.0f);
-	config.set("Music", "Volume", 0.34f);
-	config.set("Music", "Channels", 2);
-	config.set("Music", "SamplingRate", 44100);
-	config.set("Music", "BufferedTime", 0.1f);
-	config.set("Input", "KeyJump", (sint_t)SDL_SCANCODE_Z);
-	config.set("Input", "KeyHammer", (sint_t)SDL_SCANCODE_X);
-	config.set("Input", "KeyItem", (sint_t)SDL_SCANCODE_LSHIFT);
-	config.set("Input", "KeyLiteDash", (sint_t)SDL_SCANCODE_A);
-	config.set("Input", "KeyContext", (sint_t)SDL_SCANCODE_SPACE);
-	config.set("Input", "KeyStrafe", (sint_t)SDL_SCANCODE_LCTRL);
-	config.set("Input", "KeyInventory", (sint_t)SDL_SCANCODE_TAB);
-	config.set("Input", "KeyOptions", (sint_t)SDL_SCANCODE_ESCAPE);
-	config.set("Input", "KeyUp", (sint_t)SDL_SCANCODE_UP);
-	config.set("Input", "KeyDown", (sint_t)SDL_SCANCODE_DOWN);
-	config.set("Input", "KeyLeft", (sint_t)SDL_SCANCODE_LEFT);
-	config.set("Input", "KeyRight", (sint_t)SDL_SCANCODE_RIGHT);
-	config.set("Input", "JoyJump", 0);
-	config.set("Input", "JoyHammer", 1);
-	config.set("Input", "JoyItem", 2);
-	config.set("Input", "JoyLiteDash", 3);
-	config.set("Input", "JoyContext", 4);
-	config.set("Input", "JoyStrafe", 5);
-	config.set("Input", "JoyInventory",	6);
-	config.set("Input", "JoyOptions", 7);
-	const std::string init_path = vfs_t::resource_path(vfs_resource_path_t::Init);
-	if (!vfs_t::create_directory(init_path)) {
-		synao_log("Warning! Will not be able to save newly generated config file!\n");
-	}
-}
-
-static setup_file_t load_config() {
-	setup_file_t result {};
-	const std::string boot_path = get_boot_path();
-	if (!result.load(boot_path)) {
-		synao_log("Couldn't find main configuration file at \"{}\"! Generating new config file.\n", boot_path);
-		write_config(result, boot_path);
+	if (vfs_t::create_directory(init_path)) {
+		const std::string boot_path = init_path + "boot.json";
+		if (!result.load(boot_path)) {
+			synao_log("Couldn't find config file named \"{}\"! Generating new config file.\n", boot_path);
+			result.generate(boot_path);
+		}
+	} else {
+		synao_log("Warning! Will not be able to save config file!\n");
 	}
 	return result;
 }
@@ -334,7 +294,7 @@ int main(int argc, char** argv) {
 		return EXIT_FAILURE;
 	}
 	// Load config
-	setup_file_t config = load_config();
+	config_t config = load_config();
 	// Run desired process
 #ifdef LEVIATHAN_USES_META
 	return tileset_editor ?

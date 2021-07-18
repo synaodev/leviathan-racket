@@ -9,7 +9,7 @@
 
 #include "../utility/enums.hpp"
 
-struct setup_file_t;
+struct config_t;
 struct macro_player_t;
 
 enum class policy_t {
@@ -47,8 +47,8 @@ public:
 	input_t() = default;
 	~input_t();
 public:
-	bool init(const setup_file_t& config);
-	bool save(const setup_file_t& config);
+	bool init(const config_t& config);
+	bool save(const config_t& config);
 	policy_t poll(policy_t policy, bool(*callback)(const SDL_Event*));
 	policy_t poll(policy_t policy);
 	void advance();
@@ -69,9 +69,9 @@ public:
 	bool get_meta_holding(sint_t scancode) const;
 #endif
 private:
-	void all_keyboard_bindings(const setup_file_t& config);
-	void all_joystick_bindings(const setup_file_t& config);
-	void all_macrofile_settings(const setup_file_t& config);
+	void all_keyboard_bindings(const config_t& config);
+	void all_joystick_bindings(const config_t& config);
+	void all_macrofile_settings(const config_t& config);
 public:
 	std::bitset<btn_t::Total> pressed { 0 };
 	std::bitset<btn_t::Total> holding { 0 };

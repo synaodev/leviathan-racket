@@ -4,7 +4,7 @@
 
 #include "../utility/watch.hpp"
 
-struct setup_file_t;
+struct config_t;
 
 struct screen_params_t {
 public:
@@ -38,7 +38,7 @@ public:
 	video_t() = default;
 	~video_t();
 public:
-	bool init(const setup_file_t& config, bool_t tileset_editor = false);
+	bool init(const config_t& config, bool_t tileset_editor = false);
 	void flush() const;
 	void set_parameters(screen_params_t parameters);
 	const screen_params_t& get_parameters() const;

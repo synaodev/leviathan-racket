@@ -7,7 +7,6 @@
 #include "../video/pipeline.hpp"
 #include "../video/sampler.hpp"
 
-struct setup_file_t;
 struct vfs_t;
 struct video_t;
 

@@ -4,13 +4,14 @@
 #include <string>
 #include <bitset>
 #include <functional>
+
 #include <glm/vec2.hpp>
+#include <nlohmann/json_fwd.hpp>
 
 #include "../utility/enums.hpp"
 
 class asIScriptFunction;
 
-struct setup_file_t;
 struct input_t;
 struct audio_t;
 struct music_t;
@@ -41,10 +42,8 @@ public:
 	void reset();
 	void reset(const std::string& field);
 	void update(real64_t delta);
-	void read_data(const setup_file_t& file);
-	bool read_stream(const std::string& path);
-	void write_data(setup_file_t& file) const;
-	bool write_stream(const std::string& path) const;
+	void read(const nlohmann::json& file);
+	void write(nlohmann::json& file) const;
 	void boot();
 	void quit();
 	void lock();

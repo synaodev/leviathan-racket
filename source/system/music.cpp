@@ -1,9 +1,9 @@
 #include "./music.hpp"
 
 #include "../audio/al-check.hpp"
+#include "../resource/config.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
 
 #if defined(LEVIATHAN_TOOLCHAIN_MSVC) && !defined(_CRT_SECURE_NO_WARNINGS)
 	#define _CRT_SECURE_NO_WARNINGS
@@ -36,21 +36,17 @@ music_t::~music_t() {
 	}
 }
 
-bool music_t::init(const setup_file_t& config) {
-	channels = kTotalChannel;
-	config.get("Music", "Channels",	channels);
+bool music_t::init(const config_t& config) {
+	channels = config.get_channels();
 	channels = glm::clamp(channels, 1, kTotalChannel);
 
-	sampling_rate = kSamplingRate;
-	config.get("Music", "SamplingRate",	sampling_rate);
+	sampling_rate = config.get_sampling_rate();
 	sampling_rate = glm::clamp(sampling_rate, 11025, kSamplingRate);
 
-	buffered_time = kBufferedTime;
-	config.get("Music", "BufferedTime", buffered_time);
+	buffered_time = config.get_buffered_time();
 	buffered_time = glm::clamp(buffered_time, kBufferedTime, 0.75f);
 
-	volume = 1.0f;
-	config.get("Music", "Volume", volume);
+	volume = config.get_music_volume();
 	volume = glm::clamp(volume, 0.0f, 1.0f);
 
 	if (playing or !title.empty()) {

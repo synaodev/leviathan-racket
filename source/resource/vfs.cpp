@@ -1,7 +1,7 @@
 #include "./vfs.hpp"
+#include "./config.hpp"
 
 #include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
 
 #include <cstdlib>
 #include <cstring>
@@ -17,7 +17,7 @@
 	namespace fs = std::filesystem;
 #endif
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include <nlohmann/json.hpp>
 #include <SDL2/SDL_filesystem.h>
 
@@ -102,7 +102,7 @@ vfs_t::~vfs_t() {
 	}
 }
 
-bool vfs_t::init(const setup_file_t& config) {
+bool vfs_t::init(const config_t& config) {
 	if (vfs_t::device == this) {
 		synao_log("Error! This virtual file system already exists!\n");
 		return false;
@@ -113,8 +113,7 @@ bool vfs_t::init(const setup_file_t& config) {
 	vfs_t::device = this;
 
 	// Setup Language
-	std::string language = kLanguage;
-	config.get("Setup", "Language", language);
+	const std::string language = config.get_language();
 	if (!vfs_t::try_language(language)) {
 		synao_log("Error! Couldn't load first language: {}\n", language);
 		return false;

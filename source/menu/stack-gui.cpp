@@ -22,7 +22,7 @@ void stack_gui_t::reset() {
 	widgets.clear();
 }
 
-void stack_gui_t::handle(setup_file_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, headsup_gui_t& headsup_gui) {
+void stack_gui_t::handle(config_t& config, input_t& input, video_t& video, audio_t& audio, music_t& music, kernel_t& kernel, headsup_gui_t& headsup_gui) {
 	if (!widgets.empty()) {
 		if (!widgets.back()->is_ready()) {
 			widgets.back()->init(input, video, audio, music, kernel);

@@ -1,13 +1,13 @@
 #include "./wgt-audio.hpp"
 
+#include "../resource/config.hpp"
 #include "../resource/id.hpp"
 #include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/music.hpp"
-#include "../utility/setup-file.hpp"
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 #include <glm/common.hpp>
 
 namespace {
@@ -29,7 +29,7 @@ void wgt_audio_t::init(const input_t&, const video_t&, audio_t& audio, const mus
 	);
 }
 
-void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t& music, kernel_t&, stack_gui_t&, headsup_gui_t&) {
+void wgt_audio_t::handle(config_t& config, input_t& input, video_t&, audio_t& audio, music_t& music, kernel_t&, stack_gui_t&, headsup_gui_t&) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;
@@ -52,7 +52,7 @@ void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 					volume = glm::clamp(volume - 0.01f, 0.0f, 1.0f);
 				}
 				audio.set_volume(volume);
-				config.set("Audio", "Volume", volume);
+				config.set_audio_volume(volume);
 				this->setup_text(audio, music);
 				break;
 			}
@@ -64,7 +64,7 @@ void wgt_audio_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t
 					volume = glm::clamp(volume - 0.01f, 0.0f, 1.0f);
 				}
 				music.set_volume(volume);
-				config.set("Music", "Volume", volume);
+				config.set_music_volume(volume);
 				this->setup_text(audio, music);
 				break;
 			}
@@ -102,7 +102,7 @@ void wgt_audio_t::invalidate() const {
 }
 
 void wgt_audio_t::setup_text(const audio_t& audio, const music_t& music) {
-	fmt::memory_buffer data;
+	fmt::memory_buffer data {};
 	fmt::format_to(data, "{}{}\n{}{}\n",
 		vfs_t::i18n_find("Audio", 0, 1),
 		audio.get_volume(),

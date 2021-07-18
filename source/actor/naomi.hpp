@@ -7,7 +7,6 @@
 
 #include "../utility/enums.hpp"
 
-struct setup_file_t;
 struct input_t;
 struct audio_t;
 struct kernel_t;

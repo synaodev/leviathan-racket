@@ -29,7 +29,7 @@ void wgt_option_t::init(const input_t&, const video_t&, audio_t& audio, const mu
 	);
 }
 
-void wgt_option_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, headsup_gui_t& headsup_gui) {
+void wgt_option_t::handle(config_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, headsup_gui_t& headsup_gui) {
 	bool reboot = false;
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {

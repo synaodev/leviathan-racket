@@ -1,8 +1,8 @@
 #include "./input.hpp"
 
+#include "../resource/config.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
 #include "../utility/rng.hpp"
 
 #include <functional>
@@ -33,7 +33,7 @@ input_t::~input_t() {
 	}
 }
 
-bool input_t::init(const setup_file_t& config) {
+bool input_t::init(const config_t& config) {
 	this->all_keyboard_bindings(config);
 	this->all_joystick_bindings(config);
 	this->all_macrofile_settings(config);
@@ -53,10 +53,9 @@ bool input_t::init(const setup_file_t& config) {
 	return true;
 }
 
-bool input_t::save(const setup_file_t& config) {
+bool input_t::save(const config_t& config) {
 	if (player and player->recording()) {
-		std::string macro;
-		config.get("Setup", "MacroFile", macro);
+		const std::string macro = config.get_macro_file();
 		if (!player->write(macro)) {
 			return false;
 		}
@@ -418,81 +417,35 @@ bool input_t::get_meta_holding(sint_t scancode) const {
 
 #endif
 
-void input_t::all_keyboard_bindings(const setup_file_t& config) {
-	sint_t jump		= SDL_SCANCODE_Z;
-	sint_t hammer	= SDL_SCANCODE_X;
-	sint_t item		= SDL_SCANCODE_LSHIFT;
-	sint_t litedash = SDL_SCANCODE_A;
-	sint_t context	= SDL_SCANCODE_SPACE;
-	sint_t strafe	= SDL_SCANCODE_LCTRL;
-	sint_t inven	= SDL_SCANCODE_TAB;
-	sint_t options	= SDL_SCANCODE_ESCAPE;
-	sint_t up		= SDL_SCANCODE_UP;
-	sint_t down		= SDL_SCANCODE_DOWN;
-	sint_t left		= SDL_SCANCODE_LEFT;
-	sint_t right	= SDL_SCANCODE_RIGHT;
-
-	config.get("Input", "KeyJump",		jump);
-	config.get("Input", "KeyHammer",	hammer);
-	config.get("Input", "KeyItem",		item);
-	config.get("Input", "KeyLiteDash",	litedash);
-	config.get("Input", "KeyContext",	context);
-	config.get("Input", "KeyStrafe",	strafe);
-	config.get("Input", "KeyInventory",	inven);
-	config.get("Input", "KeyOptions",	options);
-	config.get("Input", "KeyUp",		up);
-	config.get("Input", "KeyDown",		down);
-	config.get("Input", "KeyLeft",		left);
-	config.get("Input", "KeyRight",		right);
-
-	keyboard[jump]		= btn_t::Jump;
-	keyboard[hammer]	= btn_t::Hammer;
-	keyboard[item]		= btn_t::Item;
-	keyboard[litedash]	= btn_t::Dash;
-	keyboard[context]	= btn_t::Context;
-	keyboard[strafe]	= btn_t::Strafe;
-	keyboard[inven]		= btn_t::Inventory;
-	keyboard[options]	= btn_t::Options;
-	keyboard[up]		= btn_t::Up;
-	keyboard[down]		= btn_t::Down;
-	keyboard[left]		= btn_t::Left;
-	keyboard[right]		= btn_t::Right;
+void input_t::all_keyboard_bindings(const config_t& config) {
+	keyboard[config.get_keyboard_binding(btn_t::Jump)] 		= btn_t::Jump;
+	keyboard[config.get_keyboard_binding(btn_t::Hammer)] 	= btn_t::Hammer;
+	keyboard[config.get_keyboard_binding(btn_t::Item)] 		= btn_t::Item;
+	keyboard[config.get_keyboard_binding(btn_t::Dash)] 		= btn_t::Dash;
+	keyboard[config.get_keyboard_binding(btn_t::Context)]	= btn_t::Context;
+	keyboard[config.get_keyboard_binding(btn_t::Strafe)] 	= btn_t::Strafe;
+	keyboard[config.get_keyboard_binding(btn_t::Inventory)] = btn_t::Inventory;
+	keyboard[config.get_keyboard_binding(btn_t::Options)]	= btn_t::Options;
+	keyboard[config.get_keyboard_binding(btn_t::Up)] 		= btn_t::Up;
+	keyboard[config.get_keyboard_binding(btn_t::Down)] 		= btn_t::Down;
+	keyboard[config.get_keyboard_binding(btn_t::Left)] 		= btn_t::Left;
+	keyboard[config.get_keyboard_binding(btn_t::Right)] 	= btn_t::Right;
 }
 
-void input_t::all_joystick_bindings(const setup_file_t& config) {
-	sint_t jump		= 0;
-	sint_t hammer	= 1;
-	sint_t item		= 2;
-	sint_t litedash = 3;
-	sint_t context	= 4;
-	sint_t strafe	= 5;
-	sint_t inven	= 6;
-	sint_t options	= 7;
-
-	config.get("Input", "JoyJump",		jump);
-	config.get("Input", "JoyHammer",	hammer);
-	config.get("Input", "JoyItem",		item);
-	config.get("Input", "JoyLiteDash",	litedash);
-	config.get("Input", "JoyContext",	context);
-	config.get("Input", "JoyStrafe",	strafe);
-	config.get("Input", "JoyInventory",	inven);
-	config.get("Input", "JoyOptions",	options);
-
-	joystick[jump] 		= btn_t::Jump;
-	joystick[hammer] 	= btn_t::Hammer;
-	joystick[item] 		= btn_t::Item;
-	joystick[litedash] 	= btn_t::Dash;
-	joystick[context] 	= btn_t::Context;
-	joystick[strafe] 	= btn_t::Strafe;
-	joystick[inven] 	= btn_t::Inventory;
-	joystick[options] 	= btn_t::Options;
+void input_t::all_joystick_bindings(const config_t& config) {
+	joystick[config.get_joystick_binding(btn_t::Jump)] 		= btn_t::Jump;
+	joystick[config.get_joystick_binding(btn_t::Hammer)] 	= btn_t::Hammer;
+	joystick[config.get_joystick_binding(btn_t::Item)] 		= btn_t::Item;
+	joystick[config.get_joystick_binding(btn_t::Dash)] 		= btn_t::Dash;
+	joystick[config.get_joystick_binding(btn_t::Context)] 	= btn_t::Context;
+	joystick[config.get_joystick_binding(btn_t::Strafe)] 	= btn_t::Strafe;
+	joystick[config.get_joystick_binding(btn_t::Inventory)] = btn_t::Inventory;
+	joystick[config.get_joystick_binding(btn_t::Options)] 	= btn_t::Options;
 }
 
-void input_t::all_macrofile_settings(const setup_file_t& config) {
-	std::string macro;
-	bool_t playback = false;
-	config.get("Setup", "MacroFile", macro);
-	config.get("Setup", "PlayBack", playback);
+void input_t::all_macrofile_settings(const config_t& config) {
+	const std::string macro = config.get_macro_file();
+	bool playback = config.get_playback();
 	if (!macro.empty()) {
 		player = std::make_unique<macro_player_t>(!playback);
 		if (!playback) {
@@ -506,7 +459,7 @@ void input_t::all_macrofile_settings(const setup_file_t& config) {
 }
 
 bool macro_player_t::load(const std::string& name) {
-	std::vector<uint16_t> buffer;
+	std::vector<uint16_t> buffer {};
 	sint64_t seed = 0;
 	if (!vfs_t::record_buffer(vfs_t::resource_path(vfs_resource_path_t::Init) + name + ".macro", buffer, seed)) {
 		synao_log("Error! Failed to load macro file!\n");

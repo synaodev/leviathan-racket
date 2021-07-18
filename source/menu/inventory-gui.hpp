@@ -19,7 +19,7 @@ public:
 	~inventory_gui_element_t() = default;
 public:
 	void init(const texture_t* texture, const animation_t* animation, arch_t index);
-	void reset(glm::ivec4 item);
+	void reset(const glm::ivec4& item);
 	void update(real64_t delta);
 	void render(renderer_t& renderer) const;
 private:

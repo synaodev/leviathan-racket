@@ -1,8 +1,10 @@
 #include "./audio.hpp"
 
+#include <glm/common.hpp>
+
 #include "../audio/al-check.hpp"
+#include "../resource/config.hpp"
 #include "../resource/vfs.hpp"
-#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 
 namespace {
@@ -23,7 +25,7 @@ audio_t::~audio_t() {
 	}
 }
 
-bool audio_t::init(const setup_file_t& config) {
+bool audio_t::init(const config_t& config) {
 	if (device) {
 		synao_log("OpenAL device already exists!\n");
 		return false;
@@ -49,8 +51,8 @@ bool audio_t::init(const setup_file_t& config) {
 		return false;
 	}
 
-	real_t volume = 1.0f;
-	config.get("Audio", "Volume", volume);
+	real_t volume = config.get_audio_volume();
+	volume = glm::clamp(volume, 0.0f, 1.0f);
 
 	channels.resize(kSoundChannels);
 	for (auto&& channel : channels) {

@@ -13,7 +13,7 @@
 #include "../video/texture.hpp"
 #include "../video/pipeline.hpp"
 
-struct setup_file_t;
+struct config_t;
 struct vfs_t;
 
 enum class vfs_resource_path_t : arch_t {
@@ -28,7 +28,7 @@ public:
 	vfs_t() = default;
 	~vfs_t();
 public:
-	bool init(const setup_file_t& config);
+	bool init(const config_t& config);
 	bool set_sampler_allocator(sampler_allocator_t* sampler_allocator);
 public:
 	static bool mount(const std::string& directory, bool_t print = true);

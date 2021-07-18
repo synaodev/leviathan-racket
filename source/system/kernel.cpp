@@ -1,22 +1,23 @@
 #include "./kernel.hpp"
 #include "./input.hpp"
 
-#include <fstream>
 #include <angelscript.h>
-
 #include <glm/vec4.hpp>
 #include <glm/common.hpp>
 #include <glm/gtc/constants.hpp>
+#include <nlohmann/json.hpp>
 
 #include "../system/receiver.hpp"
 #include "../utility/logger.hpp"
-#include "../utility/setup-file.hpp"
 
 namespace {
-	constexpr byte_t kFlagProgsName[] 	= "_prog.bin";
-	constexpr byte_t kFlagCheckName[] 	= "_check.bin";
+	constexpr byte_t kTimerEntry[] 		= "Timer";
+	constexpr byte_t kCursorEntry[] 	= "Cursor";
+	constexpr byte_t kItemPtrEntry[] 	= "ItemPtr";
+	constexpr byte_t kItemListEntry[] 	= "ItemList";
+	constexpr byte_t kFlagListEntry[] 	= "FlagList";
 	constexpr arch_t kMaxItemList 		= 30;
-	constexpr arch_t kMaxFlagList 		= 128;
+	constexpr arch_t kMaxFlagList 		= 64;
 	constexpr arch_t kMaxFlagBits 		= sizeof(uint64_t) * 8;
 }
 
@@ -68,59 +69,119 @@ void kernel_t::update(real64_t delta) {
 	}
 }
 
-void kernel_t::read_data(const setup_file_t& file) {
-	arch_t item_ptr_literal = (arch_t)-1;
-	file.get("Status", "Timer", timer);
-	file.get("Status", "Cursor", cursor);
-	file.get("Status", "ItemPtr", item_ptr_literal);
-	if (item_ptr_literal < items.size()) {
-		item_ptr = &items[item_ptr_literal];
+void kernel_t::read(const nlohmann::json& file) {
+	if (
+		file.contains(kTimerEntry) and
+		file[kTimerEntry].is_number_float()
+	) {
+		timer = file[kTimerEntry].get<real64_t>();
+	} else {
+		timer = 0.0;
+	}
+
+	if (
+		file.contains(kCursorEntry) and
+		file[kCursorEntry].is_array() and
+		file[kCursorEntry].size() == 2 and
+		file[kCursorEntry][0].is_number_unsigned() and
+		file[kCursorEntry][1].is_number_unsigned()
+	) {
+		cursor = {
+			file[kCursorEntry][0].get<sint_t>(),
+			file[kCursorEntry][1].get<sint_t>()
+		};
+	} else {
+		cursor = glm::zero<glm::ivec2>();
+	}
+
+	if (
+		file.contains(kItemPtrEntry) and
+		file[kItemPtrEntry].is_number_unsigned()
+	) {
+		arch_t literal = file[kItemPtrEntry].get<arch_t>();
+		if (literal < items.size()) {
+			item_ptr = &items[literal];
+		} else {
+			item_ptr = nullptr;
+		}
 	} else {
 		item_ptr = nullptr;
 	}
-	for (arch_t it = 0; it < items.size(); ++it) {
-		file.get("Item", "Slot_" + std::to_string(it), items[it]);
-	}
-}
 
-bool kernel_t::read_stream(const std::string& path) {
-	const byte_t* name = bitmask[states_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ifstream ifs { path + std::to_string(file_index) + name, std::ios::binary };
-	if (ifs.is_open()) {
-		ifs.read(
-			reinterpret_cast<byte_t*>(flags.data()),
-			flags.size() * sizeof(decltype(flags)::value_type)
-		);
-		return true;
-	}
-	return false;
-}
-
-void kernel_t::write_data(setup_file_t& file) const {
-	file.set("Status", "Timer", timer);
-	file.set("Status", "Cursor", cursor);
-	if (item_ptr) {
-		sint64_t item_ptr_literal = std::distance(&items[0], (const glm::ivec4*)item_ptr);
-		file.set("Status", "ItemPtr", item_ptr_literal);
+	if (
+		file.contains(kItemListEntry) and
+		file[kItemListEntry].is_array() and
+		file[kItemListEntry].size() == items.size()
+	) {
+		auto& list = file[kItemListEntry];
+		for (arch_t x = 0; x < items.size(); ++x) {
+			if (list[x].is_array()) {
+				glm::length_t total = glm::min(
+					items[x].length(),
+					(glm::length_t)list[x].size()
+				);
+				for (glm::length_t y = 0; y < total; ++y) {
+					if (list[x][y].is_number_unsigned()) {
+						items[x][y] = list[x][static_cast<arch_t>(y)].get<sint_t>();
+					} else {
+						items[x][y] = 0;
+					}
+				}
+			} else {
+				items[x] = glm::zero<glm::ivec4>();
+			}
+		}
 	} else {
-		file.set("Status", "ItemPtr", -1);
+		std::fill(items.begin(), items.end(), glm::zero<glm::ivec4>());
 	}
-	for (arch_t it = 0; it < items.size(); ++it) {
-		file.set("Item", "Slot_" + std::to_string(it), items[it]);
+
+	if (
+		file.contains(kFlagListEntry) and
+		file[kFlagListEntry].is_array() and
+		file[kFlagListEntry].size() == flags.size()
+	) {
+		auto& list = file[kFlagListEntry];
+		for (arch_t it = 0; it < flags.size(); ++it) {
+			if (list[it].is_number_unsigned()) {
+				flags[it] = list[it].get<uint64_t>();
+			} else {
+				flags[it] = 0;
+			}
+		}
+	} else {
+		std::fill(flags.begin(), flags.end(), 0);
 	}
 }
 
-bool kernel_t::write_stream(const std::string& path) const {
-	const byte_t* name = bitmask[states_t::Check] ? kFlagCheckName : kFlagProgsName;
-	std::ofstream ofs { path + std::to_string(file_index) + name, std::ios::binary };
-	if (ofs.is_open()) {
-		ofs.write(
-			reinterpret_cast<const byte_t*>(flags.data()),
-			flags.size() * sizeof(decltype(flags)::value_type)
-		);
-		return true;
+void kernel_t::write(nlohmann::json& file) const {
+	file[kTimerEntry] = timer;
+	file[kCursorEntry] = nlohmann::json::array({ cursor.x, cursor.y });
+	if (item_ptr) {
+		auto literal = std::distance(items.data(), (const glm::ivec4*)item_ptr);
+		file[kItemPtrEntry] = static_cast<sint_t>(literal);
+	} else {
+		file[kItemListEntry] = -1;
 	}
-	return false;
+	{
+		auto list = nlohmann::json::array();
+		for (auto&& item : items) {
+			auto values = nlohmann::json::array({
+				item.x,
+				item.y,
+				item.z,
+				item.w
+			});
+			list.push_back(values);
+		}
+		file[kItemListEntry] = list;
+	}
+	{
+		auto list = nlohmann::json::array();
+		for (auto&& flag : flags) {
+			list.push_back(flag);
+		}
+		file[kFlagListEntry] = list;
+	}
 }
 
 void kernel_t::boot() {

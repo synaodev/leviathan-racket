@@ -11,14 +11,14 @@
 
 #include "../types.hpp"
 
-struct setup_file_t;
+struct config_t;
 
 struct music_t : public not_copyable_t, public not_moveable_t {
 public:
 	music_t() = default;
 	~music_t();
 public:
-	bool init(const setup_file_t& config);
+	bool init(const config_t& config);
 	bool load(const std::string& title);
 	bool load(const std::string& title, real_t start_point, real_t fade_length);
 	bool play(real_t start_point, real_t fade_length);

@@ -1,12 +1,12 @@
 #include "./wgt-input.hpp"
 
+#include "../resource/config.hpp"
 #include "../resource/id.hpp"
 #include "../resource/vfs.hpp"
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
-#include "../utility/setup-file.hpp"
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 namespace {
 	constexpr arch_t kInputTotalOptionsA 	= 11;
@@ -35,25 +35,30 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 	);
 }
 
-void wgt_input_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
+void wgt_input_t::handle(config_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t&, stack_gui_t&, headsup_gui_t&) {
 	if (waiting) {
 		flashed = !flashed;
 		if (input.has_valid_scanner()) {
-			const std::string name = input.get_config_name(cursor, siding);
 			sint_t code = input.receive_scanner();
 			if (siding) {
 				btn_t other = input.set_joystick_binding(code, cursor);
 				if (other == btn_t::Total) {
-					config.set("Input", name, code);
+					config.set_joystick_binding(cursor, code);
 				} else {
-					config.swap("Input", name, input.get_config_name(other, siding));
+					sint_t left = config.get_joystick_binding(cursor);
+					sint_t right = config.get_joystick_binding(other);
+					config.set_joystick_binding(cursor, right);
+					config.set_joystick_binding(other, left);
 				}
 			} else {
 				btn_t other = input.set_keyboard_binding(code, cursor);
 				if (other == btn_t::Total) {
-					config.set("Input", name, code);
+					config.set_keyboard_binding(cursor, code);
 				} else {
-					config.swap("Input", name, input.get_config_name(other, siding));
+					sint_t left = config.get_keyboard_binding(cursor);
+					sint_t right = config.get_keyboard_binding(other);
+					config.set_keyboard_binding(cursor, right);
+					config.set_keyboard_binding(other, left);
 				}
 			}
 			waiting = false;
@@ -157,7 +162,7 @@ void wgt_input_t::invalidate() const {
 }
 
 void wgt_input_t::setup_text(const input_t& input) {
-	fmt::memory_buffer data;
+	fmt::memory_buffer data {};
 	for (arch_t it = 0; it < 12; ++it) {
 		fmt::format_to(data, "{}{}",
 			vfs_t::i18n_find("Input", it + 1),

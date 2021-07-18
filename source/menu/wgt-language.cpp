@@ -7,9 +7,8 @@
 #include "../system/input.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../utility/setup-file.hpp"
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 namespace {
 	constexpr arch_t kTotalVisible 			= 9;
@@ -34,7 +33,7 @@ void wgt_language_t::init(const input_t&, const video_t&, audio_t&, const music_
 	this->setup_text();
 }
 
-void wgt_language_t::handle(setup_file_t& config, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, headsup_gui_t& headsup_gui) {
+void wgt_language_t::handle(config_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t& stack_gui, headsup_gui_t& headsup_gui) {
 	bool selection = false;
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
@@ -105,7 +104,7 @@ void wgt_language_t::invalidate() const {
 }
 
 void wgt_language_t::setup_text() {
-	fmt::memory_buffer data;
+	fmt::memory_buffer data {};
 	data.append(vfs_t::i18n_find("Language", 0));
 	for (arch_t it = first; it < languages.size() and it != last; ++it) {
 		fmt::format_to(data, "\t {}\n", languages[it]);

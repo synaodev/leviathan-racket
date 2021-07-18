@@ -7,7 +7,6 @@
 #include "../system/video.hpp"
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
-#include "../utility/setup-file.hpp"
 
 namespace {
 	constexpr arch_t kFileTotalOptions 		= 2;
@@ -39,7 +38,7 @@ void wgt_file_t::init(const input_t&, const video_t&, audio_t&, const music_t&, 
 	);
 }
 
-void wgt_file_t::handle(setup_file_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t&, headsup_gui_t& headsup_gui) {
+void wgt_file_t::handle(config_t&, input_t& input, video_t&, audio_t& audio, music_t&, kernel_t& kernel, stack_gui_t&, headsup_gui_t& headsup_gui) {
 	if (input.pressed[btn_t::Up]) {
 		if (cursor > 0) {
 			--cursor;

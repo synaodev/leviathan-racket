@@ -1,9 +1,9 @@
 #include "./video.hpp"
 
+#include "../resource/config.hpp"
 #include "../resource/image.hpp"
 #include "../resource/vfs.hpp"
 #include "../utility/constants.hpp"
-#include "../utility/setup-file.hpp"
 #include "../utility/logger.hpp"
 #include "../video/frame-buffer.hpp"
 #include "../video/gl-check.hpp"
@@ -23,25 +23,21 @@ video_t::~video_t() {
 	}
 }
 
-bool video_t::init(const setup_file_t& config, bool_t tileset_editor) {
+bool video_t::init(const config_t& config, bool_t tileset_editor) {
 	this->tileset_editor = tileset_editor;
 	// Raw setup parameters retrieved
-	config.get("Setup", "MetaMenu", meta_menu);
+	meta_menu = config.get_meta_menu();
 	sint_t major = 4;
 	sint_t minor = 6;
-	{
-		bool_t opengl3 = false;
-		config.get("Setup", "LegacyGL", opengl3);
-		if (opengl3) {
-			major = 3;
-			minor = 3;
-		}
+	if (config.get_legacy_gl()) {
+		major = 3;
+		minor = 3;
 	}
 	// Raw screen parameters retrieved
-	config.get("Video", "VerticalSync", parameters.vsync);
-	config.get("Video", "Fullscreen", 	parameters.full);
-	config.get("Video", "ScaleFactor", parameters.scaling);
-	config.get("Video", "FrameLimiter", parameters.framerate);
+	parameters.vsync = config.get_vertical_sync();
+	parameters.full = config.get_fullscreen();
+	parameters.scaling = config.get_scaling();
+	parameters.framerate = config.get_framerate();
 	// Setup parameters
 	parameters.scaling = glm::clamp(
 		parameters.scaling,
