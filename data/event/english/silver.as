@@ -14,3 +14,9 @@ void door_to_practice() {
 	msg::fade_out();
 	sys::set_field("practice", kThatDoorID);
 }
+
+void retry_fall() {
+	const sint32_t kFoxieID = 200;
+	sys::lock();
+	nao::teleport(14.0f, 30.0f);
+}
