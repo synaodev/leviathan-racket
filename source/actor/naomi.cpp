@@ -23,6 +23,7 @@
 #include "../system/audio.hpp"
 #include "../system/kernel.hpp"
 #include "../system/receiver.hpp"
+#include "../utility/constants.hpp"
 #include "../utility/logger.hpp"
 
 namespace kNao {
@@ -98,7 +99,8 @@ void naomi_state_t::reset(kontext_t& kontext) {
 		0,				// Barrier
 		0,				// Charging
 		0,				// Flashing
-		90				// Blinked
+		90,				// Blinked
+		0				// Freefall
 	};
 	flags.reset();
 	equips.reset();
@@ -137,7 +139,8 @@ void naomi_state_t::reset(kontext_t& kontext, const glm::vec2& position, directi
 		0,				// Barrier
 		0,				// Charging
 		0,				// Flashing
-		90				// Blinked
+		90,				// Blinked
+		0				// Freefall
 	};
 	flags.reset();
 	equips = std::bitset<naomi_equips_t::Total>(hexadecimal_equips);
@@ -230,7 +233,7 @@ void naomi_state_t::handle(const input_t& input, audio_t& audio, kernel_t& kerne
 	}
 	this->do_physics(kinematics);
 	this->do_submerge(kontext, listener);
-	this->do_cam_move(location);
+	this->do_camera(location, kinematics);
 	this->do_death(receiver, kinematics, health);
 	this->do_animation(location, sprite, health);
 	this->do_headsup(headsup_gui, health);
@@ -430,7 +433,7 @@ void naomi_state_t::set_teleport_location(real_t x, real_t y) {
 
 	auto& location = backend->get<location_t>(actor);
 	location.position = { x, y };
-	location.position *= 16.0f;
+	location.position *= constants::TileSize<real_t>();
 }
 
 void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
@@ -439,7 +442,6 @@ void naomi_state_t::set_sprite_animation(arch_t state, direction_t direction) {
 	flags[naomi_flags_t::Scripted] = true;
 	auto& sprite = backend->get<sprite_t>(actor);
 	if (direction != direction_t::Neutral) {
-		// sprite.amend = true;
 		if (direction & direction_t::Left) {
 			sprite.mirroring = mirroring_t::Horizontal;
 		} else {
@@ -1099,17 +1101,28 @@ void naomi_state_t::do_wall_kick(const input_t& input, audio_t& audio, const til
 	}
 }
 
-void naomi_state_t::do_cam_move(const location_t& location) {
-	real_t x_move = location.direction & direction_t::Left ?
-		view_point.x - 1.0f :
-		view_point.x + 1.0f;
-	real_t y_move = location.direction & direction_t::Up ?
-		-48.0f :
-		0.0f;
-	view_point = {
-		glm::clamp(x_move, -48.0f, 48.0f),
-		y_move
-	};
+constexpr real_t kIncrOffsetX 	= 1.0f;
+constexpr real_t kFarOffsetX 	= 48.0f;
+constexpr real_t kIncrOffsetY1	= 2.0f;
+constexpr real_t kIncrOffsetY2	= 6.0f;
+constexpr real_t kGroundOffsetY = -8.0f;
+constexpr real_t kAirOffsetY 	= 80.0f;
+constexpr sint64_t kFallLimit 	= 60;
+
+void naomi_state_t::do_camera(const location_t& location, const kinematics_t& kinematics) {
+	if (location.direction & direction_t::Left) {
+		view_point.x = glm::max(view_point.x - kIncrOffsetX, -kFarOffsetX);
+	} else {
+		view_point.x = glm::min(view_point.x + kIncrOffsetX, kFarOffsetX);
+	}
+	if (!flags[naomi_flags_t::Airbourne]) {
+		chroniker[naomi_timer_t::Freefall] = 0;
+		view_point.y = glm::max(view_point.y - kIncrOffsetY1, kGroundOffsetY);
+	} else if (kinematics.velocity.y >= kIdealMaxVSpeed) {
+		if (chroniker[naomi_timer_t::Freefall]++ > kFallLimit) {
+			view_point.y = glm::min(view_point.y + kIncrOffsetY2, kAirOffsetY);
+		}
+	}
 }
 
 void naomi_state_t::do_physics(kinematics_t& kinematics) {

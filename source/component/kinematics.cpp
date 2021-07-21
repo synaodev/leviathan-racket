@@ -85,7 +85,7 @@ void kinematics_t::handle(location_t& location, kinematics_t& kinematics, const 
 	}
 }
 
-rect_t kinematics_t::predict(const location_t& location, side_t side, real_t inertia, std::optional<rect_t> discrete) {
+rect_t kinematics_t::predict(const location_t& location, side_t side, real_t inertia, const std::optional<rect_t>& discrete) {
 	switch (side) {
 	case side_t::Left: {
 		if (discrete.has_value()) {
@@ -167,7 +167,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 		side_t side = inertia > 0.0f ? side_t::Right : side_t::Left;
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, side, inertia, *kinematics.discrete),
+				kinematics_t::predict(location, side, inertia, kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				side
@@ -188,7 +188,7 @@ void kinematics_t::do_x(location_t& location, kinematics_t& kinematics, real_t i
 		side_t opposing = side_fn::opposing(side);
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, opposing, 0.0f, *kinematics.discrete),
+				kinematics_t::predict(location, opposing, 0.0f, kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				opposing
@@ -211,7 +211,7 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 		side_t side = inertia > 0.0f ? side_t::Bottom : side_t::Top;
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, side, inertia, *kinematics.discrete),
+				kinematics_t::predict(location, side, inertia, kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				side
@@ -255,7 +255,7 @@ void kinematics_t::do_y(location_t& location, kinematics_t& kinematics, real_t i
 		side_t opposing = side_fn::opposing(side);
 		{
 			auto info = collision::attempt(
-				kinematics_t::predict(location, opposing, 0.0f, *kinematics.discrete),
+				kinematics_t::predict(location, opposing, 0.0f, kinematics.discrete),
 				kinematics.flags,
 				tilemap,
 				opposing

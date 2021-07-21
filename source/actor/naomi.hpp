@@ -91,7 +91,8 @@ namespace __enum_naomi_timer {
 		Barrier,
 		Charging,
 		Flashing,
-		Blinked
+		Blinked,
+		Freefall
 	};
 }
 
@@ -198,7 +199,7 @@ private:
 	void do_interact(const input_t& input, receiver_t& receiver, kontext_t& kontext, const location_t& location, kinematics_t& kinematics);
 	void do_light_dash(const input_t& input, kontext_t& kontext, location_t& location, kinematics_t& kinematics, sprite_t& sprite);
 	void do_wall_kick(const input_t& input, audio_t& audio, const tilemap_t& tilemap, location_t& location, kinematics_t& kinematics);
-	void do_cam_move(const location_t& location);
+	void do_camera(const location_t& location, const kinematics_t& kinematics);
 	void do_physics(kinematics_t& kinematics);
 	void do_submerge(kontext_t& kontext, liquid_listener_t& listener);
 	void do_animation(location_t& location, sprite_t& sprite, const health_t& health);

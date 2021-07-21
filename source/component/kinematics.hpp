@@ -33,7 +33,7 @@ public:
 public:
 	static void handle(kontext_t& kontext, const tilemap_t& tilemap);
 	static void handle(location_t& location, kinematics_t& kinematics, const tilemap_t& tilemap, glm::vec2 inertia);
-	static rect_t predict(const location_t& location, side_t side, real_t inertia, std::optional<rect_t> discrete = std::nullopt);
+	static rect_t predict(const location_t& location, side_t side, real_t inertia, const std::optional<rect_t>& discrete = std::nullopt);
 private:
 	static void do_angle(location_t& location, kinematics_t& kinematics, glm::vec2& inertia);
 	static void do_x(location_t& location, kinematics_t& kinematics, real_t inertia, const tilemap_t& tilemap);

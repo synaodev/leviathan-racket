@@ -31,7 +31,7 @@ namespace collision {
 		real_t coordinate { 0.0f };
 	};
 	std::optional<info_t> attempt(const rect_t& delta, const std::bitset<phy_t::Total>& flags, const tilemap_t& tilemap, side_t side);
-	std::optional<glm::vec2> find_intersection(glm::vec2 ray_pos, glm::vec2 ray_dir, glm::vec2 seg_a, glm::vec2 seg_b);
-	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, glm::vec2 direction);
-	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle);
+	std::optional<glm::vec2> find_intersection(const glm::vec2& ray_pos, const glm::vec2& ray_dir, const glm::vec2& seg_a, const glm::vec2& seg_b);
+	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, const glm::vec2& origin, const glm::vec2& direction);
+	glm::vec2 trace_ray(const tilemap_t& tilemap, real_t max_length, const glm::vec2& origin, real_t angle);
 }

@@ -172,7 +172,7 @@ std::optional<collision::info_t> collision::attempt(const rect_t& delta, const s
 	return std::nullopt;
 }
 
-std::optional<glm::vec2> collision::find_intersection(glm::vec2 ray_pos, glm::vec2 ray_dir, glm::vec2 seg_a, glm::vec2 seg_b) {
+std::optional<glm::vec2> collision::find_intersection(const glm::vec2& ray_pos, const glm::vec2& ray_dir, const glm::vec2& seg_a, const glm::vec2& seg_b) {
 	real_t s_dx = seg_b.x - seg_a.x;
 	real_t s_dy = seg_b.y - seg_a.y;
 	real_t r_mag = glm::sqrt(ray_dir.x * ray_dir.x + ray_dir.y * ray_dir.y);
@@ -194,21 +194,25 @@ std::optional<glm::vec2> collision::find_intersection(glm::vec2 ray_pos, glm::ve
 // This is a 2D version of Mikola Lysenko's voxel raycast algorithm
 // https://github.com/mikolalysenko/voxel-raycast
 
-glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, glm::vec2 direction) {
+glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, const glm::vec2& origin, const glm::vec2& direction) {
 	real_t len = 0.0f;
 	glm::vec2 index = glm::floor(origin);
-	glm::vec2 step {
+	const glm::vec2 step {
 		direction[0] > 0.0f ? 1.0f : -1.0f,
 		direction[1] > 0.0f ? 1.0f : -1.0f
 	};
-	glm::vec2 len_delta = glm::abs(1.0f / direction);
-	glm::vec2 distance {
+	const glm::vec2 len_delta = glm::abs(1.0f / direction);
+	const glm::vec2 distance {
 		step[0] > 0.0f ? index[0] + 1.0f - origin[0] : origin[0] - index[0],
 		step[1] > 0.0f ? index[1] + 1.0f - origin[1] : origin[1] - index[1]
 	};
 	glm::vec2 max_delta {
-		len_delta[0] < std::numeric_limits<real_t>::infinity() ? len_delta[0] * distance[0] : std::numeric_limits<real_t>::infinity(),
-		len_delta[1] < std::numeric_limits<real_t>::infinity() ? len_delta[1] * distance[1] : std::numeric_limits<real_t>::infinity()
+		len_delta[0] < std::numeric_limits<real_t>::infinity() ?
+			len_delta[0] * distance[0] :
+			std::numeric_limits<real_t>::infinity(),
+		len_delta[1] < std::numeric_limits<real_t>::infinity() ?
+			len_delta[1] * distance[1] :
+			std::numeric_limits<real_t>::infinity()
 	};
 	while (len <= max_length) {
 		glm::length_t I = max_delta[0] < max_delta[1] ? 0 : 1;
@@ -236,28 +240,28 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 				real_t center = top + (constants::HalfTile<real_t>());
 				switch (attr) {
 				case tileflag_t::Slope_1:
-					intersect = find_intersection(origin, direction, glm::vec2(left, top), glm::vec2(right, center));
+					intersect = find_intersection(origin, direction, { left, top }, { right, center });
 					break;
 				case tileflag_t::Slope_2:
-					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, bottom));
+					intersect = find_intersection(origin, direction, { left, center }, { right, bottom });
 					break;
 				case tileflag_t::Slope_3:
-					intersect = find_intersection(origin, direction, glm::vec2(left, bottom), glm::vec2(right, center));
+					intersect = find_intersection(origin, direction, { left, bottom }, { right, center });
 					break;
 				case tileflag_t::Slope_4:
-					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, top));
+					intersect = find_intersection(origin, direction, { left, center }, { right, top });
 					break;
 				case tileflag_t::Slope_5:
-					intersect = find_intersection(origin, direction, glm::vec2(left, bottom), glm::vec2(right, center));
+					intersect = find_intersection(origin, direction, { left, bottom }, { right, center });
 					break;
 				case tileflag_t::Slope_6:
-					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, top));
+					intersect = find_intersection(origin, direction, { left, center }, { right, top });
 					break;
 				case tileflag_t::Slope_7:
-					intersect = find_intersection(origin, direction, glm::vec2(left, top), glm::vec2(right, center));
+					intersect = find_intersection(origin, direction, { left, top }, { right, center });
 					break;
 				case tileflag_t::Slope_8:
-					intersect = find_intersection(origin, direction, glm::vec2(left, center), glm::vec2(right, bottom));
+					intersect = find_intersection(origin, direction, { left, center }, { right, bottom });
 					break;
 				default:
 					break;
@@ -271,8 +275,8 @@ glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm:
 	return origin + len * direction;
 }
 
-glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, glm::vec2 origin, real_t angle) {
-	glm::vec2 direction { glm::cos(angle), glm::sin(angle) };
+glm::vec2 collision::trace_ray(const tilemap_t& tilemap, real_t max_length, const glm::vec2& origin, real_t angle) {
+	const glm::vec2 direction { glm::cos(angle), glm::sin(angle) };
 	return trace_ray(
 		tilemap,
 		max_length,

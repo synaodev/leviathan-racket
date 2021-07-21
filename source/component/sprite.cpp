@@ -82,7 +82,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, const rect
 					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,
-					glm::round(location.position),
+					location.position,
 					sprite.scale,
 					sprite.angle + sprite.shake,
 					sprite.pivot
@@ -97,7 +97,7 @@ void sprite_t::render(const kontext_t& kontext, renderer_t& renderer, const rect
 					sprite.mirroring,
 					sprite.layer,
 					sprite.alpha,
-					glm::round(location.position),
+					location.position,
 					sprite.scale
 				);
 			}

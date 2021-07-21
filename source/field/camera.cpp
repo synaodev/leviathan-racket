@@ -145,7 +145,7 @@ glm::mat4 camera_t::get_matrix() const {
 		);
 	}
 	matrix = glm::translate(
-		matrix, -glm::vec3(glm::round(position + offsets), 0.0f)
+		matrix, -glm::vec3(position + offsets, 0.0f)
 	);
 	return matrix;
 }
