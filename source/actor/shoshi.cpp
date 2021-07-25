@@ -203,7 +203,7 @@ void ai::shoshi_follow::tick(entt::entity s, routine_tuple_t& rtp) {
 
 // Tables
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t, shoshi) {
+LEVIATHAN_CTOR_TABLE_CREATE(shoshi) {
 	LEVIATHAN_TABLE_PUSH(ai::shoshi::type, 			ai::shoshi::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::shoshi_carry::type, 	ai::shoshi_carry::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::shoshi_follow::type, 	ai::shoshi_follow::ctor);

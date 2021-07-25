@@ -71,9 +71,9 @@ public:
 	routine_tick_fn tick { nullptr };
 };
 
-#define LEVIATHAN_CTOR_TABLE_CREATE(TYPE, SYM)															\
+#define LEVIATHAN_CTOR_TABLE_CREATE(SYM)										\
 	static void SYM##___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table);	\
-	static const TYPE SYM##___routine_ctor_generator(SYM##___routine_ctor_func);						\
+	static const routine_ctor_generator_t SYM##___routine_ctor_generator(SYM##___routine_ctor_func);	\
 	static void SYM##___routine_ctor_func(std::unordered_map<entt::id_type, routine_ctor_fn>& table)	\
 
 #define LEVIATHAN_TABLE_PUSH(ACTOR, DATA) table[ACTOR] = DATA

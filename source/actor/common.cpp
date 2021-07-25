@@ -90,7 +90,7 @@ void ai::fire::ctor(entt::entity s, kontext_t& kontext) {
 
 // Tables
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t, common) {
+LEVIATHAN_CTOR_TABLE_CREATE(common) {
 	LEVIATHAN_TABLE_PUSH(ai::null::type, 			ai::null::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::hv_trigger::type, 		ai::hv_trigger::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::full_chest::type, 		ai::full_chest::ctor);

@@ -244,7 +244,7 @@ void ai::barrier::tick(entt::entity s, routine_tuple_t& rtp) {
 
 // Tables
 
-LEVIATHAN_CTOR_TABLE_CREATE(routine_ctor_generator_t, particles) {
+LEVIATHAN_CTOR_TABLE_CREATE(particles) {
 	LEVIATHAN_TABLE_PUSH(ai::smoke::type, 			ai::smoke::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::shrapnel::type, 		ai::shrapnel::ctor);
 	LEVIATHAN_TABLE_PUSH(ai::dust::type, 			ai::dust::ctor);
