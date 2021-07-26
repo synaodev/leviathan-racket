@@ -39,11 +39,10 @@ void sampler_data_t::destroy() {
 
 sampler_data_t sampler_allocator_t::kNullHandle {};
 
-bool sampler_allocator_t::create(pixel_format_t highest, pixel_format_t lowest) {
+bool sampler_allocator_t::create(pixel_format_t format) {
 	const glm::ivec2 texture_dims { kDimensions, kDimensions };
 
-	this->highest = highest;
-	this->lowest = lowest;
+	this->format = format;
 	auto& t = this->texture(texture_dims);
 	auto& s = this->atlas(texture_dims);
 	return true;
@@ -64,13 +63,13 @@ sampler_data_t& sampler_allocator_t::texture(const glm::ivec2& dimensions) {
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(
 					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
-					gfx_t::get_pixel_format_gl_enum(highest),
+					gfx_t::get_pixel_format_gl_enum(format),
 					dimensions.x, dimensions.y, kTotalTexs
 				));
 			} else {
 				glCheck(glTexImage3D(
 					GL_TEXTURE_2D_ARRAY, 0,
-					gfx_t::get_pixel_format_gl_enum(highest),
+					gfx_t::get_pixel_format_gl_enum(format),
 					dimensions.x, dimensions.y, kTotalTexs,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
 				));
@@ -119,13 +118,13 @@ sampler_data_t& sampler_allocator_t::atlas(const glm::ivec2& dimensions) {
 			if (sampler_t::has_immutable_option()) {
 				glCheck(glTexStorage3D(
 					GL_TEXTURE_2D_ARRAY, kMipMapTexs,
-					gfx_t::get_pixel_format_gl_enum(lowest),
+					gfx_t::get_pixel_format_gl_enum(format),
 					dimensions.x, dimensions.y, kTotalAtlas
 				));
 			} else {
 				glCheck(glTexImage3D(
 					GL_TEXTURE_2D_ARRAY, 0,
-					gfx_t::get_pixel_format_gl_enum(lowest),
+					gfx_t::get_pixel_format_gl_enum(format),
 					dimensions.x, dimensions.y, kTotalAtlas,
 					0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr
 				));

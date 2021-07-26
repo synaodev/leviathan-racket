@@ -14,7 +14,7 @@ bool renderer_t::init(vfs_t& fs) {
 		synao_log("Couldn't setup quad_buffer_allocator_t!\n");
 		return false;
 	}
-	if (!sampler_allocator.create(pixel_format_t::R8G8B8A8, pixel_format_t::R2G2B2A2)) {
+	if (!sampler_allocator.create(pixel_format_t::R8G8B8A8)) {
 		synao_log("Couldn't setup sampler_allocator_t!\n");
 		return false;
 	}

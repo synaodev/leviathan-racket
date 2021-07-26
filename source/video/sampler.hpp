@@ -33,11 +33,11 @@ public:
 struct sampler_allocator_t : public not_copyable_t {
 public:
 	sampler_allocator_t() = default;
-	sampler_allocator_t(sampler_allocator_t&& that) noexcept = default;
-	sampler_allocator_t& operator=(sampler_allocator_t&& that) noexcept = default;
+	sampler_allocator_t(sampler_allocator_t&&) noexcept = default;
+	sampler_allocator_t& operator=(sampler_allocator_t&&) noexcept = default;
 	~sampler_allocator_t() = default;
 public:
-	bool create(pixel_format_t highest, pixel_format_t lowest);
+	bool create(pixel_format_t format);
 	sampler_data_t& texture(const glm::ivec2& dimensions);
 	const sampler_data_t& texture() const;
 	sampler_data_t& atlas(const glm::ivec2& dimensions);
@@ -46,8 +46,7 @@ private:
 	static sampler_data_t kNullHandle;
 private:
 	friend struct gfx_t;
-	pixel_format_t highest { pixel_format_t::R8G8B8A8 };
-	pixel_format_t lowest { pixel_format_t::R8G8B8A8 };
+	pixel_format_t format { pixel_format_t::R8G8B8A8 };
 	sampler_data_t textures {};
 	sampler_data_t atlases {};
 };

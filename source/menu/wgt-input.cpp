@@ -22,16 +22,16 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 	header.set_font(vfs_t::font(0));
 	header.set_position(kInputDefaultPosition);
 	header.set_string(vfs_t::i18n_find("Input", 0));
-	left_text.set_font(vfs_t::font(4));
+	left_text.set_font(vfs_t::font(0));
 	left_text.set_position(kInputDefaultPosition + kInputAddingPositions);
-	right_text.set_font(vfs_t::font(4));
+	right_text.set_font(vfs_t::font(0));
 	right_text.set_position(kInputDefaultPosition + kInputRightsPositions);
 	this->setup_text(input);
 	arrow.set_file(vfs_t::animation(res::anim::Heads));
 	arrow.set_state(1);
 	arrow.set_position(
-		left_text.get_font_size().x,
-		(left_text.get_font_size().y * 2.0f) - 3.0f
+		left_text.get_position().x + (kInputAddingPositions.x - 3.0f),
+		((left_text.get_font_size().y * 2.0f) - 6.0f)
 	);
 }
 
