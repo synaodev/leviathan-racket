@@ -23,7 +23,7 @@ namespace {
 	const glm::vec2 kElementOffset 		{ 38.0f, 10.0f };
 	const glm::ivec2 kElementSpacing 	{ 49, 21 };
 	const rect_t kElementBounding		{ 0.0f, 0.0f, 32.0f, 16.0f };
-	const rect_t kCountBounding 		{ 56.0f, 18.0f, 8.0f, 10.0f };
+	const rect_t kCountBounding 		{ 56.0f, 9.0f, 8.0f, 9.0f };
 }
 
 void inventory_gui_element_t::init(const texture_t* texture, const animation_t* animation, arch_t index) {

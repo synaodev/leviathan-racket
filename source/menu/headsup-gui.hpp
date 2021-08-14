@@ -21,7 +21,7 @@ public:
 	sint_t maximum_barrier { 0 };
 	sint_t current_leviathan { 0 };
 	sint_t main_state { 0 };
-	direction_t main_direction { direction_t::Right };
+	bool_t main_strafing { false };
 	sint_t current_oxygen { 0 };
 	sint_t maximum_oxygen { 0 };
 public:
@@ -47,7 +47,7 @@ public:
 	void update(real64_t delta);
 	void render(renderer_t& renderer, const kernel_t& kernel) const;
 	void invalidate() const;
-	void set_parameters(headsup_params_t params);
+	void set_parameters(const headsup_params_t& params);
 	void set_fight_values(sint_t current, sint_t maximum);
 	void fade_in();
 	void fade_out();
@@ -70,5 +70,4 @@ private:
 	draw_item_view_t item_view {};
 	draw_meter_t fight_meter {};
 	draw_fade_t fade {};
-	sint_t main_state { 0 }; // TODO: replace this
 };

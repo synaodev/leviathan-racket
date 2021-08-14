@@ -21,7 +21,8 @@ public:
 	void set_bounding(real_t x, real_t y, real_t w, real_t h);
 	void set_bounding(const rect_t& bounding);
 	void set_values(sint_t current, sint_t maximum);
-	void set_table(sint_t table);
+	void set_values(sint_t current, sint_t maximum, sint_t tabular);
+	void set_tabular(sint_t tabular);
 	void set_texture(const texture_t* texture);
 	const glm::vec2& get_position() const;
 private:
@@ -32,7 +33,7 @@ private:
 	rect_t bounding {};
 	sint_t current_value { 0 };
 	sint_t maximum_value { 0 };
-	sint_t table { 0 };
+	sint_t tabular_value { 0 };
 	const texture_t* texture { nullptr };
 	vertex_pool_t quads {};
 };

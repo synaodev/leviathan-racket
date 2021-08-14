@@ -1225,9 +1225,7 @@ void naomi_state_t::do_headsup(headsup_gui_t& headsup_gui, const health_t& healt
 	params.maximum_barrier = health.maximum;
 	params.current_leviathan = health.leviathan;
 	params.main_state = naomi_state_t::get_box_data(headsup_gui, flags, params);
-	params.main_direction = flags[naomi_flags_t::Strafing] ?
-		direction_t::Left :
-		direction_t::Right;
+	params.main_strafing = flags[naomi_flags_t::Strafing];
 	params.current_oxygen = equips[naomi_equips_t::Oxygen] ?
 		static_cast<sint_t>(kNao::Oxygens / 15) :
 		static_cast<sint_t>(chroniker[naomi_timer_t::Oxygen] / 15);

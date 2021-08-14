@@ -57,6 +57,10 @@ void draw_units_t::set_bounding(const rect_t& bounding) {
 }
 
 void draw_units_t::set_values(sint_t current, sint_t maximum) {
+	this->set_values(current, maximum, tabular_value);
+}
+
+void draw_units_t::set_values(sint_t current, sint_t maximum, sint_t tabular) {
 	bool_t edited = false;
 	bool_t resize = false;
 	if (this->maximum_value != maximum) {
@@ -68,6 +72,10 @@ void draw_units_t::set_values(sint_t current, sint_t maximum) {
 		edited = true;
 		this->current_value = current;
 	}
+	if (this->tabular_value != tabular) {
+		edited = true;
+		this->tabular_value = tabular;
+	}
 	if (edited) {
 		this->generate(
 			static_cast<arch_t>(current),
@@ -77,11 +85,10 @@ void draw_units_t::set_values(sint_t current, sint_t maximum) {
 	}
 }
 
-void draw_units_t::set_table(sint_t table) {
-	if (this->table != table) {
+void draw_units_t::set_tabular(sint_t tabular) {
+	if (this->tabular_value != tabular) {
 		amend = true;
-		this->table = table;
-		this->set_values(current_value, maximum_value);
+		this->set_values(current_value, maximum_value, tabular_value);
 	}
 }
 
@@ -99,6 +106,7 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 	if (resize) {
 		quads.resize(maximum * display_list_t::SingleQuad);
 	}
+	const glm::vec2 offset { 0.0f, bounding.h * static_cast<real_t>(tabular_value) };
 	glm::vec2 pos = position;
 	glm::vec2 inv = texture ? texture->get_inverse_dimensions() : glm::one<glm::vec2>();
 	sint_t texID = texture ? texture->get_name() : 0;
@@ -112,25 +120,25 @@ void draw_units_t::generate(arch_t current, arch_t maximum, bool_t resize) {
 
 		quad[0].position = pos;
 		quad[0].matrix = 0;
-		quad[0].uvcoords = uvs * inv;
+		quad[0].uvcoords = inv * (uvs + offset);
 		quad[0].alpha = 1.0f;
 		quad[0].texID = texID;
 
 		quad[1].position = { pos.x, pos.y + bounding.h };
 		quad[1].matrix = 0;
-		quad[1].uvcoords = glm::vec2(uvs.x, uvs.y + bounding.h) * inv;
+		quad[1].uvcoords = inv * glm::vec2(uvs.x + offset.x, uvs.y + bounding.h + offset.y);
 		quad[1].alpha = 1.0f;
 		quad[1].texID = texID;
 
 		quad[2].position = { pos.x + bounding.w, pos.y };
 		quad[2].matrix = 0;
-		quad[2].uvcoords = glm::vec2(uvs.x + bounding.w, uvs.y) * inv;
+		quad[2].uvcoords = inv * glm::vec2(uvs.x + bounding.w + offset.x, uvs.y + offset.y);
 		quad[2].alpha = 1.0f;
 		quad[2].texID = texID;
 
 		quad[3].position = pos + bounding.dimensions();
 		quad[3].matrix = 0;
-		quad[3].uvcoords = inv * (uvs + bounding.dimensions());
+		quad[3].uvcoords = inv * (uvs + bounding.dimensions() + offset);
 		quad[3].alpha = 1.0f;
 		quad[3].texID = texID;
 

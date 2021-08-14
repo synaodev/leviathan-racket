@@ -9,7 +9,7 @@
 			"name": "Items",
 			"starts": [
 				0,
-				32
+				64
 			],
 			"vksize": [
 				32,

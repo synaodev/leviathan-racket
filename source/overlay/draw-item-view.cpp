@@ -6,7 +6,7 @@ namespace {
 	const glm::vec2 kViewPosition { 440.0f, 2.0f };
 	const glm::vec2 kSchemePosition = kViewPosition + 3.0f;
 	const glm::vec2 kAmmoPosition { 470.0f, 25.0f };
-	const rect_t kAmmoBounding { 56.0f, 18.0f, 8.0f, 10.0f };
+	const rect_t kAmmoBounding { 56.0f, 9.0f, 8.0f, 9.0f };
 }
 
 void draw_item_view_t::init(const texture_t* texture, const animation_t* heads_animation, const animation_t* items_animation) {

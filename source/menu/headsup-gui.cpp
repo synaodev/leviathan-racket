@@ -16,7 +16,7 @@ namespace {
 	const glm::vec2 kBarrierUnitsPosition 	{ 47.0f, 2.0f };
 	const rect_t kBarrierUnitsBounding 		{ 45.0f, 0.0f, 6.0f, 8.0f };
 	const glm::vec2 kOxygenCountPosition 	{ 2.0f, 18.0f };
-	const rect_t kOxygenCountBounding 		{ 56.0f, 9.0f, 8.0f, 9.0f };
+	const rect_t kOxygenCountBounding 		{ 56.0f, 18.0f, 8.0f, 10.0f };
 	const glm::vec2 kTitleViewPosition 		{ 240.0f, 36.0f };
 	const glm::vec4 kTitleViewColor			{ 0.25f, 0.25f, 1.0f, 1.0f };
 }
@@ -37,6 +37,7 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	}
 
 	main_scheme.set_file(heads_animation);
+	main_scheme.set_state(0);
 	main_scheme.set_position(kMainSchemePosition);
 
 	leviathan_count.set_texture(texture);
@@ -59,7 +60,6 @@ bool headsup_gui_t::init(receiver_t& receiver) {
 	item_view.init(texture, heads_animation, items_animation);
 	fight_meter.init(heads_animation);
 	fade.init();
-	main_state = 0;
 	synao_log("HeadsUp GUI is ready.\n");
 	return true;
 }
@@ -76,11 +76,9 @@ bool headsup_gui_t::refresh() {
 }
 
 void headsup_gui_t::reset() {
-	main_scheme.set_state(0);
 	main_scheme.set_direction(direction_t::Right);
 	fight_meter.reset();
 	fade.reset();
-	main_state = 0;
 }
 
 void headsup_gui_t::handle(const kernel_t& kernel, const dialogue_gui_t& dialogue_gui) {
@@ -121,11 +119,31 @@ void headsup_gui_t::invalidate() const {
 	fade.invalidate();
 }
 
-void headsup_gui_t::set_parameters(headsup_params_t params) {
-	main_state = params.main_state;
-	main_scheme.set_direction(params.main_direction);
+void headsup_gui_t::set_parameters(const headsup_params_t& params) {
+	direction_t direction = direction_t::Right;
+	switch (params.main_state) {
+	case 0:
+		direction = params.main_strafing ?
+			direction_t::Left :
+			direction_t::Right;
+		break;
+	case 1:
+		direction = params.main_strafing ?
+			direction_t::Up | direction_t::Left :
+			direction_t::Up;
+		break;
+	case 2:
+		direction = params.main_strafing ?
+			direction_t::Down | direction_t::Left :
+			direction_t::Down;
+		break;
+	default:
+		direction = direction_t::Up | direction_t::Down | direction_t::Left;
+		break;
+	}
+	main_scheme.set_direction(direction);
 	leviathan_count.set_value(params.current_leviathan);
-	barrier_units.set_values(params.current_barrier, params.maximum_barrier);
+	barrier_units.set_values(params.current_barrier, params.maximum_barrier, params.main_state);
 	oxygen_count.set_visible(params.current_oxygen != params.maximum_oxygen);
 	oxygen_count.set_value(params.current_oxygen);
 }
@@ -177,5 +195,15 @@ bool headsup_gui_t::is_fade_moving() const {
 }
 
 sint_t headsup_gui_t::get_main_state() const {
-	return main_state;
+	direction_t dir = main_scheme.get_direction();
+	if ((dir & direction_t::Down) and (dir & direction_t::Up)) {
+		return 3; // kNao::BoxHeal
+	}
+	if (dir & direction_t::Down) {
+		return 2; // kNao::BoxSick
+	}
+	if (dir & direction_t::Up) {
+		return 1; // kNao::BoxOkay
+	}
+	return 0; // kNao::BoxGood
 }
