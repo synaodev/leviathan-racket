@@ -44,12 +44,29 @@ void wgt_file_t::handle(config_t&, input_t& input, video_t&, audio_t& audio, mus
 			--cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, -text.get_font_size().y);
+		} else {
+			cursor = kFileTotalOptions;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				(4.0f + kFileDefaultPosition.y) +
+				(text.get_font_size().y * 2.0f) +
+				(text.get_font_size().y * static_cast<real_t>(kFileTotalOptions))
+			);
 		}
 	} else if (input.pressed[btn_t::Down]) {
 		if (cursor < kFileTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, text.get_font_size().y);
+		} else {
+			cursor = 0;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				4.0f + kFileDefaultPosition.y +
+				(text.get_font_size().y * 2.0f)
+			);
 		}
 	} else if (input.pressed[btn_t::Yes]) {
 		active = false;

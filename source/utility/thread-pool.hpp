@@ -47,9 +47,7 @@ public:
 			std::forward<Func>(func),
 			std::forward<Args>(args)...);
 		auto task_pointer = std::make_shared<std::packaged_task<decltype(func(args...))()> >(process);
-		std::function<void()> wrapper = [task_pointer] {
-			(*task_pointer)();
-		};
+		std::function<void()> wrapper = [task_pointer] { std::invoke(*task_pointer); };
 		{
 			std::unique_lock<std::mutex> push_lock { queue_mutex };
 			queue.push(wrapper);
@@ -66,7 +64,7 @@ private:
 		~worker_t() = default;
 	public:
 		void operator()() {
-			std::function<void()> process;
+			std::function<void()> process {};
 			bool dequeued = false;
 			while (!boss->shutdown) {
 				{

@@ -31,7 +31,7 @@ void wgt_input_t::init(const input_t& input, const video_t&, audio_t&, const mus
 	arrow.set_state(1);
 	arrow.set_position(
 		left_text.get_position().x + (kInputAddingPositions.x - 3.0f),
-		((left_text.get_font_size().y * 2.0f) - 6.0f)
+		(left_text.get_font_size().y * 2.0f) - 6.0f
 	);
 }
 
@@ -76,6 +76,17 @@ void wgt_input_t::handle(config_t& config, input_t& input, video_t&, audio_t& au
 			--cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, -left_text.get_font_size().y);
+		} else {
+			cursor = siding ? kInputTotalOptionsB : kInputTotalOptionsA;
+			audio.play(res::sfx::Select, 0);
+
+			const glm::vec2 position = arrow.get_position();
+			arrow.set_position(
+				position.x,
+				-6.0f +
+				(left_text.get_font_size().y * 2.0f) +
+				(left_text.get_font_size().y * static_cast<arch_t>(cursor))
+			);
 		}
 	} else if (input.pressed[btn_t::Down]) {
 		const arch_t comparison = siding ? kInputTotalOptionsB : kInputTotalOptionsA;
@@ -83,6 +94,15 @@ void wgt_input_t::handle(config_t& config, input_t& input, video_t&, audio_t& au
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, left_text.get_font_size().y);
+		} else {
+			cursor = 0;
+			audio.play(res::sfx::Select, 0);
+
+			const glm::vec2 position = arrow.get_position();
+			arrow.set_position(
+				position.x,
+				(left_text.get_font_size().y * 2.0f) - 6.0f
+			);
 		}
 	} else if (input.pressed[btn_t::Right]) {
 		if (!siding) {

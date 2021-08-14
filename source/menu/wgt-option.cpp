@@ -36,12 +36,29 @@ void wgt_option_t::handle(config_t&, input_t& input, video_t&, audio_t& audio, m
 			--cursor;
 			audio.play(res::sfx::Select);
 			arrow.mut_position(0.0f, -text.get_font_size().y);
+		} else {
+			cursor = kOptionTotalOptions;
+			audio.play(res::sfx::Select);
+			arrow.set_position(
+				text.get_font_size().x,
+				(4.0f + kOptionDefaultPosition.y) +
+				(text.get_font_size().y * 2.0f) +
+				(text.get_font_size().y * static_cast<real_t>(kOptionTotalOptions))
+			);
 		}
 	} else if (input.pressed[btn_t::Down]) {
 		if (cursor < kOptionTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select);
 			arrow.mut_position(0.0f, text.get_font_size().y);
+		} else {
+			cursor = 0;
+			audio.play(res::sfx::Select);
+			arrow.set_position(
+				text.get_font_size().x,
+				4.0f + kOptionDefaultPosition.y +
+				(text.get_font_size().y * 2.0f)
+			);
 		}
 	} else if (input.pressed[btn_t::Yes]) {
 		switch (cursor) {

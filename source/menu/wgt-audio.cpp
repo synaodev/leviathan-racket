@@ -11,7 +11,7 @@
 #include <glm/common.hpp>
 
 namespace {
-	constexpr arch_t kAudioTotalOptions  	= 2;
+	constexpr arch_t kAudioTotalOptions  	= 1;
 	const glm::vec2 kAudioDefaultPosition 	{ 4.0f, 2.0f };
 }
 
@@ -35,12 +35,29 @@ void wgt_audio_t::handle(config_t& config, input_t& input, video_t&, audio_t& au
 			--cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, -text.get_font_size().y);
+		} else {
+			cursor = kAudioTotalOptions;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				(4.0f + kAudioDefaultPosition.y) +
+				(text.get_font_size().y * 2.0f) +
+				(text.get_font_size().y * static_cast<real_t>(kAudioTotalOptions))
+			);
 		}
 	} else if (input.pressed[btn_t::Down]) {
 		if (cursor < kAudioTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, text.get_font_size().y);
+		} else {
+			cursor = 0;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				4.0f + kAudioDefaultPosition.y +
+				(text.get_font_size().y * 2.0f)
+			);
 		}
 	} else if (input.holding[btn_t::Right] or input.holding[btn_t::Left]) {
 		switch (cursor) {

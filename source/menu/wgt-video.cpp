@@ -35,12 +35,29 @@ void wgt_video_t::handle(config_t& config, input_t& input, video_t& video, audio
 			--cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, -text.get_font_size().y);
+		} else {
+			cursor = kVideoTotalOptions;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				(4.0f + kVideoDefaultPosition.y) +
+				(text.get_font_size().y * 2.0f) +
+				(text.get_font_size().y * static_cast<real_t>(kVideoTotalOptions))
+			);
 		}
 	} else if (input.pressed[btn_t::Down]) {
 		if (cursor < kVideoTotalOptions) {
 			++cursor;
 			audio.play(res::sfx::Select, 0);
 			arrow.mut_position(0.0f, text.get_font_size().y);
+		} else {
+			cursor = 0;
+			audio.play(res::sfx::Select, 0);
+			arrow.set_position(
+				text.get_font_size().x,
+				4.0f + kVideoDefaultPosition.y +
+				(text.get_font_size().y * 2.0f)
+			);
 		}
 	} else if (input.pressed[btn_t::Right] or input.pressed[btn_t::Left]) {
 		auto params = video.get_parameters();

@@ -10,7 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 bool renderer_t::init(vfs_t& fs) {
-	if (!quad_allocator.create(primitive_t::Triangles, UINT16_MAX)) {
+	arch_t amount = static_cast<arch_t>(std::numeric_limits<uint16_t>::max());
+	if (!quad_allocator.create(primitive_t::Triangles, amount)) {
 		synao_log("Couldn't setup quad_buffer_allocator_t!\n");
 		return false;
 	}

@@ -12,7 +12,7 @@ bool quad_allocator_t::create(primitive_t primitive, arch_t length) {
 	if (primitive != primitive_t::Triangles and primitive != primitive_t::TriangleStrip) {
 		return false;
 	}
-	if (length == 0 or length > UINT16_MAX) {
+	if (length == 0 or length > std::numeric_limits<uint16_t>::max()) {
 		return false;
 	}
 	this->primitive = primitive;
@@ -75,9 +75,9 @@ arch_t quad_allocator_t::convert(arch_t length) {
 }
 
 std::vector<uint16_t> quad_allocator_t::generate(arch_t length, arch_t offset, primitive_t primitive) {
-	std::vector<uint16_t> result;
-	result.resize(quad_allocator_t::convert(length));
+	std::vector<uint16_t> result {};
 
+	result.resize(quad_allocator_t::convert(length));
 	arch_t it = 0;
 	uint16_t ut = static_cast<uint16_t>(offset);
 	while (it < result.size()) {
