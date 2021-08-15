@@ -21,6 +21,11 @@ def ensure_dir(directory: str) -> bool:
     print(f'Error! \"{directory}\" doesn\'t exist! Create the directory manually, or generate it using the game!')
     return False
 
+def get_base_directory() -> str:
+    if os.name == 'nt':
+        return os.environ.get('AppData', '')
+    return os.environ.get('XDG_DATA_HOME', '')
+
 def main() -> int:
     curr_dir: str = os.curdir
     if not os.path.isdir(os.path.join(curr_dir, 'data')) or not os.path.isdir(os.path.join(curr_dir, 'cmake')) or not os.path.isfile(os.path.join(curr_dir, 'CMakeLists.txt')):
@@ -32,7 +37,7 @@ def main() -> int:
     save_link: str = os.path.join(curr_dir, 'data', 'save')
     if not remove_link(save_link):
         return -1
-    base_dir: str = os.environ.get('XDG_DATA_HOME', '')
+    base_dir: str = get_base_directory()
     if len(base_dir) == 0:
         print('Error! XDG_DATA_HOME environment variable is not defined!')
         return -1
