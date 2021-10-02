@@ -1,5 +1,6 @@
 # Leviathan Racket
 This is the current official repository for Leviathan Racket. I work on this game in my spare time, so there is no release date currently.
+
 ## Required Dependencies
 - [fmt](https://github.com/fmtlib/fmt)
 - [openal](https://github.com/kcat/openal-soft)
@@ -47,6 +48,9 @@ The dependencies required to run the python scripts are in `requirements.txt`.
 - `make-tilekey.py` opens an editor that allows for modification of tileset attributes. Not complete.
 - `make-palette.py` generates a palette and index texture from a given texture atlas.
 - `make-symlink.py` creates local links to SDL_PrefPath() directories. Helpful for debugging.
+
+## Note
+The assets in the "data" directory are mostly placeholders for now since I'm working on the engine for now and just need to be able to test the various subsystems.
 ## Thank You
 - [Daisuke Amaya](https://en.wikipedia.org/wiki/Daisuke_Amaya):
   The developer of Cave Story. He also currently develops Pxtone Collage, which I am using to compose the soundtrack. If not for his work, this project would not exist.
